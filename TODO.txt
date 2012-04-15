@@ -1,0 +1,25 @@
+
+	Ramen TODO
+	----------
+
+		- Fix roto + motion blur bug.
+
+		Refactor
+		--------
+
+			- Remove unused code.
+			- Remove Loki.
+			- Remove IECore.
+			- Rewrite Python bindings.			
+			- Replace Cineon and Dpx code for OpenImageIO implementations.
+			- Merge MipMaps code from 0.8.5.
+			- Refactor OCIO related code.
+			- Remove intrusive pointers, go back to ptr_containers.
+			- Replace boost flyweight by adobe::name_t.
+			- Remove dependency between params and Qt.
+
+			- Merge Ramen1.5 and Ramen2 refactors.
+
+			- Use ispc for image processing.
+			- Switch to planar images.
+			- Use image::buffer_t::rowbytes member.

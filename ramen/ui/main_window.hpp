@@ -1,0 +1,177 @@
+// Copyright (c) 2010 Esteban Tovagliari
+// Licensed under the terms of the CDDL License.
+// See CDDL_LICENSE.txt for a copy of the license.
+
+#ifndef RAMEN_UI_MAIN_WINDOW_HPP
+#define	RAMEN_UI_MAIN_WINDOW_HPP
+
+#include<vector>
+#include<map>
+#include<string>
+
+#include<QMainWindow>
+
+#include<ramen/ui/node_menu.hpp>
+
+#include<boost/filesystem/fstream.hpp>
+
+#include<ramen/serialization/archive_fwd.hpp>
+
+#include<QDockWidget>
+
+class QAction;
+class QMenu;
+class QMenuBar;
+class QDockWidget;
+
+namespace ramen
+{
+namespace ui
+{
+
+class composition_view_t;
+class time_slider_t;
+
+class main_window_t : public QMainWindow
+{
+    Q_OBJECT
+
+public:
+
+    main_window_t();
+
+	void add_dock_widget( Qt::DockWidgetArea area, QDockWidget *dock);
+
+    composition_view_t *composition_view()  { return comp_view_;}
+    time_slider_t *time_slider()			{ return time_slider_;}
+
+	const std::vector<node_menu_t*>& node_menus() const;
+
+    void update();
+
+    bool can_close_document();
+
+    void update_recent_files_menu( const boost::filesystem::path& p);
+
+protected:
+
+    void closeEvent( QCloseEvent *event);
+
+public Q_SLOTS:
+
+    void new_document();
+    void open_document();
+    void open_recent_document();
+
+    void save_document();
+    void save_document_as();
+
+    void import_composition();
+    void import_multichannel_exr();
+	void import_roto();
+	void import_cdl();
+
+    void export_selection();
+	void export_roto();
+	void export_cdl();
+	
+    void quit();
+
+    void undo();
+    void redo();
+
+    void ignore_nodes();
+    void delete_nodes();
+    void duplicate_nodes();
+	void extract_nodes();
+
+    void clear_cache();
+
+    void show_preferences_dialog();
+
+    void show_composition_settings_dialog();
+
+    void render_flipbook();
+    void render_composition();
+
+    void show_about_box();
+    void go_to_project_website();
+
+    void create_node();
+    
+private:
+
+    void create_actions();
+    void create_menus();
+    void create_import_export_menus();
+
+    void create_node_actions();
+
+    void init_recent_files_menu();
+    void update_menus();
+
+    node_menu_t *find_node_menu( const std::string& s);
+
+	static const char *document_extension();
+	static const char *file_dialog_extension();
+	
+    time_slider_t *time_slider_;
+    composition_view_t *comp_view_;
+
+    QDockWidget *inspector_dock_;
+    QDockWidget *composition_dock_;
+    QDockWidget *viewer_dock_;
+    QDockWidget *time_controls_dock_;
+    QDockWidget *anim_editor_dock_;	
+    QDockWidget *py_console_dock_;
+    QDockWidget *py_editor_dock_;
+
+    QMenuBar *menubar_;
+
+    QMenu *file_, *edit_, *composition_, *view_, *help_;
+    QMenu *open_recent_;
+    QMenu *import_, *export_;
+
+	std::vector<QAction *> recently_opened_;
+
+    std::vector<QMenu*> create_submenus_;
+
+	// file
+    QAction *new_, *open_, *save_, *save_as_;
+		
+    QAction *import_comp_; 
+    QAction *import_multiexr_;
+	QAction *import_roto_;
+	QAction *import_cdl_;
+	
+	QAction *export_sel_;
+	QAction *export_roto_;
+	QAction *export_cdl_;
+	
+    QAction *quit_;
+
+	// edit
+    QAction *undo_, *redo_, *ignore_, *delete_;
+    QAction *duplicate_, *group_, *ungroup_, *extract_;
+    QAction *clear_cache_, *preferences_;
+
+	// comp
+    QAction *comp_settings_, *comp_flipbook_, *comp_render_;
+    
+	// more
+    QAction *about_, *project_web_;
+
+    // non - menu actions
+    QAction *next_frame_, *prev_frame_;
+
+    std::vector<node_menu_t*> node_menus_;
+    std::map<QAction*,std::string> create_node_actions_;
+
+	const static int max_recently_opened_files;
+};
+
+} // namespace
+} // namespace
+
+#endif
+
