@@ -17,7 +17,7 @@
 			- CImg (header only)
 			- OpenImageIO
 			- OpenColorIO
-			- Antigrain geometry
+			- Antigrain geometry: version 2.4, http://www.antigrain.com/
 			- Eigen: header only
 			- Freetype
 			- ZLib
