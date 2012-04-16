@@ -8,18 +8,21 @@
 		--------
 
 			- Remove unused code.
-			- Remove Loki.
-			- Remove IECore.
-			- Rewrite Python bindings.			
-			- Replace Cineon and Dpx code for OpenImageIO implementations.
-			- Merge MipMaps code from 0.8.5.
-			- Refactor OCIO related code.
+			- Remove Loki & reduce singleton usage.
 			- Remove intrusive pointers, go back to ptr_containers.
+			- Remove IECore, replace Cineon and Dpx code for OpenImageIO implementations.
+			- Merge Mipmaps code from 0.8.5.
+
+			- Merge OCIO related code refactor from 1.5.
+			- Merge graph related improvements & dependency graph from Ramen2.
+
+			- Replace floats by doubles in params & anim curves.
 			- Replace boost flyweight by adobe::name_t.
-			- Remove dependency between params and Qt.
 
-			- Merge Ramen1.5 and Ramen2 refactors.
+			- Switch to planar images & use ispc for image processing.
 
-			- Use ispc for image processing.
-			- Switch to planar images.
-			- Use image::buffer_t::rowbytes member.
+			- Merge TVL1 & blockmatching optical flow code.
+			- Port the bayesian matting exe to a ramen node.
+			- Merge the auto-stabilizer node from 1.5.
+
+			- Rewrite Python bindings, completely.
