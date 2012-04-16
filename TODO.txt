@@ -2,6 +2,7 @@
 	Ramen TODO
 	----------
 
+		- Finish adding licenses to source files.
 		- Fix roto + motion blur bug.
 
 		Refactor
@@ -26,3 +27,4 @@
 			- Merge the auto-stabilizer node from 1.5.
 
 			- Rewrite Python bindings, completely.
+			- Rethink the UI.
