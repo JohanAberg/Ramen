@@ -400,9 +400,7 @@ const node_metaclass_t& keyer3d_node_t::keyer3d_node_metaclass()
     return info;
 }
 
-#ifndef NDEBUG
-	static bool registered = node_factory_t::Instance().register_node( keyer3d_node_t::keyer3d_node_metaclass());
-#endif
+static bool registered = node_factory_t::Instance().register_node( keyer3d_node_t::keyer3d_node_metaclass());
 
 } // namespace
 } // namespace
