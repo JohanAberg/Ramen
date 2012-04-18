@@ -8,6 +8,8 @@
 
 #include<ramen/app/application.hpp>
 
+#include<ramen/ocio/manager.hpp>
+
 #include<ramen/render/image_node_renderer.hpp>
 
 namespace ramen
@@ -41,7 +43,7 @@ void base_output_node_t::do_process( const render::context_t& context)
 			{
 				std::string cs( get_value<std::string>( param( "colorspace")));
 
-				OCIO::ConstConfigRcPtr config = app().current_ocio_config();
+				OCIO::ConstConfigRcPtr config = app().ocio_manager().config();
 				OCIO::ConstProcessorRcPtr proc = config->getProcessor( OCIO::ROLE_SCENE_LINEAR,
 																		get_value<std::string>( param( "colorspace")).c_str());
 				image::ocio_transform( image_view(), proc);

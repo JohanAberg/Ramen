@@ -6,6 +6,8 @@
 
 #include<ramen/app/application.hpp>
 
+#include<ramen/ocio/manager.hpp>
+
 #include<ramen/ui/user_interface.hpp>
 #include<ramen/ui/main_window.hpp>
 
@@ -68,7 +70,7 @@ void render_flipbook_dialog_impl::set_frame_range( int lo, int hi)
 
 void render_flipbook_dialog_impl::get_display_devices()
 {
-    OCIO::ConstConfigRcPtr config = app().current_ocio_config();
+    OCIO::ConstConfigRcPtr config = app().ocio_manager().config();
 
     int index = 0;
     QStringList slist;
@@ -94,7 +96,7 @@ void render_flipbook_dialog_impl::get_display_devices()
 
 void render_flipbook_dialog_impl::get_display_transforms()
 {
-    OCIO::ConstConfigRcPtr config = app().current_ocio_config();
+    OCIO::ConstConfigRcPtr config = app().ocio_manager().config();
 
     std::string device_name = display_devices_[ ui_.ocio_device_combo_->currentIndex()];
     std::string default_transform = config->getDefaultView( device_name.c_str());
@@ -129,7 +131,7 @@ void render_flipbook_dialog_impl::change_display_device( int index)
     ui_.ocio_transform_combo_->blockSignals( true);
     ui_.ocio_transform_combo_->clear();
 
-    OCIO::ConstConfigRcPtr config = app().current_ocio_config();
+    OCIO::ConstConfigRcPtr config = app().ocio_manager().config();
 
     std::string default_transform = config->getDefaultView( display_device_.c_str());
     int num_transform_names = config->getNumViews( display_device_.c_str());

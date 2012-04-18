@@ -13,6 +13,8 @@
 #include<ramen/app/application.hpp>
 #include<ramen/app/document.hpp>
 
+#include<ramen/ocio/manager.hpp>
+
 #include<ramen/ui/user_interface.hpp>
 
 #include<ramen/ui/viewer/viewer.hpp>
@@ -166,7 +168,7 @@ void viewer_context_t::frame_changed() { strategy().frame_changed();}
 // ocio
 OCIO::ConstConfigRcPtr viewer_context_t::ocio_config() const
 {
-	return app().current_ocio_config();
+	return app().ocio_manager().config();
 }
 
 OCIO::DisplayTransformRcPtr viewer_context_t::ocio_transform()

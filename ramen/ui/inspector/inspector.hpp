@@ -1,11 +1,13 @@
 // Copyright (c) 2010 Esteban Tovagliari
+// Licensed under the terms of the CDDL License.
+// See CDDL_LICENSE.txt for a copy of the license.
 
 #ifndef RAMEN_UI_INSPECTOR_HPP
 #define	RAMEN_UI_INSPECTOR_HPP
 
-#include<boost/noncopyable.hpp>
+#include<ramen/ui/inspector/inspector_fwd.hpp>
 
-#include<loki/Singleton.h>
+#include<boost/noncopyable.hpp>
 
 #include<ramen/Qr/QrContainerWidget.hpp>
 
@@ -20,13 +22,10 @@ class QPushButton;
 
 namespace ramen
 {
-
 namespace ui
 {
 
-class panel_t;
-
-class inspector_impl : public QObject, boost::noncopyable
+class inspector_t : public QObject, boost::noncopyable
 {
     Q_OBJECT
 
@@ -51,9 +50,7 @@ private Q_SLOTS:
 	
 private:
 
-    friend struct Loki::CreateUsingNew<inspector_impl>;
-
-    inspector_impl();
+    inspector_t();
 
     void create_header();
 
@@ -77,8 +74,6 @@ private:
 	panel_factory_t factory_;
     panel_factory_t::iterator current_;
 };
-
-typedef Loki::SingletonHolder<inspector_impl> inspector_t;
 
 } // namespace
 } // namespace

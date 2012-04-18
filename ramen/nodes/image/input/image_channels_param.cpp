@@ -12,6 +12,7 @@
 
 #include<ramen/params/param_set.hpp>
 
+#include<ramen/ui/user_interface.hpp>
 #include<ramen/ui/inspector/inspector.hpp>
 
 namespace ramen
@@ -157,12 +158,12 @@ QWidget *image_channels_param_t::do_create_widgets()
 		QSize s = red_combo_->sizeHint();
 
 		label->move( 0, current_height);
-		label->resize( ui::inspector_t::Instance().left_margin() - 5, s.height());
+		label->resize( ui::user_interface_t::Instance().inspector().left_margin() - 5, s.height());
 		label->setAlignment( Qt::AlignRight | Qt::AlignVCenter);
 		label->setText( "Red");
 
-		red_combo_->move( ui::inspector_t::Instance().left_margin(), current_height);
-		red_combo_->resize( ui::inspector_t::Instance().width() - ui::inspector_t::Instance().left_margin() - 10, s.height());
+		red_combo_->move( ui::user_interface_t::Instance().inspector().left_margin(), current_height);
+		red_combo_->resize( ui::user_interface_t::Instance().inspector().width() - ui::user_interface_t::Instance().inspector().left_margin() - 10, s.height());
 		connect( red_combo_, SIGNAL( currentIndexChanged( int)), this, SLOT( channel_picked( int)));
 		current_height = s.height() + 5;
     }
@@ -175,12 +176,12 @@ QWidget *image_channels_param_t::do_create_widgets()
 		QSize s = green_combo_->sizeHint();
 
 		label->move( 0, current_height);
-		label->resize( ui::inspector_t::Instance().left_margin() - 5, s.height());
+		label->resize( ui::user_interface_t::Instance().inspector().left_margin() - 5, s.height());
 		label->setAlignment( Qt::AlignRight | Qt::AlignVCenter);
 		label->setText( "Green");
 
-		green_combo_->move( ui::inspector_t::Instance().left_margin(), current_height);
-		green_combo_->resize( ui::inspector_t::Instance().width() - ui::inspector_t::Instance().left_margin() - 10, s.height());
+		green_combo_->move( ui::user_interface_t::Instance().inspector().left_margin(), current_height);
+		green_combo_->resize( ui::user_interface_t::Instance().inspector().width() - ui::user_interface_t::Instance().inspector().left_margin() - 10, s.height());
 		connect( green_combo_, SIGNAL( currentIndexChanged( int)), this, SLOT( channel_picked( int)));
 		current_height += s.height() + 5;
     }
@@ -193,12 +194,12 @@ QWidget *image_channels_param_t::do_create_widgets()
 		QSize s = blue_combo_->sizeHint();
 
 		label->move( 0, current_height);
-		label->resize( ui::inspector_t::Instance().left_margin() - 5, s.height());
+		label->resize( ui::user_interface_t::Instance().inspector().left_margin() - 5, s.height());
 		label->setAlignment( Qt::AlignRight | Qt::AlignVCenter);
 		label->setText( "Blue");
 
-		blue_combo_->move( ui::inspector_t::Instance().left_margin(), current_height);
-		blue_combo_->resize( ui::inspector_t::Instance().width() - ui::inspector_t::Instance().left_margin() - 10, s.height());
+		blue_combo_->move( ui::user_interface_t::Instance().inspector().left_margin(), current_height);
+		blue_combo_->resize( ui::user_interface_t::Instance().inspector().width() - ui::user_interface_t::Instance().inspector().left_margin() - 10, s.height());
 		connect( blue_combo_, SIGNAL( currentIndexChanged( int)), this, SLOT( channel_picked( int)));
 		current_height += s.height() + 5;
     }
@@ -211,18 +212,18 @@ QWidget *image_channels_param_t::do_create_widgets()
 		QSize s = alpha_combo_->sizeHint();
 
 		label->move( 0, current_height);
-		label->resize( ui::inspector_t::Instance().left_margin() - 5, s.height());
+		label->resize( ui::user_interface_t::Instance().inspector().left_margin() - 5, s.height());
 		label->setAlignment( Qt::AlignRight | Qt::AlignVCenter);
 		label->setText( "Alpha");
 
-		alpha_combo_->move( ui::inspector_t::Instance().left_margin(), current_height);
-		alpha_combo_->resize( ui::inspector_t::Instance().width() - ui::inspector_t::Instance().left_margin() - 10, s.height());
+		alpha_combo_->move( ui::user_interface_t::Instance().inspector().left_margin(), current_height);
+		alpha_combo_->resize( ui::user_interface_t::Instance().inspector().width() - ui::user_interface_t::Instance().inspector().left_margin() - 10, s.height());
 		connect( alpha_combo_, SIGNAL( currentIndexChanged( int)), this, SLOT( channel_picked( int)));
 		current_height += s.height() + 5;
     }
 
-    top->setMinimumSize( ui::inspector_t::Instance().width(), current_height);
-    top->setMaximumSize( ui::inspector_t::Instance().width(), current_height);
+    top->setMinimumSize( ui::user_interface_t::Instance().inspector().width(), current_height);
+    top->setMaximumSize( ui::user_interface_t::Instance().inspector().width(), current_height);
     top->setSizePolicy( QSizePolicy::Fixed, QSizePolicy::Fixed);
 
 	tuple4i_t ch( get_value<tuple4i_t>( *this));

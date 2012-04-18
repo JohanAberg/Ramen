@@ -18,6 +18,8 @@
 
 #include<ramen/nodes/node.hpp>
 
+#include<ramen/ocio/manager.hpp>
+
 #include<ramen/ui/viewer/viewer_context.hpp>
 #include<ramen/ui/user_interface.hpp>
 #include<ramen/ui/widgets/double_spinbox.hpp>
@@ -171,7 +173,7 @@ int viewer_impl::toolbar_height() const { return toolbar_height_;}
 
 void viewer_impl::get_display_devices()
 {
-    OCIO::ConstConfigRcPtr config = app().current_ocio_config();
+    OCIO::ConstConfigRcPtr config = app().ocio_manager().config();
 
     int index = 0;
     QStringList slist;
@@ -197,7 +199,7 @@ void viewer_impl::get_display_devices()
 
 void viewer_impl::get_display_transforms()
 {
-    OCIO::ConstConfigRcPtr config = app().current_ocio_config();
+    OCIO::ConstConfigRcPtr config = app().ocio_manager().config();
 
     std::string device_name = display_devices_[ ocio_device_combo_->currentIndex()];
     std::string default_transform = config->getDefaultView( device_name.c_str());
@@ -307,7 +309,7 @@ void viewer_impl::change_display_device( int index)
     ocio_transform_combo_->blockSignals( true);
     ocio_transform_combo_->clear();
 
-    OCIO::ConstConfigRcPtr config = app().current_ocio_config();
+    OCIO::ConstConfigRcPtr config = app().ocio_manager().config();
 
     std::string default_transform = config->getDefaultView( display_device_.c_str());
     int num_transform_names = config->getNumViews( display_device_.c_str());

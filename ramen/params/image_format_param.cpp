@@ -8,6 +8,7 @@
 #include<ramen/app/application.hpp>
 #include<ramen/app/composition.hpp>
 
+#include<ramen/ui/user_interface.hpp>
 #include<ramen/ui/inspector/inspector.hpp>
 #include<ramen/ui/widgets/spinbox.hpp>
 #include<ramen/ui/widgets/double_spinbox.hpp>
@@ -72,7 +73,7 @@ QWidget *image_format_param_t::do_create_widgets()
 	
     QLabel *label = new QLabel( top);
     label->move( 0, 0);
-    label->resize( ui::inspector_t::Instance().left_margin() - 5, s.height());
+    label->resize( ui::user_interface_t::Instance().inspector().left_margin() - 5, s.height());
     label->setAlignment( Qt::AlignRight | Qt::AlignVCenter);
     label->setText( name().c_str());
 		
@@ -85,7 +86,7 @@ QWidget *image_format_param_t::do_create_widgets()
 	
 	image::format_t format( get_value<image::format_t>( *this));
 	
-    menu_->move( ui::inspector_t::Instance().left_margin(), 0);
+    menu_->move( ui::user_interface_t::Instance().inspector().left_margin(), 0);
 	menu_->setCurrentIndex( format.preset_index());
     menu_->setEnabled( enabled());
     connect( menu_, SIGNAL( currentIndexChanged( int)), this, SLOT( preset_picked(int)));
@@ -96,7 +97,7 @@ QWidget *image_format_param_t::do_create_widgets()
 	width_input_->setDecimals( 0);
     width_input_->setTrackMouse( false);
     width_input_->setValue( value().cast<image::format_t>().width);
-    width_input_->move( ui::inspector_t::Instance().left_margin(), h);
+    width_input_->move( ui::user_interface_t::Instance().inspector().left_margin(), h);
 	width_input_->setMinimum( 16);
     width_input_->setValue( format.width);
     width_input_->setEnabled( enabled());
@@ -109,7 +110,7 @@ QWidget *image_format_param_t::do_create_widgets()
     height_input_->setValue( value().cast<image::format_t>().height);
     height_input_->setTrackMouse( false);
     height_input_->setEnabled( enabled());
-    height_input_->move( ui::inspector_t::Instance().left_margin() + s.width() + 5, h);
+    height_input_->move( ui::user_interface_t::Instance().inspector().left_margin() + s.width() + 5, h);
 	height_input_->setMinimum( 16);
     height_input_->setValue( format.height);
     connect( height_input_, SIGNAL( valueChanged( double)), this, SLOT( set_new_format(double)));
@@ -122,15 +123,15 @@ QWidget *image_format_param_t::do_create_widgets()
 	aspect_input_->setDecimals( 3);
 	aspect_input_->setMinimum( 0.1);
 	aspect_input_->setSingleStep( 0.05);
-	aspect_input_->move( ui::inspector_t::Instance().left_margin() + ( 2 * s.width()) + 10, h);
+	aspect_input_->move( ui::user_interface_t::Instance().inspector().left_margin() + ( 2 * s.width()) + 10, h);
 	connect( aspect_input_, SIGNAL( valueChanged( double)), this, SLOT( set_new_format(double)));
 	h += s.height() + 5;
 
 	int w = ( width_input_->sizeHint().width() * 2) + aspect_input_->sizeHint().width() + 10;
 	menu_->resize( w, menu_->sizeHint().height());
 	
-    top->setMinimumSize( ui::inspector_t::Instance().width(), h);
-    top->setMaximumSize( ui::inspector_t::Instance().width(), h);
+    top->setMinimumSize( ui::user_interface_t::Instance().inspector().width(), h);
+    top->setMaximumSize( ui::user_interface_t::Instance().inspector().width(), h);
     top->setSizePolicy( QSizePolicy::Fixed, QSizePolicy::Fixed);
     return top;
 }

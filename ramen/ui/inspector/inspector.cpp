@@ -1,4 +1,6 @@
 // Copyright (c) 2010 Esteban Tovagliari
+// Licensed under the terms of the CDDL License.
+// See CDDL_LICENSE.txt for a copy of the license.
 
 #include<ramen/python/python.hpp>
 
@@ -35,7 +37,7 @@ namespace ramen
 namespace ui
 {
 
-inspector_impl::inspector_impl() : window_(0), left_margin_( 0), width_( 0)
+inspector_t::inspector_t() : window_(0), left_margin_( 0), width_( 0)
 {
     QVBoxLayout *layout = new QVBoxLayout();
     layout->setContentsMargins( 0, 0, 0, 0);
@@ -76,7 +78,7 @@ inspector_impl::inspector_impl() : window_(0), left_margin_( 0), width_( 0)
 	current_ = factory_.end();
 }
 
-int inspector_impl::left_margin() const
+int inspector_t::left_margin() const
 {
     if( !left_margin_)
     {
@@ -92,7 +94,7 @@ int inspector_impl::left_margin() const
     return left_margin_;
 }
 
-int inspector_impl::width() const
+int inspector_t::width() const
 {
     if( !width_)
     {
@@ -106,7 +108,7 @@ int inspector_impl::width() const
     return width_;
 }
 
-void inspector_impl::create_header()
+void inspector_t::create_header()
 {
     header_ = new QWidget();
 
@@ -140,7 +142,7 @@ void inspector_impl::create_header()
     header_->setSizePolicy( QSizePolicy::Fixed, QSizePolicy::Fixed);
 }
 
-void inspector_impl::edit_node( node_t *n)
+void inspector_t::edit_node( node_t *n)
 {
     if( current_ != factory_.end())
     {
@@ -157,20 +159,20 @@ void inspector_impl::edit_node( node_t *n)
     update_header_widgets();
 }
 
-void inspector_impl::update()
+void inspector_t::update()
 {
     if( current_ != factory_.end())
         current_->second->update();
 }
 
-void inspector_impl::recreate_panel( node_t *n)
+void inspector_t::recreate_panel( node_t *n)
 {
     edit_node( 0);
 	factory_.delete_panel( n);
     edit_node( n);
 }
 
-void inspector_impl::update_header_widgets()
+void inspector_t::update_header_widgets()
 {
     name_edit_->blockSignals( true);
 
@@ -241,7 +243,7 @@ private:
 	ui::line_edit_t *name_edit_;
 };
 
-void inspector_impl::rename_node()
+void inspector_t::rename_node()
 {
 	if( name_edit_->isModified())
 	{
@@ -266,7 +268,7 @@ void inspector_impl::rename_node()
 	}
 }
 
-void inspector_impl::show_help()
+void inspector_t::show_help()
 {
 	node_t *n = user_interface_t::Instance().active_node();
 

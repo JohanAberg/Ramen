@@ -15,6 +15,8 @@
 #include<ramen/app/application.hpp>
 #include<ramen/app/document.hpp>
 
+#include<ramen/ocio/manager.hpp>
+
 #include<ramen/ui/user_interface.hpp>
 
 namespace ramen
@@ -32,7 +34,7 @@ flipbook_t::flipbook_t( int frame_rate, const std::string& display_device, const
 	
     try
     {
-		OCIO::ConstConfigRcPtr config = app().current_ocio_config();
+        OCIO::ConstConfigRcPtr config = app().ocio_manager().config();
 		OCIO::ConstContextRcPtr context = get_local_context();
 		transform_ = OCIO::DisplayTransform::Create();
 		transform_->setInputColorSpaceName( OCIO::ROLE_SCENE_LINEAR);
@@ -91,7 +93,7 @@ void flipbook_t::apply_display_transform( const image::image_view_t& view) { ima
 
 OCIO::ConstContextRcPtr flipbook_t::get_local_context()
 {
-	OCIO::ConstConfigRcPtr config = app().current_ocio_config();
+	OCIO::ConstConfigRcPtr config = app().ocio_manager().config();
 	OCIO::ConstContextRcPtr context = config->getCurrentContext();
 		
     OCIO::ContextRcPtr mutable_context;

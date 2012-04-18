@@ -25,8 +25,10 @@
 
 #include<ramen/app/preferences.hpp>
 #include<ramen/app/document.hpp>
-#include<ramen/app/plugin_manager.hpp>
 
+#include<ramen/memory/manager.hpp>
+
+#include<ramen/app/plugin_manager.hpp>
 #include<ramen/nodes/node_factory.hpp>
 
 #include<ramen/image/init_image_processing.hpp>
@@ -34,6 +36,8 @@
 
 #include<ramen/render/render_thread.hpp>
 #include<ramen/render/render_sequence.hpp>
+
+#include<ramen/ocio/manager.hpp>
 
 #include<ramen/undo/stack.hpp>
 
@@ -124,7 +128,7 @@ application_t::application_t( int argc, char **argv) : system_(),
 
     if( !command_line_)
         splash_->show_message( "Initializing OpenColorIO");
-    init_ocio();
+    ocio_manager_.reset( new ocio::manager_t());
 
     if( !command_line_)
         splash_->show_message( "Initializing Python");
@@ -443,63 +447,6 @@ void application_t::print_app_info()
     std::cout << "Using " << max_threads_ << " threads\n";
     std::cout << "Ram Size = " << system().ram_size() / 1024 / 1024 << " Mb\n";
     std::cout << "Image Cache Memory = " << mem_manager_->image_allocator().max_size() / 1024 / 1024 << " Mb\n";
-}
-
-// ocio
-void application_t::init_ocio()
-{
-	if( getenv( "OCIO"))
-	{
-		try
-		{
-		    OCIO::ConstConfigRcPtr config = OCIO::GetCurrentConfig();
-			return;
-		}
-		catch( OCIO::Exception & exception)
-		{
-			#ifndef NDEBUG
-				std::cout << "Couldn't read $OCIO config. Trying Ramen's default config.";
-			#endif
-		}
-	}
-	
-	// try more paths here...
-	boost::filesystem::path ocio_path = system().app_user_path() / "ocio/config.ocio";
-
-	if( init_ocio_config_from_file( ocio_path))
-		return;
-	
-	ocio_path = system().app_bundle_path() / "ocio/config.ocio";
-	
-	if( init_ocio_config_from_file( ocio_path))
-		return;
-
-	// Fallback
-	OCIO::ConstConfigRcPtr config = OCIO::GetCurrentConfig();
-}
-
-bool application_t::init_ocio_config_from_file( const boost::filesystem::path& p)
-{
-	if( !boost::filesystem::exists( p))
-		return false;
-	
-	try
-	{
-		OCIO::ConstConfigRcPtr config = OCIO::Config::CreateFromFile( filesystem::file_string( p).c_str());
-		OCIO::SetCurrentConfig( config);
-		return true;
-	}
-	catch( ...)
-	{
-		return false;
-	}
-}
-
-OCIO::ConstConfigRcPtr application_t::current_ocio_config() const
-{
-	OCIO::ConstConfigRcPtr config = OCIO::GetCurrentConfig();
-	config->sanityCheck();
-	return config;
 }
 
 // document handling

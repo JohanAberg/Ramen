@@ -14,14 +14,12 @@
 
 #include<ramen/serialization/yaml_oarchive.hpp>
 
-#ifndef RAMEN_NO_GUI
-	#include<QStackedWidget>
-	#include<QComboBox>
-	#include<QVBoxLayout>
-	#include<QLabel>
+#include<QStackedWidget>
+#include<QComboBox>
+#include<QVBoxLayout>
+#include<QLabel>
 	
-	#include<ramen/ui/inspector/inspector.hpp>
-#endif
+#include<ramen/ui/inspector/inspector.hpp>
 
 namespace ramen
 {
@@ -160,12 +158,12 @@ void combo_group_param_t::do_enable_widgets( bool e)
 		QSize s = menu_->sizeHint();
 	
 		label->move( 0, 0);
-		label->resize( ui::inspector_t::Instance().left_margin() - 5, s.height());
+		label->resize( ui::user_interface_t::Instance().inspector().left_margin() - 5, s.height());
 		label->setAlignment( Qt::AlignRight | Qt::AlignVCenter);
 		label->setText( name().c_str());
 		label->setToolTip( id().c_str());
 		
-		menu_->move( ui::inspector_t::Instance().left_margin(), 0);
+		menu_->move( ui::user_interface_t::Instance().inspector().left_margin(), 0);
 		menu_->resize( s.width(), s.height());
 		menu_->setEnabled( enabled());
 	
@@ -174,8 +172,8 @@ void combo_group_param_t::do_enable_widgets( bool e)
 		stack_->setEnabled( enabled());
 		connect( menu_, SIGNAL( currentIndexChanged( int)), this, SLOT( item_picked( int)));
 	
-		selector->setMinimumSize( ui::inspector_t::Instance().width(), s.height());
-		selector->setMaximumSize( ui::inspector_t::Instance().width(), s.height());
+		selector->setMinimumSize( ui::user_interface_t::Instance().inspector().width(), s.height());
+		selector->setMaximumSize( ui::user_interface_t::Instance().inspector().width(), s.height());
 		selector->setSizePolicy( QSizePolicy::Fixed, QSizePolicy::Fixed);
 	
 		layout->addWidget( selector);

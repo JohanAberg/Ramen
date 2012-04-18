@@ -474,6 +474,8 @@ SET( RAMEN_SOURCES  main.cpp
                     noise/simplex_noise_generator.cpp
 					noise/vcnoise.cpp
 
+					ocio/context.cpp
+					ocio/manager.cpp
 					ocio/gl_display_manager.cpp
 					ocio/gl_lut3d.cpp
 

@@ -9,6 +9,7 @@
 
 #include<ramen/params/param_set.hpp>
 
+#include<ramen/ui/user_interface.hpp>
 #include<ramen/ui/inspector/inspector.hpp>
 #include<ramen/ui/widgets/double_spinbox.hpp>
 
@@ -151,11 +152,11 @@ QWidget *tracker_areas_param_t::do_create_widgets()
 
 	// reference
 	{
-		int xpos = ui::inspector_t::Instance().left_margin();
+		int xpos = ui::user_interface_t::Instance().inspector().left_margin();
 		
 		QLabel *label = new QLabel( top);
 		label->move( 0, h);
-		label->resize( ui::inspector_t::Instance().left_margin() - 5, s.height());
+		label->resize( ui::user_interface_t::Instance().inspector().left_margin() - 5, s.height());
 		label->setAlignment( Qt::AlignRight | Qt::AlignVCenter);
 		label->setText( "Reference");
 	
@@ -198,11 +199,11 @@ QWidget *tracker_areas_param_t::do_create_widgets()
 	
 	// search
 	{
-		int xpos = ui::inspector_t::Instance().left_margin();
+		int xpos = ui::user_interface_t::Instance().inspector().left_margin();
 		
 		QLabel *label = new QLabel( top);
 		label->move( 0, h);
-		label->resize( ui::inspector_t::Instance().left_margin() - 5, s.height());
+		label->resize( ui::user_interface_t::Instance().inspector().left_margin() - 5, s.height());
 		label->setAlignment( Qt::AlignRight | Qt::AlignVCenter);
 		label->setText( "Search");
 	
@@ -243,8 +244,8 @@ QWidget *tracker_areas_param_t::do_create_widgets()
 		h += s.height() + 5;
 	}	
 
-    top->setMinimumSize( ui::inspector_t::Instance().width(), h);
-    top->setMaximumSize( ui::inspector_t::Instance().width(), h);
+    top->setMinimumSize( ui::user_interface_t::Instance().inspector().width(), h);
+    top->setMaximumSize( ui::user_interface_t::Instance().inspector().width(), h);
     top->setSizePolicy( QSizePolicy::Fixed, QSizePolicy::Fixed);
     return top;
 }

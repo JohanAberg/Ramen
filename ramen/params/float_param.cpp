@@ -228,7 +228,7 @@ void float_param_t::do_enable_widgets( bool e)
 		QSize s = input_->sizeHint();
 	
 		label->move( 0, 0);
-		label->resize( ui::inspector_t::Instance().left_margin() - 5, s.height());
+		label->resize( ui::user_interface_t::Instance().inspector().left_margin() - 5, s.height());
 		label->setAlignment( Qt::AlignRight | Qt::AlignVCenter);
 		label->setText( name().c_str());
 		label->setToolTip( id().c_str());
@@ -244,7 +244,7 @@ void float_param_t::do_enable_widgets( bool e)
 			input_->setValue( relative_to_absolute( get_value<float>( *this)));
 		
 		input_->setSingleStep( step());
-		input_->move( ui::inspector_t::Instance().left_margin(), 0);
+		input_->move( ui::user_interface_t::Instance().inspector().left_margin(), 0);
 		input_->resize( s.width(), s.height());
 		input_->setEnabled( enabled());
 		
@@ -257,8 +257,8 @@ void float_param_t::do_enable_widgets( bool e)
 		connect( input_, SIGNAL( spinBoxReleased()), this, SLOT( spinbox_released()));
 		connect( input_, SIGNAL( expressionSet()), this, SLOT( expression_set()));
 	
-		top->setMinimumSize( ui::inspector_t::Instance().width(), s.height());
-		top->setMaximumSize( ui::inspector_t::Instance().width(), s.height());
+		top->setMinimumSize( ui::user_interface_t::Instance().inspector().width(), s.height());
+		top->setMaximumSize( ui::user_interface_t::Instance().inspector().width(), s.height());
 		top->setSizePolicy( QSizePolicy::Fixed, QSizePolicy::Fixed);
 		return top;
 	}

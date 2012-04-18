@@ -10,6 +10,9 @@
 
 #include<ramen/app/application.hpp>
 
+#include<ramen/ocio/manager.hpp>
+
+#include<ramen/ui/user_interface.hpp>
 #include<ramen/ui/inspector/inspector.hpp>
 
 namespace ramen
@@ -40,7 +43,7 @@ QWidget *ocio_colorspace_param_t::do_create_widgets()
     menu_ = new QComboBox( top);
     menu_->setFocusPolicy( Qt::NoFocus);
 
-    OCIO::ConstConfigRcPtr config = app().current_ocio_config();
+    OCIO::ConstConfigRcPtr config = app().ocio_manager().config();
     std::string current_colorspace = get_value<std::string>( *this);
     int index = 0;
     int num_color_spaces = config->getNumColorSpaces();
@@ -58,19 +61,19 @@ QWidget *ocio_colorspace_param_t::do_create_widgets()
     QSize s = menu_->sizeHint();
 
     label->move( 0, 0);
-    label->resize( ui::inspector_t::Instance().left_margin() - 5, s.height());
+    label->resize( ui::user_interface_t::Instance().inspector().left_margin() - 5, s.height());
     label->setAlignment( Qt::AlignRight | Qt::AlignVCenter);
     label->setText( name().c_str());
 	label->setToolTip( id().c_str());
 	
-    menu_->move( ui::inspector_t::Instance().left_margin(), 0);
+    menu_->move( ui::user_interface_t::Instance().inspector().left_margin(), 0);
     menu_->resize( s.width(), s.height());
     menu_->setCurrentIndex( index);
     menu_->setEnabled( enabled());
     connect( menu_, SIGNAL( currentIndexChanged( int)), this, SLOT( item_picked( int)));
 
-    top->setMinimumSize( ui::inspector_t::Instance().width(), s.height());
-    top->setMaximumSize( ui::inspector_t::Instance().width(), s.height());
+    top->setMinimumSize( ui::user_interface_t::Instance().inspector().width(), s.height());
+    top->setMaximumSize( ui::user_interface_t::Instance().inspector().width(), s.height());
     top->setSizePolicy( QSizePolicy::Fixed, QSizePolicy::Fixed);
     return top;
 }
@@ -131,7 +134,7 @@ void ocio_colorspace_param_t::do_read( const serialization::yaml_node_t& node)
 	std::string val;
 	n >> val;
 	
-    OCIO::ConstConfigRcPtr config = app().current_ocio_config();
+    OCIO::ConstConfigRcPtr config = app().ocio_manager().config();
     int index = -1;
 	
     int num_color_spaces = config->getNumColorSpaces();
@@ -161,7 +164,7 @@ void ocio_colorspace_param_t::do_write( serialization::yaml_oarchive_t& out) con
 
 std::string ocio_colorspace_param_t::default_colorspace() const
 {
-    OCIO::ConstConfigRcPtr config = app().current_ocio_config();
+    OCIO::ConstConfigRcPtr config = app().ocio_manager().config();
     return config->getColorSpace( OCIO::ROLE_SCENE_LINEAR)->getName();
 }
 

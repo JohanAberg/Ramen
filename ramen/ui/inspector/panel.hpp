@@ -1,19 +1,22 @@
 // Copyright (c) 2010 Esteban Tovagliari
+// Licensed under the terms of the CDDL License.
+// See CDDL_LICENSE.txt for a copy of the license.
 
 #ifndef RAMEN_UI_PANEL_HPP
 #define	RAMEN_UI_PANEL_HPP
+
+#include<ramen/ui/inspector/panel_fwd.hpp>
 
 #include<boost/signals2/connection.hpp>
 
 #include<QObject>
 
+#include<ramen/params/parameterised_fwd.hpp>
+
 class QWidget;
 
 namespace ramen
 {
-
-class parameterised_t;
-
 namespace ui
 {
 

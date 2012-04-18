@@ -259,7 +259,7 @@ QWidget *float3_param_t::do_create_widgets()
     QSize s = input0_->sizeHint();
 
     label->move( 0, 0);
-    label->resize( ui::inspector_t::Instance().left_margin() - 5, s.height());
+    label->resize( ui::user_interface_t::Instance().inspector().left_margin() - 5, s.height());
     label->setAlignment( Qt::AlignRight | Qt::AlignVCenter);
     label->setText( name().c_str());
 	label->setToolTip( id().c_str());
@@ -268,7 +268,7 @@ QWidget *float3_param_t::do_create_widgets()
 	// make inputs bigger
 	s.setWidth( s.width() + ( s.width() / 4));
 	
-    int xpos = ui::inspector_t::Instance().left_margin();
+    int xpos = ui::user_interface_t::Instance().inspector().left_margin();
 
     input0_->move( xpos, 0);
     input0_->resize( s.width(), s.height());
@@ -320,8 +320,8 @@ QWidget *float3_param_t::do_create_widgets()
             prop_button_->move( xpos, 0);
     }
 
-    top->setMinimumSize( ui::inspector_t::Instance().width(), s.height());
-    top->setMaximumSize( ui::inspector_t::Instance().width(), s.height());
+    top->setMinimumSize( ui::user_interface_t::Instance().inspector().width(), s.height());
+    top->setMaximumSize( ui::user_interface_t::Instance().inspector().width(), s.height());
     top->setSizePolicy( QSizePolicy::Fixed, QSizePolicy::Fixed);
     return top;
 }

@@ -48,27 +48,27 @@ QWidget *image_seq_param_t::do_create_widgets()
     QSize s = input_->sizeHint();
 
     label->move( 0, 0);
-    label->resize( ui::inspector_t::Instance().left_margin() - 5, s.height());
+    label->resize( ui::user_interface_t::Instance().inspector().left_margin() - 5, s.height());
     label->setAlignment( Qt::AlignRight | Qt::AlignVCenter);
     label->setText( name().c_str());
 	label->setToolTip( id().c_str());
 	
-    button_->move( ui::inspector_t::Instance().width() - s.height() - 10, 0);
+    button_->move( ui::user_interface_t::Instance().inspector().width() - s.height() - 10, 0);
     button_->resize( s.height(), s.height());
     button_->setText( "...");
     button_->setEnabled( enabled());
     connect( button_, SIGNAL( clicked()), this, SLOT( select_pushed()));
 
-    input_->move( ui::inspector_t::Instance().left_margin(), 0);
-    input_->resize( ui::inspector_t::Instance().width() - ui::inspector_t::Instance().left_margin()
+    input_->move( ui::user_interface_t::Instance().inspector().left_margin(), 0);
+    input_->resize( ui::user_interface_t::Instance().inspector().width() - ui::user_interface_t::Instance().inspector().left_margin()
                     - button_->width() - 10, s.height());
 
 	input_->setReadOnly( true);
     input_->setEnabled( enabled());
 	input_->setText( QString::fromStdString( input_text_));
 
-    top->setMinimumSize( ui::inspector_t::Instance().width(), s.height());
-    top->setMaximumSize( ui::inspector_t::Instance().width(), s.height());
+    top->setMinimumSize( ui::user_interface_t::Instance().inspector().width(), s.height());
+    top->setMaximumSize( ui::user_interface_t::Instance().inspector().width(), s.height());
     top->setSizePolicy( QSizePolicy::Fixed, QSizePolicy::Fixed);
     return top;
 }

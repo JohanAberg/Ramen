@@ -40,6 +40,8 @@
 
 #include<ramen/imageio/factory.hpp>
 
+#include<ramen/ocio/manager.hpp>
+
 #include<ramen/ui/user_interface.hpp>
 
 #include<ramen/serialization/yaml_node.hpp>
@@ -399,7 +401,7 @@ void input_node_t::do_process( const render::context_t& context)
 			readers_[level]->read_frame( image_view(), real_defined_, context.subsample);
 
         // transform to linear colorspace here.
-        OCIO::ConstConfigRcPtr config = app().current_ocio_config();
+        OCIO::ConstConfigRcPtr config = app().ocio_manager().config();
         OCIO::ConstProcessorRcPtr proc = config->getProcessor( get_value<std::string>( param( "colorspace")).c_str(), OCIO::ROLE_SCENE_LINEAR);
         image::ocio_transform( image_view(), proc);
     }

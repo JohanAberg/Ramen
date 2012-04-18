@@ -53,6 +53,8 @@
 #include<ramen/app/export_selected_nodes.hpp>
 #include<ramen/app/import_composition.hpp>
 
+#include<ramen/memory/manager.hpp>
+
 #include<ramen/nodes/graph_algorithm.hpp>
 #include<ramen/nodes/node_factory.hpp>
 #include<ramen/nodes/node_output_interface.hpp>

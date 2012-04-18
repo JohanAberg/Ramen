@@ -2,13 +2,14 @@
 
 #include<ramen/nodes/image/color/ocio_colorspace_node.hpp>
 
+#include<ramen/app/application.hpp>
+
 #include<ramen/params/ocio_colorspace_param.hpp>
 #include<ramen/params/group_param.hpp>
 #include<ramen/params/string_param.hpp>
 
+#include<ramen/ocio/manager.hpp>
 #include<ramen/image/ocio_transform.hpp>
-
-#include<ramen/app/application.hpp>
 
 #ifndef NDEBUG
 	#include<iostream>
@@ -82,7 +83,7 @@ void ocio_colorspace_node_t::do_calc_hash_str( const render::context_t& context)
 	
 	try
 	{
-	    OCIO::ConstConfigRcPtr config = app().current_ocio_config();
+	    OCIO::ConstConfigRcPtr config = app().ocio_manager().config();
 		OCIO::ConstContextRcPtr context = get_local_context();
 		hash_generator() << config->getCacheID( context);
 	}
@@ -101,7 +102,7 @@ void ocio_colorspace_node_t::do_process( const image::const_image_view_t& src, c
 
 	try
 	{
-	    OCIO::ConstConfigRcPtr config = app().current_ocio_config();
+	    OCIO::ConstConfigRcPtr config = app().ocio_manager().config();
 		OCIO::ConstContextRcPtr context = get_local_context();
 	    OCIO::ConstProcessorRcPtr proc = config->getProcessor( context, in_cs.c_str(), out_cs.c_str());
 		image::ocio_transform( dst, proc);
@@ -116,7 +117,7 @@ void ocio_colorspace_node_t::do_process( const image::const_image_view_t& src, c
 
 OCIO::ConstContextRcPtr ocio_colorspace_node_t::get_local_context()
 {
-	OCIO::ConstConfigRcPtr config = app().current_ocio_config();
+	OCIO::ConstConfigRcPtr config = app().ocio_manager().config();
 	OCIO::ConstContextRcPtr context = config->getCurrentContext();
 	
     OCIO::ContextRcPtr mutable_context;

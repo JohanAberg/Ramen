@@ -4,11 +4,10 @@
 
 #include<ramen/params/param_set.hpp>
 
-#ifndef RAMEN_NO_GUI
-	#include<QPushButton>
+#include<QPushButton>
 
-	#include<ramen/ui/inspector/inspector.hpp>
-#endif
+#include<ramen/ui/user_interface.hpp>
+#include<ramen/ui/inspector/inspector.hpp>
 
 namespace ramen
 {
@@ -40,12 +39,12 @@ void button_param_t::do_enable_widgets( bool e)
 	
 		QSize s = button_->sizeHint();
 	
-		button_->move( ui::inspector_t::Instance().left_margin(), 0);
+		button_->move( ui::user_interface_t::Instance().inspector().left_margin(), 0);
 		button_->resize( s.width(), s.height());
 		button_->setEnabled( enabled());
 		button_->setToolTip( id().c_str());
-		top->setMinimumSize( ui::inspector_t::Instance().width(), s.height());
-		top->setMaximumSize( ui::inspector_t::Instance().width(), s.height());
+		top->setMinimumSize( ui::user_interface_t::Instance().inspector().width(), s.height());
+		top->setMaximumSize( ui::user_interface_t::Instance().inspector().width(), s.height());
 		top->setSizePolicy( QSizePolicy::Fixed, QSizePolicy::Fixed);
 		return top;
 	}

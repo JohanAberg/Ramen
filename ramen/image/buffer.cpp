@@ -12,6 +12,7 @@
 
 #include<ramen/ImathExt/ImathBoxAlgo.h>
 
+#include<ramen/memory/manager.hpp>
 #include<ramen/memory/util.hpp>
 
 #include<ramen/app/application.hpp>

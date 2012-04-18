@@ -7,6 +7,7 @@
 
 #include<ramen/params/param_set.hpp>
 
+#include<ramen/ui/user_interface.hpp>
 #include<ramen/ui/inspector/inspector.hpp>
 #include<ramen/ui/widgets/double_spinbox.hpp>
 
@@ -84,7 +85,7 @@ QWidget *motion_blur_param_t::do_create_widgets()
 
     QLabel *label = new QLabel( top);
     label->move( 0, h);
-    label->resize( ui::inspector_t::Instance().left_margin() - 5, s.height());
+    label->resize( ui::user_interface_t::Instance().inspector().left_margin() - 5, s.height());
     label->setAlignment( Qt::AlignRight | Qt::AlignVCenter);
     label->setText( "Motion Blur Samples");
 
@@ -93,7 +94,7 @@ QWidget *motion_blur_param_t::do_create_widgets()
 	samples_->setTrackMouse( false);
     samples_->setRange( 1, 64);
     samples_->setValue( info.samples);
-    samples_->move( ui::inspector_t::Instance().left_margin(), h);
+    samples_->move( ui::user_interface_t::Instance().inspector().left_margin(), h);
     samples_->resize( s.width(), s.height());
     samples_->setEnabled( enabled());
     connect( samples_, SIGNAL( valueChanged( double)), this, SLOT( samples_changed( double)));
@@ -101,13 +102,13 @@ QWidget *motion_blur_param_t::do_create_widgets()
 
     label = new QLabel( top);
     label->move( 0, h);
-    label->resize( ui::inspector_t::Instance().left_margin() - 5, s.height());
+    label->resize( ui::user_interface_t::Instance().inspector().left_margin() - 5, s.height());
     label->setAlignment( Qt::AlignRight | Qt::AlignVCenter);
     label->setText( "Shutter");
 
 	shutter_->setTrackMouse( false);
     shutter_->setValue( info.shutter);
-    shutter_->move( ui::inspector_t::Instance().left_margin(), h);
+    shutter_->move( ui::user_interface_t::Instance().inspector().left_margin(), h);
     shutter_->resize( s.width(), s.height());
     shutter_->setEnabled( enabled());
     connect( shutter_, SIGNAL( valueChanged( double)), this, SLOT( shutter_changed( double)));
@@ -115,7 +116,7 @@ QWidget *motion_blur_param_t::do_create_widgets()
 
     label = new QLabel( top);
     label->move( 0, h);
-    label->resize( ui::inspector_t::Instance().left_margin() - 5, s.height());
+    label->resize( ui::user_interface_t::Instance().inspector().left_margin() - 5, s.height());
     label->setAlignment( Qt::AlignRight | Qt::AlignVCenter);
     label->setText( "Shutter Offset");
 
@@ -124,7 +125,7 @@ QWidget *motion_blur_param_t::do_create_widgets()
     shutter_off_->setRange( -1, 1);
     shutter_off_->setValue( info.shutter_offset);
     shutter_off_->setSingleStep( 0.05);
-    shutter_off_->move( ui::inspector_t::Instance().left_margin(), h);
+    shutter_off_->move( ui::user_interface_t::Instance().inspector().left_margin(), h);
     shutter_off_->resize( s.width(), s.height());
     shutter_off_->setEnabled( enabled());
     connect( shutter_off_, SIGNAL( valueChanged( double)), this, SLOT( shutter_changed( double)));
@@ -132,7 +133,7 @@ QWidget *motion_blur_param_t::do_create_widgets()
 
     label = new QLabel( top);
     label->move( 0, h);
-    label->resize( ui::inspector_t::Instance().left_margin() - 5, s.height());
+    label->resize( ui::user_interface_t::Instance().inspector().left_margin() - 5, s.height());
     label->setAlignment( Qt::AlignRight | Qt::AlignVCenter);
     label->setText( "Filter");
 
@@ -143,14 +144,14 @@ QWidget *motion_blur_param_t::do_create_widgets()
     filter_->addItem( "Triangle");
     filter_->addItem( "Cubic");
     filter_->setCurrentIndex( (int) info.filter);
-    filter_->move( ui::inspector_t::Instance().left_margin(), h);
+    filter_->move( ui::user_interface_t::Instance().inspector().left_margin(), h);
     filter_->resize( s.width(), s.height());
     filter_->setEnabled( enabled());
     connect( filter_, SIGNAL( currentIndexChanged( int)), this, SLOT( filter_changed( int)));
     h += s.height() + 5;
 
-    top->setMinimumSize( ui::inspector_t::Instance().width(), h);
-    top->setMaximumSize( ui::inspector_t::Instance().width(), h);
+    top->setMinimumSize( ui::user_interface_t::Instance().inspector().width(), h);
+    top->setMaximumSize( ui::user_interface_t::Instance().inspector().width(), h);
     top->setSizePolicy( QSizePolicy::Fixed, QSizePolicy::Fixed);
     return top;
 }

@@ -286,13 +286,13 @@ void color_param_t::do_enable_widgets( bool e)
 		QSize s = input0_->sizeHint();
 	
 		label->move( 0, 0);
-		label->resize( ui::inspector_t::Instance().left_margin() - 5, s.height());
+		label->resize( ui::user_interface_t::Instance().inspector().left_margin() - 5, s.height());
 		label->setAlignment( Qt::AlignRight | Qt::AlignVCenter);
 		label->setText( name().c_str());
 		label->setToolTip( id().c_str());
 		Imath::Color4f col = get_value<Imath::Color4f>( *this);
 	
-		int xpos = ui::inspector_t::Instance().left_margin();
+		int xpos = ui::user_interface_t::Instance().inspector().left_margin();
 	
 		button_->move( xpos, 0);
 		button_->resize( s.height(), s.height());
@@ -375,8 +375,8 @@ void color_param_t::do_enable_widgets( bool e)
 			xpos += s.width() + 3;
 		}
 	
-		top->setMinimumSize( ui::inspector_t::Instance().width(), s.height());
-		top->setMaximumSize( ui::inspector_t::Instance().width(), s.height());
+		top->setMinimumSize( ui::user_interface_t::Instance().inspector().width(), s.height());
+		top->setMaximumSize( ui::user_interface_t::Instance().inspector().width(), s.height());
 		top->setSizePolicy( QSizePolicy::Fixed, QSizePolicy::Fixed);
 		return top;
 	}

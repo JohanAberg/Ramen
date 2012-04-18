@@ -7,6 +7,7 @@
 
 #include<ramen/ui/widgets/group_box.hpp>
 
+#include<ramen/ui/user_interface.hpp>
 #include<ramen/ui/inspector/inspector.hpp>
 
 namespace ramen
@@ -27,7 +28,7 @@ QWidget *group_param_t::do_create_widgets()
 	group_->setAlignment( Qt::AlignLeft);
 	create_widgets_inside_widget( group_);
 
-    group_->setMinimumSize( ui::inspector_t::Instance().width(), 20);
+    group_->setMinimumSize( ui::user_interface_t::Instance().inspector().width(), 20);
     return group_;
 }
 

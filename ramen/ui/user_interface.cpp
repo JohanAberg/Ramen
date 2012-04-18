@@ -1,4 +1,6 @@
 // Copyright (c) 2010 Esteban Tovagliari
+// Licensed under the terms of the CDDL License.
+// See CDDL_LICENSE.txt for a copy of the license.
 
 #include<ramen/python/python.hpp>
 
@@ -30,6 +32,8 @@
 
 #include<ramen/undo/stack.hpp>
 
+#include<ramen/memory/manager.hpp>
+
 #include<ramen/movieio/factory.hpp>
 
 #include<ramen/render/image_node_renderer.hpp>
@@ -60,6 +64,11 @@ user_interface_impl::user_interface_impl() : QObject()
 	// RAMEN_ASSERT( !app().command_line());
 }
 
+user_interface_impl::~user_interface_impl()
+{
+    // Do not remove. It's needed by auto_ptr
+}
+
 void user_interface_impl::init()
 {
 	active_ = 0;
@@ -88,7 +97,7 @@ void user_interface_impl::init()
 
     // force creation of singletons to avoid a crash at exit
     viewer_t::Instance();
-    inspector_t::Instance();
+    inspector_.reset( new inspector_t());
     anim_editor_t::Instance();
 
     create_new_document();
@@ -263,7 +272,7 @@ void user_interface_impl::set_active_node( node_t *n)
         if( active_)
             active_->begin_active();
 
-        inspector_t::Instance().edit_node( n);
+        inspector().edit_node( n);
         viewer_t::Instance().set_active_node( n);
         anim_editor_t::Instance().set_active_node( n);
     }
@@ -382,7 +391,7 @@ void user_interface_impl::set_frame( int t)
 										 document_t::Instance().composition().frame(),
 										 document_t::Instance().composition().end_frame());
 
-    inspector_t::Instance().update();
+    inspector().update();
 	update_anim_editors();
     viewer_t::Instance().frame_changed();
 }

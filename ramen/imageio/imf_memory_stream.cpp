@@ -16,6 +16,8 @@
 
 #include<ramen/app/application.hpp>
 
+#include<ramen/memory/manager.hpp>
+
 namespace ramen
 {
 namespace imageio

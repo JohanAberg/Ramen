@@ -7,6 +7,8 @@
 
 #include<ramen/python/python.hpp>
 
+#include<memory>
+
 #include<boost/noncopyable.hpp>
 #include<boost/signals.hpp>
 #include<boost/thread/future.hpp>
@@ -22,6 +24,9 @@
 
 #include<ramen/render/image_node_renderer.hpp>
 
+#include<ramen/ui/main_window_fwd.hpp>
+#include<ramen/ui/inspector/inspector_fwd.hpp>
+
 #include<ramen/serialization/archive_fwd.hpp>
 
 namespace ramen
@@ -29,18 +34,21 @@ namespace ramen
 namespace ui
 {
 
-class main_window_t;
-
 class user_interface_impl : public QObject, boost::noncopyable
 {
     Q_OBJECT
 
 public:
 	
+    ~user_interface_impl();
+
     void init();
     void show();
     int run( const boost::filesystem::path& p = boost::filesystem::path());
     void quit();
+
+    const inspector_t& inspector() const    { return *inspector_;}
+    inspector_t& inspector()                { return *inspector_;}
 
     // document handling
     void create_new_document();
@@ -123,6 +131,7 @@ private:
 	void restore_window_state();
 	
     main_window_t *window_;
+    std::auto_ptr<inspector_t> inspector_;
     node_t *active_, *context_;
     bool quitting_;
 

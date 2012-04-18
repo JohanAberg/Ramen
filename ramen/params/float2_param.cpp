@@ -256,12 +256,12 @@ void float2_param_t::do_enable_widgets( bool e)
 		QSize s = input0_->sizeHint();
 	
 		label->move( 0, 0);
-		label->resize( ui::inspector_t::Instance().left_margin() - 5, s.height());
+		label->resize( ui::user_interface_t::Instance().inspector().left_margin() - 5, s.height());
 		label->setAlignment( Qt::AlignRight | Qt::AlignVCenter);
 		label->setText( name().c_str());
 		label->setToolTip( id().c_str());
 		
-		int xpos = ui::inspector_t::Instance().left_margin();
+		int xpos = ui::user_interface_t::Instance().inspector().left_margin();
 	
 		Imath::V2f v = get_absolute_value<Imath::V2f>( *this);
 		float low = absolute_min();
@@ -306,8 +306,8 @@ void float2_param_t::do_enable_widgets( bool e)
 				prop_button_->move( xpos, 0);
 		}
 	
-		top->setMinimumSize( ui::inspector_t::Instance().width(), s.height());
-		top->setMaximumSize( ui::inspector_t::Instance().width(), s.height());
+		top->setMinimumSize( ui::user_interface_t::Instance().inspector().width(), s.height());
+		top->setMaximumSize( ui::user_interface_t::Instance().inspector().width(), s.height());
 		top->setSizePolicy( QSizePolicy::Fixed, QSizePolicy::Fixed);
 		return top;
 	}

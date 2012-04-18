@@ -2,11 +2,13 @@
 
 #include<ramen/nodes/image/color/ocio_file_transform_node.hpp>
 
+#include<ramen/app/application.hpp>
+
 #include<ramen/params/file_param.hpp>
 #include<ramen/params/string_param.hpp>
 #include<ramen/params/popup_param.hpp>
 
-#include<ramen/app/application.hpp>
+#include<ramen/ocio/manager.hpp>
 
 #include<ramen/image/ocio_transform.hpp>
 
@@ -57,7 +59,7 @@ void ocio_file_transform_node_t::do_process( const image::const_image_view_t& sr
 
     try
     {
-	    OCIO::ConstConfigRcPtr config = app().current_ocio_config();
+	    OCIO::ConstConfigRcPtr config = app().ocio_manager().config();
 
         OCIO::FileTransformRcPtr transform = OCIO::FileTransform::Create();
         transform->setSrc( filesystem::file_cstring( path));

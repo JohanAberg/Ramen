@@ -16,6 +16,7 @@
 
 #include<ramen/app/application.hpp>
 
+#include<ramen/ocio/manager.hpp>
 #include<ramen/image/ocio_transform.hpp>
 
 #include<iostream>
@@ -79,7 +80,7 @@ void cdl_node_t::do_process( const image::const_image_view_t& src, const image::
 
 	try
 	{
-		OCIO::ConstConfigRcPtr config = app().current_ocio_config();
+		OCIO::ConstConfigRcPtr config = app().ocio_manager().config();
 		OCIO::CDLTransformRcPtr transform = cdl_transform();
         OCIO::ConstProcessorRcPtr proc;
 		

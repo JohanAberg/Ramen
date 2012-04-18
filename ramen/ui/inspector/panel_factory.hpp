@@ -1,4 +1,6 @@
 // Copyright (c) 2010 Esteban Tovagliari
+// Licensed under the terms of the CDDL License.
+// See CDDL_LICENSE.txt for a copy of the license.
 
 #ifndef RAMEN_UI_INSPECTOR_PANEL_FACTORY_HPP
 #define	RAMEN_UI_INSPECTOR_PANEL_FACTORY_HPP
@@ -8,14 +10,12 @@
 #include<boost/noncopyable.hpp>
 
 #include<ramen/params/parameterised_fwd.hpp>
+#include<ramen/ui/inspector/panel_fwd.hpp>
 
 namespace ramen
 {
-
 namespace ui
 {
-
-class panel_t;
 
 class panel_factory_t : boost::noncopyable
 {

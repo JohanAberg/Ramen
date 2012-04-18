@@ -17,19 +17,16 @@
 
 #include<tbb/task_scheduler_init.h>
 
-#include<OpenColorIO/OpenColorIO.h>
-namespace OCIO = OCIO_NAMESPACE;
-
 #include<ramen/system/system.hpp>
 #include<ramen/app/preferences.hpp>
 
-#include<ramen/memory/manager.hpp>
-
-#include<ramen/filesystem/path.hpp>
-
+#include<ramen/memory/manager_fwd.hpp>
 #include<ramen/render/render_thread.hpp>
+#include<ramen/ocio/manager_fwd.hpp>
 
 #include<ramen/ui/dialogs/splash_screen_fwd.hpp>
+
+#include<ramen/filesystem/path.hpp>
 
 namespace ramen
 {
@@ -68,7 +65,8 @@ public:
     render::render_thread_t& render_thread() { return render_thread_;}
 
     // opencolorio
-    OCIO::ConstConfigRcPtr current_ocio_config() const;
+    const ocio::manager_t& ocio_manager() const { return *ocio_manager_;}
+    ocio::manager_t& ocio_manager()             { return *ocio_manager_;}
 
 	// document handling
 	void create_new_document();
@@ -109,6 +107,7 @@ private:
     std::auto_ptr<preferences_t> preferences_;
     std::auto_ptr<memory::manager_t> mem_manager_;
     render::render_thread_t render_thread_;
+    std::auto_ptr<ocio::manager_t> ocio_manager_;
 	
 	// rendering
 	boost::optional<int> start_frame_, end_frame_, proxy_level_,

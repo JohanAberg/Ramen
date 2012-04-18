@@ -5,6 +5,8 @@
 #ifndef RAMEN_UI_MAIN_WINDOW_HPP
 #define	RAMEN_UI_MAIN_WINDOW_HPP
 
+#include<ramen/ui/main_window_fwd.hpp>
+
 #include<vector>
 #include<map>
 #include<string>

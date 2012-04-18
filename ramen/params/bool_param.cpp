@@ -4,9 +4,8 @@
 
 #include<ramen/nodes/node.hpp>
 
-#ifndef RAMEN_NO_GUI
-	#include<ramen/ui/inspector/inspector.hpp>
-#endif
+#include<ramen/ui/user_interface.hpp>
+#include<ramen/ui/inspector/inspector.hpp>
 
 namespace ramen
 {
@@ -92,10 +91,10 @@ void bool_param_t::do_enable_widgets( bool e)
 		button_->setText( name().c_str());
 		QSize s = button_->sizeHint();
 	
-		w->setMinimumSize( ui::inspector_t::Instance().width(), s.height());
-		w->setMaximumSize( ui::inspector_t::Instance().width(), s.height());
+		w->setMinimumSize( ui::user_interface_t::Instance().inspector().width(), s.height());
+		w->setMaximumSize( ui::user_interface_t::Instance().inspector().width(), s.height());
 	
-		button_->move( ui::inspector_t::Instance().left_margin(), 0);
+		button_->move( ui::user_interface_t::Instance().inspector().left_margin(), 0);
 		button_->resize( s.width(), s.height());
 		button_->setChecked( get_value<bool>( *this));
 		button_->setEnabled( enabled());

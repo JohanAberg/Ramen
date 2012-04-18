@@ -16,6 +16,8 @@
 #include<ramen/app/application.hpp>
 #include<ramen/app/composition.hpp>
 
+#include<ramen/memory/manager.hpp>
+
 #include<iostream>
 
 namespace ramen

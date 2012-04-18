@@ -21,6 +21,7 @@
 
 #include<ramen/app/application.hpp>
 
+#include<ramen/ocio/manager.hpp>
 #include<ramen/image/ocio_transform.hpp>
 
 namespace ramen
@@ -241,7 +242,7 @@ void log_to_linear_node_t::do_process( const image::const_image_view_t& src, con
 			
 			try
 			{												
-				OCIO::ConstConfigRcPtr config = app().current_ocio_config();
+				OCIO::ConstConfigRcPtr config = app().ocio_manager().config();
 				OCIO::ConstProcessorRcPtr proc = config->getProcessor( OCIO::ROLE_SCENE_LINEAR, OCIO::ROLE_COMPOSITING_LOG);
 				image::ocio_transform( dst, proc);
 			}
@@ -292,7 +293,7 @@ void log_to_linear_node_t::do_process( const image::const_image_view_t& src, con
 			
 			try
 			{												
-				OCIO::ConstConfigRcPtr config = app().current_ocio_config();
+				OCIO::ConstConfigRcPtr config = app().ocio_manager().config();
 				OCIO::ConstProcessorRcPtr proc = config->getProcessor( OCIO::ROLE_COMPOSITING_LOG, OCIO::ROLE_SCENE_LINEAR);
 				image::ocio_transform( dst, proc);
 			}

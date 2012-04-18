@@ -58,19 +58,19 @@ QWidget *roto_shape_param_t::do_create_widgets()
 	QSize s = name_input_->sizeHint();
 
     label->move( 0, 0);
-    label->resize( ui::inspector_t::Instance().left_margin() - 5, s.height());
+    label->resize( ui::user_interface_t::Instance().inspector().left_margin() - 5, s.height());
     label->setAlignment( Qt::AlignRight | Qt::AlignVCenter);
     label->setText( "Name");
 
-    name_input_->move( ui::inspector_t::Instance().left_margin(), 0);
-    name_input_->resize( ui::inspector_t::Instance().width() - ui::inspector_t::Instance().left_margin() - 80, s.height());
+    name_input_->move( ui::user_interface_t::Instance().inspector().left_margin(), 0);
+    name_input_->resize( ui::user_interface_t::Instance().inspector().width() - ui::user_interface_t::Instance().inspector().left_margin() - 80, s.height());
 	name_input_->setEnabled( false);
     connect( name_input_, SIGNAL( editingFinished()), this, SLOT( rename_shape()));
     int current_height = s.height() + 5;
 	
     label = new QLabel( top);
     label->move( 0, current_height);
-    label->resize( ui::inspector_t::Instance().left_margin() - 5, s.height());
+    label->resize( ui::user_interface_t::Instance().inspector().left_margin() - 5, s.height());
     label->setAlignment( Qt::AlignRight | Qt::AlignVCenter);
     label->setText( "Parent");
 
@@ -79,11 +79,11 @@ QWidget *roto_shape_param_t::do_create_widgets()
     parent_menu_->setFocusPolicy( Qt::NoFocus);
 	parent_menu_->addItem( "None");
     s = parent_menu_->sizeHint();
-    parent_menu_->move( ui::inspector_t::Instance().left_margin(), current_height);
+    parent_menu_->move( ui::user_interface_t::Instance().inspector().left_margin(), current_height);
 	parent_menu_->setEnabled( false);
     connect( parent_menu_, SIGNAL( currentIndexChanged( int)), this, SLOT( set_shape_parent( int)));
 	
-	int w = ui::inspector_t::Instance().left_margin() + s.width() + 5;
+	int w = ui::user_interface_t::Instance().inspector().left_margin() + s.width() + 5;
     order_up_ = new QToolButton( top);
     order_up_->setFocusPolicy( Qt::NoFocus);
     order_up_->setArrowType( Qt::UpArrow);
@@ -106,12 +106,12 @@ QWidget *roto_shape_param_t::do_create_widgets()
 	
     label = new QLabel( top);
     label->move( 0, current_height);
-    label->resize( ui::inspector_t::Instance().left_margin() - 5, s.height());
+    label->resize( ui::user_interface_t::Instance().inspector().left_margin() - 5, s.height());
     label->setAlignment( Qt::AlignRight | Qt::AlignVCenter);
     label->setText( "Display Color");
 
 	display_color_ = new QrColorButton( top);
-	display_color_->move( ui::inspector_t::Instance().left_margin(), current_height);
+	display_color_->move( ui::user_interface_t::Instance().inspector().left_margin(), current_height);
 	display_color_->resize( s.height(), s.height());
 	display_color_->setEnabled( false);
     connect( display_color_, SIGNAL( pressed()), this, SLOT( change_shape_color()));
@@ -119,7 +119,7 @@ QWidget *roto_shape_param_t::do_create_widgets()
 	autokey_ = new QToolButton( top);
 	autokey_->setText( "Autokey");
 	autokey_->setCheckable( true);
-	w = ui::inspector_t::Instance().left_margin() + s.height() + 5;
+	w = ui::user_interface_t::Instance().inspector().left_margin() + s.height() + 5;
 	autokey_->move( w, current_height);
 	autokey_->setEnabled( false);
 	connect( autokey_, SIGNAL( toggled( bool)), this, SLOT( set_autokey(bool)));
@@ -133,8 +133,8 @@ QWidget *roto_shape_param_t::do_create_widgets()
 	s = shape_key_->sizeHint();
 	current_height += s.height() + 5;
 	
-    top->setMinimumSize( ui::inspector_t::Instance().width(), current_height);
-    top->setMaximumSize( ui::inspector_t::Instance().width(), current_height);
+    top->setMinimumSize( ui::user_interface_t::Instance().inspector().width(), current_height);
+    top->setMaximumSize( ui::user_interface_t::Instance().inspector().width(), current_height);
     top->setSizePolicy( QSizePolicy::Fixed, QSizePolicy::Fixed);
 	
 	update_parent_menu();
