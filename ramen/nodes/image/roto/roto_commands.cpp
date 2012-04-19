@@ -12,7 +12,7 @@
 #include<ramen/nodes/image/roto/shape.hpp>
 
 #include<ramen/app/document.hpp>
-
+#include<ramen/ui/user_interface.hpp>
 #include<ramen/ui/anim/anim_editor.hpp>
 
 namespace ramen
@@ -33,7 +33,7 @@ void add_roto_command_t::undo()
 	node_.deselect_all();
 	node_.selection_changed();
 	storage_ = node_.release_shape( shape_);
-	ui::anim_editor_t::Instance().recreate_tracks( &node_);
+	ui::user_interface_t::Instance().anim_editor().recreate_tracks( &node_);
 	node_.notify();
     undo::command_t::undo();
 }
@@ -43,7 +43,7 @@ void add_roto_command_t::redo()
 	node_.deselect_all();
 	storage_->select( true);
 	node_.add_shape( storage_);
-	ui::anim_editor_t::Instance().recreate_tracks( &node_);
+	ui::user_interface_t::Instance().anim_editor().recreate_tracks( &node_);
 	node_.selection_changed();
 	node_.notify();
     undo::command_t::redo();
@@ -72,7 +72,7 @@ void delete_roto_command_t::undo()
 	
 	shape_->update_xforms();
 	
-	ui::anim_editor_t::Instance().recreate_tracks( &node_);
+	ui::user_interface_t::Instance().anim_editor().recreate_tracks( &node_);
 	node_.deselect_all();
 	node_.notify();
     undo::command_t::undo();	
@@ -83,7 +83,7 @@ void delete_roto_command_t::redo()
 	node_.deselect_all();
 	node_.selection_changed();
 	storage_ = node_.release_shape( shape_);
-	ui::anim_editor_t::Instance().recreate_tracks( &node_);
+	ui::user_interface_t::Instance().anim_editor().recreate_tracks( &node_);
 	node_.notify();
     undo::command_t::redo();	
 }

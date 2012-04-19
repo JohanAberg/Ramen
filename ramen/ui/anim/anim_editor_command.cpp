@@ -1,4 +1,6 @@
 // Copyright (c) 2010 Esteban Tovagliari
+// Licensed under the terms of the CDDL License.
+// See CDDL_LICENSE.txt for a copy of the license.
 
 #include<ramen/python/python.hpp>
 
@@ -14,6 +16,7 @@
 
 #include<ramen/anim/track.hpp>
 
+#include<ramen/ui/user_interface.hpp>
 #include<ramen/ui/anim/anim_editor.hpp>
 #include<ramen/ui/anim/anim_editor_toolbar.hpp>
 
@@ -77,7 +80,7 @@ void anim_editor_command_t::undo()
     swap_curves();
 	call_notify_for_tracks();
 	notify_nodes();
-	ui::anim_editor_t::Instance().toolbar().selection_changed();
+	ui::user_interface_t::Instance().anim_editor().toolbar().selection_changed();
     command_t::undo();
 }
 
@@ -86,7 +89,7 @@ void anim_editor_command_t::redo()
     swap_curves();
 	call_notify_for_tracks();
 	notify_nodes();
-	ui::anim_editor_t::Instance().toolbar().selection_changed();
+	ui::user_interface_t::Instance().anim_editor().toolbar().selection_changed();
     command_t::redo();
 }
 

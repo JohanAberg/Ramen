@@ -2,14 +2,17 @@
 // Licensed under the terms of the CDDL License.
 // See CDDL_LICENSE.txt for a copy of the license.
 
-#ifndef RAMEN_ANIMATED_PARAM_FWD_HPP
-#define	RAMEN_ANIMATED_PARAM_FWD_HPP
+#ifndef RAMEN_UI_ANIM_EDITOR_FWD_HPP
+#define	RAMEN_UI_ANIM_EDITOR_FWD_HPP
 
 namespace ramen
 {
+namespace ui
+{
 
-class animated_param_t;
+class anim_editor_t;
 
+} // namespace
 } // namespace
 
 #endif

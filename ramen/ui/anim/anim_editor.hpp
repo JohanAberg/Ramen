@@ -1,14 +1,16 @@
 // Copyright (c) 2010 Esteban Tovagliari
+// Licensed under the terms of the CDDL License.
+// See CDDL_LICENSE.txt for a copy of the license.
 
 #ifndef RAMEN_UI_ANIM_EDITOR_HPP
 #define	RAMEN_UI_ANIM_EDITOR_HPP
+
+#include<ramen/ui/anim/anim_editor_fwd.hpp>
 
 #include<set>
 #include<memory>
 
 #include<boost/shared_ptr.hpp>
-
-#include<loki/Singleton.h>
 
 #include<QObject>
 
@@ -19,30 +21,28 @@
 #include<ramen/anim/any_curve.hpp>
 
 #include<ramen/ui/anim/track_model_fwd.hpp>
-
 #include<ramen/ui/anim/anim_editor_command.hpp>
+#include<ramen/ui/anim/anim_editor_toolbar_fwd.hpp>
+#include<ramen/ui/anim/anim_curves_view_fwd.hpp>
 
-#ifndef RAMEN_NO_GUI
-	#include<ramen/ui/anim/anim_editor_toolbar_fwd.hpp>
-	#include<ramen/ui/anim/anim_curves_view_fwd.hpp>
-
-	class QWidget;
-	class QSplitter;
-	class QTreeView;
-	class QItemSelection;
-	class QAction;
-#endif
+class QWidget;
+class QSplitter;
+class QTreeView;
+class QItemSelection;
+class QAction;
 
 namespace ramen
 {
 namespace ui
 {
 
-class anim_editor_impl : public QObject
+class anim_editor_t : public QObject
 {
     Q_OBJECT
 
 public:
+
+    anim_editor_t();
 
     void set_active_node( node_t *n);
 	void clear_all();
@@ -84,7 +84,6 @@ public:
 	void smooth_keyframes( float filter_size, bool resample);
 	void high_pass_keyframes( float filter_size, bool resample);
 	
-#ifndef RAMEN_NO_GUI
     QWidget *widget()                   { return window_;}
     anim_curves_view_t& curves_view()   { return *view_;}
     anim_editor_toolbar_t& toolbar()    { return *toolbar_;}
@@ -115,13 +114,8 @@ private Q_SLOTS:
 
 	void import_curves();
 	void export_curves();
-#endif
 
 private:
-
-    friend struct Loki::CreateUsingNew<anim_editor_impl>;
-
-    anim_editor_impl();
 
     void insert_in_active_tracks( anim::track_t *t);
 
@@ -132,22 +126,18 @@ private:
 
     std::auto_ptr<undo::anim_editor_command_t> command_;
 	
-	#ifndef RAMEN_NO_GUI
-		QWidget *window_;
+	QWidget *window_;
 	
-		anim_editor_toolbar_t *toolbar_;
-		QSplitter *split_;
-		QTreeView *tree_;
-		anim_curves_view_t *view_;
+	anim_editor_toolbar_t *toolbar_;
+	QSplitter *split_;
+	QTreeView *tree_;
+	anim_curves_view_t *view_;
 		
-		QAction *copy_curves_, *copy_keys_, *paste_;
-		QAction *select_all_;
-		QAction *const_extrap_, *lin_extrap_, *repeat_extrap_;
-		QAction *import_, *export_;
-	#endif
+	QAction *copy_curves_, *copy_keys_, *paste_;
+	QAction *select_all_;
+	QAction *const_extrap_, *lin_extrap_, *repeat_extrap_;
+	QAction *import_, *export_;
 };
-
-typedef Loki::SingletonHolder<anim_editor_impl> anim_editor_t;
 
 } // namespace
 } // namespace

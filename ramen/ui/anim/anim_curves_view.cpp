@@ -1,4 +1,6 @@
 // Copyright (c) 2010 Esteban Tovagliari
+// Licensed under the terms of the CDDL License.
+// See CDDL_LICENSE.txt for a copy of the license.
 
 #include<ramen/python/python.hpp>
 
@@ -110,12 +112,12 @@ void anim_curves_view_t::keyPressEvent( QKeyEvent *event)
 
     case Qt::Key_Backspace:
     case Qt::Key_Delete:
-		anim_editor_t::Instance().delete_selected_keyframes();
+		user_interface_t::Instance().anim_editor().delete_selected_keyframes();
 		event->accept();
     break;
 	
     default:
-        anim_editor_t::Instance().toolbar().tool()->key_press_event( *this, event);
+        user_interface_t::Instance().anim_editor().toolbar().tool()->key_press_event( *this, event);
     break;
     }
 }
@@ -133,7 +135,7 @@ void anim_curves_view_t::keyReleaseEvent( QKeyEvent *event)
     break;
 
     default:
-        anim_editor_t::Instance().toolbar().tool()->key_release_event( *this, event);
+        user_interface_t::Instance().anim_editor().toolbar().tool()->key_release_event( *this, event);
     break;
     }
 }
@@ -183,7 +185,7 @@ void anim_curves_view_t::mousePressEvent( QMouseEvent *event)
 	else
 	{
 		ui::user_interface_t::Instance().begin_interaction();
-		anim_editor_t::Instance().toolbar().tool()->mouse_press_event( *this, event);
+		user_interface_t::Instance().anim_editor().toolbar().tool()->mouse_press_event( *this, event);
     }
 }
 
@@ -232,7 +234,7 @@ void anim_curves_view_t::mouseMoveEvent( QMouseEvent *event)
                         ui::user_interface_t::Instance().set_frame( q.x);
                 }
                 else
-                    anim_editor_t::Instance().toolbar().tool()->mouse_drag_event( *this, event);
+                    user_interface_t::Instance().anim_editor().toolbar().tool()->mouse_drag_event( *this, event);
             }
         }
 
@@ -251,7 +253,7 @@ void anim_curves_view_t::mouseReleaseEvent( QMouseEvent *event)
 	
     if( !scroll_mode_ && !zoom_mode_ && !move_time_mode_)
     {
-        anim_editor_t::Instance().toolbar().tool()->mouse_release_event( *this, event);
+        user_interface_t::Instance().anim_editor().toolbar().tool()->mouse_release_event( *this, event);
         ui::user_interface_t::Instance().end_interaction();
     }
     else
@@ -288,7 +290,7 @@ void anim_curves_view_t::paintEvent( QPaintEvent *event)
     // draw curves
     draw_curve_visitor v( *this);
 
-    BOOST_FOREACH( const anim::track_t *t, anim_editor_t::Instance().active_tracks())
+    BOOST_FOREACH( const anim::track_t *t, user_interface_t::Instance().anim_editor().active_tracks())
     {
         pen.setColor( QColor( t->color().x, t->color().y, t->color().z));
         painter.setPen( pen);
@@ -302,13 +304,13 @@ void anim_curves_view_t::paintEvent( QPaintEvent *event)
     painter.setPen( pen);
 
     draw_keyframes_visitor v2( *this, show_tangents());
-    BOOST_FOREACH( const anim::track_t *t, anim_editor_t::Instance().active_tracks())
+    BOOST_FOREACH( const anim::track_t *t, user_interface_t::Instance().anim_editor().active_tracks())
         boost::apply_visitor( v2, t->curve().get());
     
     draw_axes();
     draw_time_bar();
 
-    anim_editor_t::Instance().toolbar().tool()->draw_overlay( *this);
+    user_interface_t::Instance().anim_editor().toolbar().tool()->draw_overlay( *this);
 
     event->accept();
     painter_ = 0;
@@ -564,7 +566,7 @@ void anim_curves_view_t::frame_all()
 {
     bbox_curve_visitor v;
 
-    BOOST_FOREACH( const anim::track_t *t, anim_editor_t::Instance().active_tracks())
+    BOOST_FOREACH( const anim::track_t *t, user_interface_t::Instance().anim_editor().active_tracks())
         boost::apply_visitor( v, t->curve().get());
 
 	frame_area( v.bbox);
@@ -574,7 +576,7 @@ void anim_curves_view_t::frame_selection()
 {
     bbox_curve_visitor v( Imath::Box2f(), true);
 
-    BOOST_FOREACH( const anim::track_t *t, anim_editor_t::Instance().active_tracks())
+    BOOST_FOREACH( const anim::track_t *t, user_interface_t::Instance().anim_editor().active_tracks())
         boost::apply_visitor( v, t->curve().get());
 
 	frame_area( v.bbox);

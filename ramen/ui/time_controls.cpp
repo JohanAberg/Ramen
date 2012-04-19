@@ -117,7 +117,7 @@ time_controls_impl::time_controls_impl() : window_(0), stop_playing_( true)
 
 int time_controls_impl::width() const
 { 
-    return inspector_t::Instance().widget()->width();
+    return user_interface_t::Instance().inspector().widget()->width();
 }
 
 int time_controls_impl::height() const { return 64;}

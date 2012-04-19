@@ -30,28 +30,12 @@
 
 #include<ramen/version.hpp>
 
-#include<ramen/ui/user_interface.hpp>
-#include<ramen/ui/inspector/inspector.hpp>
-#include<ramen/ui/add_node_command.hpp>
-#include<ramen/ui/edit_commands.hpp>
-#include<ramen/ui/time_controls.hpp>
-#include<ramen/ui/compview/composition_view.hpp>
-#include<ramen/ui/viewer/viewer.hpp>
-#include<ramen/ui/anim/anim_editor.hpp>
-#include<ramen/ui/render_composition.hpp>
-#include<ramen/ui/widgets/time_slider.hpp>
-
-#include<ramen/ui/dialogs/about_dialog.hpp>
-#include<ramen/ui/dialogs/render_composition_dialog.hpp>
-#include<ramen/ui/dialogs/render_flipbook_dialog.hpp>
-#include<ramen/ui/dialogs/composition_settings_dialog.hpp>
-#include<ramen/ui/dialogs/preferences_dialog.hpp>
-#include<ramen/ui/dialogs/multiline_alert.hpp>
-
 #include<ramen/app/application.hpp>
 #include<ramen/app/document.hpp>
 #include<ramen/app/export_selected_nodes.hpp>
 #include<ramen/app/import_composition.hpp>
+
+#include<ramen/system/system.hpp>
 
 #include<ramen/memory/manager.hpp>
 
@@ -64,8 +48,6 @@
 
 #include<ramen/imageio/import_multichannel_exr.hpp>
 
-#include<ramen/system/system.hpp>
-
 #include<ramen/undo/stack.hpp>
 
 #include<ramen/render/render_sequence.hpp>
@@ -73,6 +55,22 @@
 #include<ramen/flipbook/factory.hpp>
 #include<ramen/flipbook/render_flipbook.hpp>
 
+#include<ramen/ui/user_interface.hpp>
+#include<ramen/ui/inspector/inspector.hpp>
+#include<ramen/ui/add_node_command.hpp>
+#include<ramen/ui/edit_commands.hpp>
+#include<ramen/ui/time_controls.hpp>
+#include<ramen/ui/compview/composition_view.hpp>
+#include<ramen/ui/viewer/viewer.hpp>
+#include<ramen/ui/anim/anim_editor.hpp>
+#include<ramen/ui/render_composition.hpp>
+#include<ramen/ui/widgets/time_slider.hpp>
+#include<ramen/ui/dialogs/about_dialog.hpp>
+#include<ramen/ui/dialogs/render_composition_dialog.hpp>
+#include<ramen/ui/dialogs/render_flipbook_dialog.hpp>
+#include<ramen/ui/dialogs/composition_settings_dialog.hpp>
+#include<ramen/ui/dialogs/preferences_dialog.hpp>
+#include<ramen/ui/dialogs/multiline_alert.hpp>
 #include<ramen/ui/python/console.hpp>
 #include<ramen/ui/python/editor.hpp>
 
@@ -103,7 +101,7 @@ main_window_t::main_window_t() : QMainWindow()
     inspector_dock_ = new QDockWidget( "Inspector", this);
     inspector_dock_->setObjectName( "inspector_dock");
     inspector_dock_->setAllowedAreas( Qt::RightDockWidgetArea | Qt::LeftDockWidgetArea | Qt::BottomDockWidgetArea);
-    inspector_dock_->setWidget( inspector_t::Instance().widget());
+    inspector_dock_->setWidget( user_interface_t::Instance().inspector().widget());
     add_dock_widget( Qt::RightDockWidgetArea, inspector_dock_);
 
     // vcr controls
@@ -135,7 +133,7 @@ main_window_t::main_window_t() : QMainWindow()
     anim_editor_dock_->setObjectName( "anim_editor_dock");
     anim_editor_dock_->setAllowedAreas( Qt::BottomDockWidgetArea | Qt::TopDockWidgetArea |
 										Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
-    anim_editor_dock_->setWidget( anim_editor_t::Instance().widget());
+    anim_editor_dock_->setWidget( user_interface_t::Instance().anim_editor().widget());
     add_dock_widget( Qt::BottomDockWidgetArea, anim_editor_dock_);
 	tabifyDockWidget( py_console_dock_, anim_editor_dock_);
 

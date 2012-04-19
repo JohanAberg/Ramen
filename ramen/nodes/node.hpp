@@ -15,6 +15,8 @@
 #include<set>
 #include<utility>
 
+#include<QWidget>
+
 #include<ramen/manipulators/manipulable.hpp>
 
 #include<ramen/app/composition_fwd.hpp>
@@ -30,10 +32,6 @@
 #include<ramen/render/context.hpp>
 
 #include<ramen/undo/command.hpp>
-
-#ifndef RAMEN_NO_GUI
-	#include<QWidget>
-#endif
 
 namespace ramen
 {

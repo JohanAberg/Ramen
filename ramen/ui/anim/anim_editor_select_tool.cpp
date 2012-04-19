@@ -1,4 +1,6 @@
 // Copyright (c) 2010 Esteban Tovagliari
+// Licensed under the terms of the CDDL License.
+// See CDDL_LICENSE.txt for a copy of the license.
 
 #include<ramen/python/python.hpp>
 
@@ -88,7 +90,7 @@ void anim_editor_select_tool_t::mouse_press_event( anim_curves_view_t& view, QMo
 	if( view.show_tangents())
 	{
 		pick_tangents_visitor v0( view, p);
-		BOOST_FOREACH( anim::track_t *t, anim_editor_t::Instance().active_tracks())
+		BOOST_FOREACH( anim::track_t *t, user_interface_t::Instance().anim_editor().active_tracks())
 		{
 			boost::apply_visitor( v0, t->curve().get());
 	
@@ -105,7 +107,7 @@ void anim_editor_select_tool_t::mouse_press_event( anim_curves_view_t& view, QMo
 	}
 
     pick_keyframe_visitor v1( view, p);
-    BOOST_FOREACH( anim::track_t *t, anim_editor_t::Instance().active_tracks())
+    BOOST_FOREACH( anim::track_t *t, user_interface_t::Instance().anim_editor().active_tracks())
     {
         boost::apply_visitor( v1, t->curve().get());
 
@@ -121,14 +123,14 @@ void anim_editor_select_tool_t::mouse_press_event( anim_curves_view_t& view, QMo
 	{
 		can_insert_keyframe_visitor v0( view, p, view.snap_frames());
 		
-		BOOST_FOREACH( anim::track_t *t, anim_editor_t::Instance().active_tracks())
+		BOOST_FOREACH( anim::track_t *t, user_interface_t::Instance().anim_editor().active_tracks())
 		{
 			boost::apply_visitor( v0, t->curve().get());
 			
 			if( v0.can_insert)
 			{
-				anim_editor_t::Instance().create_command();
-				anim_editor_t::Instance().command()->add_track( t);
+				user_interface_t::Instance().anim_editor().create_command();
+				user_interface_t::Instance().anim_editor().command()->add_track( t);
 				insert_keyframe_visitor v1( view, p, view.snap_frames());
 				boost::apply_visitor( v1, t->curve().get());
 				
@@ -136,7 +138,7 @@ void anim_editor_select_tool_t::mouse_press_event( anim_curves_view_t& view, QMo
 				key_index_ = v1.key_index;
 				track_->notify();
 				
-				anim_editor_t::Instance().push_command();
+				user_interface_t::Instance().anim_editor().push_command();
 				user_interface_t::Instance().active_node()->notify();
 				view.update();
 				break;
@@ -150,7 +152,7 @@ void anim_editor_select_tool_t::mouse_press_event( anim_curves_view_t& view, QMo
 		{
 		    if( !keyframe_is_selected( track_->curve().get(), key_index_))
 		    {
-				anim_editor_t::Instance().deselect_all();
+				user_interface_t::Instance().anim_editor().deselect_all();
 				select_keyframe( track_->curve().get(), key_index_);
 		    }
 
@@ -172,7 +174,7 @@ void anim_editor_select_tool_t::mouse_press_event( anim_curves_view_t& view, QMo
     box_pick_mode_ = true;
 
     if( !shift_pressed)
-        anim_editor_t::Instance().deselect_all();
+        user_interface_t::Instance().anim_editor().deselect_all();
 
     event->accept();
 }
@@ -188,8 +190,8 @@ void anim_editor_select_tool_t::mouse_drag_event( anim_curves_view_t& view, QMou
 		{
 			RAMEN_ASSERT( track_);
 			RAMEN_ASSERT( key_index_ != -1);
-			anim_editor_t::Instance().create_command();
-			anim_editor_t::Instance().command()->add_track( track_);
+			user_interface_t::Instance().anim_editor().create_command();
+			user_interface_t::Instance().anim_editor().command()->add_track( track_);
 		}
         else
         {
@@ -253,9 +255,9 @@ void anim_editor_select_tool_t::mouse_drag_event( anim_curves_view_t& view, QMou
 			}
 
 			drag_command_->start_drag( d, view.snap_frames());
-			BOOST_FOREACH( anim::track_t *t, anim_editor_t::Instance().active_tracks())
+			BOOST_FOREACH( anim::track_t *t, user_interface_t::Instance().anim_editor().active_tracks())
 			{
-				if( anim_editor_t::Instance().any_keyframe_selected( t->curve().get()))
+				if( user_interface_t::Instance().anim_editor().any_keyframe_selected( t->curve().get()))
 					drag_command_->drag_curve( t);
 			}
 			
@@ -272,7 +274,7 @@ void anim_editor_select_tool_t::mouse_drag_event( anim_curves_view_t& view, QMou
 void anim_editor_select_tool_t::mouse_release_event( anim_curves_view_t& view, QMouseEvent *event)
 {
     if( drag_tangents_mode_ || drag_keyframes_mode_)
-		anim_editor_t::Instance().push_command();
+		user_interface_t::Instance().anim_editor().push_command();
     else
     {
 		if( box_pick_mode_)
@@ -282,7 +284,7 @@ void anim_editor_select_tool_t::mouse_release_event( anim_curves_view_t& view, Q
 			area.extendBy( Imath::V2i( last_x_, last_y_));
 
 			box_pick_keyframes_visitor v( view, area);
-			BOOST_FOREACH( anim::track_t *t, anim_editor_t::Instance().active_tracks())
+			BOOST_FOREACH( anim::track_t *t, user_interface_t::Instance().anim_editor().active_tracks())
 				boost::apply_visitor( v, t->curve().get());
 		}
    }
@@ -298,7 +300,7 @@ void anim_editor_select_tool_t::mouse_release_event( anim_curves_view_t& view, Q
 	drag_command_ = 0;
     event->accept();
 	
-	anim_editor_t::Instance().toolbar().selection_changed();
+	user_interface_t::Instance().anim_editor().toolbar().selection_changed();
     view.update();
 }
 
@@ -328,8 +330,8 @@ void anim_editor_select_tool_t::create_drag_command()
 	node_t *n = user_interface_t::Instance().active_node();
 	RAMEN_ASSERT( n);
 	
-	drag_command_ = new undo::drag_keys_command_t( n, anim_editor_t::Instance().track_model());
-	anim_editor_t::Instance().set_command( drag_command_);
+	drag_command_ = new undo::drag_keys_command_t( n, user_interface_t::Instance().anim_editor().track_model());
+	user_interface_t::Instance().anim_editor().set_command( drag_command_);
 }
 
 } // namespace

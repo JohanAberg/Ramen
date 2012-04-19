@@ -1,4 +1,6 @@
 // Copyright (c) 2010 Esteban Tovagliari
+// Licensed under the terms of the CDDL License.
+// See CDDL_LICENSE.txt for a copy of the license.
 
 #ifndef RAMEN_ASPECT_RATIO_PARAM_HPP
 #define	RAMEN_ASPECT_RATIO_PARAM_HPP
@@ -8,10 +10,9 @@
 #include<vector>
 #include<utility>
 
-#ifndef RAMEN_NO_GUI
-	#include<ramen/ui/widgets/double_spinbox_fwd.hpp>
-	#include<QPointer>
-#endif
+#include<QPointer>
+
+#include<ramen/ui/widgets/double_spinbox_fwd.hpp>
 
 class QComboBox;
 
@@ -60,18 +61,15 @@ private:
 
 	static presets_type presets_;
 	
-	#ifndef RAMEN_NO_GUI
-		virtual QWidget *do_create_widgets() RAMEN_WARN_UNUSED_RESULT;
+	virtual QWidget *do_create_widgets() RAMEN_WARN_UNUSED_RESULT;
 
-	    QPointer<QComboBox> menu_;
-		QPointer<ui::double_spinbox_t> input_;
+    QPointer<QComboBox> menu_;
+	QPointer<ui::double_spinbox_t> input_;
 		
-		private Q_SLOTS:
+	private Q_SLOTS:
 
-			void item_picked( int index);
-			void value_changed( double value);	
-	#endif
-		
+		void item_picked( int index);
+        void value_changed( double value);
 };
 
 } // namespace

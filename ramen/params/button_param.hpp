@@ -1,15 +1,15 @@
 // Copyright (c) 2010 Esteban Tovagliari
+// Licensed under the terms of the CDDL License.
+// See CDDL_LICENSE.txt for a copy of the license.
 
 #ifndef RAMEN_BUTTON_PARAM_HPP
 #define	RAMEN_BUTTON_PARAM_HPP
 
 #include<ramen/params/param.hpp>
 
-#ifndef RAMEN_NO_GUI
-	#include<QPointer>
+#include<QPointer>
 
-	class QPushButton;
-#endif
+class QPushButton;
 
 namespace ramen
 {
@@ -33,16 +33,13 @@ private:
 	
     virtual void do_enable_widgets( bool e);
 
-	#ifndef RAMEN_NO_GUI
-
-	    virtual QWidget *do_create_widgets() RAMEN_WARN_UNUSED_RESULT;
+    virtual QWidget *do_create_widgets() RAMEN_WARN_UNUSED_RESULT;
 	
-	    QPointer<QPushButton> button_;
+    QPointer<QPushButton> button_;
 
-	private Q_SLOTS:
+private Q_SLOTS:
 
-	    void button_pressed();
-	#endif
+    void button_pressed();
 };
 
 } // namespace

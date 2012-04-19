@@ -1,4 +1,6 @@
 // Copyright (c) 2010 Esteban Tovagliari
+// Licensed under the terms of the CDDL License.
+// See CDDL_LICENSE.txt for a copy of the license.
 
 #include<ramen/python/python.hpp>
 
@@ -207,11 +209,11 @@ void anim_editor_toolbar_t::selection_changed()
 	smooth_->setEnabled( false);
 	high_pass_->setEnabled( false);
 	
-	if( anim_editor_t::Instance().any_keyframe_selected())
+	if( user_interface_t::Instance().anim_editor().any_keyframe_selected())
 	{
 		reverse_->setEnabled( true);
 		
-		if( anim_editor_t::Instance().any_float_keyframe_selected())
+		if( user_interface_t::Instance().anim_editor().any_float_keyframe_selected())
 		{
 			negate_->setEnabled( true);
 			sample_->setEnabled( true);
@@ -220,7 +222,7 @@ void anim_editor_toolbar_t::selection_changed()
 		}
 	}
 	
-	anim_editor_t::Instance().get_selected_keyframe( selected_track_, selected_key_index_);
+	user_interface_t::Instance().anim_editor().get_selected_keyframe( selected_track_, selected_key_index_);
 	
 	if( selected_track_)
 	{
@@ -243,22 +245,22 @@ void anim_editor_toolbar_t::selection_changed()
 
 void anim_editor_toolbar_t::set_tangents_smooth()
 {
-	anim_editor_t::Instance().set_autotangents( anim::keyframe_t::tangent_smooth, true);
+	user_interface_t::Instance().anim_editor().set_autotangents( anim::keyframe_t::tangent_smooth, true);
 }
 
 void anim_editor_toolbar_t::set_tangents_flat()
 {
-	anim_editor_t::Instance().set_autotangents( anim::keyframe_t::tangent_flat, true);
+	user_interface_t::Instance().anim_editor().set_autotangents( anim::keyframe_t::tangent_flat, true);
 }
 
 void anim_editor_toolbar_t::set_tangents_linear()
 {
-	anim_editor_t::Instance().set_autotangents( anim::keyframe_t::tangent_linear, true);
+	user_interface_t::Instance().anim_editor().set_autotangents( anim::keyframe_t::tangent_linear, true);
 }
 
 void anim_editor_toolbar_t::set_tangents_step()
 {
-	anim_editor_t::Instance().set_autotangents( anim::keyframe_t::tangent_step, true);
+	user_interface_t::Instance().anim_editor().set_autotangents( anim::keyframe_t::tangent_step, true);
 }
 
 void anim_editor_toolbar_t::value_changed( double value)
@@ -276,8 +278,8 @@ void anim_editor_toolbar_t::spinbox_pressed()
 	node_t *n = user_interface_t::Instance().active_node();
 	RAMEN_ASSERT( n);
 	
-	drag_command_ = new undo::drag_keys_command_t( n, anim_editor_t::Instance().track_model());
-	anim_editor_t::Instance().set_command( drag_command_);
+	drag_command_ = new undo::drag_keys_command_t( n, user_interface_t::Instance().anim_editor().track_model());
+	user_interface_t::Instance().anim_editor().set_command( drag_command_);
 }
 
 void anim_editor_toolbar_t::spinbox_dragged( double value)
@@ -305,24 +307,24 @@ void anim_editor_toolbar_t::spinbox_dragged( double value)
 
 void anim_editor_toolbar_t::spinbox_released()
 {
-	anim_editor_t::Instance().push_command();
+	user_interface_t::Instance().anim_editor().push_command();
 	drag_command_ = 0;
 	user_interface_t::Instance().update();
 }
 
 void anim_editor_toolbar_t::reverse_selected_keys()
 {
-	anim_editor_t::Instance().reverse_keyframes();
+	user_interface_t::Instance().anim_editor().reverse_keyframes();
 }
 		
 void anim_editor_toolbar_t::negate_selected_keys()
 {
-	anim_editor_t::Instance().negate_keyframes();
+	user_interface_t::Instance().anim_editor().negate_keyframes();
 }
 
 void anim_editor_toolbar_t::sample_selected_keys()
 {
-	anim_editor_t::Instance().sample_keyframes();
+	user_interface_t::Instance().anim_editor().sample_keyframes();
 }
 
 void anim_editor_toolbar_t::smooth_selected_keys()
@@ -331,7 +333,7 @@ void anim_editor_toolbar_t::smooth_selected_keys()
 	bool resample;
 	
 	if( smooth_anim_curves_dialog_t::Instance().exec( false, filter_size, resample))
-		anim_editor_t::Instance().smooth_keyframes( filter_size, resample);
+		user_interface_t::Instance().anim_editor().smooth_keyframes( filter_size, resample);
 }
 
 void anim_editor_toolbar_t::high_pass_selected_keys()
@@ -340,7 +342,7 @@ void anim_editor_toolbar_t::high_pass_selected_keys()
 	bool resample;
 	
 	if( smooth_anim_curves_dialog_t::Instance().exec( true, filter_size, resample))
-		anim_editor_t::Instance().high_pass_keyframes( filter_size, resample);		
+		user_interface_t::Instance().anim_editor().high_pass_keyframes( filter_size, resample);
 }
 
 } // namespace

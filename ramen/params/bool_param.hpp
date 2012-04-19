@@ -1,14 +1,14 @@
 // Copyright (c) 2010 Esteban Tovagliari
+// Licensed under the terms of the CDDL License.
+// See CDDL_LICENSE.txt for a copy of the license.
 
 #ifndef RAMEN_BOOL_PARAM_HPP
 #define	RAMEN_BOOL_PARAM_HPP
 
 #include<ramen/params/static_param.hpp>
 
-#ifndef RAMEN_NO_GUI
-	#include<QPointer>
-	#include<QCheckBox>
-#endif
+#include<QPointer>
+#include<QCheckBox>
 
 namespace ramen
 {
@@ -45,15 +45,13 @@ private:
     virtual void do_update_widgets();
     virtual void do_enable_widgets( bool e);
 
-	#ifndef RAMEN_NO_GUI
-	    virtual QWidget *do_create_widgets() RAMEN_WARN_UNUSED_RESULT;
+    virtual QWidget *do_create_widgets() RAMEN_WARN_UNUSED_RESULT;
 	
-	    QPointer<QCheckBox> button_;
+    QPointer<QCheckBox> button_;
 
-		private Q_SLOTS:
+private Q_SLOTS:
 
-		    void button_checked( int state);
-	#endif
+        void button_checked( int state);
 };
 
 } // namespace

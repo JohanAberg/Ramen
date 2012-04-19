@@ -9,6 +9,8 @@
 
 #include<adobe/algorithm/clamp.hpp>
 
+#include<QLabel>
+
 #include<ramen/assert.hpp>
 
 #include<ramen/nodes/node.hpp>
@@ -16,21 +18,16 @@
 
 #include<ramen/anim/track.hpp>
 
+#include<ramen/Qr/QrColorButton.hpp>
+#include<ramen/Qr/ColorPicker/QrColorPicker.hpp>
+
+#include<ramen/ui/user_interface.hpp>
+#include<ramen/ui/main_window.hpp>
+#include<ramen/ui/inspector/inspector.hpp>
 #include<ramen/ui/anim/anim_editor.hpp>
+#include<ramen/ui/widgets/param_spinbox.hpp>
 
 #include<ramen/python/util.hpp>
-
-#ifndef RAMEN_NO_GUI
-	#include<QLabel>
-
-	#include<ramen/Qr/QrColorButton.hpp>
-	#include<ramen/Qr/ColorPicker/QrColorPicker.hpp>
-
-	#include<ramen/ui/user_interface.hpp>
-	#include<ramen/ui/main_window.hpp>
-	#include<ramen/ui/inspector/inspector.hpp>
-	#include<ramen/ui/widgets/param_spinbox.hpp>
-#endif
 
 namespace ramen
 {
@@ -40,10 +37,7 @@ color_param_t::color_param_t( const std::string& name) : animated_param_t( name)
 color_param_t::color_param_t( const color_param_t& other) : animated_param_t( other)
 {
     is_rgba_ = other.is_rgba_;
-	
-	#ifndef RAMEN_NO_GUI
-	    input0_ = input1_ = input2_ = input3_ = 0;
-	#endif	
+    input0_ = input1_ = input2_ = input3_ = 0;
 }
 
 void color_param_t::private_init()
@@ -215,287 +209,281 @@ void color_param_t::do_write( serialization::yaml_oarchive_t& out) const
 
 void color_param_t::do_update_widgets()
 {
-	#ifndef RAMEN_NO_GUI
-		if( input0_)
-		{
-			input0_->blockSignals( true);
-			input1_->blockSignals( true);
-			input2_->blockSignals( true);
-	
-			if( input3_)
-				input3_->blockSignals( true);
-	
-			button_->blockSignals( true);
-	
-			Imath::Color4f col = get_value<Imath::Color4f>( *this);
-			input0_->setValue( col.r);
-			input1_->setValue( col.g);
-			input2_->setValue( col.b);
-	
-			if( input3_)
-				input3_->setValue( col.a);
-	
-			QrColor c( col.r, col.g, col.b, col.a);
-			c.applyGamma( 1.0 / 2.2);
-			button_->setValue( c);
-	
-			input0_->blockSignals( false);
-			input1_->blockSignals( false);
-			input2_->blockSignals( false);
-	
-			if( input3_)
-				input3_->blockSignals( false);
-	
-			button_->blockSignals( false);
-		}
-	#endif
+    if( input0_)
+    {
+        input0_->blockSignals( true);
+        input1_->blockSignals( true);
+        input2_->blockSignals( true);
+
+        if( input3_)
+            input3_->blockSignals( true);
+
+        button_->blockSignals( true);
+
+        Imath::Color4f col = get_value<Imath::Color4f>( *this);
+        input0_->setValue( col.r);
+        input1_->setValue( col.g);
+        input2_->setValue( col.b);
+
+        if( input3_)
+            input3_->setValue( col.a);
+
+        QrColor c( col.r, col.g, col.b, col.a);
+        c.applyGamma( 1.0 / 2.2);
+        button_->setValue( c);
+
+        input0_->blockSignals( false);
+        input1_->blockSignals( false);
+        input2_->blockSignals( false);
+
+        if( input3_)
+            input3_->blockSignals( false);
+
+        button_->blockSignals( false);
+    }
 }
 
 void color_param_t::do_enable_widgets( bool e)
 {
-	#ifndef RAMEN_NO_GUI
-		if( input0_)
-		{
-			input0_->setEnabled( e);
-			input1_->setEnabled( e);
-			input2_->setEnabled( e);
-	
-			if( input3_)
-				input3_->setEnabled( e);
-	
-			button_->setEnabled( e);
-			eyedropper_->setEnabled( e);
-		}
-	#endif
+    if( input0_)
+    {
+        input0_->setEnabled( e);
+        input1_->setEnabled( e);
+        input2_->setEnabled( e);
+
+        if( input3_)
+            input3_->setEnabled( e);
+
+        button_->setEnabled( e);
+        eyedropper_->setEnabled( e);
+    }
 }
 
-#ifndef RAMEN_NO_GUI
-	QWidget *color_param_t::do_create_widgets()
-	{
-		QWidget *top = new QWidget();
-		QLabel *label = new QLabel( top);
-		button_ = new QrColorButton( top);
-	
-		input0_ = new ui::param_spinbox_t( *this, 0, top);
-		input1_ = new ui::param_spinbox_t( *this, 1, top);
-		input2_ = new ui::param_spinbox_t( *this, 2, top);
-	
-		if( is_rgba())
-			input3_ = new ui::param_spinbox_t(*this, 3, top);
-	
-		QSize s = input0_->sizeHint();
-	
-		label->move( 0, 0);
-		label->resize( ui::user_interface_t::Instance().inspector().left_margin() - 5, s.height());
-		label->setAlignment( Qt::AlignRight | Qt::AlignVCenter);
-		label->setText( name().c_str());
-		label->setToolTip( id().c_str());
-		Imath::Color4f col = get_value<Imath::Color4f>( *this);
-	
-		int xpos = ui::user_interface_t::Instance().inspector().left_margin();
-	
-		button_->move( xpos, 0);
-		button_->resize( s.height(), s.height());
-		button_->setValue( QrColor( std::pow( (double) col.r, 1.0 / 2.2),
-									std::pow( (double) col.g, 1.0 / 2.2),
-									std::pow( (double) col.b, 1.0 / 2.2)));
-	
-		button_->setEnabled( enabled());
-		connect( button_, SIGNAL( pressed()), this, SLOT( color_button_pressed()));
-		xpos += s.height();
-	
-		eyedropper_ = new ui::eyedropper_button_t( top);
-		eyedropper_->move( xpos, 0);
-		eyedropper_->resize( s.height(), s.height());
-		eyedropper_->setEnabled( enabled());
-		connect( eyedropper_, SIGNAL( color_picked( const QrColor&)), this, SLOT( eyedropper_color_picked( const QrColor&)));
-		xpos += s.height() + 3;
-	
-		// make spinboxes a bit smaller
-		s.setWidth( s.width() - 10);
-		
-		input0_->move( xpos, 0);
-		input0_->resize( s.width(), s.height());
-		input0_->setMinimum( 0);
-		input0_->setDecimals( 4);
-		input0_->setValue( col.r);
-		input0_->setSingleStep( step());
-		input0_->setEnabled( enabled());
-		connect( input0_, SIGNAL( valueChanged(double)), button_, SLOT( setRed(double)));
-		connect( input0_, SIGNAL( valueChanged( double)), this, SLOT( value_changed( double)));
-		connect( input0_, SIGNAL( spinBoxPressed()), this, SLOT( spinbox_pressed()));
-		connect( input0_, SIGNAL( spinBoxDragged( double)), this, SLOT( spinbox_dragged( double)));
-		connect( input0_, SIGNAL( spinBoxReleased()), this, SLOT( spinbox_released()));
-		connect( input0_, SIGNAL( expressionSet()), this, SLOT( expression_set()));
-		xpos += s.width() + 3;
-	
-		input1_->move( xpos, 0);
-		input1_->resize( s.width(), s.height());
-		input1_->setMinimum( 0);
-		input1_->setDecimals( 4);
-		input1_->setValue( col.g);
-		input1_->setSingleStep( step());
-		input1_->setEnabled( enabled());
-		connect( input1_, SIGNAL( valueChanged(double)), button_, SLOT( setGreen(double)));
-		connect( input1_, SIGNAL( valueChanged( double)), this, SLOT( value_changed( double)));
-		connect( input1_, SIGNAL( spinBoxPressed()), this, SLOT( spinbox_pressed()));
-		connect( input1_, SIGNAL( spinBoxDragged( double)), this, SLOT( spinbox_dragged( double)));
-		connect( input1_, SIGNAL( spinBoxReleased()), this, SLOT( spinbox_released()));
-		connect( input1_, SIGNAL( expressionSet()), this, SLOT( expression_set()));
-		xpos += s.width() + 3;
-	
-		input2_->move( xpos, 0);
-		input2_->resize( s.width(), s.height());
-		input2_->setMinimum( 0);
-		input2_->setDecimals( 4);	
-		input2_->setValue( col.b);
-		input2_->setSingleStep( step());
-		input2_->setEnabled( enabled());
-		connect( input2_, SIGNAL( valueChanged(double)), button_, SLOT( setBlue(double)));
-		connect( input2_, SIGNAL( valueChanged( double)), this, SLOT( value_changed( double)));
-		connect( input2_, SIGNAL( spinBoxPressed()), this, SLOT( spinbox_pressed()));
-		connect( input2_, SIGNAL( spinBoxDragged( double)), this, SLOT( spinbox_dragged( double)));
-		connect( input2_, SIGNAL( spinBoxReleased()), this, SLOT( spinbox_released()));
-		connect( input2_, SIGNAL( expressionSet()), this, SLOT( expression_set()));
-		xpos += s.width() + 3;
-	
-		if( is_rgba())
-		{
-			input3_->move( xpos, 0);
-			input3_->resize( s.width(), s.height());
-			input3_->setValue( col.a);
-			input3_->setRange( 0, 1);
-			input3_->setSingleStep( step());
-			input3_->setEnabled( enabled());
-			connect( input3_, SIGNAL( valueChanged( double)), this, SLOT( value_changed( double)));
-			connect( input3_, SIGNAL( spinBoxPressed()), this, SLOT( spinbox_pressed()));
-			connect( input3_, SIGNAL( spinBoxDragged( double)), this, SLOT( spinbox_dragged( double)));
-			connect( input3_, SIGNAL( spinBoxReleased()), this, SLOT( spinbox_released()));
-			connect( input3_, SIGNAL( expressionSet()), this, SLOT( expression_set()));
-			xpos += s.width() + 3;
-		}
-	
-		top->setMinimumSize( ui::user_interface_t::Instance().inspector().width(), s.height());
-		top->setMaximumSize( ui::user_interface_t::Instance().inspector().width(), s.height());
-		top->setSizePolicy( QSizePolicy::Fixed, QSizePolicy::Fixed);
-		return top;
-	}
+QWidget *color_param_t::do_create_widgets()
+{
+    QWidget *top = new QWidget();
+    QLabel *label = new QLabel( top);
+    button_ = new QrColorButton( top);
 
-	void color_param_t::set_component_value_from_slot()
-	{
-		Imath::Color4f v( input0_->value(), input1_->value(), input2_->value(), 1.0f);
-		
-		if( is_rgba())
-			v.a = input3_->value();
-		
-		int index;
-		float comp_value;
-	
-		if( QObject::sender() == input0_)
-		{
-			index = 0;
-			comp_value = v.r;
-		}
-		else
-		{
-			if( QObject::sender() == input1_)
-			{
-				index = 1;
-				comp_value = v.g;
-			}
-			else
-			{
-				if( QObject::sender() == input2_)
-				{
-					index = 2;
-					comp_value = v.b;
-				}
-				else
-				{
-					RAMEN_ASSERT( is_rgba());
-	
-					index = 3;
-					comp_value = v.a;
-				}
-			}
-		}
-	
-		set_component_value( index, comp_value);
-	}
-		
-	void color_param_t::value_changed( double value)
-	{
-		param_set()->begin_edit();
-		set_component_value_from_slot();
-		param_set()->end_edit();
-	}
-	
-	void color_param_t::spinbox_pressed()
-	{
-		if( track_mouse())
-			ui::user_interface_t::Instance().begin_interaction();
-	
-		param_set()->begin_edit();
-	}
-	
-	void color_param_t::spinbox_dragged( double value)
-	{
-		set_component_value_from_slot();
-	
-		if( track_mouse())
-			param_set()->notify_parent();
-	
-		ui::user_interface_t::Instance().update_anim_editors();
-	}
-	
-	void color_param_t::spinbox_released()
-	{
-		param_set()->end_edit( !track_mouse());
-	
-		if( track_mouse())
-			ui::user_interface_t::Instance().end_interaction();
-	}
-	
-	void color_param_t::expression_set()
-	{
-	}
-	
-	void color_param_t::eyedropper_color_picked( const QrColor& c)
-	{
-		param_set()->begin_edit();
-	
-		if( is_rgba())
-			set_value( Imath::Color4f( c.red(), c.green(), c.blue(), c.alpha()));
-		else
-			set_value( Imath::Color4f( c.red(), c.green(), c.blue(), 1));
-	
-		update_widgets();
-		param_set()->end_edit();
-	}
-	
-	void color_param_t::color_button_pressed()
-	{
-		Imath::Color4f col = get_value<Imath::Color4f>( *this);
-		QrColor c( col.r, col.g, col.b);
-		QrColorPicker *picker = new QrColorPicker( ui::user_interface_t::Instance().main_window(), c);
-	
-		if( picker->exec_dialog() == QDialog::Accepted)
-		{
-			c = picker->color();
-	
-			param_set()->begin_edit();
-	
-			if( is_rgba())
-				set_value( Imath::Color4f( c.red(), c.green(), c.blue(), col.a));
-			else
-				set_value( Imath::Color4f( c.red(), c.green(), c.blue(), 1));
-	
-			update_widgets();
-			param_set()->end_edit();
-		}
-	
-		delete picker;
-	}
-#endif
+    input0_ = new ui::param_spinbox_t( *this, 0, top);
+    input1_ = new ui::param_spinbox_t( *this, 1, top);
+    input2_ = new ui::param_spinbox_t( *this, 2, top);
+
+    if( is_rgba())
+        input3_ = new ui::param_spinbox_t(*this, 3, top);
+
+    QSize s = input0_->sizeHint();
+
+    label->move( 0, 0);
+    label->resize( ui::user_interface_t::Instance().inspector().left_margin() - 5, s.height());
+    label->setAlignment( Qt::AlignRight | Qt::AlignVCenter);
+    label->setText( name().c_str());
+    label->setToolTip( id().c_str());
+    Imath::Color4f col = get_value<Imath::Color4f>( *this);
+
+    int xpos = ui::user_interface_t::Instance().inspector().left_margin();
+
+    button_->move( xpos, 0);
+    button_->resize( s.height(), s.height());
+    button_->setValue( QrColor( std::pow( (double) col.r, 1.0 / 2.2),
+                                std::pow( (double) col.g, 1.0 / 2.2),
+                                std::pow( (double) col.b, 1.0 / 2.2)));
+
+    button_->setEnabled( enabled());
+    connect( button_, SIGNAL( pressed()), this, SLOT( color_button_pressed()));
+    xpos += s.height();
+
+    eyedropper_ = new ui::eyedropper_button_t( top);
+    eyedropper_->move( xpos, 0);
+    eyedropper_->resize( s.height(), s.height());
+    eyedropper_->setEnabled( enabled());
+    connect( eyedropper_, SIGNAL( color_picked( const QrColor&)), this, SLOT( eyedropper_color_picked( const QrColor&)));
+    xpos += s.height() + 3;
+
+    // make spinboxes a bit smaller
+    s.setWidth( s.width() - 10);
+
+    input0_->move( xpos, 0);
+    input0_->resize( s.width(), s.height());
+    input0_->setMinimum( 0);
+    input0_->setDecimals( 4);
+    input0_->setValue( col.r);
+    input0_->setSingleStep( step());
+    input0_->setEnabled( enabled());
+    connect( input0_, SIGNAL( valueChanged(double)), button_, SLOT( setRed(double)));
+    connect( input0_, SIGNAL( valueChanged( double)), this, SLOT( value_changed( double)));
+    connect( input0_, SIGNAL( spinBoxPressed()), this, SLOT( spinbox_pressed()));
+    connect( input0_, SIGNAL( spinBoxDragged( double)), this, SLOT( spinbox_dragged( double)));
+    connect( input0_, SIGNAL( spinBoxReleased()), this, SLOT( spinbox_released()));
+    connect( input0_, SIGNAL( expressionSet()), this, SLOT( expression_set()));
+    xpos += s.width() + 3;
+
+    input1_->move( xpos, 0);
+    input1_->resize( s.width(), s.height());
+    input1_->setMinimum( 0);
+    input1_->setDecimals( 4);
+    input1_->setValue( col.g);
+    input1_->setSingleStep( step());
+    input1_->setEnabled( enabled());
+    connect( input1_, SIGNAL( valueChanged(double)), button_, SLOT( setGreen(double)));
+    connect( input1_, SIGNAL( valueChanged( double)), this, SLOT( value_changed( double)));
+    connect( input1_, SIGNAL( spinBoxPressed()), this, SLOT( spinbox_pressed()));
+    connect( input1_, SIGNAL( spinBoxDragged( double)), this, SLOT( spinbox_dragged( double)));
+    connect( input1_, SIGNAL( spinBoxReleased()), this, SLOT( spinbox_released()));
+    connect( input1_, SIGNAL( expressionSet()), this, SLOT( expression_set()));
+    xpos += s.width() + 3;
+
+    input2_->move( xpos, 0);
+    input2_->resize( s.width(), s.height());
+    input2_->setMinimum( 0);
+    input2_->setDecimals( 4);
+    input2_->setValue( col.b);
+    input2_->setSingleStep( step());
+    input2_->setEnabled( enabled());
+    connect( input2_, SIGNAL( valueChanged(double)), button_, SLOT( setBlue(double)));
+    connect( input2_, SIGNAL( valueChanged( double)), this, SLOT( value_changed( double)));
+    connect( input2_, SIGNAL( spinBoxPressed()), this, SLOT( spinbox_pressed()));
+    connect( input2_, SIGNAL( spinBoxDragged( double)), this, SLOT( spinbox_dragged( double)));
+    connect( input2_, SIGNAL( spinBoxReleased()), this, SLOT( spinbox_released()));
+    connect( input2_, SIGNAL( expressionSet()), this, SLOT( expression_set()));
+    xpos += s.width() + 3;
+
+    if( is_rgba())
+    {
+        input3_->move( xpos, 0);
+        input3_->resize( s.width(), s.height());
+        input3_->setValue( col.a);
+        input3_->setRange( 0, 1);
+        input3_->setSingleStep( step());
+        input3_->setEnabled( enabled());
+        connect( input3_, SIGNAL( valueChanged( double)), this, SLOT( value_changed( double)));
+        connect( input3_, SIGNAL( spinBoxPressed()), this, SLOT( spinbox_pressed()));
+        connect( input3_, SIGNAL( spinBoxDragged( double)), this, SLOT( spinbox_dragged( double)));
+        connect( input3_, SIGNAL( spinBoxReleased()), this, SLOT( spinbox_released()));
+        connect( input3_, SIGNAL( expressionSet()), this, SLOT( expression_set()));
+        xpos += s.width() + 3;
+    }
+
+    top->setMinimumSize( ui::user_interface_t::Instance().inspector().width(), s.height());
+    top->setMaximumSize( ui::user_interface_t::Instance().inspector().width(), s.height());
+    top->setSizePolicy( QSizePolicy::Fixed, QSizePolicy::Fixed);
+    return top;
+}
+
+void color_param_t::set_component_value_from_slot()
+{
+    Imath::Color4f v( input0_->value(), input1_->value(), input2_->value(), 1.0f);
+
+    if( is_rgba())
+        v.a = input3_->value();
+
+    int index;
+    float comp_value;
+
+    if( QObject::sender() == input0_)
+    {
+        index = 0;
+        comp_value = v.r;
+    }
+    else
+    {
+        if( QObject::sender() == input1_)
+        {
+            index = 1;
+            comp_value = v.g;
+        }
+        else
+        {
+            if( QObject::sender() == input2_)
+            {
+                index = 2;
+                comp_value = v.b;
+            }
+            else
+            {
+                RAMEN_ASSERT( is_rgba());
+
+                index = 3;
+                comp_value = v.a;
+            }
+        }
+    }
+
+    set_component_value( index, comp_value);
+}
+
+void color_param_t::value_changed( double value)
+{
+    param_set()->begin_edit();
+    set_component_value_from_slot();
+    param_set()->end_edit();
+}
+
+void color_param_t::spinbox_pressed()
+{
+    if( track_mouse())
+        ui::user_interface_t::Instance().begin_interaction();
+
+    param_set()->begin_edit();
+}
+
+void color_param_t::spinbox_dragged( double value)
+{
+    set_component_value_from_slot();
+
+    if( track_mouse())
+        param_set()->notify_parent();
+
+    ui::user_interface_t::Instance().update_anim_editors();
+}
+
+void color_param_t::spinbox_released()
+{
+    param_set()->end_edit( !track_mouse());
+
+    if( track_mouse())
+        ui::user_interface_t::Instance().end_interaction();
+}
+
+void color_param_t::expression_set()
+{
+}
+
+void color_param_t::eyedropper_color_picked( const QrColor& c)
+{
+    param_set()->begin_edit();
+
+    if( is_rgba())
+        set_value( Imath::Color4f( c.red(), c.green(), c.blue(), c.alpha()));
+    else
+        set_value( Imath::Color4f( c.red(), c.green(), c.blue(), 1));
+
+    update_widgets();
+    param_set()->end_edit();
+}
+
+void color_param_t::color_button_pressed()
+{
+    Imath::Color4f col = get_value<Imath::Color4f>( *this);
+    QrColor c( col.r, col.g, col.b);
+    QrColorPicker *picker = new QrColorPicker( ui::user_interface_t::Instance().main_window(), c);
+
+    if( picker->exec_dialog() == QDialog::Accepted)
+    {
+        c = picker->color();
+
+        param_set()->begin_edit();
+
+        if( is_rgba())
+            set_value( Imath::Color4f( c.red(), c.green(), c.blue(), col.a));
+        else
+            set_value( Imath::Color4f( c.red(), c.green(), c.blue(), 1));
+
+        update_widgets();
+        param_set()->end_edit();
+    }
+
+    delete picker;
+}
 
 } // namespace

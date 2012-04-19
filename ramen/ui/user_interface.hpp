@@ -26,6 +26,7 @@
 
 #include<ramen/ui/main_window_fwd.hpp>
 #include<ramen/ui/inspector/inspector_fwd.hpp>
+#include<ramen/ui/anim/anim_editor_fwd.hpp>
 
 #include<ramen/serialization/archive_fwd.hpp>
 
@@ -49,6 +50,9 @@ public:
 
     const inspector_t& inspector() const    { return *inspector_;}
     inspector_t& inspector()                { return *inspector_;}
+
+    const anim_editor_t& anim_editor() const { return *anim_editor_;}
+    anim_editor_t& anim_editor()             { return *anim_editor_;}
 
     // document handling
     void create_new_document();
@@ -132,6 +136,7 @@ private:
 	
     main_window_t *window_;
     std::auto_ptr<inspector_t> inspector_;
+    std::auto_ptr<anim_editor_t> anim_editor_;
     node_t *active_, *context_;
     bool quitting_;
 

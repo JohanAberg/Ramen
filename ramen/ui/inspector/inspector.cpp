@@ -228,7 +228,7 @@ private:
 		if( n_->is_active())
 		{
 			name_edit_->setText( n_->name().c_str());
-			anim_editor_t::Instance().node_renamed( n_);
+			user_interface_t::Instance().anim_editor().node_renamed( n_);
 		}
 		
 		user_interface_t::Instance().update();

@@ -260,7 +260,7 @@ void roto_shape_param_t::rename_shape()
     name_input_->blockSignals( true);
     name_input_->setText( selected_->name().c_str());
     name_input_->blockSignals( false);
-	ui::anim_editor_t::Instance().recreate_tracks( &roto_node());
+	ui::user_interface_t::Instance().anim_editor().recreate_tracks( &roto_node());
 }
 
 void roto_shape_param_t::set_autokey( bool b) { selected_->set_autokey( b);}

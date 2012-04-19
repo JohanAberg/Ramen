@@ -98,7 +98,7 @@ void user_interface_impl::init()
     // force creation of singletons to avoid a crash at exit
     viewer_t::Instance();
     inspector_.reset( new inspector_t());
-    anim_editor_t::Instance();
+    anim_editor_.reset( new anim_editor_t());
 
     create_new_document();
 
@@ -163,7 +163,7 @@ void user_interface_impl::create_new_document()
 {
     set_active_node( 0);
     set_context_node( 0);
-	anim_editor_t::Instance().clear_all();
+	anim_editor().clear_all();
 	
 	app().create_new_document();
 
@@ -274,7 +274,7 @@ void user_interface_impl::set_active_node( node_t *n)
 
         inspector().edit_node( n);
         viewer_t::Instance().set_active_node( n);
-        anim_editor_t::Instance().set_active_node( n);
+        anim_editor().set_active_node( n);
     }
 }
 
@@ -398,7 +398,7 @@ void user_interface_impl::set_frame( int t)
 
 void user_interface_impl::update_anim_editors()
 {
-    anim_editor_t::Instance().update();
+    anim_editor().update();
 }
 
 void user_interface_impl::fatal_error( const std::string& msg) const

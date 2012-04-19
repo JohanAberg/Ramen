@@ -7,15 +7,13 @@
 
 #include<OpenEXR/ImathColor.h>
 
-#ifndef RAMEN_NO_GUI
-	#include<QPointer>
-	#include<QToolButton>
+#include<QPointer>
+#include<QToolButton>
 	
-	#include<ramen/ui/widgets/param_spinbox_fwd.hpp>
-	#include<ramen/ui/widgets/eyedropper_button.hpp>
+#include<ramen/ui/widgets/param_spinbox_fwd.hpp>
+#include<ramen/ui/widgets/eyedropper_button.hpp>
 
-	class QrColorButton;
-#endif
+class QrColorButton;
 
 namespace ramen
 {
@@ -63,29 +61,26 @@ private:
     virtual void do_enable_widgets( bool e);
 	
     bool is_rgba_;
-	
-	#ifndef RAMEN_NO_GUI
-	
-		virtual QWidget *do_create_widgets() RAMEN_WARN_UNUSED_RESULT;
-
-		void set_component_value_from_slot();
 		
-	    QPointer<ui::param_spinbox_t> input0_, input1_, input2_, input3_;
-	    QPointer<QrColorButton> button_;
-	    QPointer<ui::eyedropper_button_t> eyedropper_;
+	virtual QWidget *do_create_widgets() RAMEN_WARN_UNUSED_RESULT;
 
-	private Q_SLOTS:
+	void set_component_value_from_slot();
+		
+	   QPointer<ui::param_spinbox_t> input0_, input1_, input2_, input3_;
+	   QPointer<QrColorButton> button_;
+	   QPointer<ui::eyedropper_button_t> eyedropper_;
 
-	    void value_changed( double value);
-	    void spinbox_pressed();
-	    void spinbox_dragged( double value);
-	    void spinbox_released();
-		void expression_set();
+private Q_SLOTS:
 
-	    void eyedropper_color_picked( const QrColor& c);
+    void value_changed( double value);
+    void spinbox_pressed();
+    void spinbox_dragged( double value);
+    void spinbox_released();
+	void expression_set();
 
-	    void color_button_pressed();
-	#endif
+    void eyedropper_color_picked( const QrColor& c);
+
+    void color_button_pressed();
 };
 
 } // namespace

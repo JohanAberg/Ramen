@@ -5,12 +5,10 @@
 
 #include<ramen/params/composite_param.hpp>
 
-#ifndef RAMEN_NO_GUI
-	#include<QPointer>
+#include<QPointer>
 
-	class QComboBox;
-	class QStackedWidget;
-#endif
+class QComboBox;
+class QStackedWidget;
 
 namespace ramen
 {
@@ -49,16 +47,14 @@ private:
 	virtual void do_read( const serialization::yaml_node_t& node);
 	virtual void do_write( serialization::yaml_oarchive_t& out) const;
 
-	#ifndef RAMEN_NO_GUI
-	    virtual QWidget *do_create_widgets() RAMEN_WARN_UNUSED_RESULT;
+    virtual QWidget *do_create_widgets() RAMEN_WARN_UNUSED_RESULT;
 	
-	    QPointer<QComboBox> menu_;
-	    QPointer<QStackedWidget> stack_;
+    QPointer<QComboBox> menu_;
+    QPointer<QStackedWidget> stack_;
 
-	private Q_SLOTS:
+private Q_SLOTS:
 
-	    void item_picked( int index);
-	#endif
+    void item_picked( int index);
 };
 
 } // namespace
