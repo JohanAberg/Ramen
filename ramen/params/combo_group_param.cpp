@@ -18,7 +18,8 @@
 #include<QComboBox>
 #include<QVBoxLayout>
 #include<QLabel>
-	
+
+#include<ramen/ui/user_interface.hpp>
 #include<ramen/ui/inspector/inspector.hpp>
 
 namespace ramen

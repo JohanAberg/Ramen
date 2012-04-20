@@ -31,6 +31,8 @@ class inspector_t : public QObject, boost::noncopyable
 
 public:
 
+    inspector_t();
+
     // metrics
     int left_margin() const;
     int width() const;
@@ -49,8 +51,6 @@ private Q_SLOTS:
 	void show_help();
 	
 private:
-
-    inspector_t();
 
     void create_header();
 
