@@ -93,12 +93,12 @@ void user_interface_impl::init()
 	image_types_str_.append( ")");
 
     viewer_t::Instance().init();
+    inspector_.reset( new inspector_t());
+    anim_editor_.reset( new anim_editor_t());
     window_ = new main_window_t();
 
     // force creation of singletons to avoid a crash at exit
     viewer_t::Instance();
-    inspector_.reset( new inspector_t());
-    anim_editor_.reset( new anim_editor_t());
 
     create_new_document();
 
