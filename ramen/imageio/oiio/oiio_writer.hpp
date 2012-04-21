@@ -7,7 +7,6 @@
 
 #include<OpenImageIO/imageio.h>
 #include<OpenImageIO/typedesc.h>
-namespace OIIO = OIIO_NAMESPACE;
 
 #include<memory>
 
