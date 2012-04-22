@@ -51,8 +51,8 @@ void copy_luminance( const image::const_image_view_t& src, const image::channel_
 copy_channels_node_t::copy_channels_node_t() : image_node_t()
 {
     set_name( "copy ch");
-    add_input_plug( input_plug_info_t( ui::palette_t::Instance().color( "front plug"), "Source"));
-    add_input_plug( input_plug_info_t( ui::palette_t::Instance().color( "front plug"), "Source 2"));
+    add_input_plug( input_plug_info_t( ui::palette_t::instance().color( "front plug"), "Source"));
+    add_input_plug( input_plug_info_t( ui::palette_t::instance().color( "front plug"), "Source 2"));
     add_output_plug();
 }
 

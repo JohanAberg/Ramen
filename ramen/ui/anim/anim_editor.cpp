@@ -365,7 +365,7 @@ void anim_editor_t::push_command()
 	{
 		if( !command_->empty())
 		{
-			undo::stack_t::Instance().push_back( command_);
+			document_t::Instance().undo_stack().push_back( command_);
 			ui::user_interface_t::Instance().update();
 		}
 		else

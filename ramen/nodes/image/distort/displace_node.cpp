@@ -73,7 +73,7 @@ private:
 displace_node_t::displace_node_t() : distort_node_t()
 {
     set_name( "displace");
-    add_input_plug( input_plug_info_t( ui::palette_t::Instance().color( "front plug"), "Displacement Map"));
+    add_input_plug( input_plug_info_t( ui::palette_t::instance().color( "front plug"), "Displacement Map"));
 }
 
 void displace_node_t::do_create_params()

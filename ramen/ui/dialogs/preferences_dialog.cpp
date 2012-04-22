@@ -1,4 +1,6 @@
 // Copyright (c) 2010 Esteban Tovagliari
+// Licensed under the terms of the CDDL License.
+// See CDDL_LICENSE.txt for a copy of the license.
 
 #include<ramen/python/python.hpp>
 
@@ -16,7 +18,13 @@ namespace ramen
 namespace ui
 {
 
-preferences_dialog_impl::preferences_dialog_impl() : QDialog( user_interface_t::Instance().main_window())
+preferences_dialog_t& preferences_dialog_t::instance()
+{
+    static preferences_dialog_t dialog;
+    return dialog;
+}
+
+preferences_dialog_t::preferences_dialog_t() : QDialog( user_interface_t::Instance().main_window())
 {
     setWindowTitle( "Preferences");
 	ui_.setupUi( this);
@@ -35,9 +43,9 @@ preferences_dialog_impl::preferences_dialog_impl() : QDialog( user_interface_t::
 
 		std::string default_flipbook = app().preferences().default_flipbook();
 		
-		for( int i = 0; i < flipbook::factory_t::Instance().flipbooks().size(); ++i)
+		for( int i = 0; i < flipbook::factory_t::instance().flipbooks().size(); ++i)
 		{
-			std::string fname = flipbook::factory_t::Instance().flipbooks()[i].first;
+			std::string fname = flipbook::factory_t::instance().flipbooks()[i].first;
 			slist << fname.c_str();
 			
 			if( fname == default_flipbook)
@@ -52,7 +60,7 @@ preferences_dialog_impl::preferences_dialog_impl() : QDialog( user_interface_t::
 	ui_.disk_cache_path_->setText( "/tmp/ramen/cache");
 }
 
-void preferences_dialog_impl::exec_dialog()
+void preferences_dialog_t::exec_dialog()
 {
 	// update widgets value here...
 	ui_.default_format_->set_value( app().preferences().default_format());
@@ -72,7 +80,7 @@ void preferences_dialog_impl::exec_dialog()
     }
 }
 
-void preferences_dialog_impl::pick_disk_cache_path() {}
+void preferences_dialog_t::pick_disk_cache_path() {}
 
 } // namespace
 } // namespace

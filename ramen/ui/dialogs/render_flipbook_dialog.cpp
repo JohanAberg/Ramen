@@ -1,4 +1,6 @@
 // Copyright (c) 2010 Esteban Tovagliari
+// Licensed under the terms of the CDDL License.
+// See CDDL_LICENSE.txt for a copy of the license.
 
 #include<ramen/python/python.hpp>
 
@@ -18,7 +20,13 @@ namespace ramen
 namespace ui
 {
 
-render_flipbook_dialog_impl::render_flipbook_dialog_impl() : QDialog( user_interface_t::Instance().main_window())
+render_flipbook_dialog_t& render_flipbook_dialog_t::instance()
+{
+    static render_flipbook_dialog_t dialog;
+    return dialog;
+}
+
+render_flipbook_dialog_t::render_flipbook_dialog_t() : QDialog( user_interface_t::Instance().main_window())
 {
 	ui_.setupUi( this);
 	
@@ -29,9 +37,9 @@ render_flipbook_dialog_impl::render_flipbook_dialog_impl() : QDialog( user_inter
 
 		std::string default_flipbook = app().preferences().default_flipbook();
 		
-		for( int i = 0; i < flipbook::factory_t::Instance().flipbooks().size(); ++i)
+		for( int i = 0; i < flipbook::factory_t::instance().flipbooks().size(); ++i)
 		{
-			std::string fname = flipbook::factory_t::Instance().flipbooks()[i].first;
+			std::string fname = flipbook::factory_t::instance().flipbooks()[i].first;
 			slist << fname.c_str();
 			
 			if( fname == default_flipbook)
@@ -49,26 +57,26 @@ render_flipbook_dialog_impl::render_flipbook_dialog_impl() : QDialog( user_inter
 	connect( ui_.ocio_transform_combo_, SIGNAL( activated( int)), this, SLOT( change_display_transform( int)));
 }
 
-int render_flipbook_dialog_impl::start_frame() const{ return ui_.range_start_->value();}
-int render_flipbook_dialog_impl::end_frame() const	{ return ui_.range_end_->value();}
-int render_flipbook_dialog_impl::resolution() const	{ return ui_.resolution_popup_->currentIndex() + 1;}
-int render_flipbook_dialog_impl::proxy_level() const{ return ui_.proxy_popup_->currentIndex();}
+int render_flipbook_dialog_t::start_frame() const{ return ui_.range_start_->value();}
+int render_flipbook_dialog_t::end_frame() const	{ return ui_.range_end_->value();}
+int render_flipbook_dialog_t::resolution() const	{ return ui_.resolution_popup_->currentIndex() + 1;}
+int render_flipbook_dialog_t::proxy_level() const{ return ui_.proxy_popup_->currentIndex();}
 
-std::string render_flipbook_dialog_impl::flipbook() const
+std::string render_flipbook_dialog_t::flipbook() const
 {
 	return ui_.flipbook_combo_->currentText().toStdString();
 }
 
-int render_flipbook_dialog_impl::mblur_extra_samples() const     { return ui_.mblur_extra_samples_->value();}
-float render_flipbook_dialog_impl::mblur_shutter_factor() const  { return ui_.mblur_shutter_factor_->value();}
+int render_flipbook_dialog_t::mblur_extra_samples() const     { return ui_.mblur_extra_samples_->value();}
+float render_flipbook_dialog_t::mblur_shutter_factor() const  { return ui_.mblur_shutter_factor_->value();}
 
-void render_flipbook_dialog_impl::set_frame_range( int lo, int hi)
+void render_flipbook_dialog_t::set_frame_range( int lo, int hi)
 {
     ui_.range_start_->setValue( lo);
     ui_.range_end_ ->setValue( hi);
 }
 
-void render_flipbook_dialog_impl::get_display_devices()
+void render_flipbook_dialog_t::get_display_devices()
 {
     OCIO::ConstConfigRcPtr config = app().ocio_manager().config();
 
@@ -94,7 +102,7 @@ void render_flipbook_dialog_impl::get_display_devices()
     display_device_ = default_device_name;
 }
 
-void render_flipbook_dialog_impl::get_display_transforms()
+void render_flipbook_dialog_t::get_display_transforms()
 {
     OCIO::ConstConfigRcPtr config = app().ocio_manager().config();
 
@@ -120,10 +128,10 @@ void render_flipbook_dialog_impl::get_display_transforms()
     display_transform_ = default_transform;
 }
 
-const std::string& render_flipbook_dialog_impl::display_device() const      { return display_device_;}
-const std::string& render_flipbook_dialog_impl::display_transform() const   { return display_transform_;}
+const std::string& render_flipbook_dialog_t::display_device() const      { return display_device_;}
+const std::string& render_flipbook_dialog_t::display_transform() const   { return display_transform_;}
 
-void render_flipbook_dialog_impl::change_display_device( int index)
+void render_flipbook_dialog_t::change_display_device( int index)
 {
     display_device_ = display_devices_[index];
 
@@ -162,7 +170,7 @@ void render_flipbook_dialog_impl::change_display_device( int index)
     ui_.ocio_transform_combo_->blockSignals( false);
 }
 
-void render_flipbook_dialog_impl::change_display_transform( int index)
+void render_flipbook_dialog_t::change_display_transform( int index)
 {
     display_transform_ = display_transforms_[index];
 }

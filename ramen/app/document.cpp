@@ -7,16 +7,21 @@
 #include<boost/bind.hpp>
 #include<boost/filesystem/fstream.hpp>
 
-#include<adobe/algorithm/for_each.hpp>
-
 #include<ramen/app/application.hpp>
+
+#include<ramen/undo/stack.hpp>
 
 #include<ramen/serialization/yaml_oarchive.hpp>
 
 namespace ramen
 {
 
-document_impl::document_impl() : dirty_( false) {}
+document_impl::document_impl() : dirty_( false)
+{
+    undo_.reset( new undo::stack_t());
+}
+
+document_impl::~document_impl() {}
 
 void document_impl::set_file( const boost::filesystem::path& p)
 {

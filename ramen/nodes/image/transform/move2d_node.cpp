@@ -57,8 +57,8 @@ private:
 	    manipulators::draw_xy_axes( p, 70 / event.pixel_scale, 70 / event.pixel_scale,
 									get_value<float>( param_->rotate_param()),
 									event.aspect_ratio / node()->aspect_ratio(),
-									  ui::palette_t::Instance().color("x_axis"),
-									  ui::palette_t::Instance().color("y_axis"), event.pixel_scale);
+									  ui::palette_t::instance().color("x_axis"),
+									  ui::palette_t::instance().color("y_axis"), event.pixel_scale);
 
 	    manipulators::draw_cross( p, 3 / event.pixel_scale, 3 / event.pixel_scale, default_color(), event.pixel_scale);
 		manipulators::draw_ellipse( p, 7 / event.pixel_scale, 7 / event.pixel_scale, Imath::Color3c( 255, 255, 255), 20);
@@ -258,7 +258,7 @@ void move2d_node_t::param_changed( param_t *p, param_t::change_reason reason)
 		apply_track_mode mode;
 		apply_track_use use;
 		
-		const tracker_node_t *tracker = ui::apply_track_dialog_t::Instance().exec( mode,  use);
+		const tracker_node_t *tracker = ui::apply_track_dialog_t::instance().exec( mode,  use);
 		
 		if( tracker)
 		{

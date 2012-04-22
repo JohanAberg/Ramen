@@ -1,12 +1,12 @@
 // Copyright (c) 2010 Esteban Tovagliari
+// Licensed under the terms of the CDDL License.
+// See CDDL_LICENSE.txt for a copy of the license.
 
 #ifndef RAMEN_RENDER_FLIPBOOK_DIALOG_HPP
 #define	RAMEN_RENDER_FLIPBOOK_DIALOG_HPP
 
 #include<vector>
 #include<string>
-
-#include<loki/Singleton.h>
 
 #include<QDialog>
 
@@ -17,11 +17,13 @@ namespace ramen
 namespace ui
 {
 
-class render_flipbook_dialog_impl : public QDialog
+class render_flipbook_dialog_t : public QDialog
 {
     Q_OBJECT
     
 public:
+
+    static render_flipbook_dialog_t& instance();
 
     int start_frame() const;
     int end_frame() const;
@@ -45,9 +47,7 @@ private Q_SLOTS:
 
 private:
 
-    friend struct Loki::CreateUsingNew<render_flipbook_dialog_impl>;
-
-    render_flipbook_dialog_impl();
+    render_flipbook_dialog_t();
 
     void get_display_devices();
     void get_display_transforms();
@@ -59,8 +59,6 @@ private:
     std::vector<std::string> display_devices_;
     std::vector<std::string> display_transforms_;	
 };
-
-typedef Loki::SingletonHolder<render_flipbook_dialog_impl> render_flipbook_dialog_t;
 
 } // namespace
 } // namespace

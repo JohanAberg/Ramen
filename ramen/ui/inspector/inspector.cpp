@@ -256,7 +256,7 @@ void inspector_t::rename_node()
 		{
 			std::auto_ptr<rename_node_command_t> c( new rename_node_command_t( n, new_name, name_edit_));
 			c->redo();
-			undo::stack_t::Instance().push_back( c);
+			document_t::Instance().undo_stack().push_back( c);
 		    user_interface_t::Instance().update();
 		}
 		else

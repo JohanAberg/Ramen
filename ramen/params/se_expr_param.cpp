@@ -163,7 +163,7 @@ void se_expr_param_t::do_enable_widgets( bool e)
 													  boost::bind( &se_expr_param_t::expr_editor_apply, this, _1),
 													  boost::bind( &se_expr_param_t::expr_editor_cancel, this));
 
-		ui::expression_editor_t::Instance().show( *(expr.get()), cback);
+		ui::expression_editor_t::instance().show( *(expr.get()), cback);
 	}
 
 	void se_expr_param_t::expr_editor_accept( const std::string& new_expr)

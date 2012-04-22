@@ -33,8 +33,8 @@ enum
 layer_node_t::layer_node_t() : base_layer_node_t()
 {
     set_name( "layer");
-    add_input_plug( input_plug_info_t( ui::palette_t::Instance().color( "back plug"), "Back"));
-    add_input_plug( input_plug_info_t( ui::palette_t::Instance().color( "front plug"), "Front"));
+    add_input_plug( input_plug_info_t( ui::palette_t::instance().color( "back plug"), "Back"));
+    add_input_plug( input_plug_info_t( ui::palette_t::instance().color( "front plug"), "Front"));
     add_output_plug();
 }
 

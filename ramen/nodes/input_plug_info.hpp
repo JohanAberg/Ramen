@@ -18,7 +18,7 @@ public:
 
     input_plug_info_t()
     {
-        color_ = ui::palette_t::Instance().color( "front plug");
+        color_ = ui::palette_t::instance().color( "front plug");
     }
 
     input_plug_info_t( const Imath::Color3c& color) : color_(color), tooltip_( "Input") {}

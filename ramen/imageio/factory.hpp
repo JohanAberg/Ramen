@@ -9,8 +9,6 @@
 #include<boost/noncopyable.hpp>
 #include<boost/ptr_container/ptr_vector.hpp>
 
-#include<loki/Singleton.h>
-
 #include<ramen/imageio/exceptions.hpp>
 #include<ramen/imageio/enums.hpp>
 #include<ramen/imageio/format.hpp>
@@ -22,11 +20,13 @@ namespace ramen
 namespace imageio
 {
 
-class factory_impl : boost::noncopyable
+class factory_t : boost::noncopyable
 {
 public:
 
-    void init();
+    static factory_t& instance();
+
+    ~factory_t();
 
     const boost::ptr_vector<format_t>& formats() const { return formats_;}
 
@@ -47,14 +47,11 @@ public:
 
 private:
 
-    factory_impl();
-    ~factory_impl();
+    factory_t();
 
     const_iterator format_for_tag( const std::string& tag) const;
     const_iterator format_for_extension( const boost::filesystem::path& p) const;
     const_iterator format_for_file_contents( const boost::filesystem::path& p) const;
-
-    friend struct Loki::CreateUsingNew<factory_impl>;
 
     boost::ptr_vector<format_t> formats_;
     std::vector<std::string> extensions_;
@@ -62,8 +59,6 @@ private:
     std::size_t detect_size_;
     mutable char *detect_buffer_;
 };
-
-typedef Loki::SingletonHolder<factory_impl> factory_t;
 
 } // namespace
 } // namespace

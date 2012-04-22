@@ -142,7 +142,7 @@ private:
 add_grain_node_t::add_grain_node_t() : pointop_node_t()
 { 
     set_name( "add_grain");
-    add_input_plug( input_plug_info_t( ui::palette_t::Instance().color( "matte plug"), "Mask"), true);
+    add_input_plug( input_plug_info_t( ui::palette_t::instance().color( "matte plug"), "Mask"), true);
 }
 
 void add_grain_node_t::do_create_params()

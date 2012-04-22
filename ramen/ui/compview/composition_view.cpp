@@ -256,7 +256,7 @@ void composition_view_t::mousePressEvent( QMouseEvent *event)
             // TODO: if either src or dest are groups, resolve the real nodes.
             std::auto_ptr<undo::command_t> c( new undo::disconnect_command_t( src, dst, port));
             c->redo();
-            undo::stack_t::Instance().push_back( c);
+            document_t::Instance().undo_stack().push_back( c);
             user_interface_t::Instance().update();
             return;
         }
@@ -417,7 +417,7 @@ void composition_view_t::connect_release_handler( QMouseEvent *event)
     {
         std::auto_ptr<undo::command_t> c( new undo::connect_command_t( src, dst, port));
         c->redo();
-        undo::stack_t::Instance().push_back( c);
+        document_t::Instance().undo_stack().push_back( c);
         user_interface_t::Instance().update();
     }
     else
@@ -469,7 +469,7 @@ void composition_view_t::paintEvent ( QPaintEvent *event)
     p.setPen( Qt::NoPen);
 
     QBrush brush;
-    brush.setColor( palette_t::Instance().qcolor( "background"));
+    brush.setColor( palette_t::instance().qcolor( "background"));
     brush.setStyle( Qt::SolidPattern);
     p.setBrush( brush);
     p.drawRect( 0, 0, width(), height());
@@ -482,7 +482,7 @@ void composition_view_t::paintEvent ( QPaintEvent *event)
 
     p.setBrush( Qt::NoBrush);
     QPen pen;
-    pen.setColor( palette_t::Instance().qcolor( "text"));
+    pen.setColor( palette_t::instance().qcolor( "text"));
     p.setPen( pen);
 
     draw_edges( p);
@@ -492,7 +492,7 @@ void composition_view_t::paintEvent ( QPaintEvent *event)
 
     if( connect_mode_)
     {
-		pen.setColor( palette_t::Instance().qcolor( "text"));
+		pen.setColor( palette_t::instance().qcolor( "text"));
         p.setPen( pen);
         Imath::V2f q0( screen_to_world( Imath::V2i( push_x_, push_y_)));
         Imath::V2f q1( screen_to_world( Imath::V2i( last_x_, last_y_)));
@@ -503,7 +503,7 @@ void composition_view_t::paintEvent ( QPaintEvent *event)
         if( box_pick_mode_)
         {
             p.resetTransform();
-			pen.setColor( palette_t::Instance().qcolor( "box_pick"));
+			pen.setColor( palette_t::instance().qcolor( "box_pick"));
             p.setPen( pen);
             p.drawLine( push_x_, push_y_, last_x_, push_y_);
             p.drawLine( last_x_, push_y_, last_x_, last_y_);

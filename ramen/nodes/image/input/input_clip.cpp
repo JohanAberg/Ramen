@@ -32,7 +32,7 @@ std::auto_ptr<movieio::reader_t> input_clip_t::reader( const boost::filesystem::
 		if( new_seq.directory().is_relative())
 			new_seq.make_paths_absolute( cwd);
 		
-		return movieio::factory_t::Instance().create_reader( new_seq);
+		return movieio::factory_t::instance().create_reader( new_seq);
 	}
 	
 	return std::auto_ptr<movieio::reader_t>();

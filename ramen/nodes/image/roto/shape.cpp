@@ -238,7 +238,7 @@ void shape_t::param_changed( param_t *p, param_t::change_reason reason)
 		image::apply_track_mode mode;
 		image::apply_track_use use;
 		
-		const image::tracker_node_t *tracker = ui::apply_track_dialog_t::Instance().exec( mode,  use);
+		const image::tracker_node_t *tracker = ui::apply_track_dialog_t::instance().exec( mode,  use);
 		
 		if( tracker)
 		{

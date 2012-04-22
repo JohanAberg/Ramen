@@ -1,4 +1,6 @@
 // Copyright (c) 2010 Esteban Tovagliari
+// Licensed under the terms of the CDDL License.
+// See CDDL_LICENSE.txt for a copy of the license.
 
 #include<ramen/python/python.hpp>
 
@@ -18,6 +20,8 @@
 #include<boost/ptr_container/ptr_map.hpp>
 
 #include<adobe/algorithm/for_each.hpp>
+
+#include<ramen/app/document.hpp>
 
 #include<ramen/params/parameterised.hpp>
 #include<ramen/params/param.hpp>
@@ -172,7 +176,7 @@ void param_set_t::begin_edit()
 void param_set_t::end_edit( bool notify)
 {
     if( command_.get() && !is_command_empty())
-		undo::stack_t::Instance().push_back( command_);
+		document_t::Instance().undo_stack().push_back( command_);
     else
 		command_.reset();
 

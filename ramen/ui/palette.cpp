@@ -14,7 +14,7 @@ namespace ramen
 namespace ui
 {
 
-struct palette_impl::impl
+struct palette_t::impl
 {
 	impl() { rebuild_palette();}
 
@@ -74,39 +74,45 @@ struct palette_impl::impl
 	Imath::Color3c error_color_;
 };
 
-palette_impl::palette_impl() { pimpl_.reset( new impl());}
+palette_t& palette_t::instance()
+{
+    static palette_t pal;
+    return pal;
+}
 
-palette_impl::~palette_impl()
+palette_t::palette_t() { pimpl_.reset( new impl());}
+
+palette_t::~palette_t()
 {
 	// do not remove. It's needed by auto_ptr.
 }
 
-void palette_impl::rebuild() { pimpl_->rebuild_palette();}
+void palette_t::rebuild() { pimpl_->rebuild_palette();}
 
-const Imath::Color3c& palette_impl::color( const std::string& k) const
+const Imath::Color3c& palette_t::color( const std::string& k) const
 {
 	return pimpl_->get_color( k);
 }
 
-QColor palette_impl::qcolor( const std::string& k) const
+QColor palette_t::qcolor( const std::string& k) const
 {
 	Imath::Color3c c = pimpl_->get_color( k);
 	return QColor( c.x, c.y, c.z, 255);
 }
 
-bool palette_impl::find_color( const std::string& k) const
+bool palette_t::find_color( const std::string& k) const
 {
 	// TODO: implement this.
 	RAMEN_ASSERT( 0);
 }
 
-void palette_impl::set_color( const std::string& k, const Imath::Color3c& c)
+void palette_t::set_color( const std::string& k, const Imath::Color3c& c)
 {
 	// TODO: implement this.
 	RAMEN_ASSERT( 0);
 }
 
-void palette_impl::set_color( const std::string& k, const QColor& c)
+void palette_t::set_color( const std::string& k, const QColor& c)
 {
 	// TODO: implement this.
 	RAMEN_ASSERT( 0);

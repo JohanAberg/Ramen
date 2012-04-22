@@ -21,13 +21,19 @@ namespace ramen
 {
 namespace flipbook
 {
-	
-factory_impl::factory_impl()
+
+factory_t& factory_t::instance()
+{
+    static factory_t f;
+    return f;
+}
+
+factory_t::factory_t()
 {
 	register_flipbook( "internal", &internal_flipbook_t::create);
 }
 
-factory_impl::~factory_impl()
+factory_t::~factory_t()
 {
 	if( !flipbooks_dir_.empty())
 	{
@@ -36,20 +42,20 @@ factory_impl::~factory_impl()
 	}
 }
 
-bool factory_impl::register_flipbook( const std::string& id, const create_fun_type& f)
+bool factory_t::register_flipbook( const std::string& id, const create_fun_type& f)
 {
 	RAMEN_ASSERT( find_flipbook( id) == -1);
 	flipbooks_.push_back( std::make_pair( id, f));
 	return true;
 }
 
-flipbook_t *factory_impl::create( int frame_rate, const std::string& display_device,
+flipbook_t *factory_t::create( int frame_rate, const std::string& display_device,
 								  const std::string& display_transform) const
 { 
 	return create( app().preferences().default_flipbook(), frame_rate, display_device, display_transform);
 }
 
-flipbook_t *factory_impl::create( const std::string& id, int frame_rate, 
+flipbook_t *factory_t::create( const std::string& id, int frame_rate,
 								  const std::string& display_device, const std::string& display_transform) const
 { 
 	int index = find_flipbook( id);
@@ -60,7 +66,7 @@ flipbook_t *factory_impl::create( const std::string& id, int frame_rate,
 	return flipbooks()[index].second( frame_rate, display_device, display_transform);
 }
 
-const boost::filesystem::path& factory_impl::flipbooks_dir() const
+const boost::filesystem::path& factory_t::flipbooks_dir() const
 {
 	if( flipbooks_dir_.empty())
 		flipbooks_dir_ = app().preferences().tmp_dir() / "flipbooks";
@@ -68,7 +74,7 @@ const boost::filesystem::path& factory_impl::flipbooks_dir() const
 	return flipbooks_dir_;
 }
 
-int factory_impl::find_flipbook( const std::string& id) const
+int factory_t::find_flipbook( const std::string& id) const
 {
 	for( int i = 0; i < flipbooks().size(); ++i)
 	{

@@ -39,7 +39,7 @@ void djv_flipbook_t::arguments( std::vector<std::string>& args) const
 	args.push_back( seq);
 }
 
-static bool registered = factory_t::Instance().register_flipbook( "djv", &djv_flipbook_t::create);
+static bool registered = factory_t::instance().register_flipbook( "djv", &djv_flipbook_t::create);
 
 } // namespace
 } // namespace

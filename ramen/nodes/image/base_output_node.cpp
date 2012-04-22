@@ -19,7 +19,7 @@ namespace image
 
 base_output_node_t::base_output_node_t() : image_node_t()
 {
-    add_input_plug( input_plug_info_t( ui::palette_t::Instance().color( "front plug"), "Front"));
+    add_input_plug( input_plug_info_t( ui::palette_t::instance().color( "front plug"), "Front"));
 }
 
 base_output_node_t::base_output_node_t( const base_output_node_t& other) : image_node_t( other) {}

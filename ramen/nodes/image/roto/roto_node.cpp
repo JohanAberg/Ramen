@@ -61,7 +61,7 @@ enum
 roto_node_t::roto_node_t() : image_node_t(), toolbar_( 0), scene_( this)
 {
     set_name( "roto");
-    add_input_plug( input_plug_info_t( ui::palette_t::Instance().color("front plug"), "Front"));
+    add_input_plug( input_plug_info_t( ui::palette_t::instance().color("front plug"), "Front"));
 	add_output_plug();
 	inspector_ = 0;
 	shape_param_ = 0;

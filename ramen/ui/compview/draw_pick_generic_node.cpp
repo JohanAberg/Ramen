@@ -54,7 +54,7 @@ void draw_generic_node( QPainter& painter, const node_t *n)
     QBrush brush;
 
     brush.setStyle( Qt::SolidPattern);
-    brush.setColor( palette_t::Instance().qcolor( "node_shadow"));
+    brush.setColor( palette_t::instance().qcolor( "node_shadow"));
 
     painter.setPen( Qt::NoPen);
     painter.setBrush( brush);
@@ -70,20 +70,20 @@ void draw_generic_node( QPainter& painter, const node_t *n)
 
     if( n->has_output_plug())
     {
-        brush.setColor( palette_t::Instance().qcolor( "out plug"));
+        brush.setColor( palette_t::instance().qcolor( "out plug"));
         painter.setBrush( brush);
         Imath::V2f q = generic_output_location( n);
         painter.drawRect( q.x - 3, q.y - 3, 6, 6);
     }
 
     if( n->selected())
-		brush.setColor( palette_t::Instance().qcolor( "node_picked_bg"));
+		brush.setColor( palette_t::instance().qcolor( "node_picked_bg"));
     else
     {
         if( n->plugin_error())
-			brush.setColor( palette_t::Instance().qcolor( "node_error_bg"));
+			brush.setColor( palette_t::instance().qcolor( "node_error_bg"));
         else
-			brush.setColor( palette_t::Instance().qcolor( "node_bg"));
+			brush.setColor( palette_t::instance().qcolor( "node_bg"));
     }
 
     painter.setBrush( brush);
@@ -92,25 +92,25 @@ void draw_generic_node( QPainter& painter, const node_t *n)
     painter.setBrush( Qt::NoBrush);
 
     if( user_interface_t::Instance().active_node() == n)
-		pen.setColor( palette_t::Instance().qcolor( "node_active_out"));
+		pen.setColor( palette_t::instance().qcolor( "node_active_out"));
     else
     {
         if( user_interface_t::Instance().context_node() == n)
-			pen.setColor( palette_t::Instance().qcolor( "node_context_out"));
+			pen.setColor( palette_t::instance().qcolor( "node_context_out"));
         else
-			pen.setColor( palette_t::Instance().qcolor( "text"));
+			pen.setColor( palette_t::instance().qcolor( "text"));
     }
 
     painter.setPen( pen);
     painter.drawRoundedRect( QRectF( p.x, p.y, generic_node_width( n), generic_node_height()), radius, radius);
 
-    pen.setColor( palette_t::Instance().qcolor( "text"));
+    pen.setColor( palette_t::instance().qcolor( "text"));
     painter.setPen( pen);
     painter.drawText( QRectF( p.x, p.y + 3, generic_node_width( n), generic_node_height() - 3), Qt::AlignCenter, QString( n->name().c_str()));
 
     if( n->ignored())
     {
-		pen.setColor( palette_t::Instance().qcolor( "box_pick"));
+		pen.setColor( palette_t::instance().qcolor( "box_pick"));
         pen.setWidth(2);
         painter.setPen( pen);
         painter.drawLine( QPointF( p.x - 3, p.y - 2), QPointF( p.x + generic_node_width( n) + 3, p.y + generic_node_height() + 2));

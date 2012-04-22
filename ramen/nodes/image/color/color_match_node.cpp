@@ -142,9 +142,9 @@ private:
 color_match_node_t::color_match_node_t()
 {
     set_name( "color_match");
-    add_input_plug( input_plug_info_t( ui::palette_t::Instance().color( "front plug"), "Front"));
-    add_input_plug( input_plug_info_t( ui::palette_t::Instance().color( "front plug"), "Target Color"));
-    add_input_plug( input_plug_info_t( ui::palette_t::Instance().color( "back plug") , "Source Color"), true);
+    add_input_plug( input_plug_info_t( ui::palette_t::instance().color( "front plug"), "Front"));
+    add_input_plug( input_plug_info_t( ui::palette_t::instance().color( "front plug"), "Target Color"));
+    add_input_plug( input_plug_info_t( ui::palette_t::instance().color( "back plug") , "Source Color"), true);
     add_output_plug();
 }
 

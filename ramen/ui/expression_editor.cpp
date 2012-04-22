@@ -12,7 +12,13 @@ namespace ramen
 namespace ui
 {
 
-expression_editor_impl::expression_editor_impl()
+expression_editor_t& expression_editor_t::instance()
+{
+    static expression_editor_t expr;
+    return expr;
+}
+
+expression_editor_t::expression_editor_t()
 {
 	try
 	{
@@ -25,7 +31,7 @@ expression_editor_impl::expression_editor_impl()
 	}
 }
 
-void expression_editor_impl::show( expressions::se_expression_t& expr, const expression_editor_callback_suite_t& callbacks)
+void expression_editor_t::show( expressions::se_expression_t& expr, const expression_editor_callback_suite_t& callbacks)
 {
 	if( create_expr_editor_ != boost::python::object())
 	{

@@ -47,7 +47,7 @@ std::auto_ptr<writer_t> jpg_format_t::writer() const
     return w;
 }
 
-static bool registered = factory_t::Instance().register_image_format( std::auto_ptr<format_t>( new jpg_format_t()));
+static bool registered = factory_t::instance().register_image_format( std::auto_ptr<format_t>( new jpg_format_t()));
 
 } // namespace
 } // namespace

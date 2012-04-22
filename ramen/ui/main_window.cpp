@@ -576,7 +576,7 @@ void main_window_t::save_document_as()
 		else
 		{
 			update_recent_files_menu( document_t::Instance().file());
-			undo::stack_t::Instance().clear();
+			document_t::Instance().undo_stack().clear();
 		}
 		
 		user_interface_t::Instance().update();		
@@ -595,13 +595,13 @@ void main_window_t::import_composition()
             boost::filesystem::path p( fname.toStdString());
             std::auto_ptr<serialization::yaml_iarchive_t> in( ramen::import_composition( p));
             document_t::Instance().set_dirty( true);
-            undo::stack_t::Instance().clear();
+            document_t::Instance().undo_stack().clear();
 			
 			// report errors to the user
 			std::string err = in->errors();
 			
 			if( !err.empty())
-				multiline_alert_t::Instance().show_alert( "Errors during file open", err);
+				multiline_alert_t::instance().show_alert( "Errors during file open", err);
         }
         catch( std::exception& e)
         {
@@ -682,7 +682,7 @@ void main_window_t::import_cdl()
 		document_t::Instance().composition().deselect_all();
 		n->select( true);
 		c->redo();
-		undo::stack_t::Instance().push_back( c);
+		document_t::Instance().undo_stack().push_back( c);
 		ui::user_interface_t::Instance().update();
 	}
 }
@@ -750,13 +750,13 @@ void main_window_t::quit()
 
 void main_window_t::undo()
 {
-    undo::stack_t::Instance().undo();
+    document_t::Instance().undo_stack().undo();
     user_interface_t::Instance().update();
 }
 
 void main_window_t::redo()
 {
-    undo::stack_t::Instance().redo();
+    document_t::Instance().undo_stack().redo();
     user_interface_t::Instance().update();
 }
 
@@ -771,7 +771,7 @@ void main_window_t::ignore_nodes()
     }
 
     c->redo();
-    undo::stack_t::Instance().push_back( c);
+    document_t::Instance().undo_stack().push_back( c);
     ui::user_interface_t::Instance().update();
 }
 
@@ -841,7 +841,7 @@ void main_window_t::delete_nodes()
 	}
 	
     c->redo();
-    undo::stack_t::Instance().push_back( c);
+    document_t::Instance().undo_stack().push_back( c);
     ui::user_interface_t::Instance().update();
 }
 
@@ -869,7 +869,7 @@ void main_window_t::duplicate_nodes()
 
     document_t::Instance().composition().deselect_all();
     c->redo();
-    undo::stack_t::Instance().push_back( c);
+    document_t::Instance().undo_stack().push_back( c);
     ui::user_interface_t::Instance().update();
 }
 
@@ -930,7 +930,7 @@ void main_window_t::extract_nodes()
 	}
 	
     c->redo();
-    undo::stack_t::Instance().push_back( c);
+    document_t::Instance().undo_stack().push_back( c);
     ui::user_interface_t::Instance().update();
 }
 
@@ -941,7 +941,7 @@ void main_window_t::clear_cache()
 
 void main_window_t::show_composition_settings_dialog()
 {
-    composition_settings_dialog_t::Instance().exec_dialog();
+    composition_settings_dialog_t::instance().exec_dialog();
 }
 
 void main_window_t::render_composition()
@@ -956,46 +956,46 @@ void main_window_t::render_composition()
 	
 	bool any_output_selected = ( render::count_output_nodes( document_t::Instance().composition(), true) != 0);
 
-    render_composition_dialog_t::Instance().set_any_output_selected( any_output_selected);
+    render_composition_dialog_t::instance().set_any_output_selected( any_output_selected);
 
-    int result = render_composition_dialog_t::Instance().exec();
+    int result = render_composition_dialog_t::instance().exec();
 
     if( result == QDialog::Accepted)
     {
-		int start = render_composition_dialog_t::Instance().start_frame();
-		int end = render_composition_dialog_t::Instance().end_frame();
+		int start = render_composition_dialog_t::instance().start_frame();
+		int end = render_composition_dialog_t::instance().end_frame();
 		
 		if( end < start)
 			return;
 		
 		ui::render_composition( document_t::Instance().composition(),
-								start, end, render_composition_dialog_t::Instance().proxy_level(),
-								render_composition_dialog_t::Instance().resolution(),
-								render_composition_dialog_t::Instance().mblur_extra_samples(),
-								render_composition_dialog_t::Instance().mblur_shutter_factor(),
-								render_composition_dialog_t::Instance().selected_only());
+								start, end, render_composition_dialog_t::instance().proxy_level(),
+								render_composition_dialog_t::instance().resolution(),
+								render_composition_dialog_t::instance().mblur_extra_samples(),
+								render_composition_dialog_t::instance().mblur_shutter_factor(),
+								render_composition_dialog_t::instance().selected_only());
     }
 }
 
 void main_window_t::render_flipbook()
 {
-    int result = render_flipbook_dialog_t::Instance().exec();
+    int result = render_flipbook_dialog_t::instance().exec();
 
     if( result == QDialog::Accepted)
     {
 		if( image_node_t *n = dynamic_cast<image_node_t*>( document_t::Instance().composition().selected_node()))
 		{
 			int frame_rate = document_t::Instance().composition().frame_rate();
-			std::string display_device = render_flipbook_dialog_t::Instance().display_device();
-			std::string display_transform = render_flipbook_dialog_t::Instance().display_transform();
-			int start	= render_flipbook_dialog_t::Instance().start_frame();
-			int end	= render_flipbook_dialog_t::Instance().end_frame();
-			int subsample =  render_flipbook_dialog_t::Instance().resolution();
-			int proxy_level = render_flipbook_dialog_t::Instance().proxy_level();
-			int mb_extra_samples = render_flipbook_dialog_t::Instance().mblur_extra_samples();
-			float mb_shutter_factor = render_flipbook_dialog_t::Instance().mblur_shutter_factor();
+			std::string display_device = render_flipbook_dialog_t::instance().display_device();
+			std::string display_transform = render_flipbook_dialog_t::instance().display_transform();
+			int start	= render_flipbook_dialog_t::instance().start_frame();
+			int end	= render_flipbook_dialog_t::instance().end_frame();
+			int subsample =  render_flipbook_dialog_t::instance().resolution();
+			int proxy_level = render_flipbook_dialog_t::instance().proxy_level();
+			int mb_extra_samples = render_flipbook_dialog_t::instance().mblur_extra_samples();
+			float mb_shutter_factor = render_flipbook_dialog_t::instance().mblur_shutter_factor();
 	
-			flipbook::flipbook_t *flip = flipbook::factory_t::Instance().create( render_flipbook_dialog_t::Instance().flipbook(),
+			flipbook::flipbook_t *flip = flipbook::factory_t::instance().create( render_flipbook_dialog_t::instance().flipbook(),
 																				   frame_rate, display_device, display_transform);
 
 			if( flip)
@@ -1009,7 +1009,7 @@ void main_window_t::render_flipbook()
 
 void main_window_t::show_preferences_dialog()
 {
-    preferences_dialog_t::Instance().exec_dialog();
+    preferences_dialog_t::instance().exec_dialog();
 }
 
 void main_window_t::create_node()
@@ -1059,13 +1059,13 @@ void main_window_t::create_node()
 	document_t::Instance().composition().deselect_all();
 	n->select( true);
 	c->redo();
-	undo::stack_t::Instance().push_back( c);
+	document_t::Instance().undo_stack().push_back( c);
 	ui::user_interface_t::Instance().update();
 }
 
 void main_window_t::show_about_box()
 {
-	about_dialog_t::Instance().exec();
+	about_dialog_t::instance().exec();
 }
 
 void main_window_t::go_to_project_website()
@@ -1146,25 +1146,25 @@ void main_window_t::update_menus()
     save_->setEnabled( document_t::Instance().dirty());
     export_sel_->setEnabled( any_selected);
 
-	if( undo::stack_t::Instance().undo_empty())
+	if( document_t::Instance().undo_stack().undo_empty())
 	{
 		undo_->setText( "Undo");
 	    undo_->setEnabled( false);
 	}
 	else
 	{
-		undo_->setText( QString( "Undo ") + undo::stack_t::Instance().last_undo_command().name().c_str());
+		undo_->setText( QString( "Undo ") + document_t::Instance().undo_stack().last_undo_command().name().c_str());
 	    undo_->setEnabled( true);
 	}
 
-	if( undo::stack_t::Instance().redo_empty())
+	if( document_t::Instance().undo_stack().redo_empty())
 	{
 		redo_->setText( "Redo");
 	    redo_->setEnabled( false);
 	}
 	else
 	{
-		redo_->setText( QString( "Redo ") + undo::stack_t::Instance().last_redo_command().name().c_str());
+		redo_->setText( QString( "Redo ") + document_t::Instance().undo_stack().last_redo_command().name().c_str());
 	    redo_->setEnabled( true);
 	}
 	

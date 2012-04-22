@@ -11,7 +11,7 @@ namespace image
 
 areaop_node_t::areaop_node_t() : image_node_t()
 {
-    add_input_plug( input_plug_info_t( ui::palette_t::Instance().color( "front plug"), "Front"));
+    add_input_plug( input_plug_info_t( ui::palette_t::instance().color( "front plug"), "Front"));
     add_output_plug();
 }
 

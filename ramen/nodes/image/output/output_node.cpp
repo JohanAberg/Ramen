@@ -350,7 +350,7 @@ void output_node_t::write( const render::context_t& context)
 
 	// TODO: catch exceptions here.
 
-    std::auto_ptr<imageio::writer_t> writer( imageio::factory_t::Instance().writer_for_tag( tag));
+    std::auto_ptr<imageio::writer_t> writer( imageio::factory_t::instance().writer_for_tag( tag));
 
     if( writer.get())
         writer->write_image( p, const_image_view(), params);

@@ -11,6 +11,8 @@
 #include<QPlainTextEdit>
 #include<QPushButton>
 
+#include<ramen/app/document.hpp>
+
 #include<ramen/python/interpreter.hpp>
 
 #include<ramen/undo/stack.hpp>
@@ -60,7 +62,7 @@ editor_impl::~editor_impl() { window_->deleteLater();}
 void editor_impl::run()
 {
 	python::console_t::Instance().clear();
-    undo::stack_t::Instance().clear();
+    document_t::Instance().undo_stack().clear();
 
     QString script = edit_->toPlainText();
 

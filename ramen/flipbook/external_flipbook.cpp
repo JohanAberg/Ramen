@@ -27,7 +27,7 @@ external_flipbook_t::external_flipbook_t( int frame_rate,
 	proc_ = new QProcess( this);
 	progress_ = 0;
 
-	boost::filesystem::path tmp_flip_dir = factory_t::Instance().flipbooks_dir();
+	boost::filesystem::path tmp_flip_dir = factory_t::instance().flipbooks_dir();
 	int num = 1;
 	
 	while( 1)
@@ -112,7 +112,7 @@ void external_flipbook_t::save_frame( int frame) const
 	if( use_data_window_)
 	    params[ adobe::name_t( "bounds")]	= adobe::any_regular_t( defined_);
 	
-    std::auto_ptr<imageio::writer_t> writer( imageio::factory_t::Instance().writer_for_tag( "exr"));
+    std::auto_ptr<imageio::writer_t> writer( imageio::factory_t::instance().writer_for_tag( "exr"));
 
     if( writer.get())
         writer->write_image( p, buffer_.const_rgba_view(), params);

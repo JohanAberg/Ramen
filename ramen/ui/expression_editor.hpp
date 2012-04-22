@@ -9,8 +9,6 @@
 #include<boost/function.hpp>
 #include<boost/python/object.hpp>
 
-#include<loki/Singleton.h>
-
 #include<QString>
 
 #include<ramen/assert.hpp>
@@ -46,22 +44,20 @@ private:
 	boost::function<void()> cancel_fun_;
 };
 
-class expression_editor_impl : boost::noncopyable
+class expression_editor_t : boost::noncopyable
 {
 public:
+
+    static expression_editor_t& instance();
 
 	void show( expressions::se_expression_t & expr, const expression_editor_callback_suite_t& callbacks);
 
 private:
 
-    friend struct Loki::CreateUsingNew<expression_editor_impl>;
-
-    expression_editor_impl();
+    expression_editor_t();
 
 	boost::python::object create_expr_editor_;
 };
-
-typedef Loki::SingletonHolder<expression_editor_impl> expression_editor_t;
 
 } // namespace
 } // namespace

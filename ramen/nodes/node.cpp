@@ -191,7 +191,7 @@ void node_t::do_connected( node_t *src, int port) {}
 
 void node_t::add_new_input_plug()
 {
-    add_input_plug( input_plug_info_t( ui::palette_t::Instance().color("back plug")), true);
+    add_input_plug( input_plug_info_t( ui::palette_t::instance().color("back plug")), true);
     reconnect_node();
 }
 

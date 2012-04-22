@@ -1,4 +1,6 @@
 // Copyright (c) 2011 Esteban Tovagliari
+// Licensed under the terms of the CDDL License.
+// See CDDL_LICENSE.txt for a copy of the license.
 
 #include<ramen/ui/dialogs/apply_corner_track_dialog.hpp>
 
@@ -22,13 +24,19 @@ namespace ramen
 namespace ui
 {
 
-apply_corner_track_dialog_impl::apply_corner_track_dialog_impl() : QDialog( user_interface_t::Instance().main_window())
+apply_corner_track_dialog_t& apply_corner_track_dialog_t::instance()
+{
+    static apply_corner_track_dialog_t dialog;
+    return dialog;
+}
+
+apply_corner_track_dialog_t::apply_corner_track_dialog_t() : QDialog( user_interface_t::Instance().main_window())
 {
     setWindowTitle( "Apply Track");
 	ui_.setupUi( this);
 }
 
-const image::tracker_node_t *apply_corner_track_dialog_impl::exec()
+const image::tracker_node_t *apply_corner_track_dialog_t::exec()
 {
 	std::vector<const image::tracker_node_t*> trackers;
 	ui_.tracker_combo_->clear();

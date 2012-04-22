@@ -1,8 +1,12 @@
 // Copyright (c) 2011 Esteban Tovagliari
+// Licensed under the terms of the CDDL License.
+// See CDDL_LICENSE.txt for a copy of the license.
 
 #include<ramen/python/python.hpp>
 
 #include<ramen/nodes/image/roto/null_tool.hpp>
+
+#include<ramen/app/document.hpp>
 
 #include<ramen/undo/stack.hpp>
 
@@ -59,7 +63,7 @@ void null_tool_t::mouse_release_event( const ui::mouse_release_event_t& event)
 
 		std::auto_ptr<undo::add_roto_command_t> cmd( new undo::add_roto_command_t( parent(), s));
 		cmd->redo();
-		undo::stack_t::Instance().push_back( cmd);
+		document_t::Instance().undo_stack().push_back( cmd);
 		ui::user_interface_t::Instance().update();
 	}
 }

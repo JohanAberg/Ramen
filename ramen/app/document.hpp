@@ -7,11 +7,15 @@
 
 #include<ramen/python/python.hpp>
 
+#include<memory>
+
 #include<boost/noncopyable.hpp>
 
 #include<loki/Singleton.h>
 
 #include<ramen/app/composition.hpp>
+
+#include<ramen/undo/stack_fwd.hpp>
 
 #include<ramen/serialization/archive_fwd.hpp>
 
@@ -24,6 +28,9 @@ public:
 
     bool dirty() const	    { return dirty_;}
     void set_dirty( bool d) { dirty_ = d;}
+
+    const undo::stack_t& undo_stack() const { return *undo_;}
+    undo::stack_t& undo_stack()             { return *undo_;}
 
     bool has_file() const { return !file_.empty();}
 
@@ -40,14 +47,14 @@ public:
 private:
 
     document_impl();
-    ~document_impl() {}
+    ~document_impl();
 
     friend struct Loki::CreateUsingNew<document_impl>;
 
-    boost::filesystem::path file_;
-    mutable bool dirty_;
-
     composition_t comp_;
+    mutable bool dirty_;
+    std::auto_ptr<undo::stack_t> undo_;
+    boost::filesystem::path file_;
 };
 
 typedef Loki::SingletonHolder<document_impl, Loki::CreateUsingNew, Loki::DeletableSingleton> document_t;

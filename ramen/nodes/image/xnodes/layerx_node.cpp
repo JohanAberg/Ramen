@@ -33,8 +33,8 @@ enum
 layerx_node_t::layerx_node_t() : base_expr_node_t()
 {
     set_name( "layerX");
-    add_input_plug( input_plug_info_t( ui::palette_t::Instance().color("back plug"), "Back"));
-    add_input_plug( input_plug_info_t( ui::palette_t::Instance().color("front plug"), "Front"));
+    add_input_plug( input_plug_info_t( ui::palette_t::instance().color("back plug"), "Back"));
+    add_input_plug( input_plug_info_t( ui::palette_t::instance().color("front plug"), "Front"));
 }
 
 layerx_node_t::layerx_node_t( const layerx_node_t& other) : base_expr_node_t( other)

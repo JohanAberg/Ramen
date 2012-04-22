@@ -598,7 +598,7 @@ void input_node_t::file_picked( const boost::filesystem::path& p, int level, boo
 	if( p.is_relative())
 		abs_path = composition()->relative_to_absolute( abs_path);
 	
-	if( !imageio::factory_t::Instance().is_image_file( abs_path))
+	if( !imageio::factory_t::instance().is_image_file( abs_path))
 		sequence = false;
 	
 	filesystem::path_sequence_t seq( p, sequence);
@@ -614,7 +614,7 @@ void input_node_t::file_picked( const boost::filesystem::path& p, int level, boo
 	set_frame( composition()->frame());
 
 	notify();
-	undo::stack_t::Instance().push_back( c);
+	document_t::Instance().undo_stack().push_back( c);
 	ui::user_interface_t::Instance().update();
 }
 

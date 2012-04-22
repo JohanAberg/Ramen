@@ -1,4 +1,6 @@
 // Copyright (c) 2010 Esteban Tovagliari
+// Licensed under the terms of the CDDL License.
+// See CDDL_LICENSE.txt for a copy of the license.
 
 #include<ramen/python/python.hpp>
 
@@ -15,13 +17,19 @@ namespace ramen
 namespace ui
 {
 
-composition_settings_dialog_impl::composition_settings_dialog_impl() : QDialog( user_interface_t::Instance().main_window())
+composition_settings_dialog_t& composition_settings_dialog_t::instance()
+{
+    static composition_settings_dialog_t dialog;
+    return dialog;
+}
+
+composition_settings_dialog_t::composition_settings_dialog_t() : QDialog( user_interface_t::Instance().main_window())
 {
     setWindowTitle( "Composition Settings");
 	ui_.setupUi( this);
 }
 
-void composition_settings_dialog_impl::exec_dialog()
+void composition_settings_dialog_t::exec_dialog()
 {
 	// update widgets here...
 	ui_.format_->set_value( document_t::Instance().composition().default_format());

@@ -1,9 +1,9 @@
 // Copyright (c) 2011 Esteban Tovagliari
+// Licensed under the terms of the CDDL License.
+// See CDDL_LICENSE.txt for a copy of the license.
 
 #ifndef RAMEN_ABOUT_DIALOG_HPP
 #define	RAMEN_ABOUT_DIALOG_HPP
-
-#include<loki/Singleton.h>
 
 #include<QDialog>
 
@@ -14,22 +14,20 @@ namespace ramen
 namespace ui
 {
 
-class about_dialog_impl : public QDialog
+class about_dialog_t : public QDialog
 {
     Q_OBJECT
     
 public:
 
+    static about_dialog_t& instance();
+
 private:
 
-    friend struct Loki::CreateUsingNew<about_dialog_impl>;
-
-    about_dialog_impl();
+    about_dialog_t();
 
 	Ui::about ui_;
 };
-
-typedef Loki::SingletonHolder<about_dialog_impl> about_dialog_t;
 
 } // namespace
 } // namespace

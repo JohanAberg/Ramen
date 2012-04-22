@@ -13,11 +13,11 @@ namespace image
 
 keyer_node_t::keyer_node_t( bool add_mask_input) : image_node_t()
 {
-    add_input_plug( input_plug_info_t( ui::palette_t::Instance().color( "front plug"), "Front"));
+    add_input_plug( input_plug_info_t( ui::palette_t::instance().color( "front plug"), "Front"));
     add_output_plug();
 	
 	if( add_mask_input)
-		add_input_plug( input_plug_info_t( ui::palette_t::Instance().color( "matte plug"), "Mask"), true);
+		add_input_plug( input_plug_info_t( ui::palette_t::instance().color( "matte plug"), "Mask"), true);
 }
 
 keyer_node_t::keyer_node_t( const keyer_node_t& other) : image_node_t( other) {}

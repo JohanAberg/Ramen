@@ -42,7 +42,7 @@ namespace image
 tracker_node_t::tracker_node_t() : image_node_t(), tracking_( false)
 {
     set_name( "tracker");
-    add_input_plug( input_plug_info_t( ui::palette_t::Instance().color("front plug"), "Front"));
+    add_input_plug( input_plug_info_t( ui::palette_t::instance().color("front plug"), "Front"));
     param_set().param_changed.connect( boost::bind( &tracker_node_t::param_changed, this, _1, _2));
 }
 

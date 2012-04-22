@@ -1,15 +1,17 @@
 // Copyright (c) 2010 Esteban Tovagliari
+// Licensed under the terms of the CDDL License.
+// See CDDL_LICENSE.txt for a copy of the license.
 
 #ifndef RAMEN_UNDO_STACK_HPP
 #define RAMEN_UNDO_STACK_HPP
+
+#include<ramen/undo/stack_fwd.hpp>
 
 #include<vector>
 #include<stack>
 
 #include<boost/noncopyable.hpp>
 #include<boost/ptr_container/ptr_deque.hpp>
-
-#include<loki/Singleton.h>
 
 #include<ramen/assert.hpp>
 
@@ -20,9 +22,12 @@ namespace ramen
 namespace undo
 {
 
-class stack_impl : boost::noncopyable
+class stack_t : boost::noncopyable
 {
 public:
+
+    stack_t();
+    ~stack_t();
 
     void clear();
 
@@ -49,16 +54,9 @@ public:
 	
 private:
 
-    stack_impl();
-    ~stack_impl();
-
-    friend struct Loki::CreateUsingNew<stack_impl>;
-
     boost::ptr_deque<command_t> undo_stack_;
     boost::ptr_deque<command_t> redo_stack_;
 };
-
-typedef Loki::SingletonHolder<stack_impl> stack_t;
 
 } // namespace
 } // namespace

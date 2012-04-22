@@ -188,7 +188,7 @@ void import_multichannel_exr( const boost::filesystem::path& p, bool relative, b
     }
 
     command->redo();
-    undo::stack_t::Instance().push_back( command);
+    document_t::Instance().undo_stack().push_back( command);
     document_t::Instance().composition().selection_changed();
     ui::user_interface_t::Instance().update();
     delete node;

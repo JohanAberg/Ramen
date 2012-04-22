@@ -1,4 +1,6 @@
 // Copyright (c) 2011 Esteban Tovagliari
+// Licensed under the terms of the CDDL License.
+// See CDDL_LICENSE.txt for a copy of the license.
 
 #include<ramen/python/python.hpp>
 
@@ -10,6 +12,8 @@
 #include<ramen/assert.hpp>
 
 #include<ramen/manipulators/pick.hpp>
+
+#include<ramen/app/document.hpp>
 
 #include<ramen/undo/stack.hpp>
 
@@ -68,7 +72,7 @@ void select_tool_t::key_press_event( const ui::key_press_event_t& event)
 				cmd->redo();
 			}
 			
-			undo::stack_t::Instance().push_back( cmd);
+			document_t::Instance().undo_stack().push_back( cmd);
 			ui::user_interface_t::Instance().update();
 			parent().notify();
 		}
@@ -285,7 +289,7 @@ void select_tool_t::mouse_release_event( const ui::mouse_release_event_t& event)
 						ui::user_interface_t::Instance().update_anim_editors();
 					}
 					
-					undo::stack_t::Instance().push_back( cmd_);
+					document_t::Instance().undo_stack().push_back( cmd_);
 					
 					if( !selected_->track_mouse())
 						parent().notify();

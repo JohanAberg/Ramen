@@ -15,7 +15,7 @@ namespace image
 
 base_warp_node_t::base_warp_node_t() : image_node_t(), notify_pending_( false)
 {
-    add_input_plug( input_plug_info_t( ui::palette_t::Instance().color( "front plug"), "Front"));
+    add_input_plug( input_plug_info_t( ui::palette_t::instance().color( "front plug"), "Front"));
     add_output_plug();
 }
 

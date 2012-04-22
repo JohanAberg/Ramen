@@ -18,7 +18,7 @@ namespace image
 blur_mask_node_t::blur_mask_node_t() : base_blur_node_t()
 {
 	set_name( "blur_msk");
-    add_input_plug( input_plug_info_t( ui::palette_t::Instance().color( "matte plug"), "Mask"));
+    add_input_plug( input_plug_info_t( ui::palette_t::instance().color( "matte plug"), "Mask"));
 }
 
 void blur_mask_node_t::do_create_params()

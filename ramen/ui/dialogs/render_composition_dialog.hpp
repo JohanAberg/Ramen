@@ -1,9 +1,9 @@
 // Copyright (c) 2010 Esteban Tovagliari
+// Licensed under the terms of the CDDL License.
+// See CDDL_LICENSE.txt for a copy of the license.
 
 #ifndef RAMEN_RENDER_COMPOSITION_DIALOG_HPP
 #define	RAMEN_RENDER_COMPOSITION_DIALOG_HPP
-
-#include<loki/Singleton.h>
 
 #include<QDialog>
 
@@ -14,11 +14,13 @@ namespace ramen
 namespace ui
 {
 
-class render_composition_dialog_impl : public QDialog
+class render_composition_dialog_t : public QDialog
 {
     Q_OBJECT
     
 public:
+
+    static render_composition_dialog_t& instance();
 
     int start_frame() const;
     int end_frame() const;
@@ -35,14 +37,10 @@ public:
 
 private:
 
-    friend struct Loki::CreateUsingNew<render_composition_dialog_impl>;
-
-    render_composition_dialog_impl();
+    render_composition_dialog_t();
 
 	Ui::render_composition ui_;
 };
-
-typedef Loki::SingletonHolder<render_composition_dialog_impl> render_composition_dialog_t;
 
 } // namespace
 } // namespace

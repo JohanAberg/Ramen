@@ -124,7 +124,7 @@ application_t::application_t( int argc, char **argv) : system_(),
 
     if( !command_line_)
         splash_->show_message( "Initializing movieio");
-    movieio::factory_t::Instance().init();
+    movieio::factory_t::instance();
 
     if( !command_line_)
         splash_->show_message( "Initializing OpenColorIO");
@@ -452,7 +452,6 @@ void application_t::print_app_info()
 // document handling
 void application_t::create_new_document()
 {
-    undo::stack_t::Instance().clear();
     Loki::DeletableSingleton<document_impl>::GracefulDelete();
     memory_manager().clear_caches();
 }

@@ -8,8 +8,6 @@
 
 #include<boost/noncopyable.hpp>
 
-#include<loki/Singleton.h>
-
 #include<OpenEXR/ImathColor.h>
 
 #include<QColor>
@@ -19,9 +17,11 @@ namespace ramen
 namespace ui
 {
 
-class palette_impl
+class palette_t
 {
 public:
+
+    static palette_t& instance();
 
 	void rebuild();
 
@@ -35,16 +35,12 @@ public:
 
 private:
 
-    friend struct Loki::CreateUsingNew<palette_impl>;
-
-    palette_impl();
-	~palette_impl();
+    palette_t();
+	~palette_t();
 
 	struct impl;
 	std::auto_ptr<impl> pimpl_;
 };
-
-typedef Loki::SingletonHolder<palette_impl> palette_t;
 
 } // namespace
 } // namespace

@@ -89,7 +89,7 @@ void draw_keyframe( const anim_curves_view_t& view, const anim::float_curve_t *c
     if( k.selected())
         pen.setColor( QColor( 255, 0, 0));
     else
-        pen.setColor( palette_t::Instance().qcolor( "text"));
+        pen.setColor( palette_t::instance().qcolor( "text"));
 
     view.painter()->setPen( pen);
 
@@ -386,7 +386,7 @@ void draw_keyframes_visitor::operator ()( const anim::shape_curve2f_t *c)
 		if( curve[i].selected())
 			pen.setColor( QColor( 255, 0, 0));
 		else
-			pen.setColor( palette_t::Instance().qcolor( "text"));
+			pen.setColor( palette_t::instance().qcolor( "text"));
 
 		view_.painter()->setPen( pen);
 		

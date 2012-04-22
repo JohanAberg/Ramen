@@ -12,8 +12,6 @@
 #include<boost/function.hpp>
 #include<boost/filesystem/path.hpp>
 
-#include<loki/Singleton.h>
-
 #include<ramen/flipbook/flipbook.hpp>
 
 namespace ramen
@@ -21,9 +19,11 @@ namespace ramen
 namespace flipbook
 {
 
-class factory_impl : boost::noncopyable
+class factory_t : boost::noncopyable
 {
 public:
+
+    static factory_t& instance();
 
 	typedef boost::function<flipbook_t* ( int, const std::string&, const std::string&)> create_fun_type;
 	
@@ -43,16 +43,12 @@ private:
 
 	int find_flipbook( const std::string& id) const;
 	
-    friend struct Loki::CreateUsingNew<factory_impl>;
-
-    factory_impl();
-    ~factory_impl();
+    factory_t();
+    ~factory_t();
 	
 	std::vector<std::pair<std::string,create_fun_type> > flipbooks_;
 	mutable boost::filesystem::path flipbooks_dir_;
 };
-
-typedef Loki::SingletonHolder<factory_impl> factory_t;
 
 } // namespace
 } // namespace

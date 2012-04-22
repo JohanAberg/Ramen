@@ -124,8 +124,8 @@ private:
 
 retime_node_t::retime_node_t() : image_node_t()
 {
-    add_input_plug( input_plug_info_t( ui::palette_t::Instance().color( "front plug"), "Front"));
-	add_input_plug( input_plug_info_t( ui::palette_t::Instance().color( "back plug"), "Motion Vectors"), true);
+    add_input_plug( input_plug_info_t( ui::palette_t::instance().color( "front plug"), "Front"));
+	add_input_plug( input_plug_info_t( ui::palette_t::instance().color( "back plug"), "Motion Vectors"), true);
     add_output_plug();
 	set_name( "retime");
 }

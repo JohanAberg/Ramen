@@ -279,7 +279,7 @@ void time_controls_t::make_flipbook()
     std::string display_device = viewer_t::Instance().display_device();
 	std::string display_transform = viewer_t::Instance().display_transform();
 
-	flipbook::flipbook_t *flip = flipbook::factory_t::Instance().create( frame_rate, display_device, display_transform);
+	flipbook::flipbook_t *flip = flipbook::factory_t::instance().create( frame_rate, display_device, display_transform);
 
 	if( flip)
 	{

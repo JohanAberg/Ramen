@@ -32,7 +32,7 @@ enum
 transform_blur_node_t::transform_blur_node_t() : image_node_t()
 {
     set_name("move2_blur");
-    add_input_plug( input_plug_info_t( ui::palette_t::Instance().color("front plug"), "Front"));
+    add_input_plug( input_plug_info_t( ui::palette_t::instance().color("front plug"), "Front"));
     add_output_plug();
 }
 

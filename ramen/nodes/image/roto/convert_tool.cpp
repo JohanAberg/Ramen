@@ -4,6 +4,8 @@
 
 #include<ramen/nodes/image/roto/convert_tool.hpp>
 
+#include<ramen/app/document.hpp>
+
 #include<ramen/undo/stack.hpp>
 
 #include<ramen/ui/user_interface.hpp>
@@ -76,7 +78,7 @@ void convert_tool_t::mouse_press_event( const ui::mouse_press_event_t& event)
 			ui::user_interface_t::Instance().update_anim_editors();
 		}
 		
-		undo::stack_t::Instance().push_back( cmd);
+		document_t::Instance().undo_stack().push_back( cmd);
 		ui::user_interface_t::Instance().update();
     }
 	else

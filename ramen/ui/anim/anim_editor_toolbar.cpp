@@ -332,7 +332,7 @@ void anim_editor_toolbar_t::smooth_selected_keys()
 	float filter_size;
 	bool resample;
 	
-	if( smooth_anim_curves_dialog_t::Instance().exec( false, filter_size, resample))
+	if( smooth_anim_curves_dialog_t::instance().exec( false, filter_size, resample))
 		user_interface_t::Instance().anim_editor().smooth_keyframes( filter_size, resample);
 }
 
@@ -341,7 +341,7 @@ void anim_editor_toolbar_t::high_pass_selected_keys()
 	float filter_size;
 	bool resample;
 	
-	if( smooth_anim_curves_dialog_t::Instance().exec( true, filter_size, resample))
+	if( smooth_anim_curves_dialog_t::instance().exec( true, filter_size, resample))
 		user_interface_t::Instance().anim_editor().high_pass_keyframes( filter_size, resample);
 }
 

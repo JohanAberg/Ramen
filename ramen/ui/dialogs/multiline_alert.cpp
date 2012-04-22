@@ -1,4 +1,6 @@
 // Copyright (c) 2010 Esteban Tovagliari
+// Licensed under the terms of the CDDL License.
+// See CDDL_LICENSE.txt for a copy of the license.
 
 #include<ramen/python/python.hpp>
 
@@ -18,7 +20,13 @@ namespace ramen
 namespace ui
 {
 
-multiline_alert_impl::multiline_alert_impl() : QDialog( user_interface_t::Instance().main_window())
+multiline_alert_t& multiline_alert_t::instance()
+{
+    static multiline_alert_t dialog;
+    return dialog;
+}
+
+multiline_alert_t::multiline_alert_t() : QDialog( user_interface_t::Instance().main_window())
 {
     setWindowTitle( "Alert");
 
@@ -35,7 +43,7 @@ multiline_alert_impl::multiline_alert_impl() : QDialog( user_interface_t::Instan
     vlayout->addWidget( buttonBox);
 }
 
-void multiline_alert_impl::show_alert( const std::string& title, const std::string& text)
+void multiline_alert_t::show_alert( const std::string& title, const std::string& text)
 {
 	setWindowTitle( title.c_str());
 	text_->setText( text.c_str());

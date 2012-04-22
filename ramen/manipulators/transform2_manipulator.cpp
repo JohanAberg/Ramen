@@ -48,8 +48,8 @@ void transform2_manipulator_t::do_draw_overlay( const ui::paint_event_t& event) 
     manipulators::draw_xy_axes( p, 70 / event.pixel_scale, 70 / event.pixel_scale,
 								get_value<float>( param_->rotate_param()), 
 								event.aspect_ratio / node->aspect_ratio(),
-								  ui::palette_t::Instance().color( "x_axis"),
-								  ui::palette_t::Instance().color( "y_axis"), event.pixel_scale);
+								  ui::palette_t::instance().color( "x_axis"),
+								  ui::palette_t::instance().color( "y_axis"), event.pixel_scale);
 
     manipulators::draw_cross( p, 3 / event.pixel_scale, 3 / event.pixel_scale, default_color(), event.pixel_scale);
 	manipulators::draw_ellipse( p, 7 / event.pixel_scale, 7 / event.pixel_scale, Imath::Color3c( 255, 255, 255), 20);

@@ -1,4 +1,6 @@
 // Copyright (c) 2011 Esteban Tovagliari
+// Licensed under the terms of the CDDL License.
+// See CDDL_LICENSE.txt for a copy of the license.
 
 #include<ramen/python/python.hpp>
 
@@ -12,7 +14,13 @@ namespace ramen
 namespace ui
 {
 
-about_dialog_impl::about_dialog_impl() : QDialog( user_interface_t::Instance().main_window())
+about_dialog_t& about_dialog_t::instance()
+{
+    static about_dialog_t dialog;
+    return dialog;
+}
+
+about_dialog_t::about_dialog_t() : QDialog( user_interface_t::Instance().main_window())
 {
 	ui_.setupUi( this);
 	// setup version string here.

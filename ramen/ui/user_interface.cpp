@@ -83,7 +83,7 @@ void user_interface_impl::init()
 	
     image_types_str_ = "Image Files (";
 
-	    BOOST_FOREACH( const std::string& ext, movieio::factory_t::Instance().extensions())
+	    BOOST_FOREACH( const std::string& ext, movieio::factory_t::instance().extensions())
 	    {
 			image_types_str_.append( "*.");
 			image_types_str_.append( ext.c_str());
@@ -112,7 +112,7 @@ void user_interface_impl::init_ui_style()
 	qApp->setStyle( style);
 
 	// init palette
-	palette_t::Instance();
+	palette_t::instance();
 }
 
 void user_interface_impl::restore_window_state()
@@ -144,7 +144,6 @@ int user_interface_impl::run( const boost::filesystem::path& p)
 
 void user_interface_impl::quit()
 {
-    undo::stack_t::Instance().clear();
     Loki::DeletableSingleton<document_impl>::GracefulDelete();
 
     quitting_ = true;
@@ -170,12 +169,12 @@ void user_interface_impl::create_new_document()
     document_t::Instance().composition().attach_add_observer( boost::bind( &user_interface_impl::node_added, this, _1));
     document_t::Instance().composition().attach_release_observer( boost::bind( &user_interface_impl::node_released, this, _1));
 
-    render_composition_dialog_t::Instance().set_frame_range( document_t::Instance().composition().start_frame(),
+    render_composition_dialog_t::instance().set_frame_range( document_t::Instance().composition().start_frame(),
 																document_t::Instance().composition().end_frame());
 
-    render_composition_dialog_t::Instance().set_mblur_settings( 0, 1);
+    render_composition_dialog_t::instance().set_mblur_settings( 0, 1);
 
-    render_flipbook_dialog_t::Instance().set_frame_range( document_t::Instance().composition().start_frame(),
+    render_flipbook_dialog_t::instance().set_frame_range( document_t::Instance().composition().start_frame(),
 															document_t::Instance().composition().end_frame());
     
     update();
@@ -222,19 +221,19 @@ void user_interface_impl::open_document( const boost::filesystem::path& p)
 	// read here ui info
 
 	// update the dialogs
-    render_composition_dialog_t::Instance().set_frame_range( document_t::Instance().composition().start_frame(),
+    render_composition_dialog_t::instance().set_frame_range( document_t::Instance().composition().start_frame(),
                                                     document_t::Instance().composition().end_frame());
 
-    render_composition_dialog_t::Instance().set_mblur_settings( 0, 1);
+    render_composition_dialog_t::instance().set_mblur_settings( 0, 1);
 
-    render_flipbook_dialog_t::Instance().set_frame_range( document_t::Instance().composition().start_frame(),
+    render_flipbook_dialog_t::instance().set_frame_range( document_t::Instance().composition().start_frame(),
 															document_t::Instance().composition().end_frame());
 	
     update();
 	std::string err = in->errors();
 	
 	if( !err.empty())
-		multiline_alert_t::Instance().show_alert( "Errors during file open", err);
+		multiline_alert_t::instance().show_alert( "Errors during file open", err);
 }
 
 bool user_interface_impl::save_document()
@@ -363,10 +362,10 @@ void user_interface_impl::set_start_frame( int t)
 										 document_t::Instance().composition().frame(),
 										 document_t::Instance().composition().end_frame());
 
-    render_composition_dialog_t::Instance().set_frame_range( document_t::Instance().composition().start_frame(),
+    render_composition_dialog_t::instance().set_frame_range( document_t::Instance().composition().start_frame(),
 														    document_t::Instance().composition().end_frame());
 
-    render_flipbook_dialog_t::Instance().set_frame_range( document_t::Instance().composition().start_frame(),
+    render_flipbook_dialog_t::instance().set_frame_range( document_t::Instance().composition().start_frame(),
 									    				document_t::Instance().composition().end_frame());
 }
 
@@ -377,10 +376,10 @@ void user_interface_impl::set_end_frame( int t)
 										 document_t::Instance().composition().frame(), 
 										 document_t::Instance().composition().end_frame());
 
-    render_composition_dialog_t::Instance().set_frame_range( document_t::Instance().composition().start_frame(),
+    render_composition_dialog_t::instance().set_frame_range( document_t::Instance().composition().start_frame(),
 														    document_t::Instance().composition().end_frame());
 
-    render_flipbook_dialog_t::Instance().set_frame_range( document_t::Instance().composition().start_frame(),
+    render_flipbook_dialog_t::instance().set_frame_range( document_t::Instance().composition().start_frame(),
 										    				document_t::Instance().composition().end_frame());
 }
 

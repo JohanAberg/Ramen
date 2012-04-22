@@ -1,9 +1,9 @@
 // Copyright (c) 2010 Esteban Tovagliari
+// Licensed under the terms of the CDDL License.
+// See CDDL_LICENSE.txt for a copy of the license.
 
 #ifndef RAMEN_COMP_SETTINGS_DIALOG_HPP
 #define	RAMEN_COMP_SETTINGS_DIALOG_HPP
-
-#include<loki/Singleton.h>
 
 #include<QDialog>
 
@@ -16,24 +16,22 @@ namespace ui
 
 class image_format_widget_t;
 
-class composition_settings_dialog_impl : public QDialog
+class composition_settings_dialog_t : public QDialog
 {
     Q_OBJECT
 
 public:
 
+    static composition_settings_dialog_t& instance();
+
     void exec_dialog();
 
 private:
 
-    friend struct Loki::CreateUsingNew<composition_settings_dialog_impl>;
-
-    composition_settings_dialog_impl();
+    composition_settings_dialog_t();
 
 	Ui::composition_settings ui_;
 };
-
-typedef Loki::SingletonHolder<composition_settings_dialog_impl> composition_settings_dialog_t;
 
 } // namespace
 } // namespace

@@ -141,7 +141,7 @@ void image_seq_reader_t::get_sequence_info()
 		{
 			try
 			{
-				std::auto_ptr<imageio::reader_t> r( imageio::factory_t::Instance().reader_for_image( seq_( i)));
+				std::auto_ptr<imageio::reader_t> r( imageio::factory_t::instance().reader_for_image( seq_( i)));
 				reader_.reset( r.release());
 			
 				if( reader_)
@@ -156,7 +156,7 @@ void image_seq_reader_t::get_sequence_info()
 	{
 		try
 		{
-			std::auto_ptr<imageio::reader_t> r( imageio::factory_t::Instance().reader_for_image( seq_()));
+			std::auto_ptr<imageio::reader_t> r( imageio::factory_t::instance().reader_for_image( seq_()));
 			reader_.reset( r.release());
 		}
 		catch( ...)
@@ -183,7 +183,7 @@ void image_seq_reader_t::create_reader()
 {
 	try
 	{
-		std::auto_ptr<imageio::reader_t> r( imageio::factory_t::Instance().reader_for_image( seq_( frame_)));
+		std::auto_ptr<imageio::reader_t> r( imageio::factory_t::instance().reader_for_image( seq_( frame_)));
 		reader_.reset( r.release());
 	}
 	catch( imageio::exception& e)

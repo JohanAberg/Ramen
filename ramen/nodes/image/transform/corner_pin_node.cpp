@@ -89,7 +89,7 @@ void corner_pin_node_t::param_changed( param_t *p, param_t::change_reason reason
 	
 	if( reason == param_t::user_edited && p == &param( "apply_track"))
 	{		
-		const tracker_node_t *tracker = ui::apply_corner_track_dialog_t::Instance().exec();
+		const tracker_node_t *tracker = ui::apply_corner_track_dialog_t::instance().exec();
 		
 		if( tracker)
 		{
