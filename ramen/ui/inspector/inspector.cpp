@@ -67,7 +67,7 @@ inspector_t::inspector_t() : window_(0), left_margin_( 0), width_( 0)
     separator->setLineWidth( 1);
     layout2->addWidget( separator);
 
-    view_ = new QrContainerWidget();
+    view_ = new container_widget_t();
     layout2->addWidget( view_);
     top->setLayout( layout2);
     scroll_->setWidget( top);
@@ -146,14 +146,14 @@ void inspector_t::edit_node( node_t *n)
 {
     if( current_ != factory_.end())
     {
-        view_->clearContents();
+        view_->clear_contents();
         current_ = factory_.end();
     }
 
     if( n != 0)
     {
         current_ = factory_.create_panel( n);
-        view_->setContents( current_->second->widget());
+        view_->set_contents( current_->second->widget());
     }
 
     update_header_widgets();

@@ -359,7 +359,7 @@ float user_interface_impl::frame() const
 void user_interface_impl::set_start_frame( int t)
 {
     document_t::Instance().composition().set_start_frame( t);
-    main_window()->time_slider()->update( document_t::Instance().composition().start_frame(),
+    main_window()->time_slider().update( document_t::Instance().composition().start_frame(),
 										 document_t::Instance().composition().frame(),
 										 document_t::Instance().composition().end_frame());
 
@@ -373,7 +373,7 @@ void user_interface_impl::set_start_frame( int t)
 void user_interface_impl::set_end_frame( int t)
 {
     document_t::Instance().composition().set_end_frame( t);
-    main_window()->time_slider()->update( document_t::Instance().composition().start_frame(), 
+    main_window()->time_slider().update( document_t::Instance().composition().start_frame(),
 										 document_t::Instance().composition().frame(), 
 										 document_t::Instance().composition().end_frame());
 
@@ -387,7 +387,7 @@ void user_interface_impl::set_end_frame( int t)
 void user_interface_impl::set_frame( int t)
 {
     document_t::Instance().composition().set_frame( t);
-    main_window()->time_slider()->update( document_t::Instance().composition().start_frame(),
+    main_window()->time_slider().update( document_t::Instance().composition().start_frame(),
 										 document_t::Instance().composition().frame(),
 										 document_t::Instance().composition().end_frame());
 

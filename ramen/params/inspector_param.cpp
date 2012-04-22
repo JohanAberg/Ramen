@@ -36,7 +36,7 @@ void inspector_param_t::set_parameterised( parameterised_t *p)
 		contents_ = 0;
 		
 		if( widget_)
-	        widget_->clearContents();		
+	        widget_->clear_contents();
 	}
 
 	if( p)
@@ -47,14 +47,14 @@ void inspector_param_t::set_parameterised( parameterised_t *p)
 		if( widget_)
 		{
 			QWidget *w = ui::user_interface_t::Instance().inspector().panel_factory().create_panel( p)->second->widget();
-			widget_->setContents( w);
+			widget_->set_contents( w);
 		}
 	}
 }
 
 QWidget *inspector_param_t::do_create_widgets()
 {
-	widget_ = new QrContainerWidget();
+	widget_ = new ui::container_widget_t();
     widget_->setSizePolicy( QSizePolicy::Fixed, QSizePolicy::Preferred);
     widget_->setMinimumSize( ui::user_interface_t::Instance().inspector().width()+16, 0);
     widget_->setMaximumSize( ui::user_interface_t::Instance().inspector().width()+16, QWIDGETSIZE_MAX);
@@ -63,7 +63,7 @@ QWidget *inspector_param_t::do_create_widgets()
 	if( contents_)
 	{
 		QWidget *w = ui::user_interface_t::Instance().inspector().panel_factory().create_panel( contents_)->second->widget();
-		widget_->setContents( w);
+		widget_->set_contents( w);
 	}
 	
 	return widget_;

@@ -1,14 +1,16 @@
 // Copyright (c) 2010 Esteban Tovagliari
+// Licensed under the terms of the CDDL License.
+// See CDDL_LICENSE.txt for a copy of the license.
 
 #ifndef RAMEN_UI_TIME_CONTROLS_HPP
 #define	RAMEN_UI_TIME_CONTROLS_HPP
+
+#include<ramen/ui/time_controls_fwd.hpp>
 
 #include<map>
 
 #include<boost/noncopyable.hpp>
 #include<boost/signal.hpp>
-
-#include<loki/Singleton.h>
 
 #include<QWidget>
 
@@ -20,13 +22,13 @@ namespace ramen
 namespace ui
 {
 
-class panel_t;
-
-class time_controls_impl : public QObject
+class time_controls_t : public QObject
 {
     Q_OBJECT
 
 public:
+
+    time_controls_t();
 
     QWidget *widget() { return window_;}
 
@@ -54,11 +56,7 @@ public Q_SLOTS:
 
 private:
 
-    time_controls_impl();
-
     void stop_playing();
-
-    friend struct Loki::CreateUsingNew<time_controls_impl>;
 
     QWidget *window_;
 
@@ -70,8 +68,6 @@ private:
     
     bool stop_playing_;
 };
-
-typedef Loki::SingletonHolder<time_controls_impl> time_controls_t;
 
 } // namespace
 } // namespace

@@ -1,23 +1,30 @@
 // Copyright (c) 2010 Esteban Tovagliari
+// Licensed under the terms of the CDDL License.
+// See CDDL_LICENSE.txt for a copy of the license.
 
-#include<ramen/Qr/QrLabelSeparator.hpp>
+#include<ramen/ui/widgets/label_separator.hpp>
 
 #include<QFrame>
 #include<QHBoxLayout>
 
-QrLabelSeparator::QrLabelSeparator( QWidget *parent) : QWidget( parent)
+namespace ramen
+{
+namespace ui
+{
+
+label_separator_t::label_separator_t( QWidget *parent) : QWidget( parent)
 {
     label_ = new QLabel();
     init();
 }
 
-QrLabelSeparator::QrLabelSeparator( const QString& text, QWidget *parent) : QWidget( parent)
+label_separator_t::label_separator_t( const QString& text, QWidget *parent) : QWidget( parent)
 {
     label_ = new QLabel( text);
     init();
 }
 
-void QrLabelSeparator::init()
+void label_separator_t::init()
 {
     QHBoxLayout *hlayout = new QHBoxLayout( this);
 
@@ -33,3 +40,6 @@ void QrLabelSeparator::init()
     line->setFrameShadow( QFrame::Sunken);
     hlayout->addWidget( line);
 }
+
+} // ui
+} // ramen

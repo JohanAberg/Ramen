@@ -3,6 +3,7 @@
 #ifndef RAMEN_UI_COMPOSITION_VIEW_FWD_HPP
 #define	RAMEN_UI_COMPOSITION_VIEW_FWD_HPP
 
+
 namespace ramen
 {
 namespace ui

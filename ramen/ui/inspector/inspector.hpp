@@ -9,12 +9,11 @@
 
 #include<boost/noncopyable.hpp>
 
-#include<ramen/Qr/QrContainerWidget.hpp>
-
 #include<ramen/nodes/node_fwd.hpp>
 
 #include<ramen/ui/inspector/panel_factory.hpp>
 
+#include<ramen/ui/widgets/container_widget.hpp>
 #include<ramen/ui/widgets/line_edit.hpp>
 
 class QScrollArea;
@@ -69,7 +68,7 @@ private:
     ui::line_edit_t *name_edit_;
 	QPushButton *help_;
 
-    QrContainerWidget *view_;
+    container_widget_t *view_;
 
 	panel_factory_t factory_;
     panel_factory_t::iterator current_;

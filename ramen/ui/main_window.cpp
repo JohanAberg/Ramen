@@ -1,4 +1,6 @@
 // Copyright (c) 2010 Esteban Tovagliari
+// Licensed under the terms of the CDDL License.
+// See CDDL_LICENSE.txt for a copy of the license.
 
 #include<ramen/python/python.hpp>
 
@@ -27,6 +29,7 @@
 #include<QSettings>
 #include<QStringList>
 #include<QFileInfo>
+#include<QToolBar>
 
 #include<ramen/version.hpp>
 
@@ -90,6 +93,8 @@ main_window_t::main_window_t() : QMainWindow()
 
 	recently_opened_.assign( max_recently_opened_files, (QAction *) 0);
 
+    time_controls_.reset( new time_controls_t());
+
     create_actions();
     create_menus();
 
@@ -103,13 +108,6 @@ main_window_t::main_window_t() : QMainWindow()
     inspector_dock_->setAllowedAreas( Qt::RightDockWidgetArea | Qt::LeftDockWidgetArea | Qt::BottomDockWidgetArea);
     inspector_dock_->setWidget( user_interface_t::Instance().inspector().widget());
     add_dock_widget( Qt::RightDockWidgetArea, inspector_dock_);
-
-    // vcr controls
-    time_controls_dock_ = new QDockWidget( "Time Controls", this);
-    time_controls_dock_->setObjectName( "time_controls_dock");
-    time_controls_dock_->setAllowedAreas( Qt::RightDockWidgetArea | Qt::LeftDockWidgetArea | Qt::BottomDockWidgetArea);
-    time_controls_dock_->setWidget( time_controls_t::Instance().widget());
-    add_dock_widget( Qt::RightDockWidgetArea, time_controls_dock_);
 
 	// python
 	py_console_dock_ = new QDockWidget( "Python Console", this);
@@ -157,7 +155,7 @@ main_window_t::main_window_t() : QMainWindow()
 	    separator->setLineWidth( 1);
 	    layout->addWidget( separator);
 
-		layout->addWidget( comp_view_->create_toolbar());
+		layout->addWidget( composition_view().create_toolbar());
 		all_comp_view->setLayout( layout);
 
 		composition_dock_->setWidget( all_comp_view);
@@ -166,21 +164,10 @@ main_window_t::main_window_t() : QMainWindow()
 	}
 	
     // image view
-    QWidget *viewer_widget = new QWidget();
-    time_slider_ = new time_slider_t();
-    connect( time_slider_, SIGNAL( start_frame_changed( int)), &user_interface_t::Instance(), SLOT( set_start_frame( int)));
-    connect( time_slider_, SIGNAL( end_frame_changed( int)), &user_interface_t::Instance(), SLOT( set_end_frame( int)));
-    connect( time_slider_, SIGNAL( time_changed( int)), &user_interface_t::Instance(), SLOT( set_frame( int)));
+    setCentralWidget( viewer_t::Instance().widget() );
 
-    QVBoxLayout *layout = new QVBoxLayout();
-    layout->setSpacing( 0);
-    layout->setContentsMargins( 0, 0, 0, 0);
-    layout->addWidget( viewer_t::Instance().widget());
-    layout->addWidget( time_slider_);
-    viewer_widget->setLayout( layout);
-    setCentralWidget( viewer_widget);
-
-    // add hotkeys actions here
+    // time toolbar
+	addToolBar( Qt::BottomToolBarArea, create_time_toolbar());
 
     // create the status bar
     statusBar()->showMessage( RAMEN_NAME_FULL_VERSION_STR);
@@ -191,6 +178,32 @@ main_window_t::main_window_t() : QMainWindow()
     setWindowTitle( "Ramen");
 
     setWindowIcon( QIcon( ":small_app_icon.png"));
+}
+
+main_window_t::~main_window_t()
+{
+    // Do not remove, it's needed by auto_ptr
+    // to handle correctly incomplete types.
+}
+
+QToolBar *main_window_t::create_time_toolbar()
+{
+	QToolBar *toolbar = new QToolBar( "Time Controls");
+	toolbar->setObjectName( "time_controls");
+	toolbar->setFloatable( false);
+	toolbar->setMovable( false);
+
+    time_slider_ = new time_slider_t();
+    time_slider_->setSizePolicy( QSizePolicy::Expanding, time_slider_->sizePolicy().verticalPolicy());
+    connect( time_slider_, SIGNAL( start_frame_changed( int)), &user_interface_t::Instance(), SLOT( set_start_frame( int)));
+    connect( time_slider_, SIGNAL( end_frame_changed( int)), &user_interface_t::Instance(), SLOT( set_end_frame( int)));
+    connect( time_slider_, SIGNAL( time_changed( int)), &user_interface_t::Instance(), SLOT( set_frame( int)));
+
+	toolbar->addWidget( time_slider_);
+	toolbar->addSeparator();
+
+	toolbar->addWidget( time_controls_->widget());
+	return toolbar;
 }
 
 void main_window_t::add_dock_widget( Qt::DockWidgetArea area, QDockWidget *dock)
@@ -323,13 +336,13 @@ void main_window_t::create_actions()
     next_frame_ = new QAction( this);
     next_frame_->setShortcut( Qt::Key_Right);
     next_frame_->setShortcutContext( Qt::WidgetWithChildrenShortcut);
-    connect( next_frame_, SIGNAL( triggered()), &(time_controls_t::Instance()), SLOT( next_frame()));
+    connect( next_frame_, SIGNAL( triggered()), &(time_controls()), SLOT( next_frame()));
     addAction( next_frame_);
 
     prev_frame_ = new QAction( this);
     prev_frame_->setShortcut( Qt::Key_Left);
     prev_frame_->setShortcutContext( Qt::WidgetWithChildrenShortcut);
-    connect( prev_frame_, SIGNAL( triggered()), &(time_controls_t::Instance()), SLOT( prev_frame()));
+    connect( prev_frame_, SIGNAL( triggered()), &(time_controls()), SLOT( prev_frame()));
     addAction( prev_frame_);
 }
 
@@ -663,7 +676,7 @@ void main_window_t::import_cdl()
 			return;
 		}
 	
-		composition_view()->place_node( p.get());
+		composition_view().place_node( p.get());
 		node_t *n = p.get(); // save for later use
 		std::auto_ptr<undo::command_t> c( new undo::add_node_command_t( p, 0));
 		document_t::Instance().composition().deselect_all();
@@ -1037,9 +1050,9 @@ void main_window_t::create_node()
 		src = 0;
 	
 	if( src)
-		composition_view()->place_node_near_node( p.get(), src);
+		composition_view().place_node_near_node( p.get(), src);
 	else
-		composition_view()->place_node( p.get());
+		composition_view().place_node( p.get());
 	
 	node_t *n = p.get(); // save for later use
 	std::auto_ptr<undo::command_t> c( new undo::add_node_command_t( p, src));
@@ -1072,8 +1085,8 @@ void main_window_t::update()
 			 document_t::Instance().composition().frame(),
 			 document_t::Instance().composition().end_frame());
 
-    composition_view()->update();
-    time_controls_t::Instance().update();
+    composition_view().update();
+    time_controls_->update();
 }
 
 void main_window_t::update_recent_files_menu( const boost::filesystem::path& p)

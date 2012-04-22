@@ -3,8 +3,6 @@ CONFIGURE_FILE( ${PROJECT_SOURCE_DIR}/ramen/version.hpp.in ${PROJECT_SOURCE_DIR}
 INCLUDE_DIRECTORIES( ${CMAKE_CURRENT_BINARY_DIR})
 
 SET( RAMEN_MOC_CLASSES  Qr/QrColorButton.hpp
-						Qr/QrContainerWidget.hpp
-						Qr/QrLabelSeparator.hpp
 
 						Qr/ColorPicker/QrColorPicker.hpp
 						Qr/ColorPicker/QrColorSwatch.hpp
@@ -94,11 +92,20 @@ SET( RAMEN_MOC_CLASSES  Qr/QrColorButton.hpp
 						ui/viewer/viewer_context.hpp
 						ui/viewer/viewer_strategy.hpp
 
+						ui/widgets/container_widget.hpp
 						ui/widgets/double_spinbox.hpp
 						ui/widgets/eyedropper_button.hpp
 						ui/widgets/group_box.hpp
+						ui/widgets/label_separator.hpp
 						ui/widgets/line_edit.hpp
 						ui/widgets/image_format_widget.hpp
+
+						ui/widgets/ocio_colorspace_combo.hpp
+						ui/widgets/ocio_combo.hpp
+						ui/widgets/ocio_display_combo.hpp
+						ui/widgets/ocio_display_widget.hpp
+						ui/widgets/ocio_view_combo.hpp
+
 						ui/widgets/param_spinbox.hpp
 						ui/widgets/spinbox.hpp
 						ui/widgets/text_edit.hpp
@@ -111,8 +118,6 @@ SET( RAMEN_SOURCES  main.cpp
 
                     Qr/QrColor.cpp
                     Qr/QrColorButton.cpp
-                    Qr/QrContainerWidget.cpp
-                    Qr/QrLabelSeparator.cpp
 
                     Qr/ColorPicker/QrColorPicker.cpp
                     Qr/ColorPicker/QrColorSwatch.cpp
@@ -622,11 +627,20 @@ SET( RAMEN_SOURCES  main.cpp
                     ui/viewer/viewer_strategy.cpp
                     ui/viewer/viewer.cpp
 
+                    ui/widgets/container_widget.cpp
 					ui/widgets/double_spinbox.cpp
                     ui/widgets/eyedropper_button.cpp
 					ui/widgets/image_format_widget.cpp
 					ui/widgets/group_box.cpp
+                    ui/widgets/label_separator.cpp
 					ui/widgets/line_edit.cpp
+
+					ui/widgets/ocio_colorspace_combo.cpp
+					ui/widgets/ocio_combo.cpp
+					ui/widgets/ocio_display_combo.cpp
+					ui/widgets/ocio_display_widget.cpp
+					ui/widgets/ocio_view_combo.cpp
+
 					ui/widgets/param_spinbox.cpp
 					ui/widgets/spinbox.cpp
 					ui/widgets/text_edit.cpp

@@ -9,7 +9,7 @@
 
 #include<QPointer>
 
-#include<ramen/Qr/QrContainerWidget.hpp>
+#include<ramen/ui/widgets/container_widget.hpp>
 
 namespace ramen
 {
@@ -41,7 +41,7 @@ private:
 	
 	void parameterised_deleted( parameterised_t *p);
 	
-	QPointer<QrContainerWidget> widget_;
+	QPointer<ui::container_widget_t> widget_;
 	parameterised_t *contents_;
 	boost::signals2::connection connection_;
 };

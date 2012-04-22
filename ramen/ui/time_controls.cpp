@@ -1,4 +1,6 @@
 // Copyright (c) 2010 Esteban Tovagliari
+// Licensed under the terms of the CDDL License.
+// See CDDL_LICENSE.txt for a copy of the license.
 
 #include<ramen/python/python.hpp>
 
@@ -28,7 +30,7 @@ namespace ramen
 namespace ui
 {
 
-time_controls_impl::time_controls_impl() : window_(0), stop_playing_( true)
+time_controls_t::time_controls_t() : window_(0), stop_playing_( true)
 {
     window_ = new QWidget();
     window_->resize( width(), height());
@@ -115,14 +117,14 @@ time_controls_impl::time_controls_impl() : window_(0), stop_playing_( true)
     layout->addWidget( autokey_);
 }
 
-int time_controls_impl::width() const
+int time_controls_t::width() const
 { 
     return user_interface_t::Instance().inspector().widget()->width();
 }
 
-int time_controls_impl::height() const { return 64;}
+int time_controls_t::height() const { return 64;}
 
-bool time_controls_impl::eventFilter( QObject *watched, QEvent *event)
+bool time_controls_t::eventFilter( QObject *watched, QEvent *event)
 {
     if( event->type() == QEvent::KeyPress)
     {
@@ -144,7 +146,7 @@ bool time_controls_impl::eventFilter( QObject *watched, QEvent *event)
     return QObject::eventFilter( watched, event);
 }
 
-void time_controls_impl::update()
+void time_controls_t::update()
 {
 	node_t *n = document_t::Instance().composition().selected_node();
 	const image_node_t *in = dynamic_cast<const image_node_t*>( n);
@@ -155,12 +157,12 @@ void time_controls_impl::update()
     autokey_->blockSignals( false);
 }
 
-void time_controls_impl::goto_start()
+void time_controls_t::goto_start()
 {
     user_interface_t::Instance().set_frame( user_interface_t::Instance().start_frame());
 }
 
-void time_controls_impl::prev_frame()
+void time_controls_t::prev_frame()
 {
     int frame = user_interface_t::Instance().frame() - 1;
 
@@ -170,9 +172,9 @@ void time_controls_impl::prev_frame()
     user_interface_t::Instance().set_frame( frame);
 }
 
-void time_controls_impl::prev_key() {}
+void time_controls_t::prev_key() {}
 
-void time_controls_impl::play_back()
+void time_controls_t::play_back()
 {
     stop_playing_ = false;
 
@@ -194,7 +196,7 @@ void time_controls_impl::play_back()
     }
 }
 
-void time_controls_impl::play_fwd()
+void time_controls_t::play_fwd()
 {
     stop_playing_ = false;
 
@@ -216,9 +218,9 @@ void time_controls_impl::play_fwd()
     }
 }
 
-void time_controls_impl::next_key() {}
+void time_controls_t::next_key() {}
 
-void time_controls_impl::next_frame()
+void time_controls_t::next_frame()
 {
     int frame = user_interface_t::Instance().frame() + 1;
 
@@ -228,12 +230,12 @@ void time_controls_impl::next_frame()
     user_interface_t::Instance().set_frame( frame);
 }
 
-void time_controls_impl::goto_end()
+void time_controls_t::goto_end()
 {
     user_interface_t::Instance().set_frame( user_interface_t::Instance().end_frame());
 }
 
-void time_controls_impl::stop_playing()
+void time_controls_t::stop_playing()
 {
     play_fwd_->blockSignals( true);
     play_fwd_->setChecked( false);
@@ -247,12 +249,12 @@ void time_controls_impl::stop_playing()
     stop_playing_ = true;
 }
 
-void time_controls_impl::set_autokey( bool b)
+void time_controls_t::set_autokey( bool b)
 {
 	document_t::Instance().composition().set_autokey( b);
 }
 
-void time_controls_impl::make_flipbook()
+void time_controls_t::make_flipbook()
 {
 	node_t *n = document_t::Instance().composition().selected_node();
 	image_node_t *inode = dynamic_cast<image_node_t*>( n);

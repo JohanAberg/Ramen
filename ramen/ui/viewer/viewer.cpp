@@ -12,8 +12,6 @@
 #include<QToolButton>
 #include<QLabel>
 
-#include<ramen/Qr/QrContainerWidget.hpp>
-
 #include<ramen/app/application.hpp>
 
 #include<ramen/nodes/node.hpp>
@@ -23,6 +21,7 @@
 #include<ramen/ui/viewer/viewer_context.hpp>
 #include<ramen/ui/user_interface.hpp>
 #include<ramen/ui/widgets/double_spinbox.hpp>
+#include<ramen/ui/widgets/container_widget.hpp>
 
 namespace ramen
 {
@@ -71,7 +70,7 @@ void viewer_impl::init()
     view_ = new viewer::viewer_context_t();
     layout->addWidget( view_);
 
-    active_toolbar_ = new QrContainerWidget();
+    active_toolbar_ = new container_widget_t();
     active_toolbar_->setMinimumSize( 0, toolbar_height());
     active_toolbar_->setMaximumSize( QWIDGETSIZE_MAX, toolbar_height());
     active_toolbar_->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Fixed);
@@ -155,7 +154,7 @@ void viewer_impl::init()
     separator->setLineWidth( 1);
     horizontalLayout->addWidget( separator);
 
-    viewer_toolbar_ = new QrContainerWidget();
+    viewer_toolbar_ = new container_widget_t();
     viewer_toolbar_->setMinimumSize( 0, toolbar_height());
     viewer_toolbar_->setMaximumSize( QWIDGETSIZE_MAX, toolbar_height());
     viewer_toolbar_->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Fixed);
@@ -237,14 +236,14 @@ viewer::viewer_strategy_t& viewer_impl::current_viewer()				{ return view_->stra
 void viewer_impl::update() const { view_->update();}
 void viewer_impl::swap_buffers() { view_->swapBuffers();}
 
-void viewer_impl::set_viewer_toolbar( QWidget *w) { viewer_toolbar_->setContents( w);}
+void viewer_impl::set_viewer_toolbar( QWidget *w) { viewer_toolbar_->set_contents( w);}
 
 void viewer_impl::set_active_node( node_t *n)
 {
     // handle the active toolbar
     if( current_node_toolbar_ != node_toolbars_.end())
     {
-        active_toolbar_->clearContents();
+        active_toolbar_->clear_contents();
         current_node_toolbar_ = node_toolbars_.end();
     }
 
@@ -259,7 +258,7 @@ void viewer_impl::set_active_node( node_t *n)
         }
 
         current_node_toolbar_ = node_toolbars_.find( n);
-        active_toolbar_->setContents( current_node_toolbar_->second);
+        active_toolbar_->set_contents( current_node_toolbar_->second);
     }
 
     view_->set_active_node( n);

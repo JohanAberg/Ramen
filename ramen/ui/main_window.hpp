@@ -10,21 +10,25 @@
 #include<vector>
 #include<map>
 #include<string>
+#include<memory>
 
 #include<QMainWindow>
-
-#include<ramen/ui/node_menu.hpp>
+#include<QDockWidget>
 
 #include<boost/filesystem/fstream.hpp>
 
 #include<ramen/serialization/archive_fwd.hpp>
 
-#include<QDockWidget>
+#include<ramen/ui/node_menu.hpp>
+#include<ramen/ui/compview/composition_view_fwd.hpp>
+#include<ramen/ui/time_controls_fwd.hpp>
 
 class QAction;
 class QMenu;
 class QMenuBar;
 class QDockWidget;
+class QToolBar;
+class QrTimeSlider;
 
 namespace ramen
 {
@@ -41,11 +45,18 @@ class main_window_t : public QMainWindow
 public:
 
     main_window_t();
+    ~main_window_t();
 
 	void add_dock_widget( Qt::DockWidgetArea area, QDockWidget *dock);
 
-    composition_view_t *composition_view()  { return comp_view_;}
-    time_slider_t *time_slider()			{ return time_slider_;}
+    const composition_view_t& composition_view() const  { return *comp_view_;}
+    composition_view_t& composition_view()              { return *comp_view_;}
+
+    const time_slider_t& time_slider() const    { return *time_slider_;}
+    time_slider_t& time_slider()                { return *time_slider_;}
+
+    const time_controls_t& time_controls() const    { return *time_controls_;}
+    time_controls_t& time_controls()                { return *time_controls_;}
 
 	const std::vector<node_menu_t*>& node_menus() const;
 
@@ -103,6 +114,8 @@ public Q_SLOTS:
     
 private:
 
+    QToolBar *create_time_toolbar();
+
     void create_actions();
     void create_menus();
     void create_import_export_menus();
@@ -119,11 +132,11 @@ private:
 	
     time_slider_t *time_slider_;
     composition_view_t *comp_view_;
+    std::auto_ptr<time_controls_t> time_controls_;
 
     QDockWidget *inspector_dock_;
     QDockWidget *composition_dock_;
     QDockWidget *viewer_dock_;
-    QDockWidget *time_controls_dock_;
     QDockWidget *anim_editor_dock_;	
     QDockWidget *py_console_dock_;
     QDockWidget *py_editor_dock_;

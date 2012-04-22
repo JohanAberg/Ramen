@@ -30,12 +30,12 @@ class QDoubleSpinBox;
 class QToolButton;
 class QLabel;
 
-class QrContainerWidget;
-
 namespace ramen
 {
 namespace ui
 {
+
+class container_widget_t;
 
 class viewer_impl : public QObject
 {
@@ -109,8 +109,8 @@ private:
 
     QLabel *status_;
     viewer::viewer_context_t *view_;
-    QrContainerWidget *active_toolbar_;
-    QrContainerWidget *viewer_toolbar_;
+    container_widget_t *active_toolbar_;
+    container_widget_t *viewer_toolbar_;
 
     QToolButton *update_btn_;
     QComboBox *result_combo_;

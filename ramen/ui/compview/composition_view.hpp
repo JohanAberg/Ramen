@@ -1,11 +1,13 @@
 // Copyright (c) 2010 Esteban Tovagliari
+// Licensed under the terms of the CDDL License.
+// See CDDL_LICENSE.txt for a copy of the license.
 
 #ifndef RAMEN_UI_COMPOSITION_VIEW_HPP
 #define	RAMEN_UI_COMPOSITION_VIEW_HPP
 
-#include<ramen/python/python.hpp>
-
 #include<ramen/ui/compview/composition_view_fwd.hpp>
+
+#include<ramen/python/python.hpp>
 
 #include<boost/function.hpp>
 
@@ -14,8 +16,9 @@
 
 #include<ramen/bezier/curve.hpp>
 
-#include<ramen/ui/viewport.hpp>
+#include<ramen/nodes/node_fwd.hpp>
 
+#include<ramen/ui/viewport.hpp>
 #include<ramen/ui/compview/composition_view_layout.hpp>
 #include<ramen/ui/compview/composition_view_toolbar.hpp>
 #include<ramen/ui/compview/pick_result.hpp>
@@ -24,9 +27,6 @@ class QAction;
 
 namespace ramen
 {
-
-class node_t;
-
 namespace ui
 {
 
