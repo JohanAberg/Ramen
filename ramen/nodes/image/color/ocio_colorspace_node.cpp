@@ -173,7 +173,7 @@ OCIO::ConstContextRcPtr ocio_colorspace_node_t::get_local_context()
 }
 
 // factory
-node_ptr_t create_ocio_colorspace_node() { return new ocio_colorspace_node_t();}
+node_t *create_ocio_colorspace_node() { return new ocio_colorspace_node_t();}
 
 const node_metaclass_t *ocio_colorspace_node_t::metaclass() const { return &ocio_colorspace_node_metaclass();}
 

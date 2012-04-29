@@ -640,4 +640,9 @@ void node_t::write_node_info( serialization::yaml_oarchive_t& out) const
 		out << YAML::Key << "num_inputs" << YAML::Value << num_inputs();
 }
 
+node_t* new_clone( const node_t& other)
+{
+    return other.clone();
+}
+
 } // namespace

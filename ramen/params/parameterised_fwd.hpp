@@ -5,13 +5,10 @@
 #ifndef RAMEN_PARAMETERISED_FWD_HPP
 #define	RAMEN_PARAMETERISED_FWD_HPP
 
-#include<boost/intrusive_ptr.hpp>
-
 namespace ramen
 {
 
 class parameterised_t;
-typedef boost::intrusive_ptr<parameterised_t> parameterised_ptr_t;
 
 } // namespace
 

@@ -68,7 +68,7 @@ composition_t::composition_t()
 composition_t::~composition_t()
 {
     for( node_iterator it( nodes().begin()); it != nodes().end(); ++it)
-        released_( it->get());
+        released_( &(*it));
 }
 
 const unique_name_map_t<node_t*>& composition_t::node_map() const { return node_map_;}
@@ -98,7 +98,7 @@ bool composition_t::set_ocio_context_key_value( int index, const std::string& ke
 	return false;
 }
 
-void composition_t::add_node( node_ptr_t n)
+void composition_t::add_node( std::auto_ptr<node_t> n)
 {
     node_map_.insert( n.get());
     n->set_composition( this);
@@ -112,7 +112,7 @@ void composition_t::add_node( node_ptr_t n)
     added_( n.get());
 }
 
-node_ptr_t composition_t::release_node( node_t *n)
+std::auto_ptr<node_t> composition_t::release_node( node_t *n)
 {
     released_( n);
     node_map_.remove( n->name());
@@ -154,14 +154,14 @@ void composition_t::merge_composition( composition_t& other)
 	// rename all nodes from other composition
 	unique_name_map_t<node_t*> nmap( node_map());
 
-	BOOST_FOREACH( node_ptr_t& n, other.nodes())
+	BOOST_FOREACH( node_t& n, other.nodes())
 	{
-		std::string new_name( nmap.make_name_unique( n->name()));
+		std::string new_name( nmap.make_name_unique( n.name()));
 
-		if( new_name != n->name())
-			other.rename_node( n.get(), new_name);
+		if( new_name != n.name())
+			other.rename_node( &n, new_name);
 
-		nmap.insert_null( n->name());
+		nmap.insert_null( n.name());
 	}
 
     // save edges
@@ -173,9 +173,9 @@ void composition_t::merge_composition( composition_t& other)
     // transfer nodes
     while( !other.nodes().empty())
     {
-		node_ptr_t n = other.nodes()[0];
-		other.release_node( n.get());
-		add_node( n);
+		node_t& n = other.nodes()[0];
+		std::auto_ptr<node_t> nn( other.release_node( &n));
+		add_node( nn);
     }
 
     BOOST_FOREACH( edge_t& e, other_edges)
@@ -193,14 +193,14 @@ void composition_t::notify_all_dirty()
 {
 	for( node_iterator it( nodes().begin()), ie = nodes().end(); it != ie; ++it)
 	{
-		if( (*it)->notify_dirty())
-			detail::set_outputs_color( **it, black);
+		if( it->notify_dirty())
+			detail::set_outputs_color( *it, black);
 	}
 
 	for( node_iterator it( nodes().begin()), ie = nodes().end(); it != ie; ++it)
 	{
-		if( (*it)->notify_dirty())
-			detail::breadth_first_outputs_recursive_search( **it, boost::bind( &node_t::do_notify, _1));
+		if( it->notify_dirty())
+			detail::breadth_first_outputs_recursive_search( *it, boost::bind( &node_t::do_notify, _1));
 	}
 }
 
@@ -285,8 +285,8 @@ node_t *composition_t::selected_node()
 
         for( ; it != nodes().end(); ++it)
         {
-            if( (*it)->selected())
-                return it->get();
+            if( it->selected())
+                return &(*it);
         }
     }
 
@@ -388,11 +388,11 @@ void composition_t::read( serialization::yaml_iarchive_t& in)
 	read_nodes( in);
 	read_edges( in);
 	
-	BOOST_FOREACH( node_ptr_t& n, nodes())
-		added_( n.get());
+	BOOST_FOREACH( node_t& n, nodes())
+		added_( &n);
 
-	BOOST_FOREACH( node_ptr_t& n, nodes())
-		n->for_each_param( boost::bind( &param_t::emit_param_changed, _1, param_t::node_loaded));		
+	BOOST_FOREACH( node_t& n, nodes())
+		n.for_each_param( boost::bind( &param_t::emit_param_changed, _1, param_t::node_loaded));
 }
 
 void composition_t::read_nodes( serialization::yaml_iarchive_t& in)
@@ -416,7 +416,7 @@ void composition_t::read_node( const serialization::yaml_node_t& node)
 		class_node[1] >> version.first;
 		class_node[2] >> version.second;
 	
-		node_ptr_t p( create_node( id, version));
+		std::auto_ptr<node_t> p( create_node( id, version));
 		
 		if( !p.get())
 		{
@@ -449,15 +449,15 @@ void composition_t::read_node( const serialization::yaml_node_t& node)
 	}
 }
 
-node_ptr_t composition_t::create_node( const std::string& id, const std::pair<int,int>& version)
+std::auto_ptr<node_t> composition_t::create_node( const std::string& id, const std::pair<int,int>& version)
 {
 	RAMEN_ASSERT( !id.empty());
 	RAMEN_ASSERT( version.first >= 0 && version.second >= 0);
 	
-	node_ptr_t p( node_factory_t::Instance().create_by_id_with_version( id, version));
+	std::auto_ptr<node_t> p( node_factory_t::Instance().create_by_id_with_version( id, version));
 
 	// as a last resort, return an unknown node
-	if( !p)
+    if( !p.get())
 		return create_unknown_node( id, version);
 
 	try
@@ -474,11 +474,11 @@ node_ptr_t composition_t::create_node( const std::string& id, const std::pair<in
 	return p;
 }
 
-node_ptr_t composition_t::create_unknown_node( const std::string& id, const std::pair<int,int>& version)
+std::auto_ptr<node_t> composition_t::create_unknown_node( const std::string& id, const std::pair<int,int>& version)
 {
 	// TODO: implement this.
 	RAMEN_ASSERT( 0 && "Create unknown node not implemented yet");
-	return node_ptr_t();
+    return std::auto_ptr<node_t>();
 }
 
 void composition_t::read_edges( const serialization::yaml_iarchive_t& in)

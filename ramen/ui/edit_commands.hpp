@@ -3,9 +3,12 @@
 #ifndef RAMEN_EDIT_MENU_COMMANDS_HPP
 #define RAMEN_EDIT_MENU_COMMANDS_HPP
 
+#include<ramen/undo/command.hpp>
+
 #include<set>
 
-#include<ramen/undo/command.hpp>
+#include<boost/ptr_container/ptr_vector.hpp>
+
 #include<ramen/app/document.hpp>
 
 namespace ramen
@@ -53,14 +56,14 @@ struct delete_command_t : public extract_command_t
 private:
 
     std::vector<node_t*> nodes_;
-    std::vector<node_ptr_t> node_storage_;
+    boost::ptr_vector<node_t> node_storage_;
 };
 
 struct duplicate_command_t : public command_t
 {
     duplicate_command_t();
 
-    void add_node( node_ptr_t n);
+    void add_node( std::auto_ptr<node_t> n);
     void add_edge( const edge_t& e);
 
     virtual void undo();
@@ -70,7 +73,7 @@ private:
 
     std::vector<node_t*> nodes_;
     std::vector<edge_t> edges_;
-    std::vector<node_ptr_t> node_storage_;
+    boost::ptr_vector<node_t> node_storage_;
 };
 
 struct ignore_nodes_command_t : public command_t

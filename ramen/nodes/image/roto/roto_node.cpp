@@ -162,38 +162,38 @@ bool roto_node_t::track_mouse() const
 }
 
 // shapes
-roto::shape_ptr_t roto_node_t::create_shape() const
+std::auto_ptr<roto::shape_t> roto_node_t::create_shape() const
 {
-	roto::shape_ptr_t new_shape( new roto::shape_t());
-	init_shape( new_shape);
+	std::auto_ptr<roto::shape_t> new_shape( new roto::shape_t());
+	init_shape( *new_shape);
 	return new_shape;
 }
 
-roto::shape_ptr_t roto_node_t::create_shape( const Imath::Box2f& b) const
+std::auto_ptr<roto::shape_t> roto_node_t::create_shape( const Imath::Box2f& b) const
 {
-	roto::shape_ptr_t new_shape( new roto::shape_t( b));
-	init_shape( new_shape);
+	std::auto_ptr<roto::shape_t> new_shape( new roto::shape_t( b));
+	init_shape( *new_shape);
 	new_shape->set_name( "box");
 	return new_shape;	
 }
 
-roto::shape_ptr_t roto_node_t::create_null() const
+std::auto_ptr<roto::shape_t> roto_node_t::create_null() const
 {
-	roto::shape_ptr_t new_shape( new roto::shape_t());
+	std::auto_ptr<roto::shape_t> new_shape( new roto::shape_t());
 	new_shape->set_is_null( true);
-	init_shape( new_shape);
+	init_shape( *new_shape);
 	new_shape->set_name( "null");
 	return new_shape;
 }
 
-void roto_node_t::init_shape( roto::shape_ptr_t& s) const
+void roto_node_t::init_shape( roto::shape_t &s) const
 {
-	s->create_params();
-	s->set_autokey( autokey());
-	s->set_track_mouse( track_mouse());
+	s.create_params();
+	s.set_autokey( autokey());
+	s.set_track_mouse( track_mouse());
 }
 
-void roto_node_t::add_shape( roto::shape_ptr_t s)
+void roto_node_t::add_shape( std::auto_ptr<roto::shape_t> s)
 {
 	scene_.add_shape( s);
 	
@@ -201,9 +201,9 @@ void roto_node_t::add_shape( roto::shape_ptr_t s)
 		shape_param_->shape_list_changed();
 }
 
-roto::shape_ptr_t roto_node_t::release_shape( roto::shape_t *s)
+std::auto_ptr<roto::shape_t> roto_node_t::release_shape( roto::shape_t *s)
 {
-	roto::shape_ptr_t shape( scene_.release_shape( s));
+	std::auto_ptr<roto::shape_t> shape( scene_.release_shape( s));
 
 	if( shape_param_)
 		shape_param_->shape_list_changed();
@@ -219,10 +219,10 @@ void roto_node_t::deselect_all()
 
 roto::shape_t *roto_node_t::selected()
 {
-	BOOST_FOREACH( roto::shape_ptr_t& s, scene_)
+	BOOST_FOREACH( roto::shape_t& s, scene_)
 	{
-		if( s->selected())
-			return s.get();
+		if( s.selected())
+			return &s;
 	}
 
 	return 0;
@@ -247,13 +247,13 @@ void roto_node_t::do_set_frame( float f)
 
 void roto_node_t::do_create_tracks( anim::track_t *parent)
 {
-    BOOST_FOREACH( param_t& p, param_set())			{ p.create_tracks( parent);}
-	BOOST_FOREACH( roto::shape_ptr_t& s, scene())	{ s->create_tracks( parent);}
+    BOOST_FOREACH( param_t& p, param_set())		{ p.create_tracks( parent);}
+	BOOST_FOREACH( roto::shape_t& s, scene())	{ s.create_tracks( parent);}
 }
 
 void roto_node_t::do_update_widgets()
 {
-	BOOST_FOREACH( roto::shape_ptr_t& s, scene())	{ s->update_widgets();}
+	BOOST_FOREACH( roto::shape_t& s, scene())	{ s.update_widgets();}
 }
 
 // areas & process
@@ -410,8 +410,8 @@ void roto_node_t::param_changed( param_t *p, param_t::change_reason reason)
 	{
 		bool b = track_mouse();
 
-		BOOST_FOREACH( roto::shape_ptr_t& s, scene())
-			s->set_track_mouse( b);
+		BOOST_FOREACH( roto::shape_t& s, scene())
+			s.set_track_mouse( b);
 	}
 }
 

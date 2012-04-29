@@ -360,8 +360,8 @@ void composition_view_t::move_nodes_drag_handler( QMouseEvent *event)
     for( composition_t::node_iterator it( document_t::Instance().composition().nodes().begin());
 		    it != document_t::Instance().composition().nodes().end(); ++it)
     {
-        if( (*it)->selected())
-            (*it)->offset_location( offset);
+        if( it->selected())
+            it->offset_location( offset);
     }
 
     update();
@@ -432,10 +432,10 @@ void composition_view_t::box_pick_release_handler( QMouseEvent *event)
     Imath::Box2f b( screen_to_world( Imath::V2i( push_x_, push_y_)));
     b.extendBy( screen_to_world( Imath::V2i( last_x_, last_y_)));
 
-    BOOST_FOREACH( node_ptr_t n, document_t::Instance().composition().nodes())
+    BOOST_FOREACH( node_t& n, document_t::Instance().composition().nodes())
     {
-        if( box_pick_node( n.get(), b))
-            n->toggle_selection();
+        if( box_pick_node( &n, b))
+            n.toggle_selection();
     }
 
     box_pick_mode_ = false;
@@ -520,16 +520,16 @@ void composition_view_t::draw_edges( QPainter& p)
 {
     draw_edges_visitor visitor( *this, p);
 
-    BOOST_FOREACH( node_ptr_t& n, document_t::Instance().composition().nodes())
-        n->accept( visitor);
+    BOOST_FOREACH( node_t& n, document_t::Instance().composition().nodes())
+        n.accept( visitor);
 }
 
 void composition_view_t::draw_nodes( QPainter& p)
 {
     draw_node_visitor visitor( p);
 
-    BOOST_FOREACH( node_ptr_t& n, document_t::Instance().composition().nodes())
-        n->accept( visitor);
+    BOOST_FOREACH( node_t& n, document_t::Instance().composition().nodes())
+        n.accept( visitor);
 }
 
 void composition_view_t::draw_bezier_edge( QPainter& painter, const Imath::V2f& p0, const Imath::V2f& p1) const
@@ -557,7 +557,7 @@ void composition_view_t::pick_node( const Imath::V2f& p, pick_result_t& result) 
 
 	for( ; it != last; ++it)
     {
-        (*it)->accept( visitor);
+        it->accept( visitor);
 
 		if( result.component != pick_result_t::no_pick)
 			break;
@@ -575,9 +575,9 @@ bool composition_view_t::pick_edge( const Imath::V2f& p, node_t *&src, node_t *&
 {
     pick_edge_visitor visitor( *this, p);
 
-    BOOST_FOREACH( node_ptr_t& n, document_t::Instance().composition().nodes())
+    BOOST_FOREACH( node_t& n, document_t::Instance().composition().nodes())
     {
-        n->accept( visitor);
+        n.accept( visitor);
 
         if( visitor.src != 0)
         {

@@ -34,12 +34,12 @@ public:
 	bool track_mouse() const;
 	
 	// shapes
-	roto::shape_ptr_t create_shape() const;
-	roto::shape_ptr_t create_shape( const Imath::Box2f& b) const;
-	roto::shape_ptr_t create_null() const;
+	std::auto_ptr<roto::shape_t> create_shape() const;
+	std::auto_ptr<roto::shape_t> create_shape( const Imath::Box2f& b) const;
+	std::auto_ptr<roto::shape_t> create_null() const;
 	
-	void add_shape( roto::shape_ptr_t s);
-	roto::shape_ptr_t release_shape( roto::shape_t *s);
+	void add_shape( std::auto_ptr<roto::shape_t> s);
+	std::auto_ptr<roto::shape_t> release_shape( roto::shape_t *s);
 
 	const roto::scene_t& scene() const	{ return scene_;}
 	roto::scene_t& scene()				{ return scene_;}
@@ -86,7 +86,7 @@ private:
 	virtual void do_write( serialization::yaml_oarchive_t& out) const;	
 	
 	// util functions
-	void init_shape( roto::shape_ptr_t& s) const;
+	void init_shape( roto::shape_t& s) const;
 	
 	roto::scene_t scene_;
 	
@@ -98,8 +98,6 @@ private:
 	Imath::Box2i scene_bbox_;
 	std::vector<float> frames_;
 };
-
-typedef boost::intrusive_ptr<roto_node_t> roto_node_ptr_t;
 
 } // namespace
 } // namespace

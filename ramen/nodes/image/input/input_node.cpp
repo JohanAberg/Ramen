@@ -619,9 +619,9 @@ void input_node_t::file_picked( const boost::filesystem::path& p, int level, boo
 }
 
 // factory
-node_ptr_t create_image_input_node() { return new input_node_t();}
+node_t *create_image_input_node() { return new input_node_t();}
 
-node_ptr_t create_gui_image_input_node()
+node_t *create_gui_image_input_node()
 {
     bool sequence, relative;
     boost::filesystem::path p, dir;

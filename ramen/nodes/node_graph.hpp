@@ -13,8 +13,6 @@
 #include<boost/bind.hpp>
 #include<boost/ptr_container/ptr_vector.hpp>
 
-#include<boost/intrusive_ptr.hpp>
-
 #include<ramen/nodes/node.hpp>
 #include<ramen/nodes/edge.hpp>
 
@@ -25,7 +23,7 @@ class node_graph_t
 {
 public:
 
-    typedef std::vector<node_ptr_t>   node_container_type;
+    typedef boost::ptr_vector<node_t> node_container_type;
 
     typedef node_container_type::iterator       node_iterator;
     typedef node_container_type::const_iterator	const_node_iterator;
@@ -48,8 +46,8 @@ public:
     node_graph_t();
     node_graph_t( const node_graph_t& other);
 
-    void add_node( node_ptr_t n);
-    node_ptr_t release_node( node_t *n);
+    void add_node( std::auto_ptr<node_t> n);
+    std::auto_ptr<node_t> release_node( node_t *n);
 
     void add_edge( const edge_t& e);
     void remove_edge( const edge_t& e);

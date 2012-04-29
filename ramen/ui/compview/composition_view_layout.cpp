@@ -85,10 +85,10 @@ Imath::Box2f composition_view_layout_t::get_node_bbox( node_t *n) const
 
 bool composition_view_layout_t::box_intersects_any_node( const Imath::Box2f& box) const
 {
-    BOOST_FOREACH( node_ptr_t n, document_t::Instance().composition().nodes())
+    BOOST_FOREACH( node_t& n, document_t::Instance().composition().nodes())
     {
 		box_pick_node_visitor visitor( box);
-		n->accept( visitor);
+		n.accept( visitor);
 		
 		if( visitor.result)
 			return true;

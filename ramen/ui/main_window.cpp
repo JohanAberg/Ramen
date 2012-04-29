@@ -655,7 +655,7 @@ void main_window_t::import_cdl()
 
     if( !( fname.isEmpty()))
 	{
-		boost::intrusive_ptr<image::cdl_node_t> p( new image::cdl_node_t());
+		std::auto_ptr<image::cdl_node_t> p( new image::cdl_node_t());
 		
 		if( !p.get())
 		{
@@ -678,7 +678,7 @@ void main_window_t::import_cdl()
 	
 		composition_view().place_node( p.get());
 		node_t *n = p.get(); // save for later use
-		std::auto_ptr<undo::command_t> c( new undo::add_node_command_t( p, 0));
+        std::auto_ptr<undo::command_t> c( new undo::add_node_command_t( std::auto_ptr<node_t>( p.release()), 0));
 		document_t::Instance().composition().deselect_all();
 		n->select( true);
 		c->redo();
@@ -764,10 +764,10 @@ void main_window_t::ignore_nodes()
 {
     std::auto_ptr<undo::ignore_nodes_command_t> c( new undo::ignore_nodes_command_t());
 
-    BOOST_FOREACH( node_ptr_t n, document_t::Instance().composition().nodes())
+    BOOST_FOREACH( node_t& n, document_t::Instance().composition().nodes())
     {
-        if( n->selected())
-            c->add_node( n.get());
+        if( n.selected())
+            c->add_node( &n);
     }
 
     c->redo();
@@ -790,10 +790,10 @@ void main_window_t::delete_nodes()
             c->add_dependent_node( e.dst);
     }
 
-    BOOST_FOREACH( node_ptr_t n, document_t::Instance().composition().nodes())
+    BOOST_FOREACH( node_t& n, document_t::Instance().composition().nodes())
     {
-        if( n->selected())
-            c->add_node( n.get());
+        if( n.selected())
+            c->add_node( &n);
     }
 
     BOOST_FOREACH( edge_t& e, document_t::Instance().composition().edges())
@@ -806,28 +806,28 @@ void main_window_t::delete_nodes()
 	{
 		std::vector<edge_t> edges_to_add;
 		
-		BOOST_FOREACH( node_ptr_t n, document_t::Instance().composition().nodes())
+		BOOST_FOREACH( node_t& n, document_t::Instance().composition().nodes())
 		{
-			if( n->selected())
+			if( n.selected())
 			{
-				if( n->num_outputs() == 0)
+				if( n.num_outputs() == 0)
 					continue;
 				
 				node_t *src = 0;
 				
 				// find first input
-				for( int i = 0; i < n->num_inputs(); ++i)
+				for( int i = 0; i < n.num_inputs(); ++i)
 				{
-					if( n->input( i) && !n->input( i)->selected())
+					if( n.input( i) && !n.input( i)->selected())
 					{
-						src = n->input( i);
+						src = n.input( i);
 						break;
 					}
 				}
 
 				if( src)
 				{
-					breadth_first_out_edges_apply( *n, boost::bind( &undo::delete_command_t::add_candidate_edge,
+					breadth_first_out_edges_apply( n, boost::bind( &undo::delete_command_t::add_candidate_edge,
 																			  _1, src, boost::ref( edges_to_add)));
 				}
 			}
@@ -850,14 +850,14 @@ void main_window_t::duplicate_nodes()
     std::map<node_t*, node_t*> relation;
     std::auto_ptr<undo::duplicate_command_t> c( new undo::duplicate_command_t());
 
-    BOOST_FOREACH( node_ptr_t& n, document_t::Instance().composition().nodes())
+    BOOST_FOREACH( node_t& n, document_t::Instance().composition().nodes())
     {
-        if( n->selected())
+        if( n.selected())
         {
-            node_ptr_t nclone = n->clone();
+            std::auto_ptr<node_t> nclone( new_clone( n));
             nclone->offset_location( Imath::V2f( 20, 20));
             c->add_node( nclone);
-            relation[ n.get()] = nclone.get();
+            relation[ &n] = nclone.get();
         }
     }
 
@@ -898,27 +898,27 @@ void main_window_t::extract_nodes()
 	{
 		std::vector<edge_t> edges_to_add;
 		
-		BOOST_FOREACH( node_ptr_t n, document_t::Instance().composition().nodes())
+		BOOST_FOREACH( node_t& n, document_t::Instance().composition().nodes())
 		{
-			if( n->selected())
+			if( n.selected())
 			{
-				if( n->num_outputs() == 0)
+				if( n.num_outputs() == 0)
 					continue;
 				
 				node_t *src = 0;
 				
 				// find first input
-				for( int i = 0; i < n->num_inputs(); ++i)
+				for( int i = 0; i < n.num_inputs(); ++i)
 				{
-					if( n->input( i) && !n->input( i)->selected())
+					if( n.input( i) && !n.input( i)->selected())
 					{
-						src = n->input( i);
+						src = n.input( i);
 						break;
 					}
 				}
 
 				if( src)
-					breadth_first_out_edges_apply( *n, boost::bind( &undo::delete_command_t::add_candidate_edge, _1, src, boost::ref( edges_to_add)));
+					breadth_first_out_edges_apply( n, boost::bind( &undo::delete_command_t::add_candidate_edge, _1, src, boost::ref( edges_to_add)));
 			}
 		}
 		
@@ -1017,7 +1017,7 @@ void main_window_t::create_node()
     QAction *action = dynamic_cast<QAction*>( sender());
 
     std::string id( create_node_actions_[action]);
-    node_ptr_t p = node_factory_t::Instance().create_by_id( id, true);
+    std::auto_ptr<node_t> p( node_factory_t::Instance().create_by_id( id, true));
 	
 	if( !p.get())
 	{

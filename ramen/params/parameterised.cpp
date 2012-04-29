@@ -18,12 +18,12 @@
 namespace ramen
 {
 
-parameterised_t::parameterised_t() : ref_counted_t(), dont_persist_params_( false)
+parameterised_t::parameterised_t() : dont_persist_params_( false)
 {
     params_.set_parent( this);
 }
 
-parameterised_t::parameterised_t( const parameterised_t& other) : ref_counted_t(), params_( other.params_)
+parameterised_t::parameterised_t( const parameterised_t& other) : params_( other.params_)
 {
     name_ = other.name_;
     dont_persist_params_ = other.dont_persist_params_;

@@ -30,13 +30,13 @@ public:
 	
 private:
 
-	shape_t *pick_nulls( const ui::mouse_press_event_t& event, bool& xaxis, bool& yaxis) const;
-	shape_t *pick_shape( const ui::mouse_press_event_t& event) const;
+	shape_t *pick_nulls( const ui::mouse_press_event_t& event, bool& xaxis, bool& yaxis);
+	shape_t *pick_shape( const ui::mouse_press_event_t& event);
 	
-	bool pick_axes( shape_t *s, const ui::mouse_event_t& event, bool& xaxis, bool& yaxis) const;
+	bool pick_axes( const shape_t& s, const ui::mouse_event_t& event, bool& xaxis, bool& yaxis) const;
 	bool pick_span( const bezier::curve_t<Imath::V2f>& c, const Imath::V2f& p, float pixel_scale) const;
 	
-	triple_t *pick_tangent( shape_t *s, const ui::mouse_event_t& event, bool& left);
+	triple_t *pick_tangent( shape_t& s, const ui::mouse_event_t& event, bool& left);
 	
     // modes
     bool box_pick_mode_;

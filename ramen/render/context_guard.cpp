@@ -29,7 +29,7 @@ context_guard_t::context_guard_t( const context_t& context, node_t *n)
 	{
 		for( composition_t::const_node_iterator it( context_.composition->nodes().begin()); it != context_.composition->nodes().end(); ++it)
 		{
-			const node_t *n = it->get();
+			const node_t *n = &(*it);
 			
 			if( n->num_outputs() == 0)
 				save( n);
@@ -47,8 +47,8 @@ context_guard_t::~context_guard_t()
 	{
 		for( composition_t::node_iterator it( context_.composition->nodes().begin()); it != context_.composition->nodes().end(); ++it)
 		{
-			node_t *n = it->get();
-			
+            node_t *n = &(*it);
+
 			if( n->num_outputs() == 0)
 				restore( n);
 		}	

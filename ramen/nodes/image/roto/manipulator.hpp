@@ -44,9 +44,9 @@ private:
 		
 public:
 
-	static void draw_shape( const shape_ptr_t& s, const ui::paint_event_t& event, float node_aspect, bool axes = true);
-	static void draw_axes( const shape_ptr_t& s, const ui::paint_event_t& event, const Imath::Color3c& col, float node_aspect);
-	static void draw_control_polygon( const shape_t *s, float pixel_scale);
+	static void draw_shape( const shape_t& s, const ui::paint_event_t& event, float node_aspect, bool axes = true);
+	static void draw_axes( const shape_t& s, const ui::paint_event_t& event, const Imath::Color3c& col, float node_aspect);
+	static void draw_control_polygon( const shape_t& s, float pixel_scale);
 	static void draw_triple( const triple_t& t, const Imath::M33f& m, const Imath::V2f& shape_offset, float pixel_scale);
 	
 	static void draw_bezier_span( const bezier::curve_t<Imath::V2f>& c, const Imath::M33f& m, const Imath::V2f& shape_offset);

@@ -11,6 +11,8 @@
 
 #include<ramen/assert.hpp>
 
+#include<ramen/container/ptr_vector_util.hpp>
+
 #include<ramen/app/composition.hpp>
 
 #include<ramen/nodes/image/roto/roto_node.hpp>
@@ -29,19 +31,19 @@ scene_t::scene_t( const scene_t& other) : parent_( 0)
 {
 	std::map<shape_t*, const shape_t*> relation;
 	
-	BOOST_FOREACH( const shape_ptr_t& s, other.shapes())
+	BOOST_FOREACH( const shape_t& s, other.shapes())
 	{
-		shape_ptr_t new_s( new shape_t( *s));
-		relation[ new_s.get()] = s.get();
+        std::auto_ptr<shape_t> new_s( new_clone( s));
+		relation[ new_s.get()] = &s;
 		
 		names_.insert( new_s.get());
 		new_s->set_scene( this);
 		shapes_.push_back( new_s);
 	}
 
-	BOOST_FOREACH( shape_ptr_t& s, shapes())
+	BOOST_FOREACH( shape_t& s, shapes())
 	{
-		const shape_t *old_s = relation[ s.get()];
+		const shape_t *old_s = relation[ &s];
 		std::string parent_name = old_s->parent_name();
 		
 		if( !parent_name.empty())
@@ -49,7 +51,7 @@ scene_t::scene_t( const scene_t& other) : parent_( 0)
 			shape_t *p = find_shape( parent_name);
 			RAMEN_ASSERT( p);
 			
-			s->set_parent( p);
+			s.set_parent( p);
 		}
 	}
 }
@@ -58,13 +60,13 @@ scene_t::~scene_t()
 {
 	// unparent all shapes before deleting the scene.
 	// this avoids an assertion in boost intrusive.
-	BOOST_FOREACH( shape_ptr_t& s, shapes())
+	BOOST_FOREACH( shape_t& s, shapes())
 	{
-		s->set_parent( 0);
+		s.set_parent( 0);
 	}
 }
 
-void scene_t::add_shape( shape_ptr_t s)
+void scene_t::add_shape( std::auto_ptr<shape_t> s)
 { 
 	RAMEN_ASSERT( s->parent() == 0);
 
@@ -74,16 +76,17 @@ void scene_t::add_shape( shape_ptr_t s)
 	shapes_.push_back( s);
 }
 
-shape_ptr_t scene_t::release_shape( shape_t *s)
+std::auto_ptr<shape_t> scene_t::release_shape( shape_t *s)
 {
-	shape_ptr_t result;
-	std::vector<shape_ptr_t>::iterator it;
+	std::auto_ptr<shape_t> result;
+	iterator it;
 
 	for( it = shapes_.begin(); it != shapes_.end(); ++it)
 	{
-		if( it->get() == s)
+		if( &*it == s)
 		{
-			result = *it;
+            boost::ptr_vector<shape_t>::auto_type ptr = shapes_.release( it);
+            result.reset( ptr.release());
 			break;
 		}
 	}
@@ -93,7 +96,6 @@ shape_ptr_t scene_t::release_shape( shape_t *s)
 		s->unparent_all_children();
 		s->set_parent( 0);
 		names_.remove( s->name());
-		shapes_.erase( it);
 		result->set_scene( 0);
 	}
 
@@ -111,25 +113,25 @@ void scene_t::rename_shape( shape_t *s, const std::string& new_name)
 
 void scene_t::move_shape_order_up( shape_t *s)
 {
-	std::vector<shape_ptr_t>::iterator it( iterator_for_shape( s));
+	iterator it( iterator_for_shape( s));
 	RAMEN_ASSERT( it != shapes_.end());
 	RAMEN_ASSERT( it != ( shapes_.end() - 1));
-	it->swap( *(it+1));
+    container::swap_elements( it, it+1, shapes_);
 }
 
 void scene_t::move_shape_order_down( shape_t *s)
 {
-	std::vector<shape_ptr_t>::iterator it( iterator_for_shape( s));
+	iterator it( iterator_for_shape( s));
 	RAMEN_ASSERT( it != shapes_.end());
 	RAMEN_ASSERT( it != shapes_.begin());	
-	it->swap( *(it-1));
+    container::swap_elements( it, it-1, shapes_);
 }
 
-std::vector<shape_ptr_t>::iterator scene_t::iterator_for_shape( shape_t *s)
+scene_t::iterator scene_t::iterator_for_shape( shape_t *s)
 {
-	for( std::vector<shape_ptr_t>::iterator it = shapes_.begin(); it != shapes_.end(); ++it)
+	for( iterator it = shapes_.begin(); it != shapes_.end(); ++it)
 	{
-		if( it->get() == s)
+		if( &(*it) == s)
 			return it;
 	}
 	
@@ -138,26 +140,26 @@ std::vector<shape_ptr_t>::iterator scene_t::iterator_for_shape( shape_t *s)
 
 void scene_t::update_all_xforms( bool motion_blur_only)
 {
-	BOOST_FOREACH( shape_ptr_t& s, shapes())
+	BOOST_FOREACH( shape_t& s, shapes())
 	{
-		if( !s->parent())
+		if( !s.parent())
 		{
-			if( motion_blur_only && !s->motion_blur())
+			if( motion_blur_only && !s.motion_blur())
 				continue;
 			
-			s->update_xforms( motion_blur_only);
+			s.update_xforms( motion_blur_only);
 		}
 	}	
 }
 
 void scene_t::set_frame( float f, bool motion_blur)
 {
-	BOOST_FOREACH( shape_ptr_t& s, shapes())
+	BOOST_FOREACH( shape_t& s, shapes())
 	{
-		if( motion_blur && !s->motion_blur())
+		if( motion_blur && !s.motion_blur())
 			continue;
 			
-		s->set_frame( f);
+		s.set_frame( f);
 	}	
 }
 
@@ -170,10 +172,10 @@ void scene_t::add_to_hash_str( const std::vector<float>& frames, hash_generator_
 {
 	float current_frame = parent().composition()->frame();
 
-	BOOST_FOREACH( const shape_ptr_t& s, shapes())
+	BOOST_FOREACH( const shape_t& s, shapes())
 	{
-		if( !s->motion_blur())
-			s->add_to_hash_str( hash_gen);
+		if( !s.motion_blur())
+			s.add_to_hash_str( hash_gen);
 	}
 	
 	// this is not very elegant...
@@ -183,10 +185,10 @@ void scene_t::add_to_hash_str( const std::vector<float>& frames, hash_generator_
 	{
 		self->set_frame( frames[i], true);
 
-		BOOST_FOREACH( const shape_ptr_t& s, shapes())
+		BOOST_FOREACH( const shape_t& s, shapes())
 		{
-			if( s->motion_blur())
-				s->add_to_hash_str( hash_gen);
+			if( s.motion_blur())
+				s.add_to_hash_str( hash_gen);
 		}
 	}
 	
@@ -197,8 +199,8 @@ Imath::Box2f scene_t::bounding_box() const
 {
 	Imath::Box2f bbox;
 	
-	BOOST_FOREACH( const shape_ptr_t& s, shapes())
-		extend_bbox( bbox, s.get());
+	BOOST_FOREACH( const shape_t& s, shapes())
+		extend_bbox( bbox, s);
 	
 	return bbox;
 }
@@ -209,10 +211,10 @@ Imath::Box2f scene_t::bounding_box( const std::vector<float>& frames) const
 
 	Imath::Box2f bbox;
 
-	BOOST_FOREACH( const shape_ptr_t& s, shapes())
+	BOOST_FOREACH( const shape_t& s, shapes())
 	{
-		if( !s->motion_blur())
-			extend_bbox( bbox, s.get());
+		if( !s.motion_blur())
+			extend_bbox( bbox, s);
 	}
 	
 	// this is not very elegant...
@@ -223,10 +225,10 @@ Imath::Box2f scene_t::bounding_box( const std::vector<float>& frames) const
 		self->set_frame( frames[i], true);
 		self->update_all_xforms( true);
 
-		BOOST_FOREACH( const shape_ptr_t& s, shapes())
+		BOOST_FOREACH( const shape_t& s, shapes())
 		{
-			if( s->motion_blur())
-				extend_bbox( bbox, s.get());
+			if( s.motion_blur())
+				extend_bbox( bbox, s);
 		}
 	}
 	
@@ -235,14 +237,14 @@ Imath::Box2f scene_t::bounding_box( const std::vector<float>& frames) const
 	return bbox;
 }
 
-void scene_t::extend_bbox( Imath::Box2f& bbox, const shape_t *s) const
+void scene_t::extend_bbox( Imath::Box2f& bbox, const shape_t& s) const
 {
-	if( !s->is_null() && s->active() && s->opacity() != 0.0f)
+	if( !s.is_null() && s.active() && s.opacity() != 0.0f)
 	{
-		float grow = std::max( s->grow(), 0.0f);
-		Imath::V2f blur = s->blur();
+		float grow = std::max( s.grow(), 0.0f);
+		Imath::V2f blur = s.blur();
 
-		Imath::Box2f b( s->global_bbox());						
+		Imath::Box2f b( s.global_bbox());
 		b.min.x = b.min.x - grow - blur.x;
 		b.min.y = b.min.y - grow - blur.y;
 		b.max.x = b.max.x + grow + blur.x;
@@ -262,7 +264,7 @@ void scene_t::read( const serialization::yaml_node_t& node)
 
 	for( int i = 0; i < shapes.size(); ++i)
 	{
-		shape_ptr_t newshape;
+		std::auto_ptr<shape_t> newshape;
 		
 		bool is_null;
 		shapes[i].get_value( "is_null", is_null);

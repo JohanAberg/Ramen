@@ -52,7 +52,7 @@ void rect_tool_t::mouse_release_event( const ui::mouse_release_event_t& event)
 	{
 		box_.min.x /= event.aspect_ratio;
 		box_.max.x /= event.aspect_ratio;
-		roto::shape_ptr_t s = parent().create_shape( box_);
+		std::auto_ptr<roto::shape_t> s = parent().create_shape( box_);
 		
 		s->set_center( s->bbox().center(), false);
 		s->set_translation( Imath::V2f( 0, 0));

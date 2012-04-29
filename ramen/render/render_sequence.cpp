@@ -82,20 +82,20 @@ void render_sequence( composition_t& comp, int start, int end, int proxy_level,
     {
         new_context.frame = i;
 
-        BOOST_FOREACH( node_ptr_t n, comp.nodes())
+        BOOST_FOREACH( node_t& n, comp.nodes())
         {
-            if( node_output_interface *out = dynamic_cast<node_output_interface*>( n.get()))
+            if( node_output_interface *out = dynamic_cast<node_output_interface*>( &n))
             {
 
-                if( n->ignored())
+                if( n.ignored())
                     continue;
 
                 try
                 {
 					frame_timer.restart();
-                    new_context.result_node = n.get();
+                    new_context.result_node = &n;
 					out->process_and_write( new_context);
-					std::cout << "Render: " << n->name() << ", frame = " << i << ". elapsed = " << frame_timer.elapsed() << " seconds.";
+					std::cout << "Render: " << n.name() << ", frame = " << i << ". elapsed = " << frame_timer.elapsed() << " seconds.";
                 }
                 catch( std::exception& e)
                 {

@@ -20,12 +20,12 @@ namespace ramen
 namespace undo
 {
 
-add_roto_command_t::add_roto_command_t( image::roto_node_t& node, roto::shape_ptr_t shape) : command_t( "Add Shape"), node_( node)
+add_roto_command_t::add_roto_command_t( image::roto_node_t& node, std::auto_ptr<roto::shape_t> shape) : command_t( "Add Shape"), node_( node)
 {
 	RAMEN_ASSERT( shape.get());
 
+    shape_ = shape.get();
 	storage_ = shape;
-	shape_ = shape.get();
 }
 
 void add_roto_command_t::undo()
@@ -53,7 +53,6 @@ delete_roto_command_t::delete_roto_command_t( image::roto_node_t& node, roto::sh
 {
 	shape_ = shape;
 	parent_ = shape->parent();
-
 	shape_->select( false);
 	
 	BOOST_FOREACH( roto::shape_t& s, shape_->children())

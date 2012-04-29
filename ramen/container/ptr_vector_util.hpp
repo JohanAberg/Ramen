@@ -6,8 +6,11 @@
 #define RAMEN_CONTAINER_PTR_VECTOR_UTIL_HPP
 
 #include<memory>
+#include<algorithm>
 
 #include<boost/ptr_container/ptr_vector.hpp>
+
+#include<ramen/assert.hpp>
 
 namespace ramen
 {
@@ -30,6 +33,12 @@ std::auto_ptr<T> release_ptr( T *p, boost::ptr_vector<T,C,A>& vec)
 	}
 
 	return result;
+}
+
+template<class Iter, class T, class C, class A>
+void swap_elements( Iter first, Iter second, boost::ptr_vector<T,C,A>& vec)
+{
+    std::swap( *first.base(), *second.base());
 }
 
 } // container

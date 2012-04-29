@@ -104,15 +104,15 @@ void render_composition( composition_t& comp, int start, int end, int proxy_leve
 	{
         new_context.frame = i;
 
-        BOOST_FOREACH( node_ptr_t n, comp.nodes())
+        BOOST_FOREACH( node_t& n, comp.nodes())
         {
-            if( node_output_interface *out = dynamic_cast<node_output_interface*>( n.get()))
+            if( node_output_interface *out = dynamic_cast<node_output_interface*>( &n))
             {
-                if( ( selected_only && !n->selected()) || n->ignored())
+                if( ( selected_only && !n.selected()) || n.ignored())
                     continue;
 				
-				new_context.result_node = n.get();
-				
+				new_context.result_node = &n;
+
 				try
 				{
 					out->process_and_write( new_context);

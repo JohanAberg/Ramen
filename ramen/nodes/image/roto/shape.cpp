@@ -89,6 +89,8 @@ void shape_t::init()
     param_set().param_changed.connect( boost::bind( &shape_t::param_changed, this, _1, _2));
 }
 
+shape_t *shape_t::do_clone() const { return new shape_t( *this);}
+
 // node this parameterised belongs to
 const node_t *shape_t::node() const
 {
@@ -816,7 +818,7 @@ bool shape_t::is_first_shape() const
 	if( scene()->shapes().empty())
 		return false;
 		
-	return scene()->shapes().front().get() == this;
+	return &(scene()->shapes().front()) == this;
 }
 
 bool shape_t::is_last_shape() const
@@ -824,7 +826,7 @@ bool shape_t::is_last_shape() const
 	if( scene()->shapes().empty())
 		return false;
 
-	return scene()->shapes().back().get() == this;	
+	return &(scene()->shapes().back()) == this;
 }
 
 void shape_t::read( const serialization::yaml_node_t& node, int version)
@@ -900,6 +902,11 @@ void shape_t::write( serialization::yaml_oarchive_t& out, int version) const
 		}
 
 	out.end_map();
+}
+
+shape_t *new_clone( const shape_t& other)
+{
+    return other.clone();
 }
 
 } // roto

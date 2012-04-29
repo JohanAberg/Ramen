@@ -123,7 +123,7 @@ void import_multichannel_exr( const boost::filesystem::path& p, bool relative, b
         Imf::ChannelList::ConstIterator it, last;
         ch_list.channelsInLayer( *sit, it, last);
 
-        node_ptr_t node_copy = node->clone();
+        std::auto_ptr<node_t> node_copy( new_clone( *node));
         node->set_location( loc);
         loc.x += node_spacing;
         import_layer( node_copy.get(), it, last, channel_set);
@@ -140,7 +140,7 @@ void import_multichannel_exr( const boost::filesystem::path& p, bool relative, b
         channels.push_back( "G");
         channels.push_back( "R");
 
-        node_ptr_t node_copy = node->clone();
+        std::auto_ptr<node_t> node_copy( new_clone( *node));
         node->set_location( loc);
         loc.x += node_spacing;
         import_layer( node_copy.get(), channels, channel_set);
@@ -154,7 +154,7 @@ void import_multichannel_exr( const boost::filesystem::path& p, bool relative, b
         channels.push_back( "RY");
         channels.push_back( "Y");
 
-        node_ptr_t node_copy = node->clone();
+        std::auto_ptr<node_t> node_copy( new_clone( *node));
         node->set_location( loc);
         loc.x += node_spacing;
         import_layer( node_copy.get(), channels, channel_set);
@@ -169,7 +169,7 @@ void import_multichannel_exr( const boost::filesystem::path& p, bool relative, b
 
             if( channels.size() == 4)
             {
-                node_ptr_t node_copy = node->clone();
+                std::auto_ptr<node_t> node_copy( new_clone( *node));
                 node->set_location( loc);
                 loc.x += node_spacing;
                 import_layer( node_copy.get(), channels, channel_set);
@@ -179,7 +179,7 @@ void import_multichannel_exr( const boost::filesystem::path& p, bool relative, b
 
         if( !channels.empty())
         {
-            node_ptr_t node_copy = node->clone();
+            std::auto_ptr<node_t> node_copy( new_clone( *node));
             node->set_location( loc);
             loc.x += node_spacing;
             import_layer( node_copy.get(), channels, channel_set);

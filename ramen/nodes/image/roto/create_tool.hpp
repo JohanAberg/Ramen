@@ -33,9 +33,9 @@ private:
 	
     void close_shape( bool success = true);
 	
-	shape_t *pick_shape( const ui::mouse_press_event_t& event, int& span_index, float& t) const;
+	shape_t *pick_shape( const ui::mouse_press_event_t& event, int& span_index, float& t);
 	
-	roto::shape_ptr_t new_shape_;
+	std::auto_ptr<roto::shape_t> new_shape_;
 	roto::triple_t *point_;
 };
 

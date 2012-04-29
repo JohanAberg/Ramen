@@ -67,7 +67,10 @@ void extract_command_t::redo()
 
 delete_command_t::delete_command_t() { set_name( "Delete");}
 
-void delete_command_t::add_node( node_t *n) { nodes_.push_back( n);}
+void delete_command_t::add_node( node_t *n)
+{
+    nodes_.push_back( n);
+}
 
 void delete_command_t::undo()
 {
@@ -77,8 +80,7 @@ void delete_command_t::undo()
 	
     while( !node_storage_.empty())
     {
-        node_ptr_t ptr = node_storage_.back();
-        node_storage_.pop_back();
+        std::auto_ptr<node_t> ptr( node_storage_.pop_back().release());
         document_t::Instance().composition().add_node( ptr);
     }
 
@@ -91,7 +93,7 @@ void delete_command_t::redo()
 {
     for( std::vector<node_t*>::const_iterator it( nodes_.begin()); it != nodes_.end(); ++it)
     {
-        node_ptr_t ptr = document_t::Instance().composition().release_node( *it);
+        std::auto_ptr<node_t> ptr( document_t::Instance().composition().release_node( *it));
         node_storage_.push_back( ptr);
     }
 
@@ -105,10 +107,10 @@ void delete_command_t::redo()
 
 duplicate_command_t::duplicate_command_t() : command_t( "Duplicate") {}
 
-void duplicate_command_t::add_node( node_ptr_t n)
+void duplicate_command_t::add_node( std::auto_ptr<node_t> n)
 {
-    node_storage_.push_back( n);
     nodes_.push_back( n.get());
+    node_storage_.push_back( n);
 }
 
 void duplicate_command_t::add_edge( const edge_t& e) { edges_.push_back( e);}
@@ -117,7 +119,7 @@ void duplicate_command_t::undo()
 {
     for( std::vector<node_t*>::const_iterator it( nodes_.begin()); it != nodes_.end(); ++it)
     {
-        node_ptr_t ptr = document_t::Instance().composition().release_node( *it);
+        std::auto_ptr<node_t> ptr( document_t::Instance().composition().release_node( *it));
         node_storage_.push_back( ptr);
     }
 
@@ -130,8 +132,7 @@ void duplicate_command_t::redo()
 {
     while( !node_storage_.empty())
     {
-        node_ptr_t ptr = node_storage_.back();
-        node_storage_.pop_back();
+        std::auto_ptr<node_t> ptr( node_storage_.pop_back().release());
         document_t::Instance().composition().add_node( ptr);
     }
 

@@ -9,11 +9,10 @@
 
 #include<utility>
 
+#include<boost/noncopyable.hpp>
 #include<boost/signals2/signal.hpp>
 
 #include<OpenEXR/ImathBox.h>
-
-#include<ramen/ref_counted.hpp>
 
 #include<ramen/params/param_set.hpp>
 
@@ -30,12 +29,11 @@ namespace ramen
 \ingroup params
 \brief Base class for objects that contains params.
 */
-class RAMEN_API parameterised_t : public ref_counted_t
+class RAMEN_API parameterised_t : boost::noncopyable
 {
 public:
 
     parameterised_t();
-    parameterised_t( const parameterised_t& other);
 
     virtual ~parameterised_t();
 
@@ -82,6 +80,9 @@ public:
 		
 protected:
 	
+    parameterised_t( const parameterised_t& other);
+    void operator=( const parameterised_t& other);
+
     void evaluate_params( float frame);
 	
 private:

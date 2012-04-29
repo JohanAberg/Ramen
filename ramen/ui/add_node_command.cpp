@@ -13,27 +13,30 @@ namespace ramen
 namespace undo
 {
 
-add_node_command_t::add_node_command_t( node_ptr_t n, node_t *src) : command_t( "Add Node"), node_( n), src_( src) {}
+add_node_command_t::add_node_command_t( std::auto_ptr<node_t> n, node_t *src) : command_t( "Add Node"), storage_( n), src_( src)
+{
+    node_ = storage_.get();
+}
 
 add_node_command_t::~add_node_command_t() {}
 
 void add_node_command_t::undo()
 {
     if( src_)
-        document_t::Instance().composition().disconnect( src_, node_.get(), 0);
+        document_t::Instance().composition().disconnect( src_, node_, 0);
 	
     breadth_first_outputs_search( *node_, boost::bind( &node_t::notify, _1));
-    document_t::Instance().composition().release_node( node_.get());
+    storage_ = document_t::Instance().composition().release_node( node_);
     command_t::undo();
 }
 
 void add_node_command_t::redo()
 {
-    document_t::Instance().composition().add_node( node_);
+    document_t::Instance().composition().add_node( storage_);
 
     if( src_)
 	{
-        document_t::Instance().composition().connect( src_, node_.get(), 0);
+        document_t::Instance().composition().connect( src_, node_, 0);
 		breadth_first_outputs_search( *node_, boost::bind( &node_t::notify, _1));
 	}
 
@@ -42,20 +45,30 @@ void add_node_command_t::redo()
 
 add_nodes_command_t::add_nodes_command_t() : command_t( "Add Nodes") {}
 
-void add_nodes_command_t::add_node( node_ptr_t n) { node_storage.push_back( n);}
+void add_nodes_command_t::add_node( std::auto_ptr<node_t> n)
+{
+    nodes_.push_back( n.get());
+    node_storage_.push_back( n);
+}
 
 void add_nodes_command_t::undo()
 {
-    for( std::vector<node_t*>::const_iterator it( nodes.begin()); it != nodes.end(); ++it)
-        document_t::Instance().composition().release_node( *it);
+    for( std::vector<node_t*>::const_iterator it( nodes_.begin()); it != nodes_.end(); ++it)
+    {
+        std::auto_ptr<node_t> ptr( document_t::Instance().composition().release_node( *it));
+        node_storage_.push_back( ptr);
+    }
 
     command_t::undo();
 }
 
 void add_nodes_command_t::redo()
 {
-    for( std::vector<node_ptr_t>::iterator it( node_storage.begin()); it != node_storage.end(); ++it)
-        document_t::Instance().composition().add_node( *it);
+    while( !node_storage_.empty())
+    {
+        std::auto_ptr<node_t> ptr( node_storage_.pop_back().release());
+        document_t::Instance().composition().add_node( ptr);
+    }
 
     command_t::redo();
 }

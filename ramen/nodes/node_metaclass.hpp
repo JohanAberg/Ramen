@@ -42,8 +42,8 @@ public:
 	boost::function<void ()> cleanup;
 	
     // factory
-    boost::function<node_ptr_t ()> create;
-    boost::function<node_ptr_t ()> create_gui;
+    boost::function<node_t*()> create;
+    boost::function<node_t*()> create_gui;
 
 // private:
 	

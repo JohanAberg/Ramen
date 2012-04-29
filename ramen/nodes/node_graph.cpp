@@ -4,9 +4,11 @@
 
 #include<ramen/python/python.hpp>
 
+#include<ramen/nodes/node_graph.hpp>
+
 #include<ramen/assert.hpp>
 
-#include<ramen/nodes/node_graph.hpp>
+#include<ramen/container/ptr_vector_util.hpp>
 
 namespace ramen
 {
@@ -19,26 +21,11 @@ node_graph_t::node_graph_t( const node_graph_t& other)
     RAMEN_ASSERT( false);
 }
 
-void node_graph_t::add_node( node_ptr_t n) { nodes_.push_back( n);}
+void node_graph_t::add_node( std::auto_ptr<node_t> n) { nodes_.push_back( n);}
 
-node_ptr_t node_graph_t::release_node( node_t *n)
+std::auto_ptr<node_t> node_graph_t::release_node( node_t *n)
 {
-    node_ptr_t result;
-    node_container_type::iterator it;
-
-    for( it = nodes_.begin(); it != nodes_.end(); ++it)
-    {
-        if( it->get() == n)
-        {
-            result = *it;
-            break;
-        }
-    }
-
-    if( it != nodes_.end())
-        nodes_.erase( it);
-
-    return result;
+    return container::release_ptr( n, nodes_);
 }
 
 void node_graph_t::add_edge( const edge_t& e)

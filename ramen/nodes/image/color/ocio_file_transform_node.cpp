@@ -87,7 +87,7 @@ void ocio_file_transform_node_t::do_process( const image::const_image_view_t& sr
 }
 
 // factory
-node_ptr_t create_ocio_file_transform_node() { return new ocio_file_transform_node_t();}
+node_t *create_ocio_file_transform_node() { return new ocio_file_transform_node_t();}
 
 const node_metaclass_t *ocio_file_transform_node_t::metaclass() const { return &ocio_file_transform_node_metaclass();}
 

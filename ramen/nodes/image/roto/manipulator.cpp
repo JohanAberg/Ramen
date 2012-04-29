@@ -104,45 +104,45 @@ void manipulator_t::do_mouse_release_event( const ui::mouse_release_event_t& eve
 	roto->toolbar().active_tool().mouse_release_event( event);
 }
 
-void manipulator_t::draw_shape( const shape_ptr_t& s, const ui::paint_event_t& event, float node_aspect, bool axes)
+void manipulator_t::draw_shape( const shape_t& s, const ui::paint_event_t& event, float node_aspect, bool axes)
 {
-	if( s->is_null())
+	if( s.is_null())
 	{
 		Imath::Color3c col;
 		
-		if( s->selected())
+		if( s.selected())
 			col = Imath::Color3c( 255, 0, 0);
 		else
-			col = s->display_color();
+			col = s.display_color();
 
 		draw_axes( s, event, col, node_aspect);
 		return;
 	}
 
     gl_line_width( 1);
-    gl_color( s->display_color());
-	s->for_each_span( boost::bind( &roto::manipulator_t::draw_bezier_span, _1, s->global_xform(), s->offset()));
+    gl_color( s.display_color());
+	s.for_each_span( boost::bind( &roto::manipulator_t::draw_bezier_span, _1, s.global_xform(), s.offset()));
 
-    if( s->selected())
+    if( s.selected())
 	{
-		draw_control_polygon( s.get(), event.pixel_scale);
+		draw_control_polygon( s, event.pixel_scale);
 	
 	    if( axes)
-			draw_axes( s, event, s->display_color(), node_aspect);
+			draw_axes( s, event, s.display_color(), node_aspect);
 	}
 }
 
-void manipulator_t::draw_axes( const shape_ptr_t& s, const ui::paint_event_t& event, const Imath::Color3c& col, float node_aspect)
+void manipulator_t::draw_axes( const shape_t& s, const ui::paint_event_t& event, const Imath::Color3c& col, float node_aspect)
 {	
 	gl_line_width( default_line_width());
 	
-	Imath::V2f c( s->center());
+	Imath::V2f c( s.center());
 	Imath::V2f x( c.x + ( 70 / event.pixel_scale), c.y);
 	Imath::V2f y( c.x, c.y - ( 70 / event.pixel_scale));
 	
-	c *= s->global_xform();
-	x *= s->global_xform();
-	y *= s->global_xform();
+	c *= s.global_xform();
+	x *= s.global_xform();
+	y *= s.global_xform();
 	
 	x -= c;
 	y -= c;
@@ -152,11 +152,11 @@ void manipulator_t::draw_axes( const shape_ptr_t& s, const ui::paint_event_t& ev
 	manipulators::draw_ellipse( c, 7 / event.pixel_scale, 7 / event.pixel_scale, col, 20);
 }
 
-void manipulator_t::draw_control_polygon( const shape_t *s, float pixel_scale)
+void manipulator_t::draw_control_polygon( const shape_t& s, float pixel_scale)
 {
-    adobe::for_each( s->triples(), boost::bind( &manipulator_t::draw_triple, _1,
-												boost::cref( s->global_xform()), 
-												s->offset(), pixel_scale));
+    adobe::for_each( s.triples(), boost::bind( &manipulator_t::draw_triple, _1,
+												boost::cref( s.global_xform()),
+												s.offset(), pixel_scale));
 }
 
 void manipulator_t::draw_triple( const triple_t& t, const Imath::M33f& m, const Imath::V2f& shape_offset, float pixel_scale)

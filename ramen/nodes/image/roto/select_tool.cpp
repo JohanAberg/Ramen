@@ -92,7 +92,7 @@ void select_tool_t::mouse_press_event( const ui::mouse_press_event_t& event)
 
 	if( selected_ = parent().selected())
 	{
-		if( pick_axes( selected_, event, drag_curve_x_, drag_curve_y_))
+		if( pick_axes( *selected_, event, drag_curve_x_, drag_curve_y_))
 		{
 			drag_curve_mode_ = true;
 
@@ -132,7 +132,7 @@ void select_tool_t::mouse_press_event( const ui::mouse_press_event_t& event)
 		}
 
 		// pick tangents
-		if( active_point_ = pick_tangent( selected_, event, left_tangent_))
+		if( active_point_ = pick_tangent( *selected_, event, left_tangent_))
 		{
 		    drag_tangents_mode_ = true;
 			goto finish;
@@ -310,18 +310,18 @@ void select_tool_t::mouse_release_event( const ui::mouse_release_event_t& event)
 	event.view->update();
 }
 
-bool select_tool_t::pick_axes( shape_t *s, const ui::mouse_event_t& event, bool& xaxis, bool& yaxis) const
+bool select_tool_t::pick_axes( const shape_t& s, const ui::mouse_event_t& event, bool& xaxis, bool& yaxis) const
 {
 	Imath::V2f p( event.wpos);
 	p.x /= event.aspect_ratio;
 	
-	Imath::V2f c( s->center());
+	Imath::V2f c( s.center());
 	Imath::V2f x( c.x + ( 70 / event.pixel_scale), c.y);
 	Imath::V2f y( c.x, c.y - ( 70 / event.pixel_scale));
 	
-	c *= s->global_xform();
-	x *= s->global_xform();
-	y *= s->global_xform();
+	c *= s.global_xform();
+	x *= s.global_xform();
+	y *= s.global_xform();
 	
 	x -= c;
 	y -= c;
@@ -348,38 +348,38 @@ bool select_tool_t::pick_axes( shape_t *s, const ui::mouse_event_t& event, bool&
 	}
 }
 
-shape_t *select_tool_t::pick_nulls( const ui::mouse_press_event_t& event, bool& xaxis, bool& yaxis) const
+shape_t *select_tool_t::pick_nulls( const ui::mouse_press_event_t& event, bool& xaxis, bool& yaxis)
 {
-	BOOST_FOREACH( const roto::shape_ptr_t& s, parent().scene())
+	BOOST_FOREACH( roto::shape_t& s, parent().scene())
 	{
-		if( s->is_null())
+		if( s.is_null())
 		{
-			if( pick_axes( s.get(), event, xaxis, yaxis))
-				return s.get();
+			if( pick_axes( s, event, xaxis, yaxis))
+				return &s;
 		}
 	}
 	
 	return 0;
 }
 
-shape_t *select_tool_t::pick_shape( const ui::mouse_press_event_t& event) const
+shape_t *select_tool_t::pick_shape( const ui::mouse_press_event_t& event)
 {
-	BOOST_FOREACH( const roto::shape_ptr_t& s, parent().scene())
+	BOOST_FOREACH( roto::shape_t& s, parent().scene())
 	{
-		if( !s->is_null())
+		if( !s.is_null())
 		{
-			if( s->inv_global_xform())
+			if( s.inv_global_xform())
 			{
 				Imath::V2f p( event.wpos.x / event.aspect_ratio, event.wpos.y);
-				p = p * s->inv_global_xform().get();
-				p -= s->offset();
+				p = p * s.inv_global_xform().get();
+				p -= s.offset();
 				
-				Imath::Box2f box( s->bbox());
+				Imath::Box2f box( s.bbox());
 				
 				if( inside_pick_distance( box, p, event.pixel_scale * 2))
 				{
-					if( s->for_each_span_while( boost::bind( &select_tool_t::pick_span, this, _1, p, event.pixel_scale)))
-						return s.get();
+					if( s.for_each_span_while( boost::bind( &select_tool_t::pick_span, this, _1, p, event.pixel_scale)))
+						return &s;
 				}
 			}
 		}
@@ -401,15 +401,15 @@ bool select_tool_t::pick_span( const bezier::curve_t<Imath::V2f>& c, const Imath
 	return false;
 }
 
-triple_t *select_tool_t::pick_tangent( shape_t *s, const ui::mouse_event_t& event, bool& left)
+triple_t *select_tool_t::pick_tangent( shape_t& s, const ui::mouse_event_t& event, bool& left)
 {
-	if( s->inv_global_xform())
+	if( s.inv_global_xform())
 	{
 		Imath::V2f p( event.wpos.x / event.aspect_ratio, event.wpos.y);
-		p = p * s->inv_global_xform().get();
-		p -= s->offset();
+		p = p * s.inv_global_xform().get();
+		p -= s.offset();
 	
-		BOOST_FOREACH( triple_t& t, s->triples())
+		BOOST_FOREACH( triple_t& t, s.triples())
 		{
 			if( inside_pick_distance( t.p0(), p, event.pixel_scale))
 			{

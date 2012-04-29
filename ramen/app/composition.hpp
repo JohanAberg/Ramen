@@ -9,6 +9,7 @@
 
 #include<vector>
 #include<utility>
+#include<memory>
 
 #include<boost/noncopyable.hpp>
 
@@ -54,8 +55,8 @@ public:
     composition_t();
     ~composition_t();
 
-    void add_node( node_ptr_t n);
-    node_ptr_t release_node( node_t *n);
+    void add_node( std::auto_ptr<node_t> n);
+    std::auto_ptr<node_t> release_node( node_t *n);
     node_t *find_node( const std::string& name);
 
     void add_edge( const edge_t& e, bool notify = false);
@@ -174,8 +175,8 @@ private:
 	void read_nodes( serialization::yaml_iarchive_t& in);
 	void read_node( const serialization::yaml_node_t& node);
 	
-	node_ptr_t create_node( const std::string& id, const std::pair<int,int>& version);
-	node_ptr_t create_unknown_node( const std::string& id, const std::pair<int, int>& version);
+	std::auto_ptr<node_t> create_node( const std::string& id, const std::pair<int,int>& version);
+	std::auto_ptr<node_t> create_unknown_node( const std::string& id, const std::pair<int, int>& version);
 
 	void read_edges( const serialization::yaml_iarchive_t& in);
 	void read_edge( const serialization::yaml_node_t& node);

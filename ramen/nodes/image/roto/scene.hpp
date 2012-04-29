@@ -5,6 +5,8 @@
 
 #include<vector>
 
+#include<boost/ptr_container/ptr_vector.hpp>
+
 #include<ramen/assert.hpp>
 
 #include<ramen/container/unique_name_map.hpp>
@@ -37,17 +39,17 @@ public:
 		parent_ = p;
 	}
 
-	void add_shape( shape_ptr_t s);
-	shape_ptr_t release_shape( shape_t *s);
+	void add_shape( std::auto_ptr<shape_t> s);
+	std::auto_ptr<shape_t> release_shape( shape_t *s);
 
-	const std::vector<shape_ptr_t>& shapes() const	{ return shapes_;}
-	std::vector<shape_ptr_t>& shapes()				{ return shapes_;}
+	const boost::ptr_vector<shape_t>& shapes() const	{ return shapes_;}
+	boost::ptr_vector<shape_t>& shapes()				{ return shapes_;}
 
-	typedef	std::vector<shape_ptr_t>::const_iterator const_iterator;
+	typedef	boost::ptr_vector<shape_t>::const_iterator const_iterator;
 	const_iterator begin() const { return shapes().begin();}
 	const_iterator end() const { return shapes().end();}
 
-	typedef	std::vector<shape_ptr_t>::iterator iterator;
+	typedef	boost::ptr_vector<shape_t>::iterator iterator;
 	iterator begin()	{ return shapes().begin();}
 	iterator end()		{ return shapes().end();}
 
@@ -75,13 +77,13 @@ public:
 	
 private:
 
-	std::vector<shape_ptr_t>::iterator iterator_for_shape( shape_t *s);
+	iterator iterator_for_shape( shape_t *s);
 	
-	void extend_bbox( Imath::Box2f& bbox, const shape_t *s) const;
+	void extend_bbox( Imath::Box2f& bbox, const shape_t& s) const;
 	
 	image::roto_node_t *parent_;
 	
-	std::vector<shape_ptr_t> shapes_;
+    boost::ptr_vector<shape_t> shapes_;
 	unique_name_map_t<shape_t*> names_;
 };
 

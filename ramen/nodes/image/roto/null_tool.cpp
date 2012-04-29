@@ -54,7 +54,7 @@ void null_tool_t::mouse_release_event( const ui::mouse_release_event_t& event)
 	if( creating_)
 	{
 		creating_ = false;
-		roto::shape_ptr_t s = parent().create_null();
+		std::auto_ptr<roto::shape_t> s = parent().create_null();
 		
 		p_ = event.wpos;
 		p_.x /= event.aspect_ratio;

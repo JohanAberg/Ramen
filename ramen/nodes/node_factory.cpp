@@ -108,10 +108,10 @@ void node_factory_t::sort_by_menu_item()
 	std::sort( metaclasses_.begin(), metaclasses_.end(), compare_menu_items());
 }
 
-node_ptr_t node_factory_t::create_by_id( const std::string& id, bool ui)
+std::auto_ptr<node_t> node_factory_t::create_by_id( const std::string& id, bool ui)
 {
     std::map<std::string, node_metaclass_t>::iterator it( newest_node_infos_.find( id));
-    node_ptr_t n;
+    std::auto_ptr<node_t> n;
 
     if( it != newest_node_infos_.end())
     {
@@ -126,9 +126,9 @@ node_ptr_t node_factory_t::create_by_id( const std::string& id, bool ui)
 			}
 			
 	        if( it->second.create_gui && ui)
-	            n = it->second.create_gui();
+	            n.reset( it->second.create_gui());
 	        else
-	            n = it->second.create();
+	            n.reset( it->second.create());
 		}
 		catch( ...)
 		{
@@ -138,7 +138,7 @@ node_ptr_t node_factory_t::create_by_id( const std::string& id, bool ui)
     return n;
 }
 
-node_ptr_t node_factory_t::create_by_id_with_version( const std::string& id, const std::pair<int, int>& version)
+std::auto_ptr<node_t> node_factory_t::create_by_id_with_version( const std::string& id, const std::pair<int, int>& version)
 {
     std::vector<node_metaclass_t>::iterator best( metaclasses_.end());
     std::vector<node_metaclass_t>::iterator it( metaclasses_.begin());
@@ -159,7 +159,7 @@ node_ptr_t node_factory_t::create_by_id_with_version( const std::string& id, con
 		}
 	}
 	
-	node_ptr_t n;
+	std::auto_ptr<node_t> n;
 
 	if( best_minor < version.second)
 		return n;
@@ -176,7 +176,7 @@ node_ptr_t node_factory_t::create_by_id_with_version( const std::string& id, con
 					best->init();
 			}
 			
-			n = best->create();
+			n.reset( best->create());
 		}
 		catch( ...)
 		{

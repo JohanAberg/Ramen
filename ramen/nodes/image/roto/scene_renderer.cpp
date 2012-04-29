@@ -70,13 +70,13 @@ scene_renderer_t::scene_renderer_t( const scene_t& scene, const Imath::Box2i& ar
 	int max_width = 0;
 	int max_height = 0;
 	
-	BOOST_FOREACH( const shape_ptr_t& s, scene_)
+	BOOST_FOREACH( const shape_t& s, scene_)
 	{
-		if( s->is_null() || !s->active() || s->opacity() == 0.0f)
+		if( s.is_null() || !s.active() || s.opacity() == 0.0f)
 			continue;
 
-		Imath::V2f blur = s->blur();
-		float grow = s->grow();
+		Imath::V2f blur = s.blur();
+		float grow = s.grow();
 		
 		if( blur.x == 0 && blur.y == 0 && grow == 0)
 			continue;
@@ -117,12 +117,12 @@ void scene_renderer_t::render()
 {
 	int bbox_index = 0;
 	
-	BOOST_FOREACH( const shape_ptr_t& s, scene_)
+	BOOST_FOREACH( const shape_t& s, scene_)
 	{
-		if( !s->is_null() && s->active() && s->opacity() != 0.0f)
+		if( !s.is_null() && s.active() && s.opacity() != 0.0f)
 		{
-			Imath::V2f blur = s->blur();
-			float grow = s->grow();
+			Imath::V2f blur = s.blur();
+			float grow = s.grow();
 		
 			if( blur.x == 0 && blur.y == 0 && grow == 0)
 				render_shape( s);
@@ -135,18 +135,18 @@ void scene_renderer_t::render()
 	}
 }
 
-void scene_renderer_t::render_shape( const shape_ptr_t& s)
+void scene_renderer_t::render_shape( const shape_t& s)
 {
     ras_.reset();
 	convert_to_path( s, path_, area_.min, subsample_);
     agg::conv_curve<agg::path_storage> cpath( path_);
     ras_.add_path( cpath);	
     ras_.filling_rule( agg::fill_non_zero);
-    ren_.color( color_type( s->color(), s->opacity()));
+    ren_.color( color_type( s.color(), s.opacity()));
     agg::render_scanlines( ras_, sl_, ren_);
 }
 
-void scene_renderer_t::render_and_filter_shape( const shape_ptr_t& s, int bbox_index)
+void scene_renderer_t::render_and_filter_shape( const shape_t& s, int bbox_index)
 {
 	RAMEN_ASSERT( bbox_index >= 0 && bbox_index <= filtered_bboxes_.size());
 	
@@ -171,7 +171,7 @@ void scene_renderer_t::render_and_filter_shape( const shape_ptr_t& s, int bbox_i
 
 	image::gray_image_view_t buf_view( boost::gil::view( buf_));
 	
-	float g = s->grow();
+	float g = s.grow();
 	if( g != 0.0f)
 	{
 		/*
@@ -186,7 +186,7 @@ void scene_renderer_t::render_and_filter_shape( const shape_ptr_t& s, int bbox_i
 		image::dilate( buf_view, boost::gil::view( tmp_), buf_view, g / aspect_ / subsample_, g / subsample_);
 	}
 
-	Imath::V2f blur = s->blur();
+	Imath::V2f blur = s.blur();
 	if( blur.x != 0.0f || blur.y != 0.0f)
 	{
 		boost::gil::fill_pixels( boost::gil::view( tmp_), image::gray_pixel_t( 0));
@@ -209,39 +209,39 @@ void scene_renderer_t::render_and_filter_shape( const shape_ptr_t& s, int bbox_i
 																	  common_area.min.y - filtered_bboxes_[bbox_index].min.y, 
 																	  common_area.size().x, 
 																	  common_area.size().y),
-										   bg_view, bg_view, composite_layer( s->color(), s->opacity()));
+										   bg_view, bg_view, composite_layer( s.color(), s.opacity()));
 	}
 }
 
-void scene_renderer_t::convert_to_path( const shape_ptr_t& s, agg::path_storage& path, const Imath::V2i& offset, int subsample) const
+void scene_renderer_t::convert_to_path( const shape_t& s, agg::path_storage& path, const Imath::V2i& offset, int subsample) const
 {
 	path.remove_all();
 	
 	Imath::V2f p0, p1, p2;
-	Imath::V2f shape_offset = s->offset();
+	Imath::V2f shape_offset = s.offset();
 
-	Imath::M33f m( s->global_xform());
+	Imath::M33f m( s.global_xform());
 	
-	p0 = transform_point( s->triples()[0].p1(), shape_offset, m, subsample, offset);	
+	p0 = transform_point( s.triples()[0].p1(), shape_offset, m, subsample, offset);
 	path.move_to( p0.x, p0.y);
 	
-	for( int i = 0; i < s->triples().size() - 1; ++i)
+	for( int i = 0; i < s.triples().size() - 1; ++i)
 	{
-		p2 = transform_point( s->triples()[i].p2(), shape_offset, m, subsample, offset);
-		p0 = transform_point( s->triples()[i+1].p0(), shape_offset, m, subsample, offset);
-		p1 = transform_point( s->triples()[i+1].p1(), shape_offset, m, subsample, offset);
+		p2 = transform_point( s.triples()[i].p2(), shape_offset, m, subsample, offset);
+		p0 = transform_point( s.triples()[i+1].p0(), shape_offset, m, subsample, offset);
+		p1 = transform_point( s.triples()[i+1].p1(), shape_offset, m, subsample, offset);
 		path.curve4( p2.x, p2.y, p0.x, p0.y, p1.x, p1.y);
 	}
 
 	// last segment
-	p2 = transform_point( s->triples()[s->triples().size()-1].p2(), shape_offset, m, subsample, offset);
-	p0 = transform_point( s->triples()[0].p0(), shape_offset, m, subsample, offset);
-	p1 = transform_point( s->triples()[0].p1(), shape_offset, m, subsample, offset);	
+	p2 = transform_point( s.triples()[s.triples().size()-1].p2(), shape_offset, m, subsample, offset);
+	p0 = transform_point( s.triples()[0].p0(), shape_offset, m, subsample, offset);
+	p1 = transform_point( s.triples()[0].p1(), shape_offset, m, subsample, offset);
 	path.curve4( p2.x, p2.y, p0.x, p0.y, p1.x, p1.y);
 	path.close_polygon();
 }
 
-Imath::Box2f scene_renderer_t::calc_bbox( const shape_ptr_t& s, int subsample)
+Imath::Box2f scene_renderer_t::calc_bbox( const shape_t& s, int subsample)
 {
 	Imath::Box2f box;
 	agg::path_storage path;

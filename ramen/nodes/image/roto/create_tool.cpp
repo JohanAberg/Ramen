@@ -28,13 +28,13 @@ void create_tool_t::end_active() { new_shape_.reset();}
 
 void create_tool_t::draw_overlay( const ui::paint_event_t& event) const
 {
-	if( new_shape_ && !new_shape_->empty())
+	if( new_shape_.get() && !new_shape_->empty())
 	{
 		gl_push_matrix();
 		gl_scalef( event.aspect_ratio, 1);
 
 		glEnable( GL_MAP1_VERTEX_3);
-		roto::manipulator_t::draw_shape( new_shape_, event, parent().aspect_ratio(), false);
+		roto::manipulator_t::draw_shape( *new_shape_, event, parent().aspect_ratio(), false);
 		glDisable( GL_MAP1_VERTEX_3);
 		
 		// clear gl errors
@@ -64,7 +64,7 @@ void create_tool_t::key_press_event( const ui::key_press_event_t& event)
 
 void create_tool_t::mouse_press_event( const ui::mouse_press_event_t& event)
 {
-	if( !new_shape_)
+	if( !new_shape_.get())
 	{
 		parent().deselect_all();
 		
@@ -89,7 +89,6 @@ void create_tool_t::mouse_press_event( const ui::mouse_press_event_t& event)
 			return;
 		}
 		
-		// try to insert a point in an existing curve here...
 		new_shape_ = parent().create_shape();
 		new_shape_->select( true);
 		point_ = 0;
@@ -129,7 +128,7 @@ void create_tool_t::mouse_release_event( const ui::mouse_release_event_t& event)
 
 void create_tool_t::close_shape( bool success)
 {
-    if( new_shape_ && success)
+    if( new_shape_.get() && success)
 	{
 		new_shape_->close();
 
@@ -147,30 +146,30 @@ void create_tool_t::close_shape( bool success)
 			ui::user_interface_t::Instance().update();
 		}
     }
-	
-	new_shape_.reset();
+
+    new_shape_.reset();
 }
 
-shape_t *create_tool_t::pick_shape( const ui::mouse_press_event_t& event, int& span_index, float& t) const
+shape_t *create_tool_t::pick_shape( const ui::mouse_press_event_t& event, int& span_index, float& t)
 {
-	BOOST_FOREACH( const roto::shape_ptr_t& s, parent().scene())
+	BOOST_FOREACH( roto::shape_t& s, parent().scene())
 	{
-		if( !s->is_null())
+		if( !s.is_null())
 		{
-			if( s->inv_global_xform())
+			if( s.inv_global_xform())
 			{
 				Imath::V2f p( event.wpos.x / event.aspect_ratio, event.wpos.y);
-				p = p * s->inv_global_xform().get();
-				p -= s->offset();
+				p = p * s.inv_global_xform().get();
+				p -= s.offset();
 				
-				Imath::Box2f box( s->bbox());
+				Imath::Box2f box( s.bbox());
 				
 				if( inside_pick_distance( box, p, event.pixel_scale * 2))
 				{
 					span_index = 0;
 					bezier::curve_t<Imath::V2f> span;
 					
-					for( shape_t::const_triple_iterator it( s->triples().begin()); it != s->triples().end()-1; )
+					for( shape_t::const_triple_iterator it( s.triples().begin()); it != s.triples().end()-1; )
 					{
 						span.p[0] = it->p1();
 						span.p[1] = it->p2();
@@ -181,23 +180,23 @@ shape_t *create_tool_t::pick_shape( const ui::mouse_press_event_t& event, int& s
 						Imath::V2f q( bezier::nearest_point_on_curve( span, p, t));
 
 						if( inside_pick_distance( q, p, event.pixel_scale))
-							return s.get();
+							return &s;
 					
 						++span_index;
 					}
 			
-					if( s->closed())
+					if( s.closed())
 					{
-						span.p[0] = s->triples().back().p1();
-						span.p[1] = s->triples().back().p2();
-						span.p[2] = s->triples().front().p0();
-						span.p[3] = s->triples().front().p1();
+						span.p[0] = s.triples().back().p1();
+						span.p[1] = s.triples().back().p2();
+						span.p[2] = s.triples().front().p0();
+						span.p[3] = s.triples().front().p1();
 
 						Imath::V2f q( bezier::nearest_point_on_curve( span, p, t));
 
 						if( inside_pick_distance( q, p, event.pixel_scale))
-							return s.get();
-					
+                            return &s;
+
 						++span_index;
 					}					
 				}

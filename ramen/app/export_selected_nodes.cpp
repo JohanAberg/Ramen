@@ -30,13 +30,13 @@ void export_selected_nodes( const boost::filesystem::path& p)
 	
     std::map<node_t*, node_t*> relation;
 
-    BOOST_FOREACH( node_ptr_t& n, document_t::Instance().composition().nodes())
+    BOOST_FOREACH( node_t& n, document_t::Instance().composition().nodes())
     {
-        if( n->selected())
+        if( n.selected())
         {
-            node_t *nclone = n->clone();
-            relation[ n.get()] = nclone;
-            comp.add_node( node_ptr_t( nclone));
+            std::auto_ptr<node_t> nclone( new_clone( n));
+            relation[ &n] = nclone.get();
+            comp.add_node( nclone);
         }
     }
 

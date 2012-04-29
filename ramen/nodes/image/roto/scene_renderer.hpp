@@ -38,11 +38,11 @@ public:
 	
 private:
 
-	void render_shape( const shape_ptr_t& s);
-	void render_and_filter_shape( const shape_ptr_t& s, int bbox_index);
+	void render_shape( const shape_t& s);
+	void render_and_filter_shape( const shape_t& s, int bbox_index);
 	
-	void convert_to_path( const shape_ptr_t& s, agg::path_storage& path, const Imath::V2i& offset, int subsample) const;
-	Imath::Box2f calc_bbox( const shape_ptr_t& s, int subsample);
+	void convert_to_path( const shape_t& s, agg::path_storage& path, const Imath::V2i& offset, int subsample) const;
+	Imath::Box2f calc_bbox( const shape_t& s, int subsample);
 
 	Imath::V2f transform_point( const Imath::V2d& p, const Imath::V2f& shape_offset, 
 								  const Imath::M33f& m, int subsample, const Imath::V2i& offset) const;

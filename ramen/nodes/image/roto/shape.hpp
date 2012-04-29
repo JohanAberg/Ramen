@@ -41,8 +41,9 @@ public:
 	
     shape_t();
 	explicit shape_t( const Imath::Box2f& box);
-	shape_t( const shape_t& other);
 	
+    shape_t *clone() const { return do_clone();}
+
 	// node this parameterised belongs to
 	virtual const node_t *node() const;
 	virtual node_t *node();
@@ -228,11 +229,18 @@ public:
 	// serialization
 	void read( const serialization::yaml_node_t& node, int version = 1);
 	void write( serialization::yaml_oarchive_t& out, int version = 1) const;	
-	
+
+protected:
+
+    shape_t( const shape_t& other);
+    void operator=( const shape_t& other);
+
 private:
 
 	void init();
 	
+    virtual shape_t *do_clone() const;
+
 	virtual void do_create_params();
 	void param_changed( param_t *p, param_t::change_reason reason);
 	
@@ -271,6 +279,8 @@ private:
 		
 	anim::shape_curve2f_t curve_;
 };
+
+shape_t *new_clone( const shape_t& other);
 
 } // roto
 } // ramen

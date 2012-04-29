@@ -5,14 +5,10 @@
 #ifndef RAMEN_NODE_FWD_HPP
 #define	RAMEN_NODE_FWD_HPP
 
-#include<boost/intrusive_ptr.hpp>
-
 namespace ramen
 {
 
 class node_t;
-typedef boost::intrusive_ptr<node_t> node_ptr_t;
-
 class image_node_t;
 
 } // namespace

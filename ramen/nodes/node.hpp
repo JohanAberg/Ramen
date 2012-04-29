@@ -294,8 +294,8 @@ private:
 	int dependency_count_;
 };
 
-} // namespace
+node_t* new_clone( const node_t& other);
 
-/*@}*/
+} // namespace
 
 #endif

@@ -19,11 +19,11 @@ namespace render
 template<class F>
 F for_each_output( composition_t& comp, bool selected_only, F fun)
 {
-	BOOST_FOREACH( node_ptr_t n, comp.nodes())
+	BOOST_FOREACH( node_t& n, comp.nodes())
 	{
-		if( node_output_interface *out = dynamic_cast<node_output_interface*>( n.get()))
+		if( node_output_interface *out = dynamic_cast<node_output_interface*>( &n))
 		{
-			if( ( selected_only && !n->selected()) || n->ignored())
+			if( ( selected_only && !n.selected()) || n.ignored())
 				continue;
 	
 			fun( out);
