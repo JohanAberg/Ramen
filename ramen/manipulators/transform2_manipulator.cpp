@@ -18,6 +18,7 @@
 #include<ramen/app/document.hpp>
 
 #include<ramen/ui/viewer/viewer_strategy.hpp>
+#include<ramen/ui/palette.hpp>
 
 namespace ramen
 {

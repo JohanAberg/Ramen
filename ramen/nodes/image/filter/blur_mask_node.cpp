@@ -1,4 +1,6 @@
 // Copyright (c) 2011 Esteban Tovagliari
+// Licensed under the terms of the CDDL License.
+// See CDDL_LICENSE.txt for a copy of the license.
 
 #include<ramen/nodes/image/filter/blur_mask_node.hpp>
 
@@ -18,7 +20,7 @@ namespace image
 blur_mask_node_t::blur_mask_node_t() : base_blur_node_t()
 {
 	set_name( "blur_msk");
-    add_input_plug( input_plug_info_t( ui::palette_t::instance().color( "matte plug"), "Mask"));
+    add_input_plug( "mask", false, ui::palette_t::instance().color( "matte plug"), "Mask");
 }
 
 void blur_mask_node_t::do_create_params()

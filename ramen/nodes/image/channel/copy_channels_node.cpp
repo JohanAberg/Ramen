@@ -1,4 +1,6 @@
 // Copyright (c) 2010 Esteban Tovagliari
+// Licensed under the terms of the CDDL License.
+// See CDDL_LICENSE.txt for a copy of the license.
 
 #include<ramen/nodes/image/channel/copy_channels_node.hpp>
 
@@ -51,8 +53,8 @@ void copy_luminance( const image::const_image_view_t& src, const image::channel_
 copy_channels_node_t::copy_channels_node_t() : image_node_t()
 {
     set_name( "copy ch");
-    add_input_plug( input_plug_info_t( ui::palette_t::instance().color( "front plug"), "Source"));
-    add_input_plug( input_plug_info_t( ui::palette_t::instance().color( "front plug"), "Source 2"));
+    add_input_plug( "src1", false, ui::palette_t::instance().color( "front plug"), "Source");
+    add_input_plug( "src2", false, ui::palette_t::instance().color( "front plug"), "Source 2");
     add_output_plug();
 }
 

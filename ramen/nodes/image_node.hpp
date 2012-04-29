@@ -13,6 +13,8 @@
 
 #include<ramen/image/buffer.hpp>
 
+#include<ramen/ui/palette.hpp>
+
 namespace ramen
 {
 
@@ -28,6 +30,8 @@ public:
     virtual void accept( node_visitor& v);
 
     // connections
+    void add_output_plug();
+
     virtual bool accept_connection( node_t *src, int port) const;
 
     // format, bounds & aspect	

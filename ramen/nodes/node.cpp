@@ -41,27 +41,18 @@ struct frames_needed_less
 	
 } // unnamed
 	
-node_t::node_t() : manipulable_t(), flags_( 0), dependency_count_( 0), composition_( 0), output_( 0)
-{
-}
+node_t::node_t() : manipulable_t(), flags_( 0), dependency_count_( 0), composition_( 0) {}
 
-node_t::node_t( const node_t& other) : manipulable_t( other)
+node_t::node_t( const node_t& other) : manipulable_t( other), outputs_( other.outputs_)
 {
-    if( other.output_)
-        add_output_plug();
-
+    adobe::for_each( outputs_, boost::bind( &node_output_plug_t::set_parent_node, _1, this));
 	dependency_count_ = 0;
     flags_ = other.flags_;
     loc_ = other.loc_;
-    plugs_info_ = other.plugs_info_;
     composition_ = other.composition_;
 }
 
-node_t::~node_t()
-{
-    if( output_ )
-        delete output_;
-}
+node_t::~node_t() {}
 
 node_t *node_t::clone() const
 {
@@ -169,13 +160,76 @@ bool node_t::is_context() const    { return flags_ & context_bit;}
 
 // inputs
 
-void node_t::add_input_plug( const input_plug_info_t& info, bool optional)
+int node_t::find_input( const adobe::name_t& id) const
 {
-    plugs_info_.push_back( info);
-    inputs_.push_back( input_plug_t( optional));
+    int index = 0;
+    BOOST_FOREACH( const node_input_plug_t& i, input_plugs())
+    {
+        if( i.id().c_str() == id.c_str() )
+            return index;
+
+        ++index;
+    }
+
+    return -1;
 }
 
-void node_t::set_plug_info( std::size_t index, const input_plug_info_t& info) { plugs_info_[index] = info;}
+const node_t *node_t::input( std::size_t i) const
+{
+    RAMEN_ASSERT( i < inputs_.size());
+    return inputs_[i].input_node();
+}
+
+node_t *node_t::input( std::size_t i)
+{
+    RAMEN_ASSERT( i < inputs_.size());
+    return inputs_[i].input_node();
+}
+
+void node_t::add_input_plug( const std::string &id, bool optional, const Imath::Color3c &color, const std::string &tooltip)
+{
+    inputs_.push_back( node_input_plug_t( id, optional, color, tooltip ));
+}
+
+std::size_t node_t::num_outputs() const
+{
+    if( !has_output_plug())
+        return 0;
+
+    return outputs_[0].connections().size();
+}
+
+const node_output_plug_t& node_t::output_plug() const
+{
+    RAMEN_ASSERT( has_output_plug());
+    return outputs_[0];
+}
+
+node_output_plug_t& node_t::output_plug()
+{
+    RAMEN_ASSERT( has_output_plug());
+    return outputs_[0];
+}
+
+const node_t *node_t::output( std::size_t i) const
+{
+    RAMEN_ASSERT( has_output_plug());
+    RAMEN_ASSERT( i < num_outputs());
+    return boost::get<0>( outputs_[0].connections()[i] );
+}
+
+node_t *node_t::output( std::size_t i)
+{
+    RAMEN_ASSERT( has_output_plug());
+    RAMEN_ASSERT( i < num_outputs());
+    return boost::get<0>( outputs_[0].connections()[i] );
+}
+
+void node_t::add_output_plug( const std::string &id, const Imath::Color3c& color, const std::string& tooltip )
+{
+    RAMEN_ASSERT( !has_output_plug());
+    outputs_.push_back( new node_output_plug_t( this, id, color, tooltip ));
+}
 
 bool node_t::accept_connection( node_t *src, int port) const { return true;}
 
@@ -191,8 +245,11 @@ void node_t::do_connected( node_t *src, int port) {}
 
 void node_t::add_new_input_plug()
 {
+    RAMEN_ASSERT( 0 );
+    /*
     add_input_plug( input_plug_info_t( ui::palette_t::instance().color("back plug")), true);
     reconnect_node();
+    */
 }
 
 void node_t::reconnect_node()
@@ -204,7 +261,7 @@ void node_t::reconnect_node()
         BOOST_FOREACH( edge_t& e, comp->edges())
         {
             if( e.dst == this)
-                input_plugs()[ e.port].set_input( e.src);
+                input_plugs()[ e.port].set_input( e.src, adobe::name_t( "unused"));
         }
     }
 }
@@ -302,7 +359,7 @@ void node_t::end_interaction()
 
 bool node_t::is_valid() const
 {
-    BOOST_FOREACH( const input_plug_t& i, input_plugs())
+    BOOST_FOREACH( const node_input_plug_t& i, input_plugs())
     {
         if( !i.connected() && !i.optional())
             return false;
@@ -317,7 +374,7 @@ bool node_t::is_valid() const
         bool all_optional = true;
         bool all_disconnected = true;
 
-        BOOST_FOREACH( const input_plug_t& i, input_plugs())
+        BOOST_FOREACH( const node_input_plug_t& i, input_plugs())
         {
             if( i.connected())
                 all_disconnected = false;
@@ -360,11 +417,11 @@ void node_t::clear_hash()
 
     if( cacheable())
     {
-        BOOST_FOREACH( input_plug_t& i, input_plugs())
+        BOOST_FOREACH( node_input_plug_t& i, input_plugs())
         {
             if( i.connected())
             {
-                if( !i.input()->cacheable())
+                if( !i.input_node()->cacheable())
                 {
                     set_cacheable( false);
                     return;

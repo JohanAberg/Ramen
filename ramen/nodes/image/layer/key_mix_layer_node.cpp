@@ -1,4 +1,6 @@
 // Copyright (c) 2010 Esteban Tovagliari
+// Licensed under the terms of the CDDL License.
+// See CDDL_LICENSE.txt for a copy of the license.
 
 #include<ramen/nodes/image/layer/key_mix_layer_node.hpp>
 
@@ -44,9 +46,9 @@ private:
 key_mix_layer_node_t::key_mix_layer_node_t() : base_layer_node_t()
 {
     set_name( "key_mix");
-    add_input_plug( input_plug_info_t( ui::palette_t::instance().color( "back plug"), "Back"));
-    add_input_plug( input_plug_info_t( ui::palette_t::instance().color( "front plug"), "Front"));
-    add_input_plug( input_plug_info_t( ui::palette_t::instance().color( "matte plug"), "Matte"));
+    add_input_plug( "back", false, ui::palette_t::instance().color( "back plug"), "Back");
+    add_input_plug( "front", false, ui::palette_t::instance().color( "front plug"), "Front");
+    add_input_plug( "matte", false, ui::palette_t::instance().color( "matte plug"), "Matte");
     add_output_plug();
 }
 

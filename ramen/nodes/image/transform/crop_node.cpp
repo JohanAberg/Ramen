@@ -1,4 +1,6 @@
 // Copyright (c) 2010 Esteban Tovagliari
+// Licensed under the terms of the CDDL License.
+// See CDDL_LICENSE.txt for a copy of the license.
 
 #include<ramen/nodes/image/transform/crop_node.hpp>
 
@@ -112,7 +114,7 @@ struct rgba_soft_crop_fun : public alpha_soft_crop_fun
 crop_node_t::crop_node_t() : image_node_t()
 {
     set_name("crop");
-    add_input_plug( input_plug_info_t( ui::palette_t::instance().color("front plug"), "Front"));
+    add_input_plug( "front", false, ui::palette_t::instance().color("front plug"), "Front");
     add_output_plug();
 }
 

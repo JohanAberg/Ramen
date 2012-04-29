@@ -1,4 +1,6 @@
 // Copyright (c) 2010 Esteban Tovagliari
+// Licensed under the terms of the CDDL License.
+// See CDDL_LICENSE.txt for a copy of the license.
 
 #include<ramen/nodes/image/color/color_match_node.hpp>
 
@@ -142,9 +144,9 @@ private:
 color_match_node_t::color_match_node_t()
 {
     set_name( "color_match");
-    add_input_plug( input_plug_info_t( ui::palette_t::instance().color( "front plug"), "Front"));
-    add_input_plug( input_plug_info_t( ui::palette_t::instance().color( "front plug"), "Target Color"));
-    add_input_plug( input_plug_info_t( ui::palette_t::instance().color( "back plug") , "Source Color"), true);
+    add_input_plug( "front", false, ui::palette_t::instance().color( "front plug"), "Front");
+    add_input_plug( "target", false, ui::palette_t::instance().color( "front plug"), "Target Color");
+    add_input_plug( "source", true, ui::palette_t::instance().color( "back plug") , "Source Color");
     add_output_plug();
 }
 

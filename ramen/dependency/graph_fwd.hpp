@@ -10,7 +10,7 @@ namespace ramen
 namespace dependency
 {
 
-class dgraph_t;
+class graph_t;
 
 } // dependency
 } // ramen

@@ -4,16 +4,24 @@
 
 #include<ramen/python/python.hpp>
 
-#include<ramen/nodes/graph.hpp>
+#include<ramen/assert.hpp>
+
+#include<ramen/nodes/node_graph.hpp>
 
 namespace ramen
 {
 
-graph::graph() {}
+node_graph_t::node_graph_t() {}
 
-void graph::add_node( node_ptr_t n) { nodes_.push_back( n);}
+node_graph_t::node_graph_t( const node_graph_t& other)
+{
+    // TODO: implement this. (est.)
+    RAMEN_ASSERT( false);
+}
 
-node_ptr_t graph::release_node( node_t *n)
+void node_graph_t::add_node( node_ptr_t n) { nodes_.push_back( n);}
+
+node_ptr_t node_graph_t::release_node( node_t *n)
 {
     node_ptr_t result;
     node_container_type::iterator it;
@@ -33,9 +41,9 @@ node_ptr_t graph::release_node( node_t *n)
     return result;
 }
 
-void graph::add_edge( const edge_t& e)
+void node_graph_t::add_edge( const edge_t& e)
 {
-    node_t *src = e.dst->input_plugs()[e.port].input();
+    node_t *src = e.dst->input_plugs()[e.port].input_node();
 
     if( src)
         remove_edge( edge_t( src, e.dst, e.port));
@@ -45,7 +53,7 @@ void graph::add_edge( const edge_t& e)
     edges_.push_back( e);
 }
 
-void graph::remove_edge( const edge_t& e)
+void node_graph_t::remove_edge( const edge_t& e)
 {
     e.src->output_plug().remove_output( e.dst, e.port);
     e.dst->input_plugs()[e.port].clear_input();
@@ -53,7 +61,7 @@ void graph::remove_edge( const edge_t& e)
 }
 
 // connections
-void graph::connect( node_t *src, node_t *dst, int port)        { add_edge( edge_t( src, dst, port));}
-void graph::disconnect( node_t *src, node_t *dst, int port)     { remove_edge( edge_t( src, dst, port));}
+void node_graph_t::connect( node_t *src, node_t *dst, int port)        { add_edge( edge_t( src, dst, port));}
+void node_graph_t::disconnect( node_t *src, node_t *dst, int port)     { remove_edge( edge_t( src, dst, port));}
 
 } // namespace

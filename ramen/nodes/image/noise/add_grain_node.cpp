@@ -1,4 +1,6 @@
 // Copyright (c) 2010 Esteban Tovagliari
+// Licensed under the terms of the CDDL License.
+// See CDDL_LICENSE.txt for a copy of the license.
 
 #include<ramen/nodes/image/noise/add_grain_node.hpp>
 
@@ -142,7 +144,7 @@ private:
 add_grain_node_t::add_grain_node_t() : pointop_node_t()
 { 
     set_name( "add_grain");
-    add_input_plug( input_plug_info_t( ui::palette_t::instance().color( "matte plug"), "Mask"), true);
+    add_input_plug( "mask", true, ui::palette_t::instance().color( "matte plug"), "Mask");
 }
 
 void add_grain_node_t::do_create_params()

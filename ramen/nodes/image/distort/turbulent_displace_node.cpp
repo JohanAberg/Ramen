@@ -1,4 +1,6 @@
 // Copyright (c) 2010 Esteban Tovagliari
+// Licensed under the terms of the CDDL License.
+// See CDDL_LICENSE.txt for a copy of the license.
 
 #include<ramen/nodes/image/distort/turbulent_displace_node.hpp>
 
@@ -120,7 +122,7 @@ private:
 turbulent_displace_node_t::turbulent_displace_node_t() : distort_node_t()
 {
     set_name( "turb_disp");
-    add_input_plug( input_plug_info_t( ui::palette_t::instance().color( "matte plug"), "Mask"), true);
+    add_input_plug( "mask", false, ui::palette_t::instance().color( "matte plug"), "Mask");
 }
 
 void turbulent_displace_node_t::do_create_params()

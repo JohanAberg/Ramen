@@ -62,7 +62,7 @@ void draw_generic_node( QPainter& painter, const node_t *n)
 
     for( unsigned int i=0;i<n->num_inputs();++i)
     {
-        brush.setColor( QColor( n->plugs_info()[i].color().x, n->plugs_info()[i].color().y, n->plugs_info()[i].color().z));
+        brush.setColor( QColor( n->input_plugs()[i].color().x, n->input_plugs()[i].color().y, n->input_plugs()[i].color().z));
         painter.setBrush( brush);
         Imath::V2f q = generic_input_location( n, i);
         painter.drawRect( q.x - 3, q.y - 3, 6, 6);
@@ -70,6 +70,7 @@ void draw_generic_node( QPainter& painter, const node_t *n)
 
     if( n->has_output_plug())
     {
+        // TODO: use the output plug's color here.
         brush.setColor( palette_t::instance().qcolor( "out plug"));
         painter.setBrush( brush);
         Imath::V2f q = generic_output_location( n);

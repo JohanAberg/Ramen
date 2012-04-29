@@ -13,7 +13,7 @@
 #include<boost/noncopyable.hpp>
 #include<boost/signals2/signal.hpp>
 
-#include<ramen/dependency/dgraph_fwd.hpp>
+#include<ramen/dependency/graph_fwd.hpp>
 
 namespace ramen
 {
@@ -25,20 +25,20 @@ namespace dependency
 \brief A node in Ramen's dependency graph.
 */
 
-class RAMEN_API dnode_t : boost::noncopyable
+class RAMEN_API node_t : boost::noncopyable
 {
 public:
 
-	dnode_t();
-	virtual ~dnode_t();
+	node_t();
+	virtual ~node_t();
 
 	/// Returns true if this node is dirty.
 	bool dirty() const;
 
 protected:
 
-	dnode_t( const dnode_t& other);
-	void operator=( const dnode_t& other);
+	node_t( const node_t& other);
+	void operator=( const node_t& other);
 
 	/// Sets this node dirty flag.
 	void set_dirty( bool d);
@@ -48,7 +48,7 @@ private:
 	/// Notify observers that this node changed.
 	virtual void notify();
 
-	friend class dgraph_t;
+	friend class graph_t;
 
 	bool dirty_;
 };
@@ -59,18 +59,18 @@ private:
 \ingroup depgraph
 \brief A output node in Ramen's dependency graph.
 */
-class RAMEN_API output_dnode_t : public dnode_t
+class RAMEN_API output_node_t : public node_t
 {
 public:
 
-	output_dnode_t();
+	output_node_t();
 
-	/// Signal emitted when this node needs updating.
+	/// Signal emitted when this dependency node has changed.
     boost::signals2::signal<void()> changed;
 
 protected:
 
-	output_dnode_t( const output_dnode_t& other);
+	output_node_t( const output_node_t& other);
 
 private:
 

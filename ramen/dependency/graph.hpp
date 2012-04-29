@@ -7,14 +7,14 @@
 
 #include<ramen/config.hpp>
 
-#include<ramen/dependency/dgraph_fwd.hpp>
+#include<ramen/dependency/graph_fwd.hpp>
 
 #include<vector>
 #include<map>
 
 #include<boost/graph/adjacency_list.hpp>
 
-#include<ramen/dependency/dnode.hpp>
+#include<ramen/dependency/node.hpp>
 #include<ramen/dependency/exceptions.hpp>
 
 namespace ramen
@@ -26,21 +26,21 @@ namespace dependency
 \ingroup depgraph
 \brief Ramen's dependency graph.
 */
-class RAMEN_API dgraph_t
+class RAMEN_API graph_t
 {
 public:
 
-	dgraph_t();
-	~dgraph_t();
+	graph_t();
+	~graph_t();
 
 	///	Adds a node to the dependency graph.
-	void add_node( dnode_t *v);
+	void add_node( node_t *v);
 
 	/// Removes a node from the dependency graph.
-	void remove_node( dnode_t *v);
+	void remove_node( node_t *v);
 
 	/// Returns true if a node is in the dependency graph.
-	bool has_node( dnode_t *v) const;
+	bool has_node( node_t *v) const;
 
 	/*!
 		Adds a dependency between nodes. s depends on d.
@@ -48,20 +48,20 @@ public:
 		\param d Destination node
 		\exception ramen::dependency::cycle_error thrown if adding the dependency creates a cycle in the graph.
 	*/
-	void add_dependency( dnode_t *s, dnode_t *d);
+	void add_dependency( node_t *s, node_t *d);
 
 	/*!
 		Removes a dependency between nodes. s depends on d.
 		\param s Source node
 		\param d Destination node
 	*/
-	void remove_dependency( dnode_t *s, dnode_t *d);
+	void remove_dependency( node_t *s, node_t *d);
 
 	/// Applies a function object to all dependency nodes in the graph.
 	template<class Fun>
 	void for_each_node( Fun f)
 	{
-		for( std::map<dnode_t*, vertex_desc_type>::iterator it = node_to_desc_.begin(), ie = node_to_desc_.end(); it != ie; ++it)
+		for( std::map<node_t*, vertex_desc_type>::iterator it = node_to_desc_.begin(), ie = node_to_desc_.end(); it != ie; ++it)
 			f( it->first);
 	}
 
@@ -69,7 +69,7 @@ public:
 	void clear_all_dirty();
 
 	/// Dirties a node and all the nodes that depends on it.
-	void set_node_and_dependencies_dirty( dnode_t *n);
+	void set_node_and_dependencies_dirty( node_t *n);
 
     /// Calls notify on all nodes that are dirty.
 	void notify_all_dirty();
@@ -78,7 +78,7 @@ private:
 
 	struct node_info_t
 	{
-		dnode_t *node;
+		node_t *node;
 	};
 
 	typedef boost::adjacency_list<	boost::listS,
@@ -91,7 +91,7 @@ private:
 
 	graph_type graph_;
 
-	typedef std::map<dnode_t *, vertex_desc_type> node_to_desc_map_type;
+	typedef std::map<node_t *, vertex_desc_type> node_to_desc_map_type;
 	node_to_desc_map_type node_to_desc_;
 
 	bool valid_order_;

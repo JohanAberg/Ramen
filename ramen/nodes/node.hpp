@@ -22,8 +22,7 @@
 #include<ramen/app/composition_fwd.hpp>
 
 #include<ramen/nodes/graph_color.hpp>
-#include<ramen/nodes/plug.hpp>
-#include<ramen/nodes/input_plug_info.hpp>
+#include<ramen/nodes/node_plug.hpp>
 #include<ramen/nodes/node_factory.hpp>
 #include<ramen/nodes/node_visitor.hpp>
 
@@ -66,20 +65,13 @@ public:
     // inputs
     virtual std::size_t num_inputs() const { return inputs_.size();}
 
-    const std::vector<input_plug_t>& input_plugs() const { return inputs_;}
-    std::vector<input_plug_t>& input_plugs()             { return inputs_;}
+    const std::vector<node_input_plug_t>& input_plugs() const { return inputs_;}
+    std::vector<node_input_plug_t>& input_plugs()             { return inputs_;}
 
-    const node_t *input( std::size_t i = 0) const
-    {
-        RAMEN_ASSERT( i < inputs_.size());
-        return inputs_[i].input();
-    }
+    int find_input( const adobe::name_t& id) const;
 
-    node_t *input( std::size_t i = 0)
-    {
-        RAMEN_ASSERT( i < inputs_.size());
-        return inputs_[i].input();
-    }
+    const node_t *input( std::size_t i = 0) const;
+    node_t *input( std::size_t i = 0);
 
     template<class T>
     const T *input_as( std::size_t i = 0) const
@@ -93,51 +85,22 @@ public:
 		return dynamic_cast<T*>( input( i));
 	}
 
-    void add_input_plug( const input_plug_info_t& info, bool optional = false);
+    void add_input_plug( const std::string& id, bool optional,
+                         const Imath::Color3c& color, const std::string& tooltip );
 
     // outputs
 
-    bool has_output_plug() const { return output_ != 0;}
+    bool has_output_plug() const { return !outputs_.empty();}
 
-    virtual std::size_t num_outputs() const
-    {
-        if( !has_output_plug())
-            return 0;
+    std::size_t num_outputs() const;
 
-        return output_->nodes().size();
-    }
+    const node_output_plug_t& output_plug() const;
+    node_output_plug_t& output_plug();
 
-    const output_plug_t& output_plug() const
-    {
-        RAMEN_ASSERT( output_);
-        return *output_;
-    }
+    const node_t *output( std::size_t i) const;
+    node_t *output( std::size_t i);
 
-    output_plug_t& output_plug()
-    {
-        RAMEN_ASSERT( output_);
-        return *output_;
-    }
-
-    const node_t *output( std::size_t i) const
-    {
-        RAMEN_ASSERT( output_);
-        RAMEN_ASSERT( i < num_outputs());
-        return output_->nodes()[i].first;
-    }
-
-    node_t *output( std::size_t i)
-    {
-        RAMEN_ASSERT( output_);
-        RAMEN_ASSERT( i < num_outputs());
-        return output_->nodes()[i].first;
-    }
-
-    void add_output_plug()
-    {
-        RAMEN_ASSERT( !output_);
-        output_ = new output_plug_t();
-    }
+    void add_output_plug( const std::string& id, const Imath::Color3c& color, const std::string& tooltip );
 
     graph_color_t graph_color() const            { return graph_color_;}
     void set_graph_color( graph_color_t c) const { graph_color_ = c;}
@@ -178,9 +141,6 @@ public:
     bool is_active() const;
     bool is_context() const;
 	
-    const std::vector<input_plug_info_t>& plugs_info() const	{ return plugs_info_;}
-    std::vector<input_plug_info_t>& plugs_info()				{ return plugs_info_;}
-
     virtual void add_new_input_plug();
 	
     // params
@@ -273,8 +233,6 @@ protected:
 
     node_t( const node_t& other);
     void operator=( const node_t& other);
-
-    void set_plug_info( std::size_t index, const input_plug_info_t& info);
 	
     virtual void do_calc_hash_str( const render::context_t& context);
 	void add_needed_frames_to_hash( const render::context_t& context);
@@ -317,13 +275,13 @@ private:
 
     // data
 
-    std::vector<input_plug_t> inputs_;
-    output_plug_t *output_;
+    std::vector<node_input_plug_t> inputs_;
+    boost::ptr_vector<node_output_plug_t> outputs_;
+
     mutable graph_color_t graph_color_;
 
     boost::uint32_t flags_;    
     Imath::V2f loc_;
-    std::vector<input_plug_info_t> plugs_info_;
 	std::vector<std::pair<int, float> > frames_needed_;
 
 	// composition this node belongs to.	

@@ -116,11 +116,12 @@ bool composition_view_t::event( QEvent *event)
         break;
 
         case pick_result_t::output_picked:
+            // TODO: use the output plug's tooltip here.
             QToolTip::showText( help_event->globalPos(), "Output");
         break;
 
         default:
-            QToolTip::showText( help_event->globalPos(), picked.node->plugs_info()[ picked.plug_num].tooltip().c_str());
+            QToolTip::showText( help_event->globalPos(), picked.node->input_plugs()[ picked.plug_num].tooltip().c_str());
         }
 
         return true;

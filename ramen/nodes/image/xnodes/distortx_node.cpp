@@ -1,4 +1,6 @@
 // Copyright (c) 2011 Esteban Tovagliari
+// Licensed under the terms of the CDDL License.
+// See CDDL_LICENSE.txt for a copy of the license.
 
 #include<ramen/nodes/image/xnodes/distortx_node.hpp>
 
@@ -159,8 +161,8 @@ private:
 distortx_node_t::distortx_node_t() : base_expr_node_t()
 {
     set_name( "distortx");
-    add_input_plug( input_plug_info_t( ui::palette_t::instance().color("front plug"), "Front"));
-    add_input_plug( input_plug_info_t( ui::palette_t::instance().color("matte plug"), "Mask"), true);
+    add_input_plug( "front", false, ui::palette_t::instance().color("front plug"), "Front");
+    add_input_plug( "mask", true, ui::palette_t::instance().color("matte plug"), "Mask");
 }
 
 distortx_node_t::distortx_node_t( const distortx_node_t& other) : base_expr_node_t( other)

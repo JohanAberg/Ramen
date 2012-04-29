@@ -51,8 +51,8 @@ void draw_edges_visitor::visit( node_t *n)
 
     for( int i = 0; i < n->num_outputs(); ++i)
     {
-        node_t *dst = n->output_plug()[i].first;
-        visitor.index = n->output_plug()[i].second;
+        node_t *dst = boost::get<0>( n->output_plug().connections()[i]);
+        visitor.index = boost::get<2>( n->output_plug().connections()[i]);
         dst->accept( visitor);
         view_.draw_bezier_edge( painter_, p0, visitor.loc);
     }
@@ -83,8 +83,8 @@ void pick_edge_visitor::visit( node_t *n)
 
     for( int i = 0; i < n->num_outputs(); ++i)
     {
-        node_t *target = n->output_plug()[i].first;
-        visitor.index = n->output_plug()[i].second;
+        node_t *target = boost::get<0>( n->output_plug().connections()[i]);
+        visitor.index = boost::get<2>( n->output_plug().connections()[i]);
         target->accept( visitor);
 
         if( view_.pick_bezier_edge( p0, visitor.loc, p_))

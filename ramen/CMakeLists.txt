@@ -155,8 +155,8 @@ SET( RAMEN_SOURCES  main.cpp
 					expressions/expression.cpp
 					expressions/se_expression.cpp
 
-					dependency/dgraph.cpp
-					dependency/dnode.cpp
+					dependency/graph.cpp
+					dependency/node.cpp
 					dependency/exceptions.cpp
 
                     filesystem/path.cpp
@@ -313,15 +313,16 @@ SET( RAMEN_SOURCES  main.cpp
                     movieio/reader.cpp
                     movieio/writer.cpp
 
-					nodes/graph.cpp
+					nodes/edge.cpp
 					nodes/graph_algorithm.cpp
                     nodes/image_node.cpp
                     nodes/node.cpp
                     nodes/node_factory.cpp
+					nodes/node_graph.cpp
                     nodes/node_metaclass.cpp
+					nodes/node_plug.cpp
                     nodes/node_output_interface.cpp
                     nodes/node_visitor.cpp
-					nodes/plug.cpp
 
                     nodes/image/areaop_node.cpp
 					nodes/image/base_blur_node.cpp
@@ -492,6 +493,7 @@ SET( RAMEN_SOURCES  main.cpp
                     params/color_param.cpp
                     params/combo_group_param.cpp
                     params/composite_param.cpp
+                    params/composite_parameterised.cpp
 					params/curve_param.cpp
 					params/expression_commands.cpp
                     params/file_param.cpp
@@ -661,6 +663,9 @@ SET( RAMEN_SOURCES  main.cpp
                     system/system.cpp
 				    )
 
+SET( RAMEN_MOC_NODES_CLASSES )
+SET( RAMEN_NODE_SOURCES )
+
 #tests
 IF( CMAKE_BUILD_TYPE MATCHES Debug)
 	SET( RAMEN_TEST_SOURCES	test/test.cpp
@@ -696,13 +701,15 @@ SET( RAMEN_DESIGNER_FILES	../designer/about.ui
 							)
 
 #QT
-QT4_WRAP_CPP( RAMEN_MOC_SOURCES	${RAMEN_MOC_CLASSES} OPTIONS ${MOC_EXTRA_ARGS})
+QT4_WRAP_CPP( RAMEN_MOC_SOURCES	${RAMEN_MOC_CLASSES} ${RAMEN_MOC_NODE_CLASSES} OPTIONS ${MOC_EXTRA_ARGS})
 QT4_WRAP_UI( RAMEN_DESIGNER_SOURCES ${RAMEN_DESIGNER_FILES})
 QT4_ADD_RESOURCES( RAMEN_RESOURCES ${PROJECT_SOURCE_DIR}/resources/resources.qrc)
 
 
 SET( RAMEN_ALL_SOURCES	${RAMEN_SOURCES}
                         ${RAMEN_MOC_SOURCES}
+						${RAMEN_NODE_SOURCES}
+						${RAMEN_MOC_NODE_SOURCES}
 						${RAMEN_DESIGNER_SOURCES}
 						${RAMEN_PLATFORM_SOURCES}
 						${RAMEN_TEST_SOURCES}

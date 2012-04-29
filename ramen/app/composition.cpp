@@ -513,9 +513,10 @@ void composition_t::read_edge( const serialization::yaml_node_t& node)
 		return;
 	}
 	
+    // TODO: fix this. (est.)
 	// if any of the nodes is unknown, add the needed plugs.
-	if( src_ptr->plugin_error() && !src_ptr->has_output_plug())
-		src_ptr->add_output_plug();
+	//if( src_ptr->plugin_error() && !src_ptr->has_output_plug())
+	//	src_ptr->add_output_plug();
 	
 	if( dst_ptr->plugin_error())
 	{

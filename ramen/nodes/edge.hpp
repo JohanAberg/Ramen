@@ -5,6 +5,8 @@
 #ifndef RAMEN_NODES_EDGE_HPP
 #define RAMEN_NODES_EDGE_HPP
 
+#include<adobe/name.hpp>
+
 #include<ramen/nodes/graph_color.hpp>
 #include<ramen/nodes/node_fwd.hpp>
 
@@ -13,13 +15,19 @@ namespace ramen
 
 struct edge_t
 {
-    edge_t( node_t *s=0, node_t *d=0, int p=-1) : src(s), dst(d), port(p) {}
-	
-    bool operator==( const edge_t& other) const { return src == other.src && dst == other.dst && port == other.port;}
-    bool operator!=( const edge_t& other) const { return !(src == other.src && dst == other.dst && port == other.port);}
+    edge_t();
+    edge_t( node_t *s=0, node_t *d=0, int p=-1);
+    edge_t( node_t *s, const adobe::name_t& splug, node_t *d, const adobe::name_t& dplug);
+
+    bool operator==( const edge_t& other) const;
+    bool operator!=( const edge_t& other) const { return !(*this == other);}
 
     node_t *src;
+    adobe::name_t src_plug;
+
     node_t *dst;
+    adobe::name_t dst_plug;
+
     int port;
 	
 	// for graph algorithms

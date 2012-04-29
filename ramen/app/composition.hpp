@@ -12,7 +12,7 @@
 
 #include<boost/noncopyable.hpp>
 
-#include<ramen/nodes/graph.hpp>
+#include<ramen/nodes/node_graph.hpp>
 #include<ramen/nodes/node.hpp>
 
 #include<ramen/container/unique_name_map.hpp>
@@ -31,7 +31,7 @@ class composition_t : boost::noncopyable
 {
 public:
 
-    typedef graph graph_type;
+    typedef node_graph_t graph_type;
 
     typedef graph_type::node_iterator		node_iterator;
     typedef graph_type::const_node_iterator	const_node_iterator;
@@ -184,7 +184,7 @@ private:
 
     boost::filesystem::path composition_dir_;
 
-    graph g_;
+    graph_type g_;
     unique_name_map_t<node_t*> node_map_;
 
     signal_type added_;

@@ -2,8 +2,8 @@
 // Licensed under the terms of the CDDL License.
 // See CDDL_LICENSE.txt for a copy of the license.
 
-#ifndef RAMEN_NODES_GRAPH_HPP
-#define RAMEN_NODES_GRAPH_HPP
+#ifndef RAMEN_NODES_NODE_GRAPH_HPP
+#define RAMEN_NODES_NODE_GRAPH_HPP
 
 #include<algorithm>
 #include<memory>
@@ -11,7 +11,7 @@
 #include<map>
 
 #include<boost/bind.hpp>
-#include<boost/noncopyable.hpp>
+#include<boost/ptr_container/ptr_vector.hpp>
 
 #include<boost/intrusive_ptr.hpp>
 
@@ -21,7 +21,7 @@
 namespace ramen
 {
 
-class graph : boost::noncopyable
+class node_graph_t
 {
 public:
 
@@ -45,7 +45,8 @@ public:
     typedef std::vector<edge_t>			edge_range_type;
     typedef const std::vector<edge_t>	const_edge_range_type;
 
-    graph();
+    node_graph_t();
+    node_graph_t( const node_graph_t& other);
 
     void add_node( node_ptr_t n);
     node_ptr_t release_node( node_t *n);
@@ -76,6 +77,8 @@ public:
     void disconnect( node_t *src, node_t *dst, int port);
 
 private:
+
+    void operator=( const node_graph_t& other);
 
     node_container_type nodes_;
     std::vector<edge_t> edges_;

@@ -183,8 +183,8 @@ void breadth_first_out_edges_apply( node_t& n, Visitor f)
 {
     for( unsigned int i = 0; i < n.num_outputs(); ++i)
 	{
-		node_t *dst = n.output_plug().nodes()[i].first;
-		int port  = n.output_plug().nodes()[i].second;
+		node_t *dst = boost::get<0>( n.output_plug().connections()[i]);
+		int port  = boost::get<2>( n.output_plug().connections()[i]);
 		edge_t e( &n, dst, port);
 		f( e);
 

@@ -9,6 +9,8 @@
 
 #include<adobe/algorithm/for_each.hpp>
 
+#include<ramen/memory/manager.hpp>
+
 #include<ramen/nodes/graph_algorithm.hpp>
 
 #include<ramen/image/color_bars.hpp>
@@ -16,7 +18,7 @@
 #include<ramen/app/application.hpp>
 #include<ramen/app/composition.hpp>
 
-#include<ramen/memory/manager.hpp>
+#include<ramen/ui/palette.hpp>
 
 #include<iostream>
 
@@ -29,6 +31,11 @@ image_node_t::image_node_t( const image_node_t& other) : node_t( other) {}
 void image_node_t::cloned() { format_changed();}
 
 void image_node_t::accept( node_visitor& v) { v.visit( this);}
+
+void image_node_t::add_output_plug()
+{
+    node_t::add_output_plug( "output", ui::palette_t::instance().color( "out plug"), "output" );
+}
 
 void image_node_t::do_notify()
 {
@@ -154,11 +161,11 @@ void image_node_t::calc_inputs_interest( const render::context_t& context)
 void image_node_t::do_calc_inputs_interest( const render::context_t& context)
 {
     // by default, pass the interest area to the inputs
-    BOOST_FOREACH( input_plug_t& i, input_plugs())
+    BOOST_FOREACH( node_input_plug_t& i, input_plugs())
     {
         if( i.connected())
         {
-            if( image_node_t *in = dynamic_cast<image_node_t*>( i.input()))
+            if( image_node_t *in = dynamic_cast<image_node_t*>( i.input_node()))
                 in->add_interest( interest_);
         }
     }
@@ -323,11 +330,11 @@ void image_node_t::recursive_process( const render::context_t& context)
 	if( !context.render_cancelled())
 	    write_image_to_cache( context);
 
-    BOOST_FOREACH( const input_plug_t& i, input_plugs())
+    BOOST_FOREACH( node_input_plug_t& i, input_plugs())
     {
         if( i.connected())
         {
-            if( image_node_t *in = dynamic_cast<image_node_t*>( i.input()))
+            if( image_node_t *in = dynamic_cast<image_node_t*>( i.input_node()))
                 in->release_image();
         }
     }
@@ -353,14 +360,14 @@ void image_node_t::do_recursive_process( const render::context_t& context)
     // as long as we keep a copy, the pixels won't be deleted
     std::vector<image::buffer_t> buffers;
 
-    BOOST_FOREACH( const input_plug_t& i, input_plugs())
+    BOOST_FOREACH( node_input_plug_t& i, input_plugs())
     {
 		if( context.render_cancelled())
 			return;
 		
         if( i.connected())
         {
-            if( image_node_t *in = dynamic_cast<image_node_t*>( i.input()))
+            if( image_node_t *in = dynamic_cast<image_node_t*>( i.input_node()))
             {
                 if( in->image_empty())
                     in->recursive_process( context);
@@ -371,11 +378,11 @@ void image_node_t::do_recursive_process( const render::context_t& context)
     }
 
 	int j = 0;
-	BOOST_FOREACH( const input_plug_t& i, input_plugs())
+	BOOST_FOREACH( node_input_plug_t& i, input_plugs())
 	{
 		if( i.connected())
 		{
-			if( image_node_t *in = dynamic_cast<image_node_t*>( i.input()))
+			if( image_node_t *in = dynamic_cast<image_node_t*>( i.input_node()))
 			{
 				if( in->image_empty())
 					in->set_image( buffers[j]);

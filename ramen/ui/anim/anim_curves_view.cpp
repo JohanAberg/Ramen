@@ -35,6 +35,7 @@
 #include<ramen/ui/anim/anim_editor.hpp>
 #include<ramen/ui/anim/anim_editor_toolbar.hpp>
 #include<ramen/ui/anim/draw_curves_visitors.hpp>
+#include<ramen/ui/palette.hpp>
 
 #include<iostream>
 
