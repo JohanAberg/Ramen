@@ -166,7 +166,7 @@ void anim_editor_t::set_active_node( node_t *n)
 
     delete sel_model;
 
-    if( !app().ui()->quitting())
+    if( !app().quitting())
 	{
 		toolbar().selection_changed();
         view_->update();
@@ -250,7 +250,7 @@ void anim_editor_t::show_context_menu( const QPoint& p)
 
 void anim_editor_t::update()
 {
-    if( !app().ui()->quitting())
+    if( !app().quitting())
     {
         // update controls here.
         tree_->update();
@@ -366,7 +366,7 @@ void anim_editor_t::push_command()
 	{
 		if( !command_->empty())
 		{
-			document_t::Instance().undo_stack().push_back( command_);
+			app().document().undo_stack().push_back( command_);
 			app().ui()->update();
 		}
 		else
@@ -637,7 +637,7 @@ void anim_editor_t::paste()
 	
 	create_command();
 
-	float frame = document_t::Instance().composition().frame();
+	float frame = app().document().composition().frame();
 	
 	BOOST_FOREACH( anim::track_t *t, active_tracks())
 	{

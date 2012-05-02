@@ -1,9 +1,12 @@
 // Copyright (c) 2011 Esteban Tovagliari
+// Licensed under the terms of the CDDL License.
+// See CDDL_LICENSE.txt for a copy of the license.
 
 #include<ramen/python/python.hpp>
 
 #include<ramen/nodes/image/input/image_input_command.hpp>
 
+#include<ramen/app/application.hpp>
 #include<ramen/app/document.hpp>
 
 namespace ramen
@@ -29,7 +32,7 @@ void image_input_command_t::undo()
 {
 	node_.clips()[proxy_level_].swap( old_clip_);	
 	node_.create_reader( proxy_level_);
-	node_.set_frame( document_t::Instance().composition().frame());
+	node_.set_frame( app().document().composition().frame());
 	
 	if( proxy_level_ == 0)
 	{
@@ -45,7 +48,7 @@ void image_input_command_t::redo()
 {
 	node_.clips()[proxy_level_].swap( old_clip_);
 	node_.create_reader( proxy_level_);
-	node_.set_frame( document_t::Instance().composition().frame());
+	node_.set_frame( app().document().composition().frame());
 
 	if( proxy_level_ == 0)
 	{

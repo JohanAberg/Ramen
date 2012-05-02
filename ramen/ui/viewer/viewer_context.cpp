@@ -1,4 +1,6 @@
 // Copyright (c) 2010 Esteban Tovagliari
+// Licensed under the terms of the CDDL License.
+// See CDDL_LICENSE.txt for a copy of the license.
 
 #include<ramen/python/python.hpp>
 
@@ -182,7 +184,7 @@ OCIO::DisplayTransformRcPtr viewer_context_t::ocio_transform()
 
 std::pair<std::string, std::string>  viewer_context_t::get_context_pair( int index)
 {
-	return document_t::Instance().composition().ocio_context_pairs()[ index];
+	return app().document().composition().ocio_context_pairs()[ index];
 }
 
 boost::shared_ptr<ocio::gl_lut3d_t>& viewer_context_t::display_lut() { return display_lut_;}

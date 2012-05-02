@@ -5,13 +5,13 @@
 #ifndef RAMEN_DOCUMENT_HPP
 #define RAMEN_DOCUMENT_HPP
 
+#include<ramen/app/document_fwd.hpp>
+
 #include<ramen/python/python.hpp>
 
 #include<memory>
 
 #include<boost/noncopyable.hpp>
-
-#include<loki/Singleton.h>
 
 #include<ramen/app/composition.hpp>
 
@@ -22,9 +22,12 @@
 namespace ramen
 {
 
-class document_impl : boost::noncopyable
+class document_t : boost::noncopyable
 {
 public:
+
+    document_t();
+    ~document_t();
 
     bool dirty() const	    { return dirty_;}
     void set_dirty( bool d) { dirty_ = d;}
@@ -46,18 +49,11 @@ public:
 
 private:
 
-    document_impl();
-    ~document_impl();
-
-    friend struct Loki::CreateUsingNew<document_impl>;
-
     composition_t comp_;
     mutable bool dirty_;
     std::auto_ptr<undo::stack_t> undo_;
     boost::filesystem::path file_;
 };
-
-typedef Loki::SingletonHolder<document_impl, Loki::CreateUsingNew, Loki::DeletableSingleton> document_t;
 
 } // namespace
 

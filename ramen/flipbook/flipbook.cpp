@@ -100,7 +100,7 @@ OCIO::ConstContextRcPtr flipbook_t::get_local_context()
 	
 	std::pair<std::string, std::string> ctx_pair;
 
-	ctx_pair = document_t::Instance().composition().ocio_context_pairs()[0];
+	ctx_pair = app().document().composition().ocio_context_pairs()[0];
 	
     if( !ctx_pair.first.empty())
     {
@@ -110,7 +110,7 @@ OCIO::ConstContextRcPtr flipbook_t::get_local_context()
         mutable_context->setStringVar( ctx_pair.first.c_str(), ctx_pair.second.c_str());		
     }
 	
-	ctx_pair = document_t::Instance().composition().ocio_context_pairs()[1];
+	ctx_pair = app().document().composition().ocio_context_pairs()[1];
 	
     if( !ctx_pair.first.empty())
 	{
@@ -120,7 +120,7 @@ OCIO::ConstContextRcPtr flipbook_t::get_local_context()
         mutable_context->setStringVar( ctx_pair.first.c_str(), ctx_pair.second.c_str());		
     }
 
-	ctx_pair = document_t::Instance().composition().ocio_context_pairs()[2];
+	ctx_pair = app().document().composition().ocio_context_pairs()[2];
 	
     if( !ctx_pair.first.empty())
     {
@@ -130,7 +130,7 @@ OCIO::ConstContextRcPtr flipbook_t::get_local_context()
         mutable_context->setStringVar( ctx_pair.first.c_str(), ctx_pair.second.c_str());		
     }
 	
-	ctx_pair = document_t::Instance().composition().ocio_context_pairs()[3];
+	ctx_pair = app().document().composition().ocio_context_pairs()[3];
 	
     if( !ctx_pair.first.empty())		
     {

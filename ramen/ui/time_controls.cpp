@@ -113,7 +113,7 @@ time_controls_t::time_controls_t() : window_(0), stop_playing_( true)
     autokey_ = new QToolButton();
     autokey_->setText( "Autokey");
     autokey_->setCheckable( true);
-    autokey_->setChecked( document_t::Instance().composition().autokey());
+    autokey_->setChecked( app().document().composition().autokey());
 	connect( autokey_, SIGNAL( toggled( bool)), this, SLOT( set_autokey(bool)));
     layout->addWidget( autokey_);
 }
@@ -149,12 +149,12 @@ bool time_controls_t::eventFilter( QObject *watched, QEvent *event)
 
 void time_controls_t::update()
 {
-	node_t *n = document_t::Instance().composition().selected_node();
+	node_t *n = app().document().composition().selected_node();
 	const image_node_t *in = dynamic_cast<const image_node_t*>( n);
 	flipbook_->setEnabled( in != 0);
 
     autokey_->blockSignals( true);
-    autokey_->setChecked( document_t::Instance().composition().autokey());
+    autokey_->setChecked( app().document().composition().autokey());
     autokey_->blockSignals( false);
 }
 
@@ -252,18 +252,18 @@ void time_controls_t::stop_playing()
 
 void time_controls_t::set_autokey( bool b)
 {
-	document_t::Instance().composition().set_autokey( b);
+	app().document().composition().set_autokey( b);
 }
 
 void time_controls_t::make_flipbook()
 {
-	node_t *n = document_t::Instance().composition().selected_node();
+	node_t *n = app().document().composition().selected_node();
 	image_node_t *inode = dynamic_cast<image_node_t*>( n);
 	RAMEN_ASSERT( inode);
 
-    int frame_rate = document_t::Instance().composition().frame_rate();
-	int start = document_t::Instance().composition().start_frame();
-    int end   = document_t::Instance().composition().end_frame();
+    int frame_rate = app().document().composition().frame_rate();
+	int start = app().document().composition().start_frame();
+    int end   = app().document().composition().end_frame();
 	int subsample = 1;
 	int proxy_level = 0;
 	float mb_shutter_factor = 0;

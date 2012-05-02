@@ -1,4 +1,6 @@
 // Copyright (c) 2011 Esteban Tovagliari
+// Licensed under the terms of the CDDL License.
+// See CDDL_LICENSE.txt for a copy of the license.
 
 #include<ramen/python/python.hpp>
 
@@ -79,7 +81,7 @@ void convert_tool_t::mouse_press_event( const ui::mouse_press_event_t& event)
 			app().ui()->update_anim_editors();
 		}
 		
-		document_t::Instance().undo_stack().push_back( cmd);
+		app().document().undo_stack().push_back( cmd);
 		app().ui()->update();
     }
 	else

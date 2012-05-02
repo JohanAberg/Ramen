@@ -18,7 +18,9 @@
 #include<tbb/task_scheduler_init.h>
 
 #include<ramen/system/system.hpp>
+
 #include<ramen/app/preferences.hpp>
+#include<ramen/app/document_fwd.hpp>
 
 #include<ramen/memory/manager_fwd.hpp>
 #include<ramen/render/render_thread.hpp>
@@ -74,9 +76,16 @@ public:
     ui::user_interface_t *ui()              { return ui_.get();}
 
 	// document handling
+    const document_t& document() const  { return *document_;}
+    document_t& document()              { return *document_;}
+
 	void create_new_document();
 	void open_document( const boost::filesystem::path& p);
+    void delete_document();
 	
+    bool quitting() const       { return quitting_;}
+    void set_quitting( bool b)  { quitting_ = b;}
+
 private:
 
     void create_dirs();
@@ -115,6 +124,8 @@ private:
     std::auto_ptr<ocio::manager_t> ocio_manager_;
     std::auto_ptr<ui::user_interface_t> ui_;
 	
+    std::auto_ptr<document_t> document_;
+
 	// rendering
 	boost::optional<int> start_frame_, end_frame_, proxy_level_,
 						subsample_, mb_extra_samples_;
@@ -122,6 +133,8 @@ private:
 	boost::optional<float> mb_shutter_factor_;
 
     std::auto_ptr<ui::splash_screen_t> splash_;
+
+    bool quitting_;
 };
 
 application_t& app();

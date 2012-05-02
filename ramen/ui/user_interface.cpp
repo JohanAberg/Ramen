@@ -65,7 +65,6 @@ user_interface_t::user_interface_t() : QObject()
     active_ = 0;
 	context_ = 0;
 	rendering_ = false;
-	quitting_ = false;
 	cancelled_ = false;
 	interacting_ = false;
 	event_filter_installed_ = false;
@@ -80,23 +79,30 @@ user_interface_t::user_interface_t() : QObject()
 	    }
 
 	image_types_str_.append( ")");
+
+    viewer_ = 0;
+    inspector_ = 0;
+    anim_editor_ = 0;
+    window_ = 0;
 }
 
 user_interface_t::~user_interface_t()
 {
-    // Do not remove. It's needed by auto_ptr
+    viewer_->deleteLater();
+    inspector_->deleteLater();
+    anim_editor_->deleteLater();
 }
 
 void user_interface_t::init()
 {
     init_ui_style();
 
-    viewer_.reset( new viewer_t());
-    inspector_.reset( new inspector_t());
-    anim_editor_.reset( new anim_editor_t());
-    window_ = new main_window_t();
-
     create_new_document();
+
+    viewer_ = new viewer_t();
+    inspector_ = new inspector_t();
+    anim_editor_ = new anim_editor_t();
+    window_ = new main_window_t();
 
     // restore the last saved window state
 	restore_window_state();
@@ -140,9 +146,7 @@ int user_interface_t::run( const boost::filesystem::path& p)
 
 void user_interface_t::quit()
 {
-    Loki::DeletableSingleton<document_t>::GracefulDelete();
-
-    quitting_ = true;
+    app().set_quitting( true);
 
     QByteArray window_state = window_->saveState();
     boost::filesystem::path p = app().system().preferences_path() / "wstate.ui";
@@ -158,20 +162,22 @@ void user_interface_t::create_new_document()
 {
     set_active_node( 0);
     set_context_node( 0);
-	anim_editor().clear_all();
+
+    if( anim_editor_ )
+    	anim_editor().clear_all();
 	
 	app().create_new_document();
 
-    document_t::Instance().composition().attach_add_observer( boost::bind( &user_interface_t::node_added, this, _1));
-    document_t::Instance().composition().attach_release_observer( boost::bind( &user_interface_t::node_released, this, _1));
+    app().document().composition().attach_add_observer( boost::bind( &user_interface_t::node_added, this, _1));
+    app().document().composition().attach_release_observer( boost::bind( &user_interface_t::node_released, this, _1));
 
-    render_composition_dialog_t::instance().set_frame_range( document_t::Instance().composition().start_frame(),
-																document_t::Instance().composition().end_frame());
+    render_composition_dialog_t::instance().set_frame_range( app().document().composition().start_frame(),
+																app().document().composition().end_frame());
 
     render_composition_dialog_t::instance().set_mblur_settings( 0, 1);
 
-    render_flipbook_dialog_t::instance().set_frame_range( document_t::Instance().composition().start_frame(),
-															document_t::Instance().composition().end_frame());
+    render_flipbook_dialog_t::instance().set_frame_range( app().document().composition().start_frame(),
+															app().document().composition().end_frame());
     
     update();
 }
@@ -202,8 +208,8 @@ void user_interface_t::open_document( const boost::filesystem::path& p)
 			return;
 		}
 		
-		document_t::Instance().set_file( p);
-		document_t::Instance().load( *in);
+		app().document().set_file( p);
+		app().document().load( *in);
 		main_window()->update_recent_files_menu( p);
 	}
 	catch( std::exception& e)
@@ -217,13 +223,13 @@ void user_interface_t::open_document( const boost::filesystem::path& p)
 	// read here ui info
 
 	// update the dialogs
-    render_composition_dialog_t::instance().set_frame_range( document_t::Instance().composition().start_frame(),
-                                                    document_t::Instance().composition().end_frame());
+    render_composition_dialog_t::instance().set_frame_range( app().document().composition().start_frame(),
+                                                    app().document().composition().end_frame());
 
     render_composition_dialog_t::instance().set_mblur_settings( 0, 1);
 
-    render_flipbook_dialog_t::instance().set_frame_range( document_t::Instance().composition().start_frame(),
-															document_t::Instance().composition().end_frame());
+    render_flipbook_dialog_t::instance().set_frame_range( app().document().composition().start_frame(),
+															app().document().composition().end_frame());
 	
     update();
 	std::string err = in->errors();
@@ -234,17 +240,17 @@ void user_interface_t::open_document( const boost::filesystem::path& p)
 
 bool user_interface_t::save_document()
 {
-    RAMEN_ASSERT( document_t::Instance().has_file());
+    RAMEN_ASSERT( app().document().has_file());
 
 	try
 	{
 		serialization::yaml_oarchive_t out;
 		out.write_composition_header();
-		document_t::Instance().save( out);
+		app().document().save( out);
 		write_ui_state( out);
 
-		out.write_to_file( document_t::Instance().file());
-		document_t::Instance().set_dirty( false);
+		out.write_to_file( app().document().file());
+		app().document().set_dirty( false);
 	}
 	catch( std::exception& e)
 	{
@@ -313,16 +319,18 @@ void user_interface_t::node_released( node_t *n)
 
 void user_interface_t::update()
 {
-    if( !quitting_)
+    if( !app().quitting())
 	{
-        window_->update();
+        if( window_)
+            window_->update();
+
 		update_anim_editors();
 	}
 }
 
 void user_interface_t::begin_interaction()
 {
-	document_t::Instance().composition().begin_interaction();
+	app().document().composition().begin_interaction();
 	viewer().begin_interaction();
     interacting_ = true;
     app().memory_manager().begin_interaction();
@@ -333,58 +341,58 @@ void user_interface_t::end_interaction()
     interacting_ = false;
     app().memory_manager().end_interaction();
 	viewer().end_interaction();
-	document_t::Instance().composition().end_interaction();
+	app().document().composition().end_interaction();
 }
 
 int user_interface_t::start_frame() const
 {
-    return document_t::Instance().composition().start_frame();
+    return app().document().composition().start_frame();
 }
 
 int user_interface_t::end_frame() const
 {
-    return document_t::Instance().composition().end_frame();
+    return app().document().composition().end_frame();
 }
 
 float user_interface_t::frame() const
 {
-    return document_t::Instance().composition().frame();
+    return app().document().composition().frame();
 }
 
 void user_interface_t::set_start_frame( int t)
 {
-    document_t::Instance().composition().set_start_frame( t);
-    main_window()->time_slider().update( document_t::Instance().composition().start_frame(),
-										 document_t::Instance().composition().frame(),
-										 document_t::Instance().composition().end_frame());
+    app().document().composition().set_start_frame( t);
+    main_window()->time_slider().update( app().document().composition().start_frame(),
+										 app().document().composition().frame(),
+										 app().document().composition().end_frame());
 
-    render_composition_dialog_t::instance().set_frame_range( document_t::Instance().composition().start_frame(),
-														    document_t::Instance().composition().end_frame());
+    render_composition_dialog_t::instance().set_frame_range( app().document().composition().start_frame(),
+														    app().document().composition().end_frame());
 
-    render_flipbook_dialog_t::instance().set_frame_range( document_t::Instance().composition().start_frame(),
-									    				document_t::Instance().composition().end_frame());
+    render_flipbook_dialog_t::instance().set_frame_range( app().document().composition().start_frame(),
+									    				app().document().composition().end_frame());
 }
 
 void user_interface_t::set_end_frame( int t)
 {
-    document_t::Instance().composition().set_end_frame( t);
-    main_window()->time_slider().update( document_t::Instance().composition().start_frame(),
-										 document_t::Instance().composition().frame(), 
-										 document_t::Instance().composition().end_frame());
+    app().document().composition().set_end_frame( t);
+    main_window()->time_slider().update( app().document().composition().start_frame(),
+										 app().document().composition().frame(),
+										 app().document().composition().end_frame());
 
-    render_composition_dialog_t::instance().set_frame_range( document_t::Instance().composition().start_frame(),
-														    document_t::Instance().composition().end_frame());
+    render_composition_dialog_t::instance().set_frame_range( app().document().composition().start_frame(),
+														    app().document().composition().end_frame());
 
-    render_flipbook_dialog_t::instance().set_frame_range( document_t::Instance().composition().start_frame(),
-										    				document_t::Instance().composition().end_frame());
+    render_flipbook_dialog_t::instance().set_frame_range( app().document().composition().start_frame(),
+										    				app().document().composition().end_frame());
 }
 
 void user_interface_t::set_frame( int t)
 {
-    document_t::Instance().composition().set_frame( t);
-    main_window()->time_slider().update( document_t::Instance().composition().start_frame(),
-										 document_t::Instance().composition().frame(),
-										 document_t::Instance().composition().end_frame());
+    app().document().composition().set_frame( t);
+    main_window()->time_slider().update( app().document().composition().start_frame(),
+										 app().document().composition().frame(),
+										 app().document().composition().end_frame());
 
     inspector().update();
 	update_anim_editors();
@@ -393,7 +401,8 @@ void user_interface_t::set_frame( int t)
 
 void user_interface_t::update_anim_editors()
 {
-    anim_editor().update();
+    if( anim_editor_)
+        anim_editor().update();
 }
 
 void user_interface_t::fatal_error( const std::string& msg) const
@@ -450,9 +459,9 @@ bool user_interface_t::image_sequence_file_selector( const std::string& title, c
 
     QCheckBox *relative_check = new QCheckBox( "Relative");
 
-    if( document_t::Instance().has_file())
+    if( app().document().has_file())
     {
-        RAMEN_ASSERT( !document_t::Instance().composition().composition_dir().empty());
+        RAMEN_ASSERT( !app().document().composition().composition_dir().empty());
         relative_check->setChecked( was_relative);
     }
     else
@@ -485,7 +494,7 @@ bool user_interface_t::image_sequence_file_selector( const std::string& title, c
 
         if( relative_check->isChecked())
         {
-            boost::filesystem::path dir = document_t::Instance().file().parent_path();
+            boost::filesystem::path dir = app().document().file().parent_path();
             p = filesystem::make_relative_path( p, dir);
         }
 

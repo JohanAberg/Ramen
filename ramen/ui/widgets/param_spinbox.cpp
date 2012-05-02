@@ -1,4 +1,6 @@
 // Copyright (c) 2011 Esteban Tovagliari
+// Licensed under the terms of the CDDL License.
+// See CDDL_LICENSE.txt for a copy of the license.
 
 #include<ramen/python/python.hpp>
 
@@ -12,6 +14,7 @@
 
 #include<ramen/params/animated_param.hpp>
 
+#include<ramen/app/application.hpp>
 #include<ramen/app/document.hpp>
 
 #include<ramen/anim/clipboard.hpp>
@@ -205,7 +208,7 @@ void param_spinbox_t::contextMenuEvent( QContextMenuEvent *event)
 		
 		if( has_anim)
 		{
-			float frame = document_t::Instance().composition().frame();
+			float frame = app().document().composition().frame();
 			has_key = aparam_->curve( comp_index_).has_keyframe_at( frame);
 		}
 		
@@ -323,7 +326,7 @@ void param_spinbox_t::delete_key()
 {
 	RAMEN_ASSERT( aparam_);
 
-	aparam_->delete_key( comp_index_, document_t::Instance().composition().frame());
+	aparam_->delete_key( comp_index_, app().document().composition().frame());
 }
 
 void param_spinbox_t::delete_anim()

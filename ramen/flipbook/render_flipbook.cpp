@@ -39,7 +39,7 @@ bool render_flipbook( flipbook::flipbook_t *flip, image_node_t *node,
     render_cancelled = false;
     boost::signals2::connection connection = flip->cancelled.connect( &cancel_render);
 
-    render::context_t cur_context = document_t::Instance().composition().current_context();
+    render::context_t cur_context = app().document().composition().current_context();
 	render::context_guard_t guard( cur_context);	
 	
     render::context_t new_context = cur_context;

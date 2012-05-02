@@ -1,4 +1,6 @@
 // Copyright (c) 2010 Esteban Tovagliari
+// Licensed under the terms of the CDDL License.
+// See CDDL_LICENSE.txt for a copy of the license.
 
 #include<ramen/python/python.hpp>
 
@@ -8,6 +10,9 @@
 #include<boost/foreach.hpp>
 
 #include<adobe/algorithm/for_each.hpp>
+
+#include<ramen/app/application.hpp>
+#include<ramen/app/document.hpp>
 
 #include<ramen/nodes/graph_algorithm.hpp>
 
@@ -49,7 +54,7 @@ void extract_command_t::add_candidate_edge( const edge_t& e, node_t *src, std::v
 
 void extract_command_t::undo()
 {
-    composition_t *comp = &document_t::Instance().composition();
+    composition_t *comp = &app().document().composition();
     adobe::for_each( edges_to_add_, boost::bind( &composition_t::remove_edge, comp, _1, true));
     adobe::for_each( edges_to_remove_, boost::bind( &composition_t::add_edge, comp, _1, true));
     breadth_first_multiple_outputs_search( dependents_, boost::bind( &node_t::notify, _1));
@@ -58,7 +63,7 @@ void extract_command_t::undo()
 
 void extract_command_t::redo()
 {
-    composition_t *comp = &document_t::Instance().composition();
+    composition_t *comp = &app().document().composition();
     adobe::for_each( edges_to_remove_, boost::bind( &composition_t::remove_edge, comp, _1, true));
     adobe::for_each( edges_to_add_, boost::bind( &composition_t::add_edge, comp, _1, true));
     breadth_first_multiple_outputs_search( dependents_, boost::bind( &node_t::notify, _1));
@@ -74,14 +79,14 @@ void delete_command_t::add_node( node_t *n)
 
 void delete_command_t::undo()
 {
-    composition_t *comp = &document_t::Instance().composition();
+    composition_t *comp = &app().document().composition();
 	
     adobe::for_each( edges_to_add_, boost::bind( &composition_t::remove_edge, comp, _1, true));
 	
     while( !node_storage_.empty())
     {
         std::auto_ptr<node_t> ptr( node_storage_.pop_back().release());
-        document_t::Instance().composition().add_node( ptr);
+        app().document().composition().add_node( ptr);
     }
 
     adobe::for_each( edges_to_remove_, boost::bind( &composition_t::add_edge, comp, _1, true));
@@ -93,11 +98,11 @@ void delete_command_t::redo()
 {
     for( std::vector<node_t*>::const_iterator it( nodes_.begin()); it != nodes_.end(); ++it)
     {
-        std::auto_ptr<node_t> ptr( document_t::Instance().composition().release_node( *it));
+        std::auto_ptr<node_t> ptr( app().document().composition().release_node( *it));
         node_storage_.push_back( ptr);
     }
 
-    composition_t *comp = &document_t::Instance().composition();
+    composition_t *comp = &app().document().composition();
     adobe::for_each( edges_to_remove_, boost::bind( &composition_t::remove_edge, comp, _1, true));
     adobe::for_each( edges_to_add_, boost::bind( &composition_t::add_edge, comp, _1, true));
 	
@@ -119,11 +124,11 @@ void duplicate_command_t::undo()
 {
     for( std::vector<node_t*>::const_iterator it( nodes_.begin()); it != nodes_.end(); ++it)
     {
-        std::auto_ptr<node_t> ptr( document_t::Instance().composition().release_node( *it));
+        std::auto_ptr<node_t> ptr( app().document().composition().release_node( *it));
         node_storage_.push_back( ptr);
     }
 
-    composition_t *comp = &document_t::Instance().composition();
+    composition_t *comp = &app().document().composition();
     adobe::for_each( edges_, boost::bind( &composition_t::remove_edge, comp, _1, true));
     command_t::undo();
 }
@@ -133,10 +138,10 @@ void duplicate_command_t::redo()
     while( !node_storage_.empty())
     {
         std::auto_ptr<node_t> ptr( node_storage_.pop_back().release());
-        document_t::Instance().composition().add_node( ptr);
+        app().document().composition().add_node( ptr);
     }
 
-    composition_t *comp = &document_t::Instance().composition();
+    composition_t *comp = &app().document().composition();
     adobe::for_each( edges_, boost::bind( &composition_t::add_edge, comp, _1, true));
     command_t::redo();
 }

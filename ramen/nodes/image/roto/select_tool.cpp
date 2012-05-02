@@ -73,7 +73,7 @@ void select_tool_t::key_press_event( const ui::key_press_event_t& event)
 				cmd->redo();
 			}
 			
-			document_t::Instance().undo_stack().push_back( cmd);
+			app().document().undo_stack().push_back( cmd);
 			app().ui()->update();
 			parent().notify();
 		}
@@ -290,7 +290,7 @@ void select_tool_t::mouse_release_event( const ui::mouse_release_event_t& event)
 						app().ui()->update_anim_editors();
 					}
 					
-					document_t::Instance().undo_stack().push_back( cmd_);
+					app().document().undo_stack().push_back( cmd_);
 					
 					if( !selected_->track_mouse())
 						parent().notify();

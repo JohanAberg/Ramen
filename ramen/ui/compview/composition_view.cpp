@@ -258,7 +258,7 @@ void composition_view_t::mousePressEvent( QMouseEvent *event)
             // TODO: if either src or dest are groups, resolve the real nodes.
             std::auto_ptr<undo::command_t> c( new undo::disconnect_command_t( src, dst, port));
             c->redo();
-            document_t::Instance().undo_stack().push_back( c);
+            app().document().undo_stack().push_back( c);
             app().ui()->update();
             return;
         }
@@ -274,7 +274,7 @@ void composition_view_t::mousePressEvent( QMouseEvent *event)
     // single push
     if( last_pick_.component == pick_result_t::no_pick && !( event->modifiers() & Qt::ShiftModifier))
     {
-        document_t::Instance().composition().deselect_all();
+        app().document().composition().deselect_all();
         box_pick_mode_ = true;
         drag_handler_	 = boost::bind( &composition_view_t::box_pick_drag_handler, this, _1);
         release_handler_ = boost::bind( &composition_view_t::box_pick_release_handler, this, _1);
@@ -286,7 +286,7 @@ void composition_view_t::mousePressEvent( QMouseEvent *event)
             if( !last_pick_.node->selected())
             {
                 if( !( event->modifiers() & Qt::ShiftModifier))
-                    document_t::Instance().composition().deselect_all();
+                    app().document().composition().deselect_all();
 
                 last_pick_.node->toggle_selection();
                 drag_handler_ = boost::bind( &composition_view_t::move_nodes_drag_handler, this, _1);
@@ -358,8 +358,8 @@ void composition_view_t::move_nodes_drag_handler( QMouseEvent *event)
     float yoffset = ( event->y() - last_y_) / ( height() / viewport().world().size().y);
     Imath::V2f offset( xoffset, yoffset);
 
-    for( composition_t::node_iterator it( document_t::Instance().composition().nodes().begin());
-		    it != document_t::Instance().composition().nodes().end(); ++it)
+    for( composition_t::node_iterator it( app().document().composition().nodes().begin());
+		    it != app().document().composition().nodes().end(); ++it)
     {
         if( it->selected())
             it->offset_location( offset);
@@ -415,11 +415,11 @@ void composition_view_t::connect_release_handler( QMouseEvent *event)
     }
 
     // TODO: if either source or dest are groups, resolve the real nodes here.
-    if( document_t::Instance().composition().can_connect( src, dst, port))
+    if( app().document().composition().can_connect( src, dst, port))
     {
         std::auto_ptr<undo::command_t> c( new undo::connect_command_t( src, dst, port));
         c->redo();
-        document_t::Instance().undo_stack().push_back( c);
+        app().document().undo_stack().push_back( c);
         app().ui()->update();
     }
     else
@@ -433,7 +433,7 @@ void composition_view_t::box_pick_release_handler( QMouseEvent *event)
     Imath::Box2f b( screen_to_world( Imath::V2i( push_x_, push_y_)));
     b.extendBy( screen_to_world( Imath::V2i( last_x_, last_y_)));
 
-    BOOST_FOREACH( node_t& n, document_t::Instance().composition().nodes())
+    BOOST_FOREACH( node_t& n, app().document().composition().nodes())
     {
         if( box_pick_node( &n, b))
             n.toggle_selection();
@@ -521,7 +521,7 @@ void composition_view_t::draw_edges( QPainter& p)
 {
     draw_edges_visitor visitor( *this, p);
 
-    BOOST_FOREACH( node_t& n, document_t::Instance().composition().nodes())
+    BOOST_FOREACH( node_t& n, app().document().composition().nodes())
         n.accept( visitor);
 }
 
@@ -529,7 +529,7 @@ void composition_view_t::draw_nodes( QPainter& p)
 {
     draw_node_visitor visitor( p);
 
-    BOOST_FOREACH( node_t& n, document_t::Instance().composition().nodes())
+    BOOST_FOREACH( node_t& n, app().document().composition().nodes())
         n.accept( visitor);
 }
 
@@ -553,8 +553,8 @@ void composition_view_t::pick_node( const Imath::V2f& p, pick_result_t& result) 
 
     pick_node_visitor visitor( *this, p, result);
 
-	composition_t::reverse_node_iterator it( document_t::Instance().composition().nodes().rbegin());
-	composition_t::reverse_node_iterator last( document_t::Instance().composition().nodes().rend());
+	composition_t::reverse_node_iterator it( app().document().composition().nodes().rbegin());
+	composition_t::reverse_node_iterator last( app().document().composition().nodes().rend());
 
 	for( ; it != last; ++it)
     {
@@ -576,7 +576,7 @@ bool composition_view_t::pick_edge( const Imath::V2f& p, node_t *&src, node_t *&
 {
     pick_edge_visitor visitor( *this, p);
 
-    BOOST_FOREACH( node_t& n, document_t::Instance().composition().nodes())
+    BOOST_FOREACH( node_t& n, app().document().composition().nodes())
     {
         n.accept( visitor);
 

@@ -1,9 +1,12 @@
 // Copyright (c) 2010 Esteban Tovagliari
+// Licensed under the terms of the CDDL License.
+// See CDDL_LICENSE.txt for a copy of the license.
 
 #include<ramen/python/python.hpp>
 
 #include<ramen/ui/add_node_command.hpp>
 
+#include<ramen/app/application.hpp>
 #include<ramen/app/document.hpp>
 
 #include<ramen/nodes/graph_algorithm.hpp>
@@ -23,20 +26,20 @@ add_node_command_t::~add_node_command_t() {}
 void add_node_command_t::undo()
 {
     if( src_)
-        document_t::Instance().composition().disconnect( src_, node_, 0);
+        app().document().composition().disconnect( src_, node_, 0);
 	
     breadth_first_outputs_search( *node_, boost::bind( &node_t::notify, _1));
-    storage_ = document_t::Instance().composition().release_node( node_);
+    storage_ = app().document().composition().release_node( node_);
     command_t::undo();
 }
 
 void add_node_command_t::redo()
 {
-    document_t::Instance().composition().add_node( storage_);
+    app().document().composition().add_node( storage_);
 
     if( src_)
 	{
-        document_t::Instance().composition().connect( src_, node_, 0);
+        app().document().composition().connect( src_, node_, 0);
 		breadth_first_outputs_search( *node_, boost::bind( &node_t::notify, _1));
 	}
 
@@ -55,7 +58,7 @@ void add_nodes_command_t::undo()
 {
     for( std::vector<node_t*>::const_iterator it( nodes_.begin()); it != nodes_.end(); ++it)
     {
-        std::auto_ptr<node_t> ptr( document_t::Instance().composition().release_node( *it));
+        std::auto_ptr<node_t> ptr( app().document().composition().release_node( *it));
         node_storage_.push_back( ptr);
     }
 
@@ -67,7 +70,7 @@ void add_nodes_command_t::redo()
     while( !node_storage_.empty())
     {
         std::auto_ptr<node_t> ptr( node_storage_.pop_back().release());
-        document_t::Instance().composition().add_node( ptr);
+        app().document().composition().add_node( ptr);
     }
 
     command_t::redo();

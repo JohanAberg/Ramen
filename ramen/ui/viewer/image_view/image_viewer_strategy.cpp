@@ -1,4 +1,6 @@
 // Copyright (c) 2010 Esteban Tovagliari
+// Licensed under the terms of the CDDL License.
+// See CDDL_LICENSE.txt for a copy of the license.
 
 #include<ramen/python/python.hpp>
 
@@ -201,7 +203,7 @@ void image_viewer_strategy_t::render_visible_node()
     node_t *active_node  = app().ui()->active_node();
     node_t *context_node = app().ui()->context_node();
 
-    render::context_t context = document_t::Instance().composition().current_context( render::interface_render);
+    render::context_t context = app().document().composition().current_context( render::interface_render);
 	context.result_node = visible_node();
 	
 	render::context_guard_t guard( context, context.result_node);

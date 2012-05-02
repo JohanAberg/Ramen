@@ -13,6 +13,7 @@
 #include<ramen/params/animated_param.hpp>
 #include<ramen/nodes/node.hpp>
 
+#include<ramen/app/application.hpp>
 #include<ramen/app/document.hpp>
 
 #include<ramen/ui/anim/anim_editor.hpp>
@@ -47,7 +48,7 @@ void animated_param_command_t::undo()
     new_value_ = p.value();
     swap_curves();
     p.value() =  previous_value_;
-    p.evaluate( document_t::Instance().composition().frame());
+    p.evaluate( app().document().composition().frame());
     p.update_widgets();
 	p.emit_param_changed( param_t::user_edited);
     undo::command_t::undo();
@@ -60,7 +61,7 @@ void animated_param_command_t::redo()
     param_t& p = pset_.find( id_);
     p.value() =  new_value_;
     swap_curves();
-    p.evaluate( document_t::Instance().composition().frame());
+    p.evaluate( app().document().composition().frame());
     p.update_widgets();
 	p.emit_param_changed( param_t::user_edited);
     undo::command_t::redo();

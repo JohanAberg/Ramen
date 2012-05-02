@@ -177,7 +177,7 @@ void param_set_t::begin_edit()
 void param_set_t::end_edit( bool notify)
 {
     if( command_.get() && !is_command_empty())
-		document_t::Instance().undo_stack().push_back( command_);
+		app().document().undo_stack().push_back( command_);
     else
 		command_.reset();
 

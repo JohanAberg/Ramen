@@ -216,7 +216,7 @@ void main_window_t::closeEvent( QCloseEvent *event)
 {
     quit();
 
-    if( app().ui()->quitting())
+    if( app().quitting())
 		event->accept();
     else
 		event->ignore();
@@ -485,7 +485,7 @@ const std::vector<node_menu_t*>& main_window_t::node_menus() const
 
 bool main_window_t::can_close_document()
 {
-    if( document_t::Instance().dirty())
+    if( app().document().dirty())
     {
         int r = QMessageBox::warning( this, "Ramen", "The composition has been modified.\n"
                                         "Do you want to save your changes?", QMessageBox::Yes | QMessageBox::Default,
@@ -494,7 +494,7 @@ bool main_window_t::can_close_document()
         if (r == QMessageBox::Yes)
         {
             save_document();
-            return document_t::Instance().dirty();
+            return app().document().dirty();
         }
         else
             if( r == QMessageBox::Cancel)
@@ -542,7 +542,7 @@ void main_window_t::open_recent_document()
 
 void main_window_t::save_document()
 {
-    if( document_t::Instance().has_file())
+    if( app().document().has_file())
 	{
         app().ui()->save_document();
         app().ui()->update();
@@ -563,20 +563,20 @@ void main_window_t::save_document_as()
         if( p.extension() == std::string())
             p.replace_extension( document_extension());
 
-		boost::filesystem::path old_file = document_t::Instance().file();
-        document_t::Instance().set_file( p);
+		boost::filesystem::path old_file = app().document().file();
+        app().document().set_file( p);
 
         if( !app().ui()->save_document())
 		{
 			// save was not successful, restore the relative paths
 			// to the state before trying to save.
 			if( !old_file.empty())
-				document_t::Instance().set_file( old_file);
+				app().document().set_file( old_file);
 		}
 		else
 		{
-			update_recent_files_menu( document_t::Instance().file());
-			document_t::Instance().undo_stack().clear();
+			update_recent_files_menu( app().document().file());
+			app().document().undo_stack().clear();
 		}
 		
 		app().ui()->update();
@@ -594,8 +594,8 @@ void main_window_t::import_composition()
         {
             boost::filesystem::path p( fname.toStdString());
             std::auto_ptr<serialization::yaml_iarchive_t> in( ramen::import_composition( p));
-            document_t::Instance().set_dirty( true);
-            document_t::Instance().undo_stack().clear();
+            app().document().set_dirty( true);
+            app().document().undo_stack().clear();
 			
 			// report errors to the user
 			std::string err = in->errors();
@@ -665,7 +665,7 @@ void main_window_t::import_cdl()
 		
 		try
 		{
-			p->set_composition( &( document_t::Instance().composition()));
+			p->set_composition( &( app().document().composition()));
 			p->create_params();
 			p->create_manipulators();
 			p->read_from_file( boost::filesystem::path( fname.toStdString()));
@@ -679,10 +679,10 @@ void main_window_t::import_cdl()
 		composition_view().place_node( p.get());
 		node_t *n = p.get(); // save for later use
         std::auto_ptr<undo::command_t> c( new undo::add_node_command_t( std::auto_ptr<node_t>( p.release()), 0));
-		document_t::Instance().composition().deselect_all();
+		app().document().composition().deselect_all();
 		n->select( true);
 		c->redo();
-		document_t::Instance().undo_stack().push_back( c);
+		app().document().undo_stack().push_back( c);
 		app().ui()->update();
 	}
 }
@@ -704,7 +704,7 @@ void main_window_t::export_cdl()
 
     if( !(fname.isEmpty()))
 	{
-		node_t *n = document_t::Instance().composition().selected_node();
+		node_t *n = app().document().composition().selected_node();
 		image::cdl_node_t *cdl_node = dynamic_cast<image::cdl_node_t*>( n);
 		RAMEN_ASSERT( cdl_node);
 
@@ -714,7 +714,7 @@ void main_window_t::export_cdl()
 
 void main_window_t::quit()
 {
-    if( document_t::Instance().dirty())
+    if( app().document().dirty())
     {
         int r = QMessageBox::warning( this, "Ramen",
                         "The composition has been modified.\n"
@@ -731,7 +731,7 @@ void main_window_t::quit()
 
                     // if the document is still dirty, it means
                     // save was cancelled, so we return without quitting
-                if( document_t::Instance().dirty())
+                if( app().document().dirty())
 					return;
             }
             break;
@@ -750,13 +750,13 @@ void main_window_t::quit()
 
 void main_window_t::undo()
 {
-    document_t::Instance().undo_stack().undo();
+    app().document().undo_stack().undo();
     app().ui()->update();
 }
 
 void main_window_t::redo()
 {
-    document_t::Instance().undo_stack().redo();
+    app().document().undo_stack().redo();
     app().ui()->update();
 }
 
@@ -764,14 +764,14 @@ void main_window_t::ignore_nodes()
 {
     std::auto_ptr<undo::ignore_nodes_command_t> c( new undo::ignore_nodes_command_t());
 
-    BOOST_FOREACH( node_t& n, document_t::Instance().composition().nodes())
+    BOOST_FOREACH( node_t& n, app().document().composition().nodes())
     {
         if( n.selected())
             c->add_node( &n);
     }
 
     c->redo();
-    document_t::Instance().undo_stack().push_back( c);
+    app().document().undo_stack().push_back( c);
     app().ui()->update();
 }
 
@@ -779,24 +779,24 @@ void main_window_t::delete_nodes()
 {
 	bool autoconnect = true;
 
-    if( !document_t::Instance().composition().any_selected())
+    if( !app().document().composition().any_selected())
         return;
 
     std::auto_ptr<undo::delete_command_t> c( new undo::delete_command_t());
 
-    BOOST_FOREACH( edge_t& e, document_t::Instance().composition().edges())
+    BOOST_FOREACH( edge_t& e, app().document().composition().edges())
     {
         if( e.src->selected() && !(e.dst->selected()))
             c->add_dependent_node( e.dst);
     }
 
-    BOOST_FOREACH( node_t& n, document_t::Instance().composition().nodes())
+    BOOST_FOREACH( node_t& n, app().document().composition().nodes())
     {
         if( n.selected())
             c->add_node( &n);
     }
 
-    BOOST_FOREACH( edge_t& e, document_t::Instance().composition().edges())
+    BOOST_FOREACH( edge_t& e, app().document().composition().edges())
     {
         if( e.src->selected() || e.dst->selected())
             c->add_edge_to_remove( e);
@@ -806,7 +806,7 @@ void main_window_t::delete_nodes()
 	{
 		std::vector<edge_t> edges_to_add;
 		
-		BOOST_FOREACH( node_t& n, document_t::Instance().composition().nodes())
+		BOOST_FOREACH( node_t& n, app().document().composition().nodes())
 		{
 			if( n.selected())
 			{
@@ -841,7 +841,7 @@ void main_window_t::delete_nodes()
 	}
 	
     c->redo();
-    document_t::Instance().undo_stack().push_back( c);
+    app().document().undo_stack().push_back( c);
     app().ui()->update();
 }
 
@@ -850,7 +850,7 @@ void main_window_t::duplicate_nodes()
     std::map<node_t*, node_t*> relation;
     std::auto_ptr<undo::duplicate_command_t> c( new undo::duplicate_command_t());
 
-    BOOST_FOREACH( node_t& n, document_t::Instance().composition().nodes())
+    BOOST_FOREACH( node_t& n, app().document().composition().nodes())
     {
         if( n.selected())
         {
@@ -861,15 +861,15 @@ void main_window_t::duplicate_nodes()
         }
     }
 
-    BOOST_FOREACH( edge_t& e, document_t::Instance().composition().edges())
+    BOOST_FOREACH( edge_t& e, app().document().composition().edges())
     {
         if( e.src->selected() && e.dst->selected())
             c->add_edge( edge_t( relation[e.src], relation[e.dst], e.port));
     }
 
-    document_t::Instance().composition().deselect_all();
+    app().document().composition().deselect_all();
     c->redo();
-    document_t::Instance().undo_stack().push_back( c);
+    app().document().undo_stack().push_back( c);
     app().ui()->update();
 }
 
@@ -877,18 +877,18 @@ void main_window_t::extract_nodes()
 {
 	bool autoconnect = true;
 
-    if( !document_t::Instance().composition().any_selected())
+    if( !app().document().composition().any_selected())
         return;
 
     std::auto_ptr<undo::extract_command_t> c( new undo::extract_command_t());
 
-    BOOST_FOREACH( edge_t& e, document_t::Instance().composition().edges())
+    BOOST_FOREACH( edge_t& e, app().document().composition().edges())
     {
         if( e.src->selected() && !(e.dst->selected()))
             c->add_dependent_node( e.dst);
     }
 
-    BOOST_FOREACH( edge_t& e, document_t::Instance().composition().edges())
+    BOOST_FOREACH( edge_t& e, app().document().composition().edges())
     {
         if( e.src->selected() || e.dst->selected())
             c->add_edge_to_remove( e);
@@ -898,7 +898,7 @@ void main_window_t::extract_nodes()
 	{
 		std::vector<edge_t> edges_to_add;
 		
-		BOOST_FOREACH( node_t& n, document_t::Instance().composition().nodes())
+		BOOST_FOREACH( node_t& n, app().document().composition().nodes())
 		{
 			if( n.selected())
 			{
@@ -930,7 +930,7 @@ void main_window_t::extract_nodes()
 	}
 	
     c->redo();
-    document_t::Instance().undo_stack().push_back( c);
+    app().document().undo_stack().push_back( c);
     app().ui()->update();
 }
 
@@ -946,7 +946,7 @@ void main_window_t::show_composition_settings_dialog()
 
 void main_window_t::render_composition()
 {
-    bool any_output = ( render::count_output_nodes( document_t::Instance().composition()) != 0);
+    bool any_output = ( render::count_output_nodes( app().document().composition()) != 0);
 
     if( !any_output)
     {
@@ -954,7 +954,7 @@ void main_window_t::render_composition()
         return;
     }
 	
-	bool any_output_selected = ( render::count_output_nodes( document_t::Instance().composition(), true) != 0);
+	bool any_output_selected = ( render::count_output_nodes( app().document().composition(), true) != 0);
 
     render_composition_dialog_t::instance().set_any_output_selected( any_output_selected);
 
@@ -968,7 +968,7 @@ void main_window_t::render_composition()
 		if( end < start)
 			return;
 		
-		ui::render_composition( document_t::Instance().composition(),
+		ui::render_composition( app().document().composition(),
 								start, end, render_composition_dialog_t::instance().proxy_level(),
 								render_composition_dialog_t::instance().resolution(),
 								render_composition_dialog_t::instance().mblur_extra_samples(),
@@ -983,9 +983,9 @@ void main_window_t::render_flipbook()
 
     if( result == QDialog::Accepted)
     {
-		if( image_node_t *n = dynamic_cast<image_node_t*>( document_t::Instance().composition().selected_node()))
+		if( image_node_t *n = dynamic_cast<image_node_t*>( app().document().composition().selected_node()))
 		{
-			int frame_rate = document_t::Instance().composition().frame_rate();
+			int frame_rate = app().document().composition().frame_rate();
 			std::string display_device = render_flipbook_dialog_t::instance().display_device();
 			std::string display_transform = render_flipbook_dialog_t::instance().display_transform();
 			int start	= render_flipbook_dialog_t::instance().start_frame();
@@ -1027,7 +1027,7 @@ void main_window_t::create_node()
 	
 	try
 	{
-		p->set_composition( &( document_t::Instance().composition()));
+		p->set_composition( &( app().document().composition()));
 		p->create_params();
 		p->create_manipulators();
 	}
@@ -1039,11 +1039,11 @@ void main_window_t::create_node()
 	}
 
 	// test to see if we can autoconnect
-	node_t *src = document_t::Instance().composition().selected_node();
+	node_t *src = app().document().composition().selected_node();
 	
 	if( src && src->has_output_plug() && p->num_inputs() != 0)
 	{
-		if( !document_t::Instance().composition().can_connect( src, p.get(), 0))
+		if( !app().document().composition().can_connect( src, p.get(), 0))
 			src = 0;
 	}
 	else
@@ -1056,10 +1056,10 @@ void main_window_t::create_node()
 	
 	node_t *n = p.get(); // save for later use
 	std::auto_ptr<undo::command_t> c( new undo::add_node_command_t( p, src));
-	document_t::Instance().composition().deselect_all();
+	app().document().composition().deselect_all();
 	n->select( true);
 	c->redo();
-	document_t::Instance().undo_stack().push_back( c);
+	app().document().undo_stack().push_back( c);
 	app().ui()->update();
 }
 
@@ -1075,15 +1075,15 @@ void main_window_t::go_to_project_website()
 
 void main_window_t::update()
 {
-    if( document_t::Instance().dirty())
+    if( app().document().dirty())
         setWindowTitle( "Ramen *");
     else
         setWindowTitle( "Ramen");
 
     update_menus();
-    time_slider_->update( document_t::Instance().composition().start_frame(),
-			 document_t::Instance().composition().frame(),
-			 document_t::Instance().composition().end_frame());
+    time_slider_->update( app().document().composition().start_frame(),
+			 app().document().composition().frame(),
+			 app().document().composition().end_frame());
 
     composition_view().update();
     time_controls_->update();
@@ -1140,31 +1140,31 @@ void main_window_t::init_recent_files_menu()
 
 void main_window_t::update_menus()
 {
-    bool any_selected = document_t::Instance().composition().any_selected();
-    node_t *n = document_t::Instance().composition().selected_node();
+    bool any_selected = app().document().composition().any_selected();
+    node_t *n = app().document().composition().selected_node();
 
-    save_->setEnabled( document_t::Instance().dirty());
+    save_->setEnabled( app().document().dirty());
     export_sel_->setEnabled( any_selected);
 
-	if( document_t::Instance().undo_stack().undo_empty())
+	if( app().document().undo_stack().undo_empty())
 	{
 		undo_->setText( "Undo");
 	    undo_->setEnabled( false);
 	}
 	else
 	{
-		undo_->setText( QString( "Undo ") + document_t::Instance().undo_stack().last_undo_command().name().c_str());
+		undo_->setText( QString( "Undo ") + app().document().undo_stack().last_undo_command().name().c_str());
 	    undo_->setEnabled( true);
 	}
 
-	if( document_t::Instance().undo_stack().redo_empty())
+	if( app().document().undo_stack().redo_empty())
 	{
 		redo_->setText( "Redo");
 	    redo_->setEnabled( false);
 	}
 	else
 	{
-		redo_->setText( QString( "Redo ") + document_t::Instance().undo_stack().last_redo_command().name().c_str());
+		redo_->setText( QString( "Redo ") + app().document().undo_stack().last_redo_command().name().c_str());
 	    redo_->setEnabled( true);
 	}
 	

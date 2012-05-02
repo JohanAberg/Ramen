@@ -16,14 +16,14 @@
 namespace ramen
 {
 
-document_impl::document_impl() : dirty_( false)
+document_t::document_t() : dirty_( false)
 {
     undo_.reset( new undo::stack_t());
 }
 
-document_impl::~document_impl() {}
+document_t::~document_t() {}
 
-void document_impl::set_file( const boost::filesystem::path& p)
+void document_t::set_file( const boost::filesystem::path& p)
 {
 	RAMEN_ASSERT( p.empty() || p.is_absolute());
 
@@ -31,13 +31,13 @@ void document_impl::set_file( const boost::filesystem::path& p)
 	composition().set_composition_dir( file_.parent_path());
 }
 
-void document_impl::load( serialization::yaml_iarchive_t& in)
+void document_t::load( serialization::yaml_iarchive_t& in)
 {
 	RAMEN_ASSERT( has_file());
 	composition().read( in);
 }
 
-void document_impl::save( serialization::yaml_oarchive_t& out) const
+void document_t::save( serialization::yaml_oarchive_t& out) const
 {
 	RAMEN_ASSERT( out.header_written());
 	RAMEN_ASSERT( out.map_level() == 1);

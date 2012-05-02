@@ -25,10 +25,10 @@
 
 #include<ramen/app/preferences.hpp>
 #include<ramen/app/document.hpp>
+#include<ramen/app/plugin_manager.hpp>
 
 #include<ramen/memory/manager.hpp>
 
-#include<ramen/app/plugin_manager.hpp>
 #include<ramen/nodes/node_factory.hpp>
 
 #include<ramen/image/init_image_processing.hpp>
@@ -66,6 +66,7 @@ application_t::application_t( int argc, char **argv) : system_(),
     img_cache_size_ = 0;
     command_line_ = false;
 	render_mode_ = false;    
+    quitting_ = false;
 
     QApplication *q_app = new QApplication( argc, argv);
     boost::filesystem::path bundle_path( system().app_bundle_path());
@@ -189,10 +190,10 @@ int application_t::run()
 			}
 			
 			if( !start_frame_)
-				start_frame_ = document_t::Instance().composition().start_frame();
+				start_frame_ = document().composition().start_frame();
 			
 			if( !end_frame_)
-				end_frame_ = document_t::Instance().composition().end_frame();
+				end_frame_ = document().composition().end_frame();
 
 			if( !proxy_level_)
 				proxy_level_ = 0;
@@ -206,7 +207,7 @@ int application_t::run()
 			if( !mb_shutter_factor_)
 				mb_shutter_factor_ = 1.0f;
 
-			render::render_sequence( document_t::Instance().composition(), start_frame_.get(), end_frame_.get(),
+			render::render_sequence( document().composition(), start_frame_.get(), end_frame_.get(),
 									 proxy_level_.get(), subsample_.get(), mb_extra_samples_.get(), mb_shutter_factor_.get());
 		}
 	}
@@ -453,8 +454,8 @@ void application_t::print_app_info()
 // document handling
 void application_t::create_new_document()
 {
-    Loki::DeletableSingleton<document_impl>::GracefulDelete();
-    memory_manager().clear_caches();
+    delete_document();
+    document_.reset( new document_t());
 }
 
 void application_t::open_document( const boost::filesystem::path& p)
@@ -471,8 +472,8 @@ void application_t::open_document( const boost::filesystem::path& p)
 	if( !in->read_composition_header())
 		throw std::runtime_error( std::string( "Couldn't read file header ") + filesystem::file_string( p));
 		
-	document_t::Instance().set_file( p);
-	document_t::Instance().load( *in);
+	document().set_file( p);
+	document().load( *in);
 
 	std::string err = in->errors();
 	
@@ -481,6 +482,12 @@ void application_t::open_document( const boost::filesystem::path& p)
 		// TODO: display errors here
 		// multiline_alert_t::Instance().show_alert( "Errors during file open", err);
 	}
+}
+
+void application_t::delete_document()
+{
+    document_.reset( 0);
+    memory_manager().clear_caches();
 }
 
 // messages

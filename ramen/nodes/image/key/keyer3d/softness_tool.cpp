@@ -56,7 +56,7 @@ void softness_tool_t::mouse_release_event( const ui::mouse_release_event_t& even
 	{
 		if( cmd_.get())
 		{
-			document_t::Instance().undo_stack().push_back( cmd_);
+			app().document().undo_stack().push_back( cmd_);
 			app().ui()->update();
 		}
 	}

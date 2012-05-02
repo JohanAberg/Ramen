@@ -85,8 +85,6 @@ public:
 
     const QString& image_types_string() const { return image_types_str_;}
 
-    bool quitting() const { return quitting_;}
-
     // time
     int start_frame() const;
     int end_frame() const;
@@ -137,12 +135,11 @@ private:
 	void restore_window_state();
 	
     main_window_t *window_;
-    std::auto_ptr<inspector_t> inspector_;
-    std::auto_ptr<anim_editor_t> anim_editor_;
-    std::auto_ptr<viewer_t> viewer_;
+    inspector_t *inspector_;
+    anim_editor_t *anim_editor_;
+    viewer_t *viewer_;
 
     node_t *active_, *context_;
-    bool quitting_;
 
 	bool rendering_;
     bool interacting_;

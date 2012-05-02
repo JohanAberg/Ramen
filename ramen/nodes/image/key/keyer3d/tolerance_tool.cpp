@@ -88,7 +88,7 @@ void tolerance_tool_t::mouse_release_event( const ui::mouse_release_event_t& eve
 
 	if( any_change_)
 	{
-		document_t::Instance().undo_stack().push_back( cmd_);
+		app().document().undo_stack().push_back( cmd_);
 		app().ui()->update();
 	}
 	else

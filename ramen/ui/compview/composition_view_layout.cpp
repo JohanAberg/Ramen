@@ -14,6 +14,7 @@
 
 #include<ramen/assert.hpp>
 
+#include<ramen/app/application.hpp>
 #include<ramen/app/document.hpp>
 
 #include<ramen/ui/compview/draw_pick_visitors.hpp>
@@ -85,7 +86,7 @@ Imath::Box2f composition_view_layout_t::get_node_bbox( node_t *n) const
 
 bool composition_view_layout_t::box_intersects_any_node( const Imath::Box2f& box) const
 {
-    BOOST_FOREACH( node_t& n, document_t::Instance().composition().nodes())
+    BOOST_FOREACH( node_t& n, app().document().composition().nodes())
     {
 		box_pick_node_visitor visitor( box);
 		n.accept( visitor);

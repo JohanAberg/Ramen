@@ -15,6 +15,7 @@
 
 #include<ramen/nodes/image_node.hpp>
 
+#include<ramen/app/application.hpp>
 #include<ramen/app/document.hpp>
 
 #include<ramen/ui/viewer/viewer_strategy.hpp>
@@ -37,7 +38,7 @@ void transform2_manipulator_t::do_draw_overlay( const ui::paint_event_t& event) 
 	const image_node_t *node = dynamic_cast<const image_node_t*>( parent());
 	RAMEN_ASSERT( node);
 	
-	Imath::M33d m( param_->matrix_at_frame( document_t::Instance().composition().frame(), node->aspect_ratio()));
+	Imath::M33d m( param_->matrix_at_frame( app().document().composition().frame(), node->aspect_ratio()));
 
     // adjust for the aspect factor
     Imath::M33d mm = m * Imath::M33d().setScale( Imath::V2d( event.aspect_ratio, 1));
@@ -89,7 +90,7 @@ bool transform2_manipulator_t::do_mouse_press_event( const ui::mouse_press_event
 	RAMEN_ASSERT( node);
 	
 	float aspect = node->aspect_ratio();
-	Imath::M33d m( param_->matrix_at_frame( document_t::Instance().composition().frame(), aspect));
+	Imath::M33d m( param_->matrix_at_frame( app().document().composition().frame(), aspect));
 
     // adjust for the aspect factor
     Imath::M33d mm = m * Imath::M33d().setScale( Imath::V2d( event.aspect_ratio, 1));

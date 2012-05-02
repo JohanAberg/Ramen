@@ -1,4 +1,6 @@
 // Copyright (c) 2011 Esteban Tovagliari
+// Licensed under the terms of the CDDL License.
+// See CDDL_LICENSE.txt for a copy of the license.
 
 #include<ramen/nodes/image/input/input_node.hpp>
 
@@ -616,7 +618,7 @@ void input_node_t::file_picked( const boost::filesystem::path& p, int level, boo
 	set_frame( composition()->frame());
 
 	notify();
-	document_t::Instance().undo_stack().push_back( c);
+	app().document().undo_stack().push_back( c);
 	app().ui()->update();
 }
 
@@ -629,7 +631,7 @@ node_t *create_gui_image_input_node()
     boost::filesystem::path p, dir;
 
     if( app().ui()->image_sequence_file_selector( p, sequence, relative))
-        return new input_node_t( p, sequence, document_t::Instance().composition().composition_dir());
+        return new input_node_t( p, sequence, app().document().composition().composition_dir());
 
     return 0;
 }

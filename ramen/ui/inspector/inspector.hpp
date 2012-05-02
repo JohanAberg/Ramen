@@ -24,13 +24,14 @@ namespace ramen
 namespace ui
 {
 
-class inspector_t : public QObject, boost::noncopyable
+class inspector_t : public QObject
 {
     Q_OBJECT
 
 public:
 
     inspector_t();
+    ~inspector_t();
 
     // metrics
     int left_margin() const;
@@ -50,6 +51,9 @@ private Q_SLOTS:
 	void show_help();
 	
 private:
+
+    inspector_t( const inspector_t& other);
+    void operator=( const inspector_t& other);
 
     void create_header();
 

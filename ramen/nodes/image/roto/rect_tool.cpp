@@ -59,11 +59,11 @@ void rect_tool_t::mouse_release_event( const ui::mouse_release_event_t& event)
 		s->set_translation( Imath::V2f( 0, 0));
 
 		if( s->autokey())
-			s->set_shape_key( document_t::Instance().composition().frame());
+			s->set_shape_key( app().document().composition().frame());
 		
 		std::auto_ptr<undo::add_roto_command_t> cmd( new undo::add_roto_command_t( parent(), s));
 		cmd->redo();
-		document_t::Instance().undo_stack().push_back( cmd);
+		app().document().undo_stack().push_back( cmd);
 		app().ui()->update();
 	}
 

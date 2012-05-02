@@ -33,38 +33,38 @@ composition_settings_dialog_t::composition_settings_dialog_t() : QDialog( app().
 void composition_settings_dialog_t::exec_dialog()
 {
 	// update widgets here...
-	ui_.format_->set_value( document_t::Instance().composition().default_format());
-	ui_.rate_->setValue( document_t::Instance().composition().frame_rate());
-	ui_.ocio_key1_->setText(   QString::fromStdString( document_t::Instance().composition().ocio_context_pairs()[0].first));
-	ui_.ocio_value1_->setText( QString::fromStdString( document_t::Instance().composition().ocio_context_pairs()[0].second));
-	ui_.ocio_key2_->setText(   QString::fromStdString( document_t::Instance().composition().ocio_context_pairs()[1].first));
-	ui_.ocio_value2_->setText( QString::fromStdString( document_t::Instance().composition().ocio_context_pairs()[1].second));
-	ui_.ocio_key3_->setText(   QString::fromStdString( document_t::Instance().composition().ocio_context_pairs()[2].first));
-	ui_.ocio_value3_->setText( QString::fromStdString( document_t::Instance().composition().ocio_context_pairs()[2].second));
-	ui_.ocio_key4_->setText(   QString::fromStdString( document_t::Instance().composition().ocio_context_pairs()[3].first));
-	ui_.ocio_value4_->setText( QString::fromStdString( document_t::Instance().composition().ocio_context_pairs()[3].second));
+	ui_.format_->set_value( app().document().composition().default_format());
+	ui_.rate_->setValue( app().document().composition().frame_rate());
+	ui_.ocio_key1_->setText(   QString::fromStdString( app().document().composition().ocio_context_pairs()[0].first));
+	ui_.ocio_value1_->setText( QString::fromStdString( app().document().composition().ocio_context_pairs()[0].second));
+	ui_.ocio_key2_->setText(   QString::fromStdString( app().document().composition().ocio_context_pairs()[1].first));
+	ui_.ocio_value2_->setText( QString::fromStdString( app().document().composition().ocio_context_pairs()[1].second));
+	ui_.ocio_key3_->setText(   QString::fromStdString( app().document().composition().ocio_context_pairs()[2].first));
+	ui_.ocio_value3_->setText( QString::fromStdString( app().document().composition().ocio_context_pairs()[2].second));
+	ui_.ocio_key4_->setText(   QString::fromStdString( app().document().composition().ocio_context_pairs()[3].first));
+	ui_.ocio_value4_->setText( QString::fromStdString( app().document().composition().ocio_context_pairs()[3].second));
 	
     int result = exec();
 
     if( result == QDialog::Accepted)
     {
-		document_t::Instance().composition().set_default_format( ui_.format_->value());
-		document_t::Instance().composition().set_frame_rate( ui_.rate_->value());
+		app().document().composition().set_default_format( ui_.format_->value());
+		app().document().composition().set_frame_rate( ui_.rate_->value());
 		
-		if( document_t::Instance().composition().set_ocio_context_key_value( 0, ui_.ocio_key1_->text().toStdString(),
+		if( app().document().composition().set_ocio_context_key_value( 0, ui_.ocio_key1_->text().toStdString(),
 																			ui_.ocio_value1_->text().toStdString()) ||
-			document_t::Instance().composition().set_ocio_context_key_value( 1, ui_.ocio_key2_->text().toStdString(),
+			app().document().composition().set_ocio_context_key_value( 1, ui_.ocio_key2_->text().toStdString(),
 																			ui_.ocio_value2_->text().toStdString()) ||
-			document_t::Instance().composition().set_ocio_context_key_value( 2, ui_.ocio_key3_->text().toStdString(),
+			app().document().composition().set_ocio_context_key_value( 2, ui_.ocio_key3_->text().toStdString(),
 																			ui_.ocio_value3_->text().toStdString()) ||
-			document_t::Instance().composition().set_ocio_context_key_value( 3, ui_.ocio_key4_->text().toStdString(),
+			app().document().composition().set_ocio_context_key_value( 3, ui_.ocio_key4_->text().toStdString(),
 																			ui_.ocio_value4_->text().toStdString()))
 		{
 			app().ui()->viewer().update_display_transform();
-			document_t::Instance().composition().ocio_context_changed();
+			app().document().composition().ocio_context_changed();
 		}
 		
-		document_t::Instance().set_dirty( true);
+		app().document().set_dirty( true);
     }
 }
 

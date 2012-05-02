@@ -176,7 +176,7 @@ void anim_curves_view_t::mousePressEvent( QMouseEvent *event)
 		return;
     }
 
-	float time = document_t::Instance().composition().frame();
+	float time = app().document().composition().frame();
 	Imath::V2i q( world_to_screen( Imath::V2f( time, 0)));
 
 	if( abs( q.x - push_x_) <= 4)
@@ -348,8 +348,8 @@ void anim_curves_view_t::contextMenuEvent( QContextMenuEvent *event)
 
 void anim_curves_view_t::reset_view()
 {
-    int start_frame = document_t::Instance().composition().start_frame();
-    int end_frame = document_t::Instance().composition().end_frame();
+    int start_frame = app().document().composition().start_frame();
+    int end_frame = app().document().composition().end_frame();
 
     viewport_.reset( Imath::Box2i( Imath::V2i( 0, 0), Imath::V2i( width()-1, height()-1)),
                      Imath::Box2f( Imath::V2i( start_frame - 5, 0) , Imath::V2i( end_frame + 5, 10)));
@@ -448,7 +448,7 @@ void anim_curves_view_t::draw_axes() const
 
 void anim_curves_view_t::draw_time_bar() const
 {
-    float time = document_t::Instance().composition().frame();
+    float time = app().document().composition().frame();
     Imath::V2i q( world_to_screen( Imath::V2f( time, 0)));
 
     QPen pen;

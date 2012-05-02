@@ -27,7 +27,6 @@
 #include<ramen/ui/user_interface.hpp>
 #include<ramen/ui/inspector/panel.hpp>
 #include<ramen/ui/anim/anim_editor.hpp>
-
 #include<ramen/ui/widgets/double_spinbox.hpp>
 #include<ramen/ui/widgets/line_edit.hpp>
 
@@ -37,6 +36,59 @@ namespace ramen
 {
 namespace ui
 {
+namespace
+{
+
+class rename_node_command_t : public undo::command_t
+{
+public:
+
+	rename_node_command_t( node_t *n, const std::string& new_name, ui::line_edit_t *name_edit) : undo::command_t( "Rename Node")
+	{
+		n_ = n;
+		old_name_ = n_->name();
+		new_name_ = new_name;
+		name_edit_ = name_edit;
+	}
+
+    virtual void undo()
+	{
+		rename( old_name_);
+		undo::command_t::undo();
+	}
+
+    virtual void redo()
+	{
+		rename( new_name_);
+		undo::command_t::redo();
+	}
+
+private:
+
+	void rename( const std::string& name)
+	{
+	    name_edit_->blockSignals( true);
+		app().document().composition().rename_node( n_, name);
+
+		if( n_->is_active())
+		{
+			name_edit_->setText( n_->name().c_str());
+			app().ui()->anim_editor().node_renamed( n_);
+		}
+
+		app().ui()->update();
+		name_edit_->setModified( false);
+	    name_edit_->blockSignals( false);
+	}
+
+	node_t *n_;
+	std::string new_name_;
+	std::string old_name_;
+
+	ui::line_edit_t *name_edit_;
+};
+
+} // unnamed
 
 inspector_t::inspector_t() : window_(0), left_margin_( 0), width_( 0)
 {
@@ -77,6 +129,11 @@ inspector_t::inspector_t() : window_(0), left_margin_( 0), width_( 0)
     window_->setLayout( layout);
 
 	current_ = factory_.end();
+}
+
+inspector_t::~inspector_t()
+{
+    name_edit_->deleteLater();
 }
 
 int inspector_t::left_margin() const
@@ -145,6 +202,9 @@ void inspector_t::create_header()
 
 void inspector_t::edit_node( node_t *n)
 {
+    if( app().quitting())
+        return;
+
     if( current_ != factory_.end())
     {
         view_->clear_contents();
@@ -195,55 +255,6 @@ void inspector_t::update_header_widgets()
     name_edit_->blockSignals( false);
 }
 
-class rename_node_command_t : public undo::command_t
-{
-public:
-
-	rename_node_command_t( node_t *n, const std::string& new_name, ui::line_edit_t *name_edit) : undo::command_t( "Rename Node")
-	{
-		n_ = n;
-		old_name_ = n_->name();
-		new_name_ = new_name;
-		name_edit_ = name_edit;
-	}
-	
-    virtual void undo()
-	{
-		rename( old_name_);
-		undo::command_t::undo();
-	}
-	
-    virtual void redo()
-	{
-		rename( new_name_);
-		undo::command_t::redo();
-	}
-	
-private:
-	
-	void rename( const std::string& name)
-	{
-	    name_edit_->blockSignals( true);
-		document_t::Instance().composition().rename_node( n_, name);
-		
-		if( n_->is_active())
-		{
-			name_edit_->setText( n_->name().c_str());
-			app().ui()->anim_editor().node_renamed( n_);
-		}
-		
-		app().ui()->update();
-		name_edit_->setModified( false);
-	    name_edit_->blockSignals( false);
-	}
-
-	node_t *n_;
-	std::string new_name_;
-	std::string old_name_;
-	
-	ui::line_edit_t *name_edit_;
-};
-
 void inspector_t::rename_node()
 {
 	if( name_edit_->isModified())
@@ -257,7 +268,7 @@ void inspector_t::rename_node()
 		{
 			std::auto_ptr<rename_node_command_t> c( new rename_node_command_t( n, new_name, name_edit_));
 			c->redo();
-			document_t::Instance().undo_stack().push_back( c);
+			app().document().undo_stack().push_back( c);
 		    app().ui()->update();
 		}
 		else

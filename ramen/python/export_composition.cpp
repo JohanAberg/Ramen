@@ -1,4 +1,6 @@
 // Copyright (c) 2010 Esteban Tovagliari
+// Licensed under the terms of the CDDL License.
+// See CDDL_LICENSE.txt for a copy of the license.
 
 #include<ramen/python/python.hpp>
 
@@ -26,7 +28,7 @@ int edge_get_port( const edge_t& e)			{ return e.port;}
 // comp
 composition_t& current_comp()
 {
-	return document_t::Instance().composition();
+	return app().document().composition();
 }
 
 bpy::list make_node_list( composition_t& c)

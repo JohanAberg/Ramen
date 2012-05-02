@@ -1,4 +1,6 @@
 // Copyright (c) 2010 Esteban Tovagliari
+// Licensed under the terms of the CDDL License.
+// See CDDL_LICENSE.txt for a copy of the license.
 
 #include<ramen/python/python.hpp>
 
@@ -8,6 +10,7 @@
 
 #include<adobe/algorithm/for_each.hpp>
 
+#include<ramen/app/application.hpp>
 #include<ramen/app/document.hpp>
 
 namespace ramen
@@ -15,7 +18,7 @@ namespace ramen
 namespace undo
 {
 
-command_t::command_t( const std::string& name) : name_(name), was_dirty_( document_t::Instance().dirty()) {}
+command_t::command_t( const std::string& name) : name_(name), was_dirty_( app().document().dirty()) {}
 command_t::~command_t() {}
 
 const std::string& command_t::name() const { return name_;}
@@ -25,18 +28,18 @@ void command_t::set_done( bool b)
     done_ = b;
 
     if( done_)
-	document_t::Instance().set_dirty( true);
+	app().document().set_dirty( true);
 }
 
 void command_t::undo()
 { 
-    document_t::Instance().set_dirty( was_dirty_);
+    app().document().set_dirty( was_dirty_);
     done_ = false;
 }
 
 void command_t::redo()
 { 
-    document_t::Instance().set_dirty( true);
+    app().document().set_dirty( true);
     done_ = true;
 }
 

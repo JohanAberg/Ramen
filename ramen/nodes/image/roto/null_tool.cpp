@@ -64,7 +64,7 @@ void null_tool_t::mouse_release_event( const ui::mouse_release_event_t& event)
 
 		std::auto_ptr<undo::add_roto_command_t> cmd( new undo::add_roto_command_t( parent(), s));
 		cmd->redo();
-		document_t::Instance().undo_stack().push_back( cmd);
+		app().document().undo_stack().push_back( cmd);
 		app().ui()->update();
 	}
 }

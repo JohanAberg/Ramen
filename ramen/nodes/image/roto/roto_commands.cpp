@@ -1,4 +1,6 @@
 // Copyright (c) 2010 Esteban Tovagliari
+// Licensed under the terms of the CDDL License.
+// See CDDL_LICENSE.txt for a copy of the license.
 
 #include<ramen/python/python.hpp>
 
@@ -141,7 +143,7 @@ void modify_shape_command_t::swap_shape_state()
 {
 	shape_->triples().swap( old_pts_);
 	shape_->anim_curve().swap( old_curve_);
-	shape_->evaluate_shape_curve( document_t::Instance().composition().frame());
+	shape_->evaluate_shape_curve( app().document().composition().frame());
 }
 
 order_shape_command_t::order_shape_command_t( image::roto_node_t& node, roto::shape_t *shape, bool up) : command_t( "Change Shape Order"), node_( node)

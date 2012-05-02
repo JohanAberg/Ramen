@@ -1,4 +1,6 @@
 // Copyright (c) 2010 Esteban Tovagliari
+// Licensed under the terms of the CDDL License.
+// See CDDL_LICENSE.txt for a copy of the license.
 
 #include<ramen/python/python.hpp>
 
@@ -101,11 +103,11 @@ void import_multichannel_exr( const boost::filesystem::path& p, bool relative, b
         return;
     }
 
-    document_t::Instance().composition().deselect_all();
+    app().document().composition().deselect_all();
     std::auto_ptr<undo::add_nodes_command_t> command( new undo::add_nodes_command_t());
 
-    image::input_node_t *node = new image::input_node_t( p, sequence, document_t::Instance().composition().composition_dir());
-    node->set_composition( &document_t::Instance().composition());
+    image::input_node_t *node = new image::input_node_t( p, sequence, app().document().composition().composition_dir());
+    node->set_composition( &app().document().composition());
     node->create_params();
     node->select( true);
     app().ui()->main_window()->composition_view().place_node( node);
@@ -188,8 +190,8 @@ void import_multichannel_exr( const boost::filesystem::path& p, bool relative, b
     }
 
     command->redo();
-    document_t::Instance().undo_stack().push_back( command);
-    document_t::Instance().composition().selection_changed();
+    app().document().undo_stack().push_back( command);
+    app().document().composition().selection_changed();
     app().ui()->update();
     delete node;
 }

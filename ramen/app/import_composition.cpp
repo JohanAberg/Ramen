@@ -9,8 +9,8 @@
 #include<boost/foreach.hpp>
 #include<boost/filesystem/fstream.hpp>
 
+#include<ramen/app/application.hpp>
 #include<ramen/app/document.hpp>
-
 
 namespace ramen
 {
@@ -34,10 +34,10 @@ std::auto_ptr<serialization::yaml_iarchive_t> import_composition( const boost::f
 
 	comp.read( *in);
 
-	document_t::Instance().composition().deselect_all();
+	app().document().composition().deselect_all();
 	comp.select_all();
 
-	document_t::Instance().composition().merge_composition( comp);
+	app().document().composition().merge_composition( comp);
 
 	return in;
 }

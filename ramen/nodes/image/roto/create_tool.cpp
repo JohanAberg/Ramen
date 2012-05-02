@@ -1,4 +1,6 @@
 // Copyright (c) 2011 Esteban Tovagliari
+// Licensed under the terms of the CDDL License.
+// See CDDL_LICENSE.txt for a copy of the license.
 
 #include<ramen/python/python.hpp>
 
@@ -84,7 +86,7 @@ void create_tool_t::mouse_press_event( const ui::mouse_press_event_t& event)
 			std::auto_ptr<undo::command_t> cmd( new undo::modify_shape_command_t( parent(), s));
 			s->insert_point( span_index, t);
 			
-			document_t::Instance().undo_stack().push_back( cmd);
+			app().document().undo_stack().push_back( cmd);
 			app().ui()->update();
 			parent().notify();
 			return;
@@ -139,11 +141,11 @@ void create_tool_t::close_shape( bool success)
 			new_shape_->set_translation( Imath::V2f( 0, 0), false);
 
 			if( new_shape_->autokey())
-				new_shape_->set_shape_key( document_t::Instance().composition().frame());
+				new_shape_->set_shape_key( app().document().composition().frame());
 			
 			std::auto_ptr<undo::add_roto_command_t> cmd( new undo::add_roto_command_t( parent(), new_shape_));
 			cmd->redo();
-			document_t::Instance().undo_stack().push_back( cmd);
+			app().document().undo_stack().push_back( cmd);
 			app().ui()->update();
 		}
     }

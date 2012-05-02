@@ -5,9 +5,11 @@
 #include<ramen/python/python.hpp>
 
 #include<ramen/ui/compview/composition_view_commands.hpp>
-#include<ramen/app/document.hpp>
 
 #include<boost/bind.hpp>
+
+#include<ramen/app/application.hpp>
+#include<ramen/app/document.hpp>
 
 #include<ramen/nodes/graph_algorithm.hpp>
 
@@ -23,10 +25,10 @@ connect_command_t::connect_command_t( node_t *src, node_t *dest, int port) : com
 
 void connect_command_t::undo()
 {
-    document_t::Instance().composition().disconnect( src_, dest_, port_);
+    app().document().composition().disconnect( src_, dest_, port_);
 
     if( prev_src_)
-		document_t::Instance().composition().connect( prev_src_, dest_, port_);
+		app().document().composition().connect( prev_src_, dest_, port_);
 
 	dest_->notify();
     command_t::undo();
@@ -34,7 +36,7 @@ void connect_command_t::undo()
 	
 void connect_command_t::redo()
 {
-    document_t::Instance().composition().connect( src_, dest_, port_);
+    app().document().composition().connect( src_, dest_, port_);
 	dest_->notify();
     command_t::redo();
 }
@@ -43,14 +45,14 @@ disconnect_command_t::disconnect_command_t( node_t *src, node_t *dest, int port)
 
 void disconnect_command_t::undo()
 {
-    document_t::Instance().composition().connect( src_, dest_, port_);
+    app().document().composition().connect( src_, dest_, port_);
 	dest_->notify();
     command_t::undo();
 }
 
 void disconnect_command_t::redo()
 {
-    document_t::Instance().composition().disconnect( src_, dest_, port_);
+    app().document().composition().disconnect( src_, dest_, port_);
 	dest_->notify();
     command_t::redo();
 }

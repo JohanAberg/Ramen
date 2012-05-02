@@ -1,4 +1,6 @@
 // Copyright (c) 2010 Esteban Tovagliari
+// Licensed under the terms of the CDDL License.
+// See CDDL_LICENSE.txt for a copy of the license.
 
 #include<ramen/params/file_param.hpp>
 
@@ -244,7 +246,7 @@ void file_param_t::make_paths_relative()
 	
 			QCheckBox *relative_check = new QCheckBox( "Relative");
 	
-			if( document_t::Instance().has_file())
+			if( app().document().has_file())
 				relative_check->setChecked( was_relative);
 			else
 			{
