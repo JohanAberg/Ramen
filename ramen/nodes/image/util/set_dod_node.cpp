@@ -82,7 +82,7 @@ Imath::Box2i set_dod_node_t::dod_area() const
 }
 
 // factory
-image_node_t *create_set_dod_node() { return new set_dod_node_t();}
+node_t *create_set_dod_node() { return new set_dod_node_t();}
 
 const node_metaclass_t *set_dod_node_t::metaclass() const { return &set_dod_node_metaclass();}
 
@@ -107,7 +107,7 @@ const node_metaclass_t& set_dod_node_t::set_dod_node_metaclass()
     return info;
 }
 
-static bool registered = node_factory_t::Instance().register_node( set_dod_node_t::set_dod_node_metaclass());
+static bool registered = node_factory_t::instance().register_node( set_dod_node_t::set_dod_node_metaclass());
 
 } // namespace
 } // namespace

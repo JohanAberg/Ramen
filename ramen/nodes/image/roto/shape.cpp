@@ -41,9 +41,9 @@ namespace ramen
 namespace roto
 {
 
-shape_t::shape_t() : manipulable_t() { init();}
+shape_t::shape_t() : parameterised_t() { init();}
 
-shape_t::shape_t( const Imath::Box2f& box)
+shape_t::shape_t( const Imath::Box2f& box) : parameterised_t()
 {
 	RAMEN_ASSERT( !box.isEmpty());
 
@@ -55,7 +55,7 @@ shape_t::shape_t( const Imath::Box2f& box)
 	close();
 }
 
-shape_t::shape_t( const shape_t& other) : manipulable_t( other), parent_( 0), scene_( 0)
+shape_t::shape_t( const shape_t& other) : parameterised_t( other), parent_( 0), scene_( 0)
 {
 	selected_ = false;
 	display_color_ = other.display_color_;

@@ -24,6 +24,7 @@
 #include<QContextMenuEvent>
 #include<QMenu>
 
+#include<ramen/app/application.hpp>
 #include<ramen/app/document.hpp>
 
 #include<ramen/undo/stack.hpp>
@@ -196,11 +197,11 @@ void composition_view_t::mouseDoubleClickEvent( QMouseEvent *event)
     if( last_pick_.component == pick_result_t::body_picked)
     {
         if( event->modifiers() & Qt::ControlModifier)
-            user_interface_t::Instance().set_context_node( last_pick_.node);
+            app().ui()->set_context_node( last_pick_.node);
         else
-            user_interface_t::Instance().set_active_node( last_pick_.node);
+            app().ui()->set_active_node( last_pick_.node);
 
-        user_interface_t::Instance().update();
+        app().ui()->update();
     }
 
     event->accept();
@@ -258,7 +259,7 @@ void composition_view_t::mousePressEvent( QMouseEvent *event)
             std::auto_ptr<undo::command_t> c( new undo::disconnect_command_t( src, dst, port));
             c->redo();
             document_t::Instance().undo_stack().push_back( c);
-            user_interface_t::Instance().update();
+            app().ui()->update();
             return;
         }
     }
@@ -300,7 +301,7 @@ void composition_view_t::mousePressEvent( QMouseEvent *event)
         }
     }
 
-    user_interface_t::Instance().update();
+    app().ui()->update();
 }
 
 void composition_view_t::mouseMoveEvent( QMouseEvent *event)
@@ -419,7 +420,7 @@ void composition_view_t::connect_release_handler( QMouseEvent *event)
         std::auto_ptr<undo::command_t> c( new undo::connect_command_t( src, dst, port));
         c->redo();
         document_t::Instance().undo_stack().push_back( c);
-        user_interface_t::Instance().update();
+        app().ui()->update();
     }
     else
         update();
@@ -439,7 +440,7 @@ void composition_view_t::box_pick_release_handler( QMouseEvent *event)
     }
 
     box_pick_mode_ = false;
-    user_interface_t::Instance().update();
+    app().ui()->update();
 }
 
 void composition_view_t::resizeEvent( QResizeEvent *event)
@@ -634,7 +635,7 @@ void composition_view_t::contextMenuEvent( QContextMenuEvent *event) { event->ac
 
 void composition_view_t::delete_selected_nodes()
 {
-	user_interface_t::Instance().main_window()->delete_nodes();
+	app().ui()->main_window()->delete_nodes();
 }
 
 } // namespace

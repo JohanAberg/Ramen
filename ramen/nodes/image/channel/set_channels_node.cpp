@@ -152,7 +152,7 @@ const node_metaclass_t& set_channels_node_t::set_channels_node_metaclass()
     return m;
 }
 
-static bool registered = node_factory_t::Instance().register_node( set_channels_node_t::set_channels_node_metaclass());
+static bool registered = node_factory_t::instance().register_node( set_channels_node_t::set_channels_node_metaclass());
 
 } // namespace
 } // namespace

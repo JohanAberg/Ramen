@@ -8,7 +8,7 @@
 
 void rdk_register_node( const ramen::node_metaclass_t& m)
 {
-    ramen::node_factory_t::Instance().register_node( m);
+    ramen::node_factory_t::instance().register_node( m);
 }
 
 rdk_app_info_t::rdk_app_info_t()

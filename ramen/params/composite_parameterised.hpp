@@ -12,7 +12,7 @@ namespace ramen
 
 /**
 \ingroup params
-\brief Base class for composite parameterised objects.
+\brief Base class for parameterised objects that can contain children parameterised objects.
 */
 class RAMEN_API composite_parameterised_t : public parameterised_t
 {

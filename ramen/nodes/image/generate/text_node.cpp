@@ -156,7 +156,7 @@ const node_metaclass_t& text_node_t::text_node_metaclass()
 }
 
 #ifndef NDEBUG
-	static bool registered = node_factory_t::Instance().register_node( text_node_t::text_node_metaclass());
+	static bool registered = node_factory_t::instance().register_node( text_node_t::text_node_metaclass());
 #endif
 
 } // namespace

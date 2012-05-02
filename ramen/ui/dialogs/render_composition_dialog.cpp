@@ -8,6 +8,8 @@
 
 #include<ramen/assert.hpp>
 
+#include<ramen/app/application.hpp>
+
 #include<ramen/ui/user_interface.hpp>
 #include<ramen/ui/main_window.hpp>
 
@@ -22,7 +24,7 @@ render_composition_dialog_t& render_composition_dialog_t::instance()
     return dialog;
 }
 
-render_composition_dialog_t::render_composition_dialog_t() : QDialog( user_interface_t::Instance().main_window())
+render_composition_dialog_t::render_composition_dialog_t() : QDialog( app().ui()->main_window())
 {
     setWindowTitle( "Render Composition");
 	ui_.setupUi( this);

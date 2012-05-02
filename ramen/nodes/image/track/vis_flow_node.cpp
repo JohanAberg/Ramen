@@ -136,7 +136,7 @@ const node_metaclass_t& vis_flow_node_t::vis_flow_node_metaclass()
 }
 
 #ifndef NDEBUG
-	static bool registered = node_factory_t::Instance().register_node( vis_flow_node_t::vis_flow_node_metaclass());
+	static bool registered = node_factory_t::instance().register_node( vis_flow_node_t::vis_flow_node_metaclass());
 #endif
 
 } // namespace

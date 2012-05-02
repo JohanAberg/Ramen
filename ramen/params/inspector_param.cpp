@@ -6,6 +6,8 @@
 
 #include<QFrame>
 
+#include<ramen/app/application.hpp>
+
 #include<ramen/params/parameterised.hpp>
 
 #include<ramen/ui/user_interface.hpp>
@@ -46,7 +48,7 @@ void inspector_param_t::set_parameterised( parameterised_t *p)
 	
 		if( widget_)
 		{
-			QWidget *w = ui::user_interface_t::Instance().inspector().panel_factory().create_panel( p)->second->widget();
+			QWidget *w = app().ui()->inspector().panel_factory().create_panel( p)->second->widget();
 			widget_->set_contents( w);
 		}
 	}
@@ -56,13 +58,13 @@ QWidget *inspector_param_t::do_create_widgets()
 {
 	widget_ = new ui::container_widget_t();
     widget_->setSizePolicy( QSizePolicy::Fixed, QSizePolicy::Preferred);
-    widget_->setMinimumSize( ui::user_interface_t::Instance().inspector().width()+16, 0);
-    widget_->setMaximumSize( ui::user_interface_t::Instance().inspector().width()+16, QWIDGETSIZE_MAX);
+    widget_->setMinimumSize( app().ui()->inspector().width()+16, 0);
+    widget_->setMaximumSize( app().ui()->inspector().width()+16, QWIDGETSIZE_MAX);
     widget_->setContentsMargins( 0, 0, 0, 0);
 	
 	if( contents_)
 	{
-		QWidget *w = ui::user_interface_t::Instance().inspector().panel_factory().create_panel( contents_)->second->widget();
+		QWidget *w = app().ui()->inspector().panel_factory().create_panel( contents_)->second->widget();
 		widget_->set_contents( w);
 	}
 	

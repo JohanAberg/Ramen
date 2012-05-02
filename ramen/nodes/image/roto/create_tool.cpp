@@ -4,6 +4,7 @@
 
 #include<ramen/nodes/image/roto/create_tool.hpp>
 
+#include<ramen/app/application.hpp>
 #include<ramen/app/document.hpp>
 
 #include<ramen/undo/stack.hpp>
@@ -84,7 +85,7 @@ void create_tool_t::mouse_press_event( const ui::mouse_press_event_t& event)
 			s->insert_point( span_index, t);
 			
 			document_t::Instance().undo_stack().push_back( cmd);
-			ui::user_interface_t::Instance().update();
+			app().ui()->update();
 			parent().notify();
 			return;
 		}
@@ -143,7 +144,7 @@ void create_tool_t::close_shape( bool success)
 			std::auto_ptr<undo::add_roto_command_t> cmd( new undo::add_roto_command_t( parent(), new_shape_));
 			cmd->redo();
 			document_t::Instance().undo_stack().push_back( cmd);
-			ui::user_interface_t::Instance().update();
+			app().ui()->update();
 		}
     }
 

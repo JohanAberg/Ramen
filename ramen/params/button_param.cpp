@@ -4,9 +4,11 @@
 
 #include<ramen/params/button_param.hpp>
 
-#include<ramen/params/param_set.hpp>
-
 #include<QPushButton>
+
+#include<ramen/app/application.hpp>
+
+#include<ramen/params/param_set.hpp>
 
 #include<ramen/ui/user_interface.hpp>
 #include<ramen/ui/inspector/inspector.hpp>
@@ -36,12 +38,12 @@ QWidget *button_param_t::do_create_widgets()
 
 	QSize s = button_->sizeHint();
 	
-	button_->move( ui::user_interface_t::Instance().inspector().left_margin(), 0);
+	button_->move( app().ui()->inspector().left_margin(), 0);
 	button_->resize( s.width(), s.height());
 	button_->setEnabled( enabled());
 	button_->setToolTip( id().c_str());
-	top->setMinimumSize( ui::user_interface_t::Instance().inspector().width(), s.height());
-	top->setMaximumSize( ui::user_interface_t::Instance().inspector().width(), s.height());
+	top->setMinimumSize( app().ui()->inspector().width(), s.height());
+	top->setMaximumSize( app().ui()->inspector().width(), s.height());
 	top->setSizePolicy( QSizePolicy::Fixed, QSizePolicy::Fixed);
 	return top;
 }

@@ -45,7 +45,7 @@ flipbook_t::flipbook_t( int frame_rate, const std::string& display_device, const
 	}
 	catch( OCIO::Exception& e)
 	{
-		ui::user_interface_t::Instance().error( e.what());
+		app().ui()->error( e.what());
 		apply_display_transform_ = false;
 	}
 }

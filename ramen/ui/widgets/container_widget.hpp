@@ -5,6 +5,8 @@
 #ifndef RAMEN_UI_CONTAINER_WIDGET_HPP
 #define	RAMEN_UI_CONTAINER_WIDGET_HPP
 
+#include<ramen/ui/widgets/container_widget_fwd.hpp>
+
 #include<QStackedWidget>
 
 namespace ramen

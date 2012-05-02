@@ -4,10 +4,11 @@
 
 #include<ramen/python/python.hpp>
 
-#include<ramen/manipulators/quad_manipulator.hpp>
+#include<ramen/app/application.hpp>
 
 #include<ramen/assert.hpp>
 
+#include<ramen/manipulators/quad_manipulator.hpp>
 #include<ramen/manipulators/draw.hpp>
 #include<ramen/manipulators/pick.hpp>
 
@@ -131,7 +132,7 @@ void quad_manipulator_t::do_mouse_drag_event( const ui::mouse_drag_event_t& even
 	Imath::V2f q = get_absolute_value<Imath::V2f>( *p);
 	p->set_absolute_value( q + offset);
 	p->update_widgets();
-	ui::user_interface_t::Instance().update_anim_editors();
+	app().ui()->update_anim_editors();
 	
 	if( p->track_mouse())
 		p->param_set()->notify_parent();
@@ -146,7 +147,7 @@ void quad_manipulator_t::do_mouse_release_event( const ui::mouse_release_event_t
 	if( event.dragged)
 	{
 		topleft_->param_set()->end_edit( !topleft_->track_mouse());
-		ui::user_interface_t::Instance().update();
+		app().ui()->update();
 	}
 }
 

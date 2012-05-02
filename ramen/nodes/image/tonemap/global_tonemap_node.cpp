@@ -233,7 +233,7 @@ const node_metaclass_t& global_tonemap_node_t::global_tonemap_node_metaclass()
     return info;
 }
 
-static bool registered = node_factory_t::Instance().register_node( global_tonemap_node_t::global_tonemap_node_metaclass());
+static bool registered = node_factory_t::instance().register_node( global_tonemap_node_t::global_tonemap_node_metaclass());
 
 } // namespace
 } // namespace

@@ -46,7 +46,7 @@ const node_metaclass_t& color_bars_node_t::color_bars_node_metaclass()
     return info;
 }
 
-static bool registered = node_factory_t::Instance().register_node( color_bars_node_t::color_bars_node_metaclass());
+static bool registered = node_factory_t::instance().register_node( color_bars_node_t::color_bars_node_metaclass());
 
 } // namespace
 } // namespace

@@ -7,6 +7,8 @@
 #include<boost/filesystem/operations.hpp>
 #include<boost/filesystem/convenience.hpp>
 
+#include<ramen/app/application.hpp>
+
 #include<ramen/flipbook/factory.hpp>
 
 #include<ramen/imageio/factory.hpp>
@@ -56,7 +58,7 @@ void external_flipbook_t::begin_progress()
 {
 	progress_ = new QProgressDialog( "Rendering Flipbook", "Cancel", 0, 
 									 end_ - start_ + 1, 
-									 (QWidget *) ui::user_interface_t::Instance().main_window());
+									 (QWidget *) app().ui()->main_window());
 	
 	progress_->setWindowModality( Qt::ApplicationModal);
 	progress_->setWindowTitle( "Rendering Flipbook");
@@ -71,7 +73,7 @@ void external_flipbook_t::end_progress()
 		progress_->hide();
 		
 		for( int i = 0; i < 5; ++i)
-			ui::user_interface_t::Instance().process_events();
+			app().ui()->process_events();
 		
 		progress_->deleteLater();
 	}
@@ -80,7 +82,7 @@ void external_flipbook_t::end_progress()
 void external_flipbook_t::add_frame( int frame, image::buffer_t pixels)
 {
 	for( int i = 0; i < 5; ++i)
-		ui::user_interface_t::Instance().process_events();
+		app().ui()->process_events();
 	
 	if( progress_->wasCanceled())
 		cancelled();
@@ -93,7 +95,7 @@ void external_flipbook_t::add_frame( int frame, image::buffer_t pixels)
 	progress_->setValue( frame - start_ + 1);
 	
 	for( int i = 0; i < 5; ++i)
-		ui::user_interface_t::Instance().process_events();
+		app().ui()->process_events();
 }
 
 void external_flipbook_t::save_frame( int frame) const
@@ -137,7 +139,7 @@ void external_flipbook_t::play()
 
 void external_flipbook_t::process_error( QProcess::ProcessError)
 {
-	ui::user_interface_t::Instance().error( "Error while launching flipbook");
+	app().ui()->error( "Error while launching flipbook");
 	deleteLater();
 }
 

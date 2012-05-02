@@ -8,6 +8,8 @@
 
 #include<QPainter>
 
+#include<ramen/app/application.hpp>
+
 #include<ramen/nodes/node.hpp>
 
 #include<ramen/ui/user_interface.hpp>
@@ -92,11 +94,11 @@ void draw_generic_node( QPainter& painter, const node_t *n)
 
     painter.setBrush( Qt::NoBrush);
 
-    if( user_interface_t::Instance().active_node() == n)
+    if( app().ui()->active_node() == n)
 		pen.setColor( palette_t::instance().qcolor( "node_active_out"));
     else
     {
-        if( user_interface_t::Instance().context_node() == n)
+        if( app().ui()->context_node() == n)
 			pen.setColor( palette_t::instance().qcolor( "node_context_out"));
         else
 			pen.setColor( palette_t::instance().qcolor( "text"));

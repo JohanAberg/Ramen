@@ -13,6 +13,7 @@
 
 #include<ramen/manipulators/pick.hpp>
 
+#include<ramen/app/application.hpp>
 #include<ramen/app/document.hpp>
 
 #include<ramen/undo/stack.hpp>
@@ -73,7 +74,7 @@ void select_tool_t::key_press_event( const ui::key_press_event_t& event)
 			}
 			
 			document_t::Instance().undo_stack().push_back( cmd);
-			ui::user_interface_t::Instance().update();
+			app().ui()->update();
 			parent().notify();
 		}
 	}
@@ -286,7 +287,7 @@ void select_tool_t::mouse_release_event( const ui::mouse_release_event_t& event)
 					if( selected_->autokey() || !selected_->anim_curve().empty())
 					{
 						selected_->set_shape_key();
-						ui::user_interface_t::Instance().update_anim_editors();
+						app().ui()->update_anim_editors();
 					}
 					
 					document_t::Instance().undo_stack().push_back( cmd_);
@@ -294,7 +295,7 @@ void select_tool_t::mouse_release_event( const ui::mouse_release_event_t& event)
 					if( !selected_->track_mouse())
 						parent().notify();
 					
-					ui::user_interface_t::Instance().update();
+					app().ui()->update();
 				}
 			}
 		}

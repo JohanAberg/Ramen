@@ -77,10 +77,10 @@ void image_viewer_strategy_t::do_begin_active_view()
 {
 	display_transform_changed();
 
-    if( node_t *n = user_interface_t::Instance().active_node())
+    if( node_t *n = app().ui()->active_node())
 		active_connection_ = n->changed.connect( boost::bind( &image_viewer_strategy_t::active_node_changed, this));
 
-    if( node_t *n = user_interface_t::Instance().context_node())
+    if( node_t *n = app().ui()->context_node())
 		context_connection_ = n->changed.connect( boost::bind( &image_viewer_strategy_t::context_node_changed, this));
 	
 	if( toolbar_.get())
@@ -128,7 +128,7 @@ void image_viewer_strategy_t::active_node_changed()
         return;
     }
 
-    if( !user_interface_t::Instance().active_node())
+    if( !app().ui()->active_node())
         return;
 
     if( !parent()->autoupdate())
@@ -167,7 +167,7 @@ void image_viewer_strategy_t::context_node_changed()
     if( parent()->view_mode() != viewer_context_t::view_context_node)
         return;
 
-    if( !user_interface_t::Instance().context_node())
+    if( !app().ui()->context_node())
         return;
 
     if( !parent()->autoupdate())
@@ -191,15 +191,15 @@ void image_viewer_strategy_t::call_node_changed()
 node_t *image_viewer_strategy_t::visible_node()
 {
     if( parent()->view_mode() == viewer_context_t::view_active_node)	
-		return user_interface_t::Instance().active_node();
+		return app().ui()->active_node();
 
-	return user_interface_t::Instance().context_node();	
+	return app().ui()->context_node();
 }
 
 void image_viewer_strategy_t::render_visible_node()
 {
-    node_t *active_node  = user_interface_t::Instance().active_node();
-    node_t *context_node = user_interface_t::Instance().context_node();
+    node_t *active_node  = app().ui()->active_node();
+    node_t *context_node = app().ui()->context_node();
 
     render::context_t context = document_t::Instance().composition().current_context( render::interface_render);
 	context.result_node = visible_node();
@@ -213,7 +213,7 @@ void image_viewer_strategy_t::render_visible_node()
         context.motion_blur_shutter_factor = 0;
 
     render::image_node_renderer_t renderer;
-	boost::unique_future<bool>& future( user_interface_t::Instance().render_image( context, renderer));
+	boost::unique_future<bool>& future( app().ui()->render_image( context, renderer));
 	
     if( future.has_value())
     {
@@ -233,7 +233,7 @@ void image_viewer_strategy_t::render_visible_node()
     {
         // an exception was thrown
         // out of memory, show a dialog here
-        // ui::user_interface_t::Instance().error( "Out of memory");
+        // app().ui()->error( "Out of memory");
     }
 }
 
@@ -469,7 +469,7 @@ void image_viewer_strategy_t::paint()
 	
     if( overlay_)
 	{
-		node_t *active_node  = user_interface_t::Instance().active_node();
+		node_t *active_node  = app().ui()->active_node();
 
 		if( active_node)
 		{
@@ -496,7 +496,7 @@ void image_viewer_strategy_t::enter_event( QEvent *event)
 	
     if( overlay_)
     {
-        node_t *active_node  = user_interface_t::Instance().active_node();
+        node_t *active_node  = app().ui()->active_node();
 
         if( active_node)
             active_node->mouse_enter_event( enter_event_);
@@ -514,7 +514,7 @@ void image_viewer_strategy_t::leave_event( QEvent *event)
 	
     if( overlay_)
     {
-        node_t *active_node  = user_interface_t::Instance().active_node();
+        node_t *active_node  = app().ui()->active_node();
 
         if( active_node)
             active_node->mouse_leave_event( leave_event_);
@@ -572,7 +572,7 @@ void image_viewer_strategy_t::key_press_event( QKeyEvent *event)
 	
 			if( overlay_)
 			{
-				node_t *active_node  = user_interface_t::Instance().active_node();
+				node_t *active_node  = app().ui()->active_node();
 				event_accepted_by_node_ = false;
 	
 				if( active_node)
@@ -608,7 +608,7 @@ void image_viewer_strategy_t::key_release_event( QKeyEvent *event)
 
 			if( overlay_)
 			{
-				node_t *active_node  = user_interface_t::Instance().active_node();
+				node_t *active_node  = app().ui()->active_node();
 	
 				if( active_node && event_accepted_by_node_)
 					active_node->key_release_event( key_release_event_);
@@ -674,7 +674,7 @@ void image_viewer_strategy_t::mouse_press_event( QMouseEvent *event)
 		{
 			if( overlay_)
 			{
-				node_t *active_node  = user_interface_t::Instance().active_node();
+				node_t *active_node  = app().ui()->active_node();
 				event_accepted_by_node_ = false;
 	
 				if( active_node)
@@ -682,7 +682,7 @@ void image_viewer_strategy_t::mouse_press_event( QMouseEvent *event)
 	
 				if( event_accepted_by_node_)
 				{
-					ui::user_interface_t::Instance().begin_interaction();
+					app().ui()->begin_interaction();
 					event->accept();
 					return;
 				}
@@ -711,7 +711,7 @@ void image_viewer_strategy_t::mouse_move_event( QMouseEvent *event)
         s << "X = " << (int) pw.x << " Y = " << (int) pw.y;
         s << " Color = " << col.r << ", " << col.g << ", " << col.b << ", " << col.a;
 
-        viewer_t::Instance().set_status( s.str());
+        app().ui()->viewer().set_status( s.str());
 
         if( parent()->view_mode() == viewer_context_t::view_active_node)
         {
@@ -723,7 +723,7 @@ void image_viewer_strategy_t::mouse_move_event( QMouseEvent *event)
 			move_event_.wpos = pw;
 			move_event_.modifiers = translate_modifiers( event);
 
-            node_t *active_node  = user_interface_t::Instance().active_node();
+            node_t *active_node  = app().ui()->active_node();
 
             if( active_node)
                 active_node->mouse_move_event( move_event_);
@@ -764,7 +764,7 @@ void image_viewer_strategy_t::mouse_move_event( QMouseEvent *event)
 				{
 					if( overlay_)
 					{
-						node_t *active_node  = user_interface_t::Instance().active_node();
+						node_t *active_node  = app().ui()->active_node();
 	
 						if( active_node && event_accepted_by_node_)
 						{
@@ -806,12 +806,12 @@ void image_viewer_strategy_t::mouse_release_event( QMouseEvent *event)
 	{
 	    if( overlay_)
 	    {
-	        node_t *active_node  = user_interface_t::Instance().active_node();
+	        node_t *active_node  = app().ui()->active_node();
 
 	        if( active_node && event_accepted_by_node_)
 	        {
 	            active_node->mouse_release_event( release_event_);
-	            ui::user_interface_t::Instance().end_interaction();
+	            app().ui()->end_interaction();
 				event->accept();
 	        }
 			else

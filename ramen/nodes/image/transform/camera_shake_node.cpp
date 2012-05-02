@@ -122,7 +122,7 @@ camera_shake_node_t::matrix3_type camera_shake_node_t::do_calc_transform_matrix_
     return m;
 }
 
-image_node_t *create_camera_shake_node() { return new camera_shake_node_t();}
+node_t *create_camera_shake_node() { return new camera_shake_node_t();}
 
 const node_metaclass_t *camera_shake_node_t::metaclass() const { return &camera_shake_node_metaclass();}
 
@@ -146,7 +146,7 @@ const node_metaclass_t& camera_shake_node_t::camera_shake_node_metaclass()
     return info;
 }
 
-static bool registered = node_factory_t::Instance().register_node( camera_shake_node_t::camera_shake_node_metaclass());
+static bool registered = node_factory_t::instance().register_node( camera_shake_node_t::camera_shake_node_metaclass());
 
 } // namespace
 } // namespace

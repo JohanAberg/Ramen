@@ -4,6 +4,8 @@
 
 #include<OpenEXR/ImathFun.h>
 
+#include<ramen/app/application.hpp>
+
 #include<ramen/assert.hpp>
 
 #include<ramen/math/constants.hpp>
@@ -129,7 +131,7 @@ void shape_transform_param_t::apply_track( float start_frame, float end_frame, c
 	param_set()->end_edit( true);
 
 	parameterised()->update_widgets();
-	ui::user_interface_t::Instance().update_anim_editors();
+	app().ui()->update_anim_editors();
 }
 
 } // namespace

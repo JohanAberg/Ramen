@@ -17,6 +17,8 @@
 #include<ramen/nodes/image/roto/select_tool.hpp>
 #include<ramen/nodes/image/roto/null_tool.hpp>
 
+#include<ramen/app/application.hpp>
+#include<ramen/ui/user_interface.hpp>
 #include<ramen/ui/viewer/viewer.hpp>
 
 namespace ramen
@@ -26,8 +28,8 @@ namespace roto
 
 toolbar_t::toolbar_t( image::roto_node_t& parent) : parent_( parent), QWidget()
 {
-    setMinimumSize( 0, ui::viewer_t::Instance().toolbar_height());
-    setMaximumSize( QWIDGETSIZE_MAX, ui::viewer_t::Instance().toolbar_height());
+    setMinimumSize( 0, app().ui()->viewer().toolbar_height());
+    setMaximumSize( QWIDGETSIZE_MAX, app().ui()->viewer().toolbar_height());
 
     QHBoxLayout *layout = new QHBoxLayout();
     layout->setContentsMargins( 0, 0, 0, 0);

@@ -17,6 +17,8 @@
 #include<QMenu>
 #include<QAction>
 
+#include<ramen/app/application.hpp>
+
 #include<ramen/anim/keyframe.hpp>
 #include<ramen/anim/track.hpp>
 
@@ -209,11 +211,11 @@ void anim_editor_toolbar_t::selection_changed()
 	smooth_->setEnabled( false);
 	high_pass_->setEnabled( false);
 	
-	if( user_interface_t::Instance().anim_editor().any_keyframe_selected())
+	if( app().ui()->anim_editor().any_keyframe_selected())
 	{
 		reverse_->setEnabled( true);
 		
-		if( user_interface_t::Instance().anim_editor().any_float_keyframe_selected())
+		if( app().ui()->anim_editor().any_float_keyframe_selected())
 		{
 			negate_->setEnabled( true);
 			sample_->setEnabled( true);
@@ -222,7 +224,7 @@ void anim_editor_toolbar_t::selection_changed()
 		}
 	}
 	
-	user_interface_t::Instance().anim_editor().get_selected_keyframe( selected_track_, selected_key_index_);
+	app().ui()->anim_editor().get_selected_keyframe( selected_track_, selected_key_index_);
 	
 	if( selected_track_)
 	{
@@ -245,22 +247,22 @@ void anim_editor_toolbar_t::selection_changed()
 
 void anim_editor_toolbar_t::set_tangents_smooth()
 {
-	user_interface_t::Instance().anim_editor().set_autotangents( anim::keyframe_t::tangent_smooth, true);
+	app().ui()->anim_editor().set_autotangents( anim::keyframe_t::tangent_smooth, true);
 }
 
 void anim_editor_toolbar_t::set_tangents_flat()
 {
-	user_interface_t::Instance().anim_editor().set_autotangents( anim::keyframe_t::tangent_flat, true);
+	app().ui()->anim_editor().set_autotangents( anim::keyframe_t::tangent_flat, true);
 }
 
 void anim_editor_toolbar_t::set_tangents_linear()
 {
-	user_interface_t::Instance().anim_editor().set_autotangents( anim::keyframe_t::tangent_linear, true);
+	app().ui()->anim_editor().set_autotangents( anim::keyframe_t::tangent_linear, true);
 }
 
 void anim_editor_toolbar_t::set_tangents_step()
 {
-	user_interface_t::Instance().anim_editor().set_autotangents( anim::keyframe_t::tangent_step, true);
+	app().ui()->anim_editor().set_autotangents( anim::keyframe_t::tangent_step, true);
 }
 
 void anim_editor_toolbar_t::value_changed( double value)
@@ -275,11 +277,11 @@ void anim_editor_toolbar_t::spinbox_pressed()
 	RAMEN_ASSERT( selected_track_);
 	RAMEN_ASSERT( selected_key_index_ != -1);
 
-	node_t *n = user_interface_t::Instance().active_node();
+	node_t *n = app().ui()->active_node();
 	RAMEN_ASSERT( n);
 	
-	drag_command_ = new undo::drag_keys_command_t( n, user_interface_t::Instance().anim_editor().track_model());
-	user_interface_t::Instance().anim_editor().set_command( drag_command_);
+	drag_command_ = new undo::drag_keys_command_t( n, app().ui()->anim_editor().track_model());
+	app().ui()->anim_editor().set_command( drag_command_);
 }
 
 void anim_editor_toolbar_t::spinbox_dragged( double value)
@@ -302,29 +304,29 @@ void anim_editor_toolbar_t::spinbox_dragged( double value)
 	drag_command_->start_drag( offset, false);
 	drag_command_->drag_curve( selected_track_);
 	drag_command_->end_drag();
-	user_interface_t::Instance().update_anim_editors();
+	app().ui()->update_anim_editors();
 }
 
 void anim_editor_toolbar_t::spinbox_released()
 {
-	user_interface_t::Instance().anim_editor().push_command();
+	app().ui()->anim_editor().push_command();
 	drag_command_ = 0;
-	user_interface_t::Instance().update();
+	app().ui()->update();
 }
 
 void anim_editor_toolbar_t::reverse_selected_keys()
 {
-	user_interface_t::Instance().anim_editor().reverse_keyframes();
+	app().ui()->anim_editor().reverse_keyframes();
 }
 		
 void anim_editor_toolbar_t::negate_selected_keys()
 {
-	user_interface_t::Instance().anim_editor().negate_keyframes();
+	app().ui()->anim_editor().negate_keyframes();
 }
 
 void anim_editor_toolbar_t::sample_selected_keys()
 {
-	user_interface_t::Instance().anim_editor().sample_keyframes();
+	app().ui()->anim_editor().sample_keyframes();
 }
 
 void anim_editor_toolbar_t::smooth_selected_keys()
@@ -333,7 +335,7 @@ void anim_editor_toolbar_t::smooth_selected_keys()
 	bool resample;
 	
 	if( smooth_anim_curves_dialog_t::instance().exec( false, filter_size, resample))
-		user_interface_t::Instance().anim_editor().smooth_keyframes( filter_size, resample);
+		app().ui()->anim_editor().smooth_keyframes( filter_size, resample);
 }
 
 void anim_editor_toolbar_t::high_pass_selected_keys()
@@ -342,7 +344,7 @@ void anim_editor_toolbar_t::high_pass_selected_keys()
 	bool resample;
 	
 	if( smooth_anim_curves_dialog_t::instance().exec( true, filter_size, resample))
-		user_interface_t::Instance().anim_editor().high_pass_keyframes( filter_size, resample);
+		app().ui()->anim_editor().high_pass_keyframes( filter_size, resample);
 }
 
 } // namespace

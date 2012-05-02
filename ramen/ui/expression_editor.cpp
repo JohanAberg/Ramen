@@ -2,6 +2,8 @@
 
 #include<ramen/ui/expression_editor.hpp>
 
+#include<ramen/app/application.hpp>
+
 #include<ramen/python/interpreter.hpp>
 #include<ramen/python/pyside.hpp>
 
@@ -22,7 +24,7 @@ expression_editor_t::expression_editor_t()
 {
 	try
 	{
-		create_expr_editor_ = python::interpreter_t::Instance().eval( "ramen.ui.create_expression_editor");
+		create_expr_editor_ = python::interpreter_t::instance().eval( "ramen.ui.create_expression_editor");
 	}
 	catch( boost::python::error_already_set)
 	{
@@ -38,7 +40,7 @@ void expression_editor_t::show( expressions::se_expression_t& expr, const expres
 		try
 		{
 			create_expr_editor_( boost::python::ptr( &expr), boost::python::ptr( &callbacks),
-								 python::make_pyside_wrapper( reinterpret_cast<QMainWindow*>( ui::user_interface_t::Instance().main_window())));
+								 python::make_pyside_wrapper( reinterpret_cast<QMainWindow*>( app().ui()->main_window())));
 		}
 		catch( boost::python::error_already_set)
 		{

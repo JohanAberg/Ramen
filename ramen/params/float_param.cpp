@@ -6,6 +6,7 @@
 
 #include<boost/bind.hpp>
 
+#include<ramen/app/application.hpp>
 #include<ramen/app/composition.hpp>
 
 #include<ramen/ui/user_interface.hpp>
@@ -123,7 +124,7 @@ void float_param_t::do_format_changed( const Imath::Box2i& new_domain, float asp
 		get_scale_and_offset( scale, offset);
 		curve().set_scale( scale);
 		curve().set_offset( offset);
-		ui::user_interface_t::Instance().update_anim_editors();
+		app().ui()->update_anim_editors();
 	}
 	
 	#ifndef RAMEN_NO_GUI
@@ -228,7 +229,7 @@ void float_param_t::do_enable_widgets( bool e)
 		QSize s = input_->sizeHint();
 	
 		label->move( 0, 0);
-		label->resize( ui::user_interface_t::Instance().inspector().left_margin() - 5, s.height());
+		label->resize( app().ui()->inspector().left_margin() - 5, s.height());
 		label->setAlignment( Qt::AlignRight | Qt::AlignVCenter);
 		label->setText( name().c_str());
 		label->setToolTip( id().c_str());
@@ -244,7 +245,7 @@ void float_param_t::do_enable_widgets( bool e)
 			input_->setValue( relative_to_absolute( get_value<float>( *this)));
 		
 		input_->setSingleStep( step());
-		input_->move( ui::user_interface_t::Instance().inspector().left_margin(), 0);
+		input_->move( app().ui()->inspector().left_margin(), 0);
 		input_->resize( s.width(), s.height());
 		input_->setEnabled( enabled());
 		
@@ -257,8 +258,8 @@ void float_param_t::do_enable_widgets( bool e)
 		connect( input_, SIGNAL( spinBoxReleased()), this, SLOT( spinbox_released()));
 		connect( input_, SIGNAL( expressionSet()), this, SLOT( expression_set()));
 	
-		top->setMinimumSize( ui::user_interface_t::Instance().inspector().width(), s.height());
-		top->setMaximumSize( ui::user_interface_t::Instance().inspector().width(), s.height());
+		top->setMinimumSize( app().ui()->inspector().width(), s.height());
+		top->setMaximumSize( app().ui()->inspector().width(), s.height());
 		top->setSizePolicy( QSizePolicy::Fixed, QSizePolicy::Fixed);
 		return top;
 	}
@@ -273,7 +274,7 @@ void float_param_t::do_enable_widgets( bool e)
 	void float_param_t::spinbox_pressed()
 	{	
 		if( track_mouse())
-			ui::user_interface_t::Instance().begin_interaction();
+			app().ui()->begin_interaction();
 	
 		param_set()->begin_edit();
 	}
@@ -285,9 +286,9 @@ void float_param_t::do_enable_widgets( bool e)
 		if( track_mouse())
 			param_set()->notify_parent();
 		else
-			ui::viewer_t::Instance().update();
+			app().ui()->viewer().update();
 	
-		ui::user_interface_t::Instance().update_anim_editors();
+		app().ui()->update_anim_editors();
 	}
 	
 	void float_param_t::spinbox_released()
@@ -295,7 +296,7 @@ void float_param_t::do_enable_widgets( bool e)
 		param_set()->end_edit( !track_mouse());
 	
 		if( track_mouse())
-			ui::user_interface_t::Instance().end_interaction();
+			app().ui()->end_interaction();
 	}
 	
 	void float_param_t::expression_set()

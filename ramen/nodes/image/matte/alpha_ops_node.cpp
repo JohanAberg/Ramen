@@ -288,7 +288,7 @@ const node_metaclass_t& alpha_ops_node_t::alpha_ops_node_metaclass()
     return info;
 }
 
-static bool registered = node_factory_t::Instance().register_node( alpha_ops_node_t::alpha_ops_node_metaclass());
+static bool registered = node_factory_t::instance().register_node( alpha_ops_node_t::alpha_ops_node_metaclass());
 
 } // namespace
 } // namespace

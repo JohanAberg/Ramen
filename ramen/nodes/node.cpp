@@ -41,9 +41,9 @@ struct frames_needed_less
 	
 } // unnamed
 	
-node_t::node_t() : manipulable_t(), flags_( 0), dependency_count_( 0), composition_( 0) {}
+node_t::node_t() : composite_parameterised_t(), flags_( 0), dependency_count_( 0), composition_( 0) {}
 
-node_t::node_t( const node_t& other) : manipulable_t( other), outputs_( other.outputs_)
+node_t::node_t( const node_t& other) : composite_parameterised_t( other), outputs_( other.outputs_)
 {
     adobe::for_each( outputs_, boost::bind( &node_output_plug_t::set_parent_node, _1, this));
 	dependency_count_ = 0;

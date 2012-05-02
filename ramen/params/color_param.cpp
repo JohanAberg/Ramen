@@ -11,6 +11,8 @@
 
 #include<QLabel>
 
+#include<ramen/app/application.hpp>
+
 #include<ramen/assert.hpp>
 
 #include<ramen/nodes/node.hpp>
@@ -275,13 +277,13 @@ QWidget *color_param_t::do_create_widgets()
     QSize s = input0_->sizeHint();
 
     label->move( 0, 0);
-    label->resize( ui::user_interface_t::Instance().inspector().left_margin() - 5, s.height());
+    label->resize( app().ui()->inspector().left_margin() - 5, s.height());
     label->setAlignment( Qt::AlignRight | Qt::AlignVCenter);
     label->setText( name().c_str());
     label->setToolTip( id().c_str());
     Imath::Color4f col = get_value<Imath::Color4f>( *this);
 
-    int xpos = ui::user_interface_t::Instance().inspector().left_margin();
+    int xpos = app().ui()->inspector().left_margin();
 
     button_->move( xpos, 0);
     button_->resize( s.height(), s.height());
@@ -364,8 +366,8 @@ QWidget *color_param_t::do_create_widgets()
         xpos += s.width() + 3;
     }
 
-    top->setMinimumSize( ui::user_interface_t::Instance().inspector().width(), s.height());
-    top->setMaximumSize( ui::user_interface_t::Instance().inspector().width(), s.height());
+    top->setMinimumSize( app().ui()->inspector().width(), s.height());
+    top->setMaximumSize( app().ui()->inspector().width(), s.height());
     top->setSizePolicy( QSizePolicy::Fixed, QSizePolicy::Fixed);
     return top;
 }
@@ -422,7 +424,7 @@ void color_param_t::value_changed( double value)
 void color_param_t::spinbox_pressed()
 {
     if( track_mouse())
-        ui::user_interface_t::Instance().begin_interaction();
+        app().ui()->begin_interaction();
 
     param_set()->begin_edit();
 }
@@ -434,7 +436,7 @@ void color_param_t::spinbox_dragged( double value)
     if( track_mouse())
         param_set()->notify_parent();
 
-    ui::user_interface_t::Instance().update_anim_editors();
+    app().ui()->update_anim_editors();
 }
 
 void color_param_t::spinbox_released()
@@ -442,7 +444,7 @@ void color_param_t::spinbox_released()
     param_set()->end_edit( !track_mouse());
 
     if( track_mouse())
-        ui::user_interface_t::Instance().end_interaction();
+        app().ui()->end_interaction();
 }
 
 void color_param_t::expression_set()
@@ -466,7 +468,7 @@ void color_param_t::color_button_pressed()
 {
     Imath::Color4f col = get_value<Imath::Color4f>( *this);
     QrColor c( col.r, col.g, col.b);
-    QrColorPicker *picker = new QrColorPicker( ui::user_interface_t::Instance().main_window(), c);
+    QrColorPicker *picker = new QrColorPicker( app().ui()->main_window(), c);
 
     if( picker->exec_dialog() == QDialog::Accepted)
     {

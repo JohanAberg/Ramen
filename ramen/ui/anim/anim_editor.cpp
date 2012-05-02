@@ -27,6 +27,7 @@
 
 #include<ramen/undo/stack.hpp>
 
+#include<ramen/app/application.hpp>
 #include<ramen/app/document.hpp>
 
 #include<ramen/ui/user_interface.hpp>
@@ -165,7 +166,7 @@ void anim_editor_t::set_active_node( node_t *n)
 
     delete sel_model;
 
-    if( !user_interface_t::Instance().quitting())
+    if( !app().ui()->quitting())
 	{
 		toolbar().selection_changed();
         view_->update();
@@ -184,7 +185,7 @@ void anim_editor_t::clear_all()
 
 void anim_editor_t::recreate_tracks( node_t *n)
 {
-    if( n == user_interface_t::Instance().active_node())
+    if( n == app().ui()->active_node())
     {
         set_active_node( 0);
         set_active_node( n);
@@ -224,7 +225,7 @@ void anim_editor_t::show_context_menu( const QPoint& p)
 	// bool any_key = any_keyframe_selected();
 	// copy_keys_->setEnabled( any_key);
 	
-	paste_->setEnabled( !anim::clipboard_t::Instance().empty());
+	paste_->setEnabled( !anim::clipboard_t::instance().empty());
 	import_->setEnabled( false);
 	export_->setEnabled( false);
 
@@ -249,7 +250,7 @@ void anim_editor_t::show_context_menu( const QPoint& p)
 
 void anim_editor_t::update()
 {
-    if( !user_interface_t::Instance().quitting())
+    if( !app().ui()->quitting())
     {
         // update controls here.
         tree_->update();
@@ -345,7 +346,7 @@ void anim_editor_t::get_selected_keyframe( anim::track_t*& track, int& key_index
 // undo
 void anim_editor_t::create_command()
 {
-	node_t *n = user_interface_t::Instance().active_node();
+	node_t *n = app().ui()->active_node();
 	RAMEN_ASSERT( n);
 
     command_.reset( new undo::anim_editor_command_t( n, current_));
@@ -354,7 +355,7 @@ void anim_editor_t::create_command()
 void anim_editor_t::set_command( undo::anim_editor_command_t *command)
 {
 	RAMEN_ASSERT( command_.get() == 0);
-	RAMEN_ASSERT( user_interface_t::Instance().active_node());
+	RAMEN_ASSERT( app().ui()->active_node());
 
 	command_.reset( command);
 }
@@ -366,7 +367,7 @@ void anim_editor_t::push_command()
 		if( !command_->empty())
 		{
 			document_t::Instance().undo_stack().push_back( command_);
-			ui::user_interface_t::Instance().update();
+			app().ui()->update();
 		}
 		else
 			clear_command();
@@ -377,7 +378,7 @@ void anim_editor_t::clear_command() { command_.reset();}
 
 void anim_editor_t::delete_selected_keyframes()
 {
-	if( user_interface_t::Instance().anim_editor().any_keyframe_selected())
+	if( app().ui()->anim_editor().any_keyframe_selected())
 	{
 		create_command();
 		
@@ -397,14 +398,14 @@ void anim_editor_t::delete_selected_keyframes()
 		command()->notify_nodes();
 		push_command();
 		toolbar().selection_changed();
-		user_interface_t::Instance().update();
+		app().ui()->update();
 		update();
 	}
 }
 
 void anim_editor_t::set_autotangents( anim::keyframe_t::auto_tangent_method m, bool selected_only)
 {
-	if( selected_only && !user_interface_t::Instance().anim_editor().any_keyframe_selected())
+	if( selected_only && !app().ui()->anim_editor().any_keyframe_selected())
 		return;
 
 	create_command();
@@ -431,7 +432,7 @@ void anim_editor_t::set_autotangents( anim::keyframe_t::auto_tangent_method m, b
 	command()->call_notify_for_tracks();
 	command()->notify_nodes();		
 	push_command();
-	user_interface_t::Instance().update();
+	app().ui()->update();
 	update();
 }
 
@@ -458,7 +459,7 @@ void anim_editor_t::set_extrapolation( anim::extrapolation_method m)
 	command()->call_notify_for_tracks();
 	command()->notify_nodes();
 	push_command();
-	user_interface_t::Instance().update();
+	app().ui()->update();
 	update();
 }
 
@@ -481,7 +482,7 @@ void anim_editor_t::reverse_keyframes()
 	command()->call_notify_for_tracks();
 	command()->notify_nodes();
 	push_command();
-	user_interface_t::Instance().update();
+	app().ui()->update();
 	update();
 }
 
@@ -504,7 +505,7 @@ void anim_editor_t::negate_keyframes()
 	command()->call_notify_for_tracks();
 	command()->notify_nodes();
 	push_command();
-	user_interface_t::Instance().update();
+	app().ui()->update();
 	update();
 }
 
@@ -527,7 +528,7 @@ void anim_editor_t::sample_keyframes()
 	command()->call_notify_for_tracks();
 	command()->notify_nodes();
 	push_command();
-	user_interface_t::Instance().update();
+	app().ui()->update();
 	update();
 }
 
@@ -550,7 +551,7 @@ void anim_editor_t::smooth_keyframes( float filter_size, bool resample)
 	command()->call_notify_for_tracks();
 	command()->notify_nodes();
 	push_command();
-	user_interface_t::Instance().update();
+	app().ui()->update();
 	update();
 }
 
@@ -573,7 +574,7 @@ void anim_editor_t::high_pass_keyframes( float filter_size, bool resample)
 	command()->call_notify_for_tracks();
 	command()->notify_nodes();
 	push_command();
-	user_interface_t::Instance().update();
+	app().ui()->update();
 	update();
 }
 
@@ -604,14 +605,14 @@ void anim_editor_t::copy_curves()
 	if( active_tracks().empty())
 		return;
 	
-	anim::clipboard_t::Instance().begin_copy();
+	anim::clipboard_t::instance().begin_copy();
 	
 	BOOST_FOREACH( anim::track_t *t, active_tracks())
 	{
-		anim::clipboard_t::Instance().copy_curve( t->curve_name(), t->curve().get());
+		anim::clipboard_t::instance().copy_curve( t->curve_name(), t->curve().get());
 	}
 
-	anim::clipboard_t::Instance().end_copy();
+	anim::clipboard_t::instance().end_copy();
 }
 
 void anim_editor_t::copy_keyframes()
@@ -619,19 +620,19 @@ void anim_editor_t::copy_keyframes()
 	if( active_tracks().empty() || !any_keyframe_selected())
 		return;
 
-	anim::clipboard_t::Instance().begin_copy();
+	anim::clipboard_t::instance().begin_copy();
 	
 	BOOST_FOREACH( anim::track_t *t, active_tracks())
 	{
-		anim::clipboard_t::Instance().copy_keys( t->curve_name(), t->curve().get());
+		anim::clipboard_t::instance().copy_keys( t->curve_name(), t->curve().get());
 	}
 
-	anim::clipboard_t::Instance().end_copy();
+	anim::clipboard_t::instance().end_copy();
 }
 
 void anim_editor_t::paste()
 {
-	if( active_tracks().empty() || anim::clipboard_t::Instance().empty())
+	if( active_tracks().empty() || anim::clipboard_t::instance().empty())
 		return;
 	
 	create_command();
@@ -642,17 +643,17 @@ void anim_editor_t::paste()
 	{
 		anim::any_curve_ptr_t& c( t->curve().get());
 			
-		if( anim::clipboard_t::Instance().can_paste( t->curve_name(), c))
+		if( anim::clipboard_t::instance().can_paste( t->curve_name(), c))
 		{
 			command()->add_track( t);
-			anim::clipboard_t::Instance().paste( t->curve_name(), c, frame);
+			anim::clipboard_t::instance().paste( t->curve_name(), c, frame);
 		}
 	}
 
 	command()->call_notify_for_tracks();
 	command()->notify_nodes();
 	push_command();
-	user_interface_t::Instance().update();
+	app().ui()->update();
 	update();
 }
 

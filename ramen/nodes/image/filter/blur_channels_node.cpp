@@ -185,7 +185,7 @@ const node_metaclass_t& blur_channels_node_t::blur_channels_node_metaclass()
     return info;
 }
 
-static bool registered = node_factory_t::Instance().register_node( blur_channels_node_t::blur_channels_node_metaclass());
+static bool registered = node_factory_t::instance().register_node( blur_channels_node_t::blur_channels_node_metaclass());
 
 } // namespace
 } // namespace

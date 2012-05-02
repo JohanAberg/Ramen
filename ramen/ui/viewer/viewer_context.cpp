@@ -70,9 +70,9 @@ void viewer_context_t::set_view_mode( view_mode_t m)
         view_mode_ = m;
 
         if( view_mode_ == view_active_node)
-            set_strategy_for_node( user_interface_t::Instance().active_node());
+            set_strategy_for_node( app().ui()->active_node());
         else
-            set_strategy_for_node( user_interface_t::Instance().context_node());
+            set_strategy_for_node( app().ui()->context_node());
 
         strategy().view_mode_changed();
         update();
@@ -159,7 +159,7 @@ void viewer_context_t::set_strategy( strategy_iterator it)
 {
     strategy().end_active_view();
     it->begin_active_view();
-    viewer_t::Instance().set_viewer_toolbar( it->toolbar());
+    app().ui()->viewer().set_viewer_toolbar( it->toolbar());
     current_ = it;
 }
 
@@ -187,11 +187,11 @@ std::pair<std::string, std::string>  viewer_context_t::get_context_pair( int ind
 
 boost::shared_ptr<ocio::gl_lut3d_t>& viewer_context_t::display_lut() { return display_lut_;}
 
-const std::string& viewer_context_t::display_device() const		{ return viewer_t::Instance().display_device();}
-const std::string& viewer_context_t::display_transform() const	{ return viewer_t::Instance().display_transform();}
+const std::string& viewer_context_t::display_device() const		{ return app().ui()->viewer().display_device();}
+const std::string& viewer_context_t::display_transform() const	{ return app().ui()->viewer().display_transform();}
 
-float viewer_context_t::exposure() const	{ return viewer_t::Instance().exposure();}
-float viewer_context_t::gamma() const		{ return viewer_t::Instance().gamma();}
+float viewer_context_t::exposure() const	{ return app().ui()->viewer().exposure();}
+float viewer_context_t::gamma() const		{ return app().ui()->viewer().gamma();}
 
 void viewer_context_t::display_transform_changed()	{ strategy().display_transform_changed();}
 

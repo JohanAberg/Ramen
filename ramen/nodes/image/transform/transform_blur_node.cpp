@@ -210,6 +210,6 @@ const node_metaclass_t& transform_blur_node_t::transform_blur_node_metaclass()
     return info;
 }
 
-static bool registered = node_factory_t::Instance().register_node( transform_blur_node_t::transform_blur_node_metaclass());
+static bool registered = node_factory_t::instance().register_node( transform_blur_node_t::transform_blur_node_metaclass());
 
 } // namespace

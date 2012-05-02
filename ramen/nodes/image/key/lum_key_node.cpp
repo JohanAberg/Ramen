@@ -168,7 +168,7 @@ const node_metaclass_t& lum_key_node_t::lum_key_node_metaclass()
     return info;
 }
 
-static bool registered = node_factory_t::Instance().register_node( lum_key_node_t::lum_key_node_metaclass());
+static bool registered = node_factory_t::instance().register_node( lum_key_node_t::lum_key_node_metaclass());
 
 } // namespace
 } // namespace

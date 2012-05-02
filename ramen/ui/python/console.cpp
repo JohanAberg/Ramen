@@ -11,6 +11,8 @@
 #include<QPlainTextEdit>
 #include<QPushButton>
 
+#include<ramen/app/application.hpp>
+
 #include<ramen/ui/user_interface.hpp>
 
 #include<ramen/python/interpreter.hpp>
@@ -29,14 +31,20 @@ class output_redirector
 public:
 
     output_redirector() {}
-    void write( const std::string& str) { console_t::Instance().write( str);}
+    void write( const std::string& str) { console_t::instance().write( str);}
 };
 
 output_redirector out_to_console;
 
 } // unnamed
 
-console_impl::console_impl() : window_(0)
+console_t& console_t::instance()
+{
+    static console_t c;
+    return c;
+}
+
+console_t::console_t() : window_(0)
 {
     window_ = new QWidget();
     window_->setWindowTitle( "Python Console");
@@ -44,7 +52,7 @@ console_impl::console_impl() : window_(0)
     QVBoxLayout *layout = new QVBoxLayout();
 
     output_ = new QPlainTextEdit();
-	output_->setFont( ui::user_interface_t::Instance().get_fixed_width_code_font());
+	output_->setFont( app().ui()->get_fixed_width_code_font());
     output_->setReadOnly( true);
     output_->setTabStopWidth( 4);
     layout->addWidget( output_);
@@ -64,7 +72,7 @@ console_impl::console_impl() : window_(0)
 
     out_to_console = output_redirector();
 
-    ramen::python::interpreter_t::Instance().main_namespace()["output_redirector"] =
+    ramen::python::interpreter_t::instance().main_namespace()["output_redirector"] =
 	    boost::python::class_<output_redirector>( "output_redirector", boost::python::init<>())
 			.def( "write", &output_redirector::write);
 
@@ -72,11 +80,11 @@ console_impl::console_impl() : window_(0)
     boost::python::import( "sys").attr( "stdout") = out_to_console;
 }
 
-console_impl::~console_impl() { window_->deleteLater();}
+console_t::~console_t() { window_->deleteLater();}
 
-void console_impl::clear() { output_area()->clear();}
+void console_t::clear() { output_area()->clear();}
 
-void console_impl::write( const std::string& str)
+void console_t::write( const std::string& str)
 {
     output_area()->insertPlainText( QString::fromStdString( str));
     output_area()->update();

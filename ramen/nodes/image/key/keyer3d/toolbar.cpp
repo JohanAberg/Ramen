@@ -10,12 +10,14 @@
 #include<QFrame>
 #include<QButtonGroup>
 
+#include<ramen/app/application.hpp>
+#include<ramen/ui/user_interface.hpp>
+#include<ramen/ui/viewer/viewer.hpp>
+
 #include<ramen/nodes/image/key/keyer3d/keyer3d_node.hpp>
 #include<ramen/nodes/image/key/keyer3d/sample_tool.hpp>
 #include<ramen/nodes/image/key/keyer3d/softness_tool.hpp>
 #include<ramen/nodes/image/key/keyer3d/tolerance_tool.hpp>
-
-#include<ramen/ui/viewer/viewer.hpp>
 
 namespace ramen
 {
@@ -24,8 +26,8 @@ namespace keyer3d
 
 toolbar_t::toolbar_t( image::keyer3d_node_t& parent) : parent_( parent), QWidget()
 {
-    setMinimumSize( 0, ui::viewer_t::Instance().toolbar_height());
-    setMaximumSize( QWIDGETSIZE_MAX, ui::viewer_t::Instance().toolbar_height());
+    setMinimumSize( 0, app().ui()->viewer().toolbar_height());
+    setMaximumSize( QWIDGETSIZE_MAX, app().ui()->viewer().toolbar_height());
 
     QHBoxLayout *layout = new QHBoxLayout();
     layout->setContentsMargins( 0, 0, 0, 0);

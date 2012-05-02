@@ -16,6 +16,7 @@
 #include<ramen/anim/track.hpp>
 #include<ramen/anim/clipboard.hpp>
 
+#include<ramen/app/application.hpp>
 #include<ramen/app/composition.hpp>
 
 #include<ramen/ui/user_interface.hpp>
@@ -187,7 +188,7 @@ void animated_param_t::set_key( int curve_index)
 		curve( curve_index).insert( composition()->frame());
 
     param_set()->end_edit( true);
-    ui::user_interface_t::Instance().update_anim_editors();
+    app().ui()->update_anim_editors();
 }
 
 void animated_param_t::delete_key( int curve_index, float time)
@@ -201,7 +202,7 @@ void animated_param_t::delete_key( int curve_index, float time)
 	curve( curve_index).recalc_tangents_and_coefficients();
 
     param_set()->end_edit( true);
-    ui::user_interface_t::Instance().update_anim_editors();
+    app().ui()->update_anim_editors();
 }
 
 void animated_param_t::delete_all_keys( int curve_index)
@@ -214,7 +215,7 @@ void animated_param_t::delete_all_keys( int curve_index)
 	curve( curve_index).clear();
 
     param_set()->end_edit( true);
-    ui::user_interface_t::Instance().update_anim_editors();
+    app().ui()->update_anim_editors();
 }
 
 void animated_param_t::paste( int curve_index)
@@ -225,12 +226,12 @@ void animated_param_t::paste( int curve_index)
 		param_set()->add_command( this);
 
 	curve( curve_index).clear();
-	anim::clipboard_t::Instance().paste( curve( curve_index));
+	anim::clipboard_t::instance().paste( curve( curve_index));
     param_set()->end_edit( true);
 	
 	evaluate( composition()->frame());
 	update_widgets();
-    ui::user_interface_t::Instance().update_anim_editors();
+    app().ui()->update_anim_editors();
 }
 
 bool animated_param_t::all_curves_empty() const

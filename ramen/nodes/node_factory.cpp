@@ -36,6 +36,12 @@ bool check_node_class( const std::string& c)
 
 } // unnamed
 
+node_factory_t& node_factory_t::instance()
+{
+    static node_factory_t f;
+    return f;
+}
+
 node_factory_t::node_factory_t() {}
 
 node_factory_t::~node_factory_t()
@@ -45,12 +51,6 @@ node_factory_t::~node_factory_t()
 		if( !metaclasses_[i].first_time_ && metaclasses_[i].cleanup)
 			metaclasses_[i].cleanup();
 	}
-}
-
-node_factory_t& node_factory_t::Instance()
-{
-    static node_factory_t f;
-    return f;
 }
 
 bool node_factory_t::register_node( const node_metaclass_t& m)

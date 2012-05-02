@@ -218,7 +218,7 @@ void alpha_layer_node_t::do_process_mult_min_mix( const render::context_t& conte
 }
 
 // factory
-image_node_t *create_alpha_layer_node() { return new alpha_layer_node_t();}
+node_t *create_alpha_layer_node() { return new alpha_layer_node_t();}
 
 const node_metaclass_t *alpha_layer_node_t::metaclass() const { return &alpha_layer_node_metaclass();}
 
@@ -242,7 +242,7 @@ const node_metaclass_t& alpha_layer_node_t::alpha_layer_node_metaclass()
     return info;
 }
 
-static bool registered = node_factory_t::Instance().register_node( alpha_layer_node_t::alpha_layer_node_metaclass());
+static bool registered = node_factory_t::instance().register_node( alpha_layer_node_t::alpha_layer_node_metaclass());
 
 } // namespace
 } // namespace

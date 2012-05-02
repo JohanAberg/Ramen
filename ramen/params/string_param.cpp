@@ -6,6 +6,8 @@
 
 #include<QLabel>
 
+#include<ramen/app/application.hpp>
+
 #include<ramen/ui/user_interface.hpp>
 #include<ramen/ui/inspector/inspector.hpp>
 #include<ramen/ui/widgets/line_edit.hpp>
@@ -141,7 +143,7 @@ void string_param_t::do_enable_widgets( bool e)
 		delete tmp;
 	
 		label->move( 0, 0);
-		label->resize( ui::user_interface_t::Instance().inspector().left_margin() - 5, s.height());
+		label->resize( app().ui()->inspector().left_margin() - 5, s.height());
 		label->setAlignment( Qt::AlignRight | Qt::AlignVCenter);
 		label->setText( name().c_str());
 		label->setToolTip( id().c_str());
@@ -153,8 +155,8 @@ void string_param_t::do_enable_widgets( bool e)
 		{
 			multi_input_ = new ui::text_edit_t( top);
 			multi_input_->setReadOnly( read_only_);
-			multi_input_->move( ui::user_interface_t::Instance().inspector().left_margin(), 0);
-			multi_input_->resize( ui::user_interface_t::Instance().inspector().width() - ui::user_interface_t::Instance().inspector().left_margin() - 10, s.height() * 7);
+			multi_input_->move( app().ui()->inspector().left_margin(), 0);
+			multi_input_->resize( app().ui()->inspector().width() - app().ui()->inspector().left_margin() - 10, s.height() * 7);
 			multi_input_->setEnabled( enabled());		
 			multi_input_->setPlainText( str.c_str());
 			connect( multi_input_, SIGNAL( textHasChanged()), this, SLOT( text_changed()));
@@ -164,16 +166,16 @@ void string_param_t::do_enable_widgets( bool e)
 		{
 			input_ = new ui::line_edit_t( top);
 			input_->setReadOnly( read_only_);	
-			input_->move( ui::user_interface_t::Instance().inspector().left_margin(), 0);
-			input_->resize( ui::user_interface_t::Instance().inspector().width() - ui::user_interface_t::Instance().inspector().left_margin() - 10, s.height());
+			input_->move( app().ui()->inspector().left_margin(), 0);
+			input_->resize( app().ui()->inspector().width() - app().ui()->inspector().left_margin() - 10, s.height());
 			input_->setEnabled( enabled());		
 			input_->setText( str.c_str());
 			connect( input_, SIGNAL( editingFinished()), this, SLOT( text_changed()));
 			height = s.height();
 		}
 	
-		top->setMinimumSize( ui::user_interface_t::Instance().inspector().width(), height);
-		top->setMaximumSize( ui::user_interface_t::Instance().inspector().width(), height);
+		top->setMinimumSize( app().ui()->inspector().width(), height);
+		top->setMaximumSize( app().ui()->inspector().width(), height);
 		top->setSizePolicy( QSizePolicy::Fixed, QSizePolicy::Fixed);
 		return top;	
 	}

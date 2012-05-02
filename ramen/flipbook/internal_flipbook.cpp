@@ -22,6 +22,8 @@
 
 #include<ramen/GL/glu.hpp>
 
+#include<ramen/app/application.hpp>
+
 #include<ramen/ui/user_interface.hpp>
 
 namespace ramen
@@ -230,7 +232,7 @@ void internal_flipbook_t::write_exr( Imf::OStream& os, Imf::Header& header, cons
 
 void internal_flipbook_t::fatal_gl_error( const QString& message) const
 {
-    QMessageBox::warning( (QWidget *) ui::user_interface_t::Instance().main_window(),
+    QMessageBox::warning( (QWidget *) app().ui()->main_window(),
 			 "OpenGL error", message);
     exit( 0);
 }

@@ -4,15 +4,17 @@
 
 #include<boost/filesystem/operations.hpp>
 
-#include<ramen/params/param_set.hpp>
-#include<ramen/app/document.hpp>
-
 #include<QPushButton>
 #include<QFileDialog>
 #include<QGridLayout>
 #include<QHBoxLayout>
 #include<QCheckBox>
 #include<QLabel>
+
+#include<ramen/app/application.hpp>
+#include<ramen/app/document.hpp>
+
+#include<ramen/params/param_set.hpp>
 
 #include<ramen/ui/user_interface.hpp>
 #include<ramen/ui/inspector/inspector.hpp>
@@ -198,19 +200,19 @@ void file_param_t::make_paths_relative()
 		QSize s = input_->sizeHint();
 	
 		label->move( 0, 0);
-		label->resize( ui::user_interface_t::Instance().inspector().left_margin() - 5, s.height());
+		label->resize( app().ui()->inspector().left_margin() - 5, s.height());
 		label->setAlignment( Qt::AlignRight | Qt::AlignVCenter);
 		label->setText( name().c_str());
 		label->setToolTip( id().c_str());
 		
-		button_->move( ui::user_interface_t::Instance().inspector().width() - s.height() - 10, 0);
+		button_->move( app().ui()->inspector().width() - s.height() - 10, 0);
 		button_->resize( s.height(), s.height());
 		button_->setText( "...");
 		button_->setEnabled( enabled());
 		connect( button_, SIGNAL( clicked()), this, SLOT( select_pushed()));
 	
-		input_->move( ui::user_interface_t::Instance().inspector().left_margin(), 0);
-		input_->resize( ui::user_interface_t::Instance().inspector().width() - ui::user_interface_t::Instance().inspector().left_margin()
+		input_->move( app().ui()->inspector().left_margin(), 0);
+		input_->resize( app().ui()->inspector().width() - app().ui()->inspector().left_margin()
 						- button_->width() - 10, s.height());
 	
 		if( is_input_)
@@ -222,8 +224,8 @@ void file_param_t::make_paths_relative()
 	
 		connect( input_, SIGNAL( editingFinished()), this, SLOT( text_changed()));
 	
-		top->setMinimumSize( ui::user_interface_t::Instance().inspector().width(), s.height());
-		top->setMaximumSize( ui::user_interface_t::Instance().inspector().width(), s.height());
+		top->setMinimumSize( app().ui()->inspector().width(), s.height());
+		top->setMaximumSize( app().ui()->inspector().width(), s.height());
 		top->setSizePolicy( QSizePolicy::Fixed, QSizePolicy::Fixed);
 		return top;
 	}

@@ -5,7 +5,7 @@
 
 #include<ramen/nodes/image/roto/shape_fwd.hpp>
 
-#include<ramen/manipulators/manipulable.hpp>
+#include<ramen/params/parameterised.hpp>
 
 #include<vector>
 #include<iterator>
@@ -35,7 +35,7 @@ namespace ramen
 namespace roto
 {
 
-class shape_t : public manipulable_t, public boost::intrusive::list_base_hook<>
+class shape_t : public parameterised_t, public boost::intrusive::list_base_hook<>
 {
 public:
 	

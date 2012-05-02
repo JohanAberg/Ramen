@@ -134,7 +134,7 @@ const node_metaclass_t& colorx_node_t::colorx_node_metaclass()
     return info;
 }
 
-static bool registered = node_factory_t::Instance().register_node( colorx_node_t::colorx_node_metaclass());
+static bool registered = node_factory_t::instance().register_node( colorx_node_t::colorx_node_metaclass());
 
 } // namespace
 } // namespace

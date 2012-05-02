@@ -10,6 +10,7 @@
 
 #include<boost/foreach.hpp>
 
+#include<ramen/app/application.hpp>
 #include<ramen/app/document.hpp>
 
 #include<ramen/serialization/yaml_oarchive.hpp>
@@ -57,7 +58,7 @@ void export_selected_nodes( const boost::filesystem::path& p)
 	}
 	catch( std::exception& e)
 	{
-		ui::user_interface_t::Instance().error( std::string( "Couldn't save file. Exception, what = ") + e.what());
+		app().ui()->error( std::string( "Couldn't save file. Exception, what = ") + e.what());
 	}
 }
 

@@ -12,8 +12,6 @@
 #include<boost/noncopyable.hpp>
 #include<boost/shared_ptr.hpp>
 
-#include<loki/Singleton.h>
-
 #include<ramen/anim/any_curve.hpp>
 
 #include<ramen/util/edit_distance.hpp>
@@ -23,11 +21,13 @@ namespace ramen
 namespace anim
 {
 	
-class clipboard_impl : boost::noncopyable
+class clipboard_t : boost::noncopyable
 {
 public:
 
 	typedef std::pair<std::string, boost::shared_ptr<any_curve_t> > named_curve_type;
+
+    static clipboard_t& instance();
 
 	bool empty() const;
 	void clear();
@@ -49,10 +49,8 @@ public:
 
 private:
 
-    friend struct Loki::CreateUsingNew<clipboard_impl>;
-
-    clipboard_impl();
-	~clipboard_impl();
+    clipboard_t();
+	~clipboard_t();
 
 	int find_compatible_curve( const std::string& name, const anim::any_curve_ptr_t& c);
 
@@ -62,8 +60,6 @@ private:
 	
 	edit_distance_t distance_fun_;
 };
-
-typedef Loki::SingletonHolder<clipboard_impl> clipboard_t;
 
 } // namespace
 } // namespace

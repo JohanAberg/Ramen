@@ -19,6 +19,10 @@
 namespace ramen
 {
 
+/**
+\ingroup nodes
+\brief A collection of nodes and connections between them.
+*/
 class node_graph_t
 {
 public:

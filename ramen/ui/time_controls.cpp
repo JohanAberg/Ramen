@@ -13,6 +13,7 @@
 #include<QMouseEvent>
 #include<QKeyEvent>
 
+#include<ramen/app/application.hpp>
 #include<ramen/app/document.hpp>
 
 #include<ramen/nodes/image_node.hpp>
@@ -119,7 +120,7 @@ time_controls_t::time_controls_t() : window_(0), stop_playing_( true)
 
 int time_controls_t::width() const
 { 
-    return user_interface_t::Instance().inspector().widget()->width();
+    return app().ui()->inspector().widget()->width();
 }
 
 int time_controls_t::height() const { return 64;}
@@ -159,17 +160,17 @@ void time_controls_t::update()
 
 void time_controls_t::goto_start()
 {
-    user_interface_t::Instance().set_frame( user_interface_t::Instance().start_frame());
+    app().ui()->set_frame( app().ui()->start_frame());
 }
 
 void time_controls_t::prev_frame()
 {
-    int frame = user_interface_t::Instance().frame() - 1;
+    int frame = app().ui()->frame() - 1;
 
-    if( frame < user_interface_t::Instance().start_frame())
-        frame = user_interface_t::Instance().start_frame();
+    if( frame < app().ui()->start_frame())
+        frame = app().ui()->start_frame();
 
-    user_interface_t::Instance().set_frame( frame);
+    app().ui()->set_frame( frame);
 }
 
 void time_controls_t::prev_key() {}
@@ -186,12 +187,12 @@ void time_controls_t::play_back()
 
     while( !stop_playing_)
     {
-        int frame = user_interface_t::Instance().frame() - 1;
+        int frame = app().ui()->frame() - 1;
 
-        if( frame < user_interface_t::Instance().start_frame())
-            frame = user_interface_t::Instance().end_frame();
+        if( frame < app().ui()->start_frame())
+            frame = app().ui()->end_frame();
 
-        user_interface_t::Instance().set_frame( frame);
+        app().ui()->set_frame( frame);
         qApp->processEvents();
     }
 }
@@ -208,12 +209,12 @@ void time_controls_t::play_fwd()
 
     while( !stop_playing_)
     {
-        int frame = user_interface_t::Instance().frame() + 1;
+        int frame = app().ui()->frame() + 1;
 
-        if( frame > user_interface_t::Instance().end_frame())
-            frame = user_interface_t::Instance().start_frame();
+        if( frame > app().ui()->end_frame())
+            frame = app().ui()->start_frame();
 
-        user_interface_t::Instance().set_frame( frame);
+        app().ui()->set_frame( frame);
         qApp->processEvents();
     }
 }
@@ -222,17 +223,17 @@ void time_controls_t::next_key() {}
 
 void time_controls_t::next_frame()
 {
-    int frame = user_interface_t::Instance().frame() + 1;
+    int frame = app().ui()->frame() + 1;
 
-    if( frame > user_interface_t::Instance().end_frame())
-	frame = user_interface_t::Instance().end_frame();
+    if( frame > app().ui()->end_frame())
+	frame = app().ui()->end_frame();
 
-    user_interface_t::Instance().set_frame( frame);
+    app().ui()->set_frame( frame);
 }
 
 void time_controls_t::goto_end()
 {
-    user_interface_t::Instance().set_frame( user_interface_t::Instance().end_frame());
+    app().ui()->set_frame( app().ui()->end_frame());
 }
 
 void time_controls_t::stop_playing()
@@ -268,7 +269,7 @@ void time_controls_t::make_flipbook()
 	float mb_shutter_factor = 0;
 	
 	const viewer::image_viewer_strategy_t *s = 0;
-	if( s = dynamic_cast<const viewer::image_viewer_strategy_t*>( &viewer_t::Instance().current_viewer()))
+	if( s = dynamic_cast<const viewer::image_viewer_strategy_t*>( &app().ui()->viewer().current_viewer()))
 	{
 		subsample = s->subsample();
 		
@@ -276,8 +277,8 @@ void time_controls_t::make_flipbook()
 			mb_shutter_factor = 1;
 	}
 
-    std::string display_device = viewer_t::Instance().display_device();
-	std::string display_transform = viewer_t::Instance().display_transform();
+    std::string display_device = app().ui()->viewer().display_device();
+	std::string display_transform = app().ui()->viewer().display_transform();
 
 	flipbook::flipbook_t *flip = flipbook::factory_t::instance().create( frame_rate, display_device, display_transform);
 

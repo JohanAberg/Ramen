@@ -17,7 +17,7 @@
 
 #include<QWidget>
 
-#include<ramen/manipulators/manipulable.hpp>
+#include<ramen/params/composite_parameterised.hpp>
 
 #include<ramen/app/composition_fwd.hpp>
 
@@ -35,7 +35,11 @@
 namespace ramen
 {
 
-class RAMEN_API node_t : public manipulable_t
+/*!
+\ingroup nodes
+\brief A node in Ramen's processing graph.
+*/
+class RAMEN_API node_t : public composite_parameterised_t
 {
 public:
 

@@ -30,7 +30,13 @@ namespace ramen
 namespace python
 {
 
-interpreter_impl::interpreter_impl()
+interpreter_t& interpreter_t::instance()
+{
+    static interpreter_t i;
+    return i;
+}
+
+interpreter_t::interpreter_t()
 {
     PyImport_AppendInittab(( char *) "_ramen", &init_ramen);
     Py_Initialize();
@@ -55,27 +61,27 @@ interpreter_impl::interpreter_impl()
     exec_file( app().system().home_path() / "ramen/python/init.py");
 }
 
-bpy::object interpreter_impl::exec( const std::string& cmd)
+bpy::object interpreter_t::exec( const std::string& cmd)
 {
     return bpy::exec( bpy::str( cmd.c_str()), main_namespace_, main_namespace_);
 }
 
-boost::python::object interpreter_impl::exec( const std::string& cmd, boost::python::object global, boost::python::object local)
+boost::python::object interpreter_t::exec( const std::string& cmd, boost::python::object global, boost::python::object local)
 {
     return bpy::exec( bpy::str( cmd.c_str()), global, local);
 }
 
-bpy::object interpreter_impl::eval( const std::string& expr)
+bpy::object interpreter_t::eval( const std::string& expr)
 {
     return bpy::eval( bpy::str( expr.c_str()), main_namespace_, main_namespace_);
 }
 
-boost::python::object interpreter_impl::eval( const std::string& expr, boost::python::object global, boost::python::object local)
+boost::python::object interpreter_t::eval( const std::string& expr, boost::python::object global, boost::python::object local)
 {
     return bpy::eval( bpy::str( expr.c_str()), global, local);
 }
 
-bpy::object interpreter_impl::exec_file( const boost::filesystem::path& p)
+bpy::object interpreter_t::exec_file( const boost::filesystem::path& p)
 {
     if( boost::filesystem::exists( p))
 		return bpy::exec_file( bpy::str( filesystem::file_cstring( p)), main_namespace_, main_namespace_);
@@ -83,7 +89,7 @@ bpy::object interpreter_impl::exec_file( const boost::filesystem::path& p)
     return bpy::object();
 }
 
-void interpreter_impl::setup_python_paths( boost::python::object name_space)
+void interpreter_t::setup_python_paths( boost::python::object name_space)
 {
     bfs::path exec_path = app().system().executable_path();
     bfs::path py_path = exec_path.parent_path() / "../python";
@@ -95,7 +101,7 @@ void interpreter_impl::setup_python_paths( boost::python::object name_space)
     exec( cmd.str(), name_space, name_space);
 }
 
-void interpreter_impl::add_path_to_sys_cmd( std::stringstream& cmd, const boost::filesystem::path& p) const
+void interpreter_t::add_path_to_sys_cmd( std::stringstream& cmd, const boost::filesystem::path& p) const
 {
 	cmd << "sys.path.append( '" << filesystem::file_string( p) << "')\n";
 }

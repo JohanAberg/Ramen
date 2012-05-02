@@ -218,7 +218,7 @@ expressions::se_expression_t *layerx_node_t::make_expression() const
 
 
 // factory
-image_node_t *create_layerx_node() { return new layerx_node_t();}
+node_t *create_layerx_node() { return new layerx_node_t();}
 
 const node_metaclass_t *layerx_node_t::metaclass() const { return &layerx_node_metaclass();}
 
@@ -242,7 +242,7 @@ const node_metaclass_t& layerx_node_t::layerx_node_metaclass()
     return info;
 }
 
-static bool registered = node_factory_t::Instance().register_node( layerx_node_t::layerx_node_metaclass());
+static bool registered = node_factory_t::instance().register_node( layerx_node_t::layerx_node_metaclass());
 
 } // namespace
 } // namespace

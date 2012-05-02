@@ -81,7 +81,7 @@ const node_metaclass_t& invert_node_t::invert_node_metaclass()
     return m;
 }
 
-static bool registered = node_factory_t::Instance().register_node( invert_node_t::invert_node_metaclass());
+static bool registered = node_factory_t::instance().register_node( invert_node_t::invert_node_metaclass());
 
 } // namespace
 } // namespace

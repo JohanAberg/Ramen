@@ -104,7 +104,7 @@ const node_metaclass_t& exposure_node_t::exposure_node_metaclass()
     return m;
 }
 
-static bool registered = node_factory_t::Instance().register_node( exposure_node_t::exposure_node_metaclass());
+static bool registered = node_factory_t::instance().register_node( exposure_node_t::exposure_node_metaclass());
 
 } // namespace
 } // namespace

@@ -41,6 +41,10 @@ void parameterised_t::create_params()
 const node_t *parameterised_t::node() const { return dynamic_cast<const node_t*>( this);}
 node_t *parameterised_t::node()				{ return dynamic_cast<node_t*>( this);}
 
+const world_node_t *parameterised_t::world() const { return 0;}
+
+world_node_t *parameterised_t::world() { return 0;}
+
 // composition
 const composition_t *parameterised_t::composition() const
 {

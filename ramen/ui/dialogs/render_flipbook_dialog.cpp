@@ -26,7 +26,7 @@ render_flipbook_dialog_t& render_flipbook_dialog_t::instance()
     return dialog;
 }
 
-render_flipbook_dialog_t::render_flipbook_dialog_t() : QDialog( user_interface_t::Instance().main_window())
+render_flipbook_dialog_t::render_flipbook_dialog_t() : QDialog( app().ui()->main_window())
 {
 	ui_.setupUi( this);
 	

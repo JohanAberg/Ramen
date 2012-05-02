@@ -371,7 +371,7 @@ const node_metaclass_t& log_to_linear_node_t::log_to_linear_node_metaclass()
     return info;
 }
 
-static bool registered = node_factory_t::Instance().register_node( log_to_linear_node_t::log_to_linear_node_metaclass());
+static bool registered = node_factory_t::instance().register_node( log_to_linear_node_t::log_to_linear_node_metaclass());
 
 } // namespace
 } // namespace

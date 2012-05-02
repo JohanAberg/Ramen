@@ -7,6 +7,8 @@
 
 #include<ramen/python/python.hpp>
 
+#include<ramen/manipulators/manipulable.hpp>
+
 #include<utility>
 
 #include<boost/noncopyable.hpp>
@@ -29,7 +31,7 @@ namespace ramen
 \ingroup params
 \brief Base class for objects that contains params.
 */
-class RAMEN_API parameterised_t : boost::noncopyable
+class RAMEN_API parameterised_t : public manipulable_t
 {
 public:
 
@@ -56,6 +58,12 @@ public:
 	virtual const node_t *node() const;
 	virtual node_t *node();
 	
+    /// Returns the world node this parameterised belongs to.
+    const world_node_t *world() const;
+
+    /// Returns the world node this parameterised belongs to.
+    world_node_t *world();
+
     // params
     void create_params();
 

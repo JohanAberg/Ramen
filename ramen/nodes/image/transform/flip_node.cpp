@@ -89,7 +89,7 @@ void flip_node_t::do_process( const render::context_t& context)
 }
 
 // factory
-image_node_t *create_flip_node() { return new flip_node_t();}
+node_t *create_flip_node() { return new flip_node_t();}
 
 const node_metaclass_t *flip_node_t::metaclass() const { return &flip_node_metaclass();}
 
@@ -113,7 +113,7 @@ const node_metaclass_t& flip_node_t::flip_node_metaclass()
     return info;
 }
 
-static bool registered = node_factory_t::Instance().register_node( flip_node_t::flip_node_metaclass());
+static bool registered = node_factory_t::instance().register_node( flip_node_t::flip_node_metaclass());
 
 } // namespace
 } // namespace

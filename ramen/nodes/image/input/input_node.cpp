@@ -16,6 +16,8 @@
 #include<QHBoxLayout>
 #include<QCheckBox>
 
+#include<ramen/app/application.hpp>
+
 #include<ramen/assert.hpp>
 
 #include<ramen/image/ocio_transform.hpp>
@@ -615,7 +617,7 @@ void input_node_t::file_picked( const boost::filesystem::path& p, int level, boo
 
 	notify();
 	document_t::Instance().undo_stack().push_back( c);
-	ui::user_interface_t::Instance().update();
+	app().ui()->update();
 }
 
 // factory
@@ -626,7 +628,7 @@ node_t *create_gui_image_input_node()
     bool sequence, relative;
     boost::filesystem::path p, dir;
 
-    if( ui::user_interface_t::Instance().image_sequence_file_selector( p, sequence, relative))
+    if( app().ui()->image_sequence_file_selector( p, sequence, relative))
         return new input_node_t( p, sequence, document_t::Instance().composition().composition_dir());
 
     return 0;
@@ -655,7 +657,7 @@ const node_metaclass_t& input_node_t::image_input_node_metaclass()
     return info;
 }
 
-static bool registered = node_factory_t::Instance().register_node( input_node_t::image_input_node_metaclass());
+static bool registered = node_factory_t::instance().register_node( input_node_t::image_input_node_metaclass());
 
 } // namespace
 } // namespace

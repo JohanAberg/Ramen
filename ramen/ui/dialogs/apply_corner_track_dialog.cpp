@@ -12,6 +12,7 @@
 
 #include<ramen/assert.hpp>
 
+#include<ramen/app/application.hpp>
 #include<ramen/app/document.hpp>
 
 #include<ramen/nodes/image/track/tracker_node.hpp>
@@ -30,7 +31,7 @@ apply_corner_track_dialog_t& apply_corner_track_dialog_t::instance()
     return dialog;
 }
 
-apply_corner_track_dialog_t::apply_corner_track_dialog_t() : QDialog( user_interface_t::Instance().main_window())
+apply_corner_track_dialog_t::apply_corner_track_dialog_t() : QDialog( app().ui()->main_window())
 {
     setWindowTitle( "Apply Track");
 	ui_.setupUi( this);
@@ -57,7 +58,7 @@ const image::tracker_node_t *apply_corner_track_dialog_t::exec()
 
 	if( ui_.tracker_combo_->count() == 0)
 	{
-        QMessageBox::warning( ui::user_interface_t::Instance().main_window(), "Ramen", 
+        QMessageBox::warning( app().ui()->main_window(), "Ramen",
 							  "No active tracker nodes in composition");
 		return 0;
 	}

@@ -225,7 +225,7 @@ const node_metaclass_t& twirl_node_t::twirl_node_metaclass()
     return info;
 }
 
-static bool registered = node_factory_t::Instance().register_node( twirl_node_t::twirl_node_metaclass());
+static bool registered = node_factory_t::instance().register_node( twirl_node_t::twirl_node_metaclass());
 
 } // namespace
 } // namespace

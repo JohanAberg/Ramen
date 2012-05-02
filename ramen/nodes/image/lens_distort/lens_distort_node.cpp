@@ -278,7 +278,7 @@ const node_metaclass_t& lens_distort_node_t::lens_distort_node_metaclass()
     return info;
 }
 
-static bool registered = node_factory_t::Instance().register_node( lens_distort_node_t::lens_distort_node_metaclass());
+static bool registered = node_factory_t::instance().register_node( lens_distort_node_t::lens_distort_node_metaclass());
 
 } // namespace
 } // namespace

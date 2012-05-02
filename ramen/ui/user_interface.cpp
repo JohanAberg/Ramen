@@ -59,19 +59,10 @@ namespace ramen
 namespace ui
 {
 
-user_interface_impl::user_interface_impl() : QObject()
+user_interface_t::user_interface_t() : QObject()
 {
 	// RAMEN_ASSERT( !app().command_line());
-}
-
-user_interface_impl::~user_interface_impl()
-{
-    // Do not remove. It's needed by auto_ptr
-}
-
-void user_interface_impl::init()
-{
-	active_ = 0;
+    active_ = 0;
 	context_ = 0;
 	rendering_ = false;
 	quitting_ = false;
@@ -79,8 +70,6 @@ void user_interface_impl::init()
 	interacting_ = false;
 	event_filter_installed_ = false;
 
-	init_ui_style();
-	
     image_types_str_ = "Image Files (";
 
 	    BOOST_FOREACH( const std::string& ext, movieio::factory_t::instance().extensions())
@@ -91,14 +80,21 @@ void user_interface_impl::init()
 	    }
 
 	image_types_str_.append( ")");
+}
 
-    viewer_t::Instance().init();
+user_interface_t::~user_interface_t()
+{
+    // Do not remove. It's needed by auto_ptr
+}
+
+void user_interface_t::init()
+{
+    init_ui_style();
+
+    viewer_.reset( new viewer_t());
     inspector_.reset( new inspector_t());
     anim_editor_.reset( new anim_editor_t());
     window_ = new main_window_t();
-
-    // force creation of singletons to avoid a crash at exit
-    viewer_t::Instance();
 
     create_new_document();
 
@@ -106,7 +102,7 @@ void user_interface_impl::init()
 	restore_window_state();
 }
 
-void user_interface_impl::init_ui_style()
+void user_interface_t::init_ui_style()
 {
 	QPlastiqueStyle *style = new QPlastiqueStyle();
 	qApp->setStyle( style);
@@ -115,7 +111,7 @@ void user_interface_impl::init_ui_style()
 	palette_t::instance();
 }
 
-void user_interface_impl::restore_window_state()
+void user_interface_t::restore_window_state()
 {
     boost::filesystem::path p = app().system().preferences_path() / "wstate.ui";
 	{
@@ -132,9 +128,9 @@ void user_interface_impl::restore_window_state()
 	// try a default state here...
 }
 
-void user_interface_impl::show() { window_->show();}
+void user_interface_t::show() { window_->show();}
 
-int user_interface_impl::run( const boost::filesystem::path& p)
+int user_interface_t::run( const boost::filesystem::path& p)
 { 
 	if( !p.empty())
 		open_document( p);
@@ -142,9 +138,9 @@ int user_interface_impl::run( const boost::filesystem::path& p)
 	return qApp->exec();
 }
 
-void user_interface_impl::quit()
+void user_interface_t::quit()
 {
-    Loki::DeletableSingleton<document_impl>::GracefulDelete();
+    Loki::DeletableSingleton<document_t>::GracefulDelete();
 
     quitting_ = true;
 
@@ -158,7 +154,7 @@ void user_interface_impl::quit()
     qApp->quit();
 }
 
-void user_interface_impl::create_new_document()
+void user_interface_t::create_new_document()
 {
     set_active_node( 0);
     set_context_node( 0);
@@ -166,8 +162,8 @@ void user_interface_impl::create_new_document()
 	
 	app().create_new_document();
 
-    document_t::Instance().composition().attach_add_observer( boost::bind( &user_interface_impl::node_added, this, _1));
-    document_t::Instance().composition().attach_release_observer( boost::bind( &user_interface_impl::node_released, this, _1));
+    document_t::Instance().composition().attach_add_observer( boost::bind( &user_interface_t::node_added, this, _1));
+    document_t::Instance().composition().attach_release_observer( boost::bind( &user_interface_t::node_released, this, _1));
 
     render_composition_dialog_t::instance().set_frame_range( document_t::Instance().composition().start_frame(),
 																document_t::Instance().composition().end_frame());
@@ -180,7 +176,7 @@ void user_interface_impl::create_new_document()
     update();
 }
 
-void user_interface_impl::open_document( const boost::filesystem::path& p)
+void user_interface_t::open_document( const boost::filesystem::path& p)
 {
     create_new_document();
     boost::filesystem::ifstream ifs( p, serialization::yaml_iarchive_t::file_open_mode());
@@ -236,7 +232,7 @@ void user_interface_impl::open_document( const boost::filesystem::path& p)
 		multiline_alert_t::instance().show_alert( "Errors during file open", err);
 }
 
-bool user_interface_impl::save_document()
+bool user_interface_t::save_document()
 {
     RAMEN_ASSERT( document_t::Instance().has_file());
 
@@ -259,7 +255,7 @@ bool user_interface_impl::save_document()
 	return true;
 }
 
-void user_interface_impl::set_active_node( node_t *n)
+void user_interface_t::set_active_node( node_t *n)
 {
     if( active_ != n)
     {
@@ -272,12 +268,12 @@ void user_interface_impl::set_active_node( node_t *n)
             active_->begin_active();
 
         inspector().edit_node( n);
-        viewer_t::Instance().set_active_node( n);
+        viewer().set_active_node( n);
         anim_editor().set_active_node( n);
     }
 }
 
-void user_interface_impl::set_context_node( node_t *n)
+void user_interface_t::set_context_node( node_t *n)
 {
     if( context_ != n)
     {
@@ -289,16 +285,16 @@ void user_interface_impl::set_context_node( node_t *n)
         if( context_)
             context_->begin_context();
 
-        viewer_t::Instance().set_context_node( n);
+        viewer().set_context_node( n);
     }
 }
 
-void user_interface_impl::node_added( node_t *n)
+void user_interface_t::node_added( node_t *n)
 {
-    viewer_t::Instance().node_added( n);
+    viewer().node_added( n);
 }
 
-void user_interface_impl::node_released( node_t *n)
+void user_interface_t::node_released( node_t *n)
 {
     if( n == active_)
     {
@@ -312,10 +308,10 @@ void user_interface_impl::node_released( node_t *n)
         update();
     }
 
-    viewer_t::Instance().node_released( n);
+    viewer().node_released( n);
 }
 
-void user_interface_impl::update()
+void user_interface_t::update()
 {
     if( !quitting_)
 	{
@@ -324,38 +320,38 @@ void user_interface_impl::update()
 	}
 }
 
-void user_interface_impl::begin_interaction()
+void user_interface_t::begin_interaction()
 {
 	document_t::Instance().composition().begin_interaction();
-	viewer_t::Instance().begin_interaction();
+	viewer().begin_interaction();
     interacting_ = true;
     app().memory_manager().begin_interaction();
 }
 
-void user_interface_impl::end_interaction()
+void user_interface_t::end_interaction()
 { 
     interacting_ = false;
     app().memory_manager().end_interaction();
-	viewer_t::Instance().end_interaction();
+	viewer().end_interaction();
 	document_t::Instance().composition().end_interaction();
 }
 
-int user_interface_impl::start_frame() const
+int user_interface_t::start_frame() const
 {
     return document_t::Instance().composition().start_frame();
 }
 
-int user_interface_impl::end_frame() const
+int user_interface_t::end_frame() const
 {
     return document_t::Instance().composition().end_frame();
 }
 
-float user_interface_impl::frame() const
+float user_interface_t::frame() const
 {
     return document_t::Instance().composition().frame();
 }
 
-void user_interface_impl::set_start_frame( int t)
+void user_interface_t::set_start_frame( int t)
 {
     document_t::Instance().composition().set_start_frame( t);
     main_window()->time_slider().update( document_t::Instance().composition().start_frame(),
@@ -369,7 +365,7 @@ void user_interface_impl::set_start_frame( int t)
 									    				document_t::Instance().composition().end_frame());
 }
 
-void user_interface_impl::set_end_frame( int t)
+void user_interface_t::set_end_frame( int t)
 {
     document_t::Instance().composition().set_end_frame( t);
     main_window()->time_slider().update( document_t::Instance().composition().start_frame(),
@@ -383,7 +379,7 @@ void user_interface_impl::set_end_frame( int t)
 										    				document_t::Instance().composition().end_frame());
 }
 
-void user_interface_impl::set_frame( int t)
+void user_interface_t::set_frame( int t)
 {
     document_t::Instance().composition().set_frame( t);
     main_window()->time_slider().update( document_t::Instance().composition().start_frame(),
@@ -392,30 +388,30 @@ void user_interface_impl::set_frame( int t)
 
     inspector().update();
 	update_anim_editors();
-    viewer_t::Instance().frame_changed();
+    viewer().frame_changed();
 }
 
-void user_interface_impl::update_anim_editors()
+void user_interface_t::update_anim_editors()
 {
     anim_editor().update();
 }
 
-void user_interface_impl::fatal_error( const std::string& msg) const
+void user_interface_t::fatal_error( const std::string& msg) const
 {
     QMessageBox::critical( 0, "Fatal Error", msg.c_str());
 }
 
-void user_interface_impl::error( const std::string& msg) const
+void user_interface_t::error( const std::string& msg) const
 {
     QMessageBox::warning( ( QWidget *) main_window(), "Error", msg.c_str());
 }
 
-void user_interface_impl::inform( const std::string& msg) const
+void user_interface_t::inform( const std::string& msg) const
 {
     QMessageBox::information( ( QWidget *) main_window(), "Info", msg.c_str());
 }
 
-bool user_interface_impl::question( const std::string& what, bool default_answer) const
+bool user_interface_t::question( const std::string& what, bool default_answer) const
 {
     QMessageBox::StandardButton result;
 
@@ -433,13 +429,13 @@ bool user_interface_impl::question( const std::string& what, bool default_answer
     }
 }
 
-bool user_interface_impl::image_sequence_file_selector( boost::filesystem::path& p, bool& sequence, bool& relative) const
+bool user_interface_t::image_sequence_file_selector( boost::filesystem::path& p, bool& sequence, bool& relative) const
 {
     std::string types( image_types_string().toStdString());
     return image_sequence_file_selector( "Open Image", types, p, sequence, relative);
 }
 
-bool user_interface_impl::image_sequence_file_selector( const std::string& title, const std::string& types, 
+bool user_interface_t::image_sequence_file_selector( const std::string& title, const std::string& types,
 						       boost::filesystem::path& p, bool& sequence, bool& relative) const
 {
     static bool was_relative = false;
@@ -507,7 +503,7 @@ void read_ui_state( const serialization::yaml_iarchive_t& in)
 	// TODO: implement this
 }
 
-void user_interface_impl::write_ui_state( serialization::yaml_oarchive_t& out) const
+void user_interface_t::write_ui_state( serialization::yaml_oarchive_t& out) const
 {
 	// out << YAML::BeginMap;
 	// save state( out)
@@ -515,7 +511,7 @@ void user_interface_impl::write_ui_state( serialization::yaml_oarchive_t& out) c
 }
 
 // event filter
-void user_interface_impl::start_long_process()
+void user_interface_t::start_long_process()
 { 
 	RAMEN_ASSERT( !event_filter_installed_);
 	
@@ -524,11 +520,11 @@ void user_interface_impl::start_long_process()
 	event_filter_installed_ = true;
 }
 
-void user_interface_impl::process_events() { qApp->processEvents();}
+void user_interface_t::process_events() { qApp->processEvents();}
 
-bool user_interface_impl::process_cancelled() const	{ return cancelled_;}
+bool user_interface_t::process_cancelled() const	{ return cancelled_;}
 
-void user_interface_impl::end_long_process()
+void user_interface_t::end_long_process()
 { 
 	RAMEN_ASSERT( event_filter_installed_);	
 	
@@ -536,7 +532,7 @@ void user_interface_impl::end_long_process()
 	event_filter_installed_ = false;
 }
 
-bool user_interface_impl::eventFilter( QObject *watched, QEvent *event)
+bool user_interface_t::eventFilter( QObject *watched, QEvent *event)
 {
 	switch( event->type())
 	{
@@ -568,13 +564,13 @@ bool user_interface_impl::eventFilter( QObject *watched, QEvent *event)
 	}
 }
 
-boost::unique_future<bool>& user_interface_impl::render_image( render::context_t context, render::image_node_renderer_t& renderer)
+boost::unique_future<bool>& user_interface_t::render_image( render::context_t context, render::image_node_renderer_t& renderer)
 {
 	RAMEN_ASSERT( !rendering_);
 	
 	cancelled_ = false;
 	context.mode = render::interface_render;
-	context.cancel = boost::bind( &user_interface_impl::process_cancelled, this);
+	context.cancel = boost::bind( &user_interface_t::process_cancelled, this);
 	renderer.set_context( context);
 	rendering_ = true;
     boost::unique_future<bool>& future( app().render_thread().render_image( renderer));
@@ -599,7 +595,7 @@ boost::unique_future<bool>& user_interface_impl::render_image( render::context_t
 	return future;
 }
 
-QFont user_interface_impl::get_fixed_width_code_font()
+QFont user_interface_t::get_fixed_width_code_font()
 {
 	QFont font;
 	font.setFamily( "Courier");

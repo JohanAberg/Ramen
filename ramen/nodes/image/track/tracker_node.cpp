@@ -27,6 +27,7 @@
 #include<ramen/nodes/image/track/tracker_manipulator.hpp>
 #include<ramen/nodes/image/track/tracker_toolbar.hpp>
 
+#include<ramen/app/application.hpp>
 #include<ramen/app/composition.hpp>
 
 #include<ramen/render/context_guard.hpp>
@@ -270,18 +271,18 @@ void tracker_node_t::track_forward()
 	
 	start_tracking();
 	
-	ui::user_interface_t::Instance().start_long_process();
+	app().ui()->start_long_process();
 	
 	for( ; composition()->frame() < composition()->end_frame();)
 	{
 		float frame = composition()->frame();
 		do_track_one( frame + 1);
 		
-		if( ui::user_interface_t::Instance().process_cancelled())
+		if( app().ui()->process_cancelled())
 			break;
 	}
 
-	ui::user_interface_t::Instance().end_long_process();
+	app().ui()->end_long_process();
 	end_tracking();
 }
 
@@ -292,18 +293,18 @@ void tracker_node_t::track_backwards()
 	
 	start_tracking();
 	
-	ui::user_interface_t::Instance().start_long_process();
+	app().ui()->start_long_process();
 	
 	for( ; composition()->frame() > composition()->start_frame();)
 	{
 		float frame = composition()->frame();
 		do_track_one( frame - 1);
 		
-		if( ui::user_interface_t::Instance().process_cancelled())
+		if( app().ui()->process_cancelled())
 			break;
 	}
 
-	ui::user_interface_t::Instance().end_long_process();
+	app().ui()->end_long_process();
 	end_tracking();
 }
 
@@ -388,8 +389,8 @@ void tracker_node_t::do_track_one( float next_frame)
 		}
 	}
 	
-	ui::user_interface_t::Instance().set_frame( next_frame);
-	ui::user_interface_t::Instance().process_events();
+	app().ui()->set_frame( next_frame);
+	app().ui()->process_events();
 }
 
 image::buffer_t tracker_node_t::get_input_frame( float frame)
@@ -567,7 +568,7 @@ const node_metaclass_t& tracker_node_t::tracker_node_metaclass()
     return info;
 }
 
-static bool registered = node_factory_t::Instance().register_node( tracker_node_t::tracker_node_metaclass());
+static bool registered = node_factory_t::instance().register_node( tracker_node_t::tracker_node_metaclass());
 
 } // namespace
 } // namespace

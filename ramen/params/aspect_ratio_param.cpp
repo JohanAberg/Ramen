@@ -4,6 +4,8 @@
 
 #include<ramen/params/aspect_ratio_param.hpp>
 
+#include<ramen/app/application.hpp>
+
 #include<ramen/params/param_set.hpp>
 
 #include<ramen/ui/user_interface.hpp>
@@ -156,12 +158,12 @@ int aspect_ratio_param_t::index_for_value( float x) const
 		QSize s = input_->sizeHint();
 	
 		label->move( 0, 0);
-		label->resize( ui::user_interface_t::Instance().inspector().left_margin() - 5, s.height());
+		label->resize( app().ui()->inspector().left_margin() - 5, s.height());
 		label->setAlignment( Qt::AlignRight | Qt::AlignVCenter);
 		label->setText( name().c_str());
 		label->setToolTip( id().c_str());
 	
-		input_->move( ui::user_interface_t::Instance().inspector().left_margin(), 0);
+		input_->move( app().ui()->inspector().left_margin(), 0);
 		float val = get_value<float>( *this);
 		input_->setValue( val);
 		input_->setEnabled( enabled());
@@ -177,13 +179,13 @@ int aspect_ratio_param_t::index_for_value( float x) const
 	
 		menu_->addItem( "Custom");
 		
-		menu_->move( ui::user_interface_t::Instance().inspector().left_margin() + s.width() + 5, 0);
+		menu_->move( app().ui()->inspector().left_margin() + s.width() + 5, 0);
 		menu_->setEnabled( enabled());
 		menu_->setCurrentIndex( index_for_value( val));
 		connect( menu_, SIGNAL( currentIndexChanged( int)), this, SLOT( item_picked( int)));
 	
-		top->setMinimumSize( ui::user_interface_t::Instance().inspector().width(), s.height());
-		top->setMaximumSize( ui::user_interface_t::Instance().inspector().width(), s.height());
+		top->setMinimumSize( app().ui()->inspector().width(), s.height());
+		top->setMaximumSize( app().ui()->inspector().width(), s.height());
 		top->setSizePolicy( QSizePolicy::Fixed, QSizePolicy::Fixed);
 		return top;
 	}

@@ -6,6 +6,7 @@
 
 #include<ramen/ui/dialogs/composition_settings_dialog.hpp>
 
+#include<ramen/app/application.hpp>
 #include<ramen/app/document.hpp>
 
 #include<ramen/ui/user_interface.hpp>
@@ -23,7 +24,7 @@ composition_settings_dialog_t& composition_settings_dialog_t::instance()
     return dialog;
 }
 
-composition_settings_dialog_t::composition_settings_dialog_t() : QDialog( user_interface_t::Instance().main_window())
+composition_settings_dialog_t::composition_settings_dialog_t() : QDialog( app().ui()->main_window())
 {
     setWindowTitle( "Composition Settings");
 	ui_.setupUi( this);
@@ -59,7 +60,7 @@ void composition_settings_dialog_t::exec_dialog()
 			document_t::Instance().composition().set_ocio_context_key_value( 3, ui_.ocio_key4_->text().toStdString(),
 																			ui_.ocio_value4_->text().toStdString()))
 		{
-			ui::viewer_t::Instance().update_display_transform();
+			app().ui()->viewer().update_display_transform();
 			document_t::Instance().composition().ocio_context_changed();
 		}
 		

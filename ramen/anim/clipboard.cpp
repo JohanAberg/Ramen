@@ -19,7 +19,7 @@ namespace
 		
 struct named_curves_less
 {
-	bool operator()( const clipboard_impl::named_curve_type& a, const clipboard_impl::named_curve_type& b) const
+	bool operator()( const clipboard_t::named_curve_type& a, const clipboard_t::named_curve_type& b) const
 	{ 
 		return a.first < b.first;
 	}
@@ -202,22 +202,28 @@ private:
 
 } // unnamed
 
-clipboard_impl::clipboard_impl() : copy_curves_mode_( true), copying_( false) {}
-clipboard_impl::~clipboard_impl() {}
+clipboard_t& clipboard_t::instance()
+{
+    static clipboard_t c;
+    return c;
+}
 
-bool clipboard_impl::empty() const { return contents_.empty();}
+clipboard_t::clipboard_t() : copy_curves_mode_( true), copying_( false) {}
+clipboard_t::~clipboard_t() {}
 
-void clipboard_impl::clear() { contents_.clear();}
+bool clipboard_t::empty() const { return contents_.empty();}
+
+void clipboard_t::clear() { contents_.clear();}
 
 // anim editor
 
-void clipboard_impl::begin_copy()
+void clipboard_t::begin_copy()
 {
 	copying_ = true;
 	clear();
 }
 
-void clipboard_impl::copy_curve( const std::string& name, const anim::any_curve_ptr_t& c)
+void clipboard_t::copy_curve( const std::string& name, const anim::any_curve_ptr_t& c)
 {
 	RAMEN_ASSERT( copying_);
 	
@@ -227,7 +233,7 @@ void clipboard_impl::copy_curve( const std::string& name, const anim::any_curve_
 	boost::apply_visitor( v, c);
 }
 
-void clipboard_impl::copy_keys( const std::string& name, const anim::any_curve_ptr_t& c)
+void clipboard_t::copy_keys( const std::string& name, const anim::any_curve_ptr_t& c)
 {
 	RAMEN_ASSERT( copying_);
 	
@@ -237,18 +243,18 @@ void clipboard_impl::copy_keys( const std::string& name, const anim::any_curve_p
 	boost::apply_visitor( v, c);
 }
 
-void clipboard_impl::end_copy()
+void clipboard_t::end_copy()
 {
 	copying_ = false;
 	std::sort( contents_.begin(), contents_.end(), named_curves_less());
 }
 
-bool clipboard_impl::can_paste( const std::string& name, const anim::any_curve_ptr_t& c)
+bool clipboard_t::can_paste( const std::string& name, const anim::any_curve_ptr_t& c)
 {
 	return find_compatible_curve( name, c) != -1;
 }
 
-void clipboard_impl::paste( const std::string& name, anim::any_curve_ptr_t& c, float frame)
+void clipboard_t::paste( const std::string& name, anim::any_curve_ptr_t& c, float frame)
 {
 	RAMEN_ASSERT( !copying_);
 	
@@ -268,7 +274,7 @@ void clipboard_impl::paste( const std::string& name, anim::any_curve_ptr_t& c, f
 	boost::apply_visitor( v, c);
 }
 
-int clipboard_impl::find_compatible_curve( const std::string& name, const anim::any_curve_ptr_t& c)
+int clipboard_t::find_compatible_curve( const std::string& name, const anim::any_curve_ptr_t& c)
 {
 	if( empty())
 		return -1;
@@ -300,7 +306,7 @@ int clipboard_impl::find_compatible_curve( const std::string& name, const anim::
 }
 
 // param spinboxes
-bool clipboard_impl::can_paste()
+bool clipboard_t::can_paste()
 {
 	if( empty() || !contents_[0].second)
 		return false;
@@ -308,7 +314,7 @@ bool clipboard_impl::can_paste()
 	return boost::get<const float_curve_t>( contents_[0].second.get());
 }
 
-void clipboard_impl::copy( const float_curve_t& c)
+void clipboard_t::copy( const float_curve_t& c)
 {
 	RAMEN_ASSERT( copying_);
 	
@@ -318,7 +324,7 @@ void clipboard_impl::copy( const float_curve_t& c)
 	copy_curves_mode_ = true;
 }
 
-void clipboard_impl::paste( float_curve_t& dst)
+void clipboard_t::paste( float_curve_t& dst)
 {
 	RAMEN_ASSERT( !copying_);	
 	RAMEN_ASSERT( !empty());

@@ -269,7 +269,7 @@ void move2d_node_t::param_changed( param_t *p, param_t::change_reason reason)
 	}
 }
 
-image_node_t *create_move2d_node() { return new move2d_node_t();}
+node_t *create_move2d_node() { return new move2d_node_t();}
 
 const node_metaclass_t *move2d_node_t::metaclass() const { return &move2d_node_metaclass();}
 
@@ -293,7 +293,7 @@ const node_metaclass_t& move2d_node_t::move2d_node_metaclass()
     return info;
 }
 
-static bool registered = node_factory_t::Instance().register_node( move2d_node_t::move2d_node_metaclass());
+static bool registered = node_factory_t::instance().register_node( move2d_node_t::move2d_node_metaclass());
 
 } // namespace
 } // namespace

@@ -5,6 +5,8 @@
 #ifndef RAMEN_UI_HPP
 #define RAMEN_UI_HPP
 
+#include<ramen/ui/user_interface_fwd.hpp>
+
 #include<ramen/python/python.hpp>
 
 #include<memory>
@@ -12,8 +14,6 @@
 #include<boost/noncopyable.hpp>
 #include<boost/signals.hpp>
 #include<boost/thread/future.hpp>
-
-#include<loki/Singleton.h>
 
 #include<QObject>
 #include<QString>
@@ -25,6 +25,7 @@
 #include<ramen/render/image_node_renderer.hpp>
 
 #include<ramen/ui/main_window_fwd.hpp>
+#include<ramen/ui/viewer/viewer_fwd.hpp>
 #include<ramen/ui/inspector/inspector_fwd.hpp>
 #include<ramen/ui/anim/anim_editor_fwd.hpp>
 
@@ -35,15 +36,17 @@ namespace ramen
 namespace ui
 {
 
-class user_interface_impl : public QObject, boost::noncopyable
+class user_interface_t : public QObject, boost::noncopyable
 {
     Q_OBJECT
 
 public:
-	
-    ~user_interface_impl();
+
+    user_interface_t();
+    ~user_interface_t();
 
     void init();
+
     void show();
     int run( const boost::filesystem::path& p = boost::filesystem::path());
     void quit();
@@ -53,6 +56,9 @@ public:
 
     const anim_editor_t& anim_editor() const { return *anim_editor_;}
     anim_editor_t& anim_editor()             { return *anim_editor_;}
+
+    const viewer_t& viewer() const  { return *viewer_;}
+    viewer_t& viewer()              { return *viewer_;}
 
     // document handling
     void create_new_document();
@@ -126,10 +132,6 @@ public Q_SLOTS:
     void set_frame( int t);
 
 private:
-
-    friend struct Loki::CreateUsingNew<user_interface_impl>;
-
-    user_interface_impl();
 	
 	void init_ui_style();
 	void restore_window_state();
@@ -137,6 +139,8 @@ private:
     main_window_t *window_;
     std::auto_ptr<inspector_t> inspector_;
     std::auto_ptr<anim_editor_t> anim_editor_;
+    std::auto_ptr<viewer_t> viewer_;
+
     node_t *active_, *context_;
     bool quitting_;
 
@@ -149,8 +153,6 @@ private:
 	bool event_filter_installed_;
 	bool cancelled_;
 };
-
-typedef Loki::SingletonHolder<user_interface_impl> user_interface_t;
 
 } // namespace
 } // namespace

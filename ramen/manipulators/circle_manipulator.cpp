@@ -9,11 +9,12 @@
 #include<ramen/assert.hpp>
 
 #include<ramen/manipulators/circle_manipulator.hpp>
-
 #include<ramen/manipulators/draw.hpp>
 #include<ramen/manipulators/pick.hpp>
 
 #include<ramen/GL/gl.hpp>
+
+#include<ramen/app/application.hpp>
 
 #include<ramen/nodes/image_node.hpp>
 
@@ -121,7 +122,7 @@ void circle_manipulator_t::do_mouse_drag_event( const ui::mouse_drag_event_t& ev
 		center_->update_widgets();
 	}
 
-	ui::user_interface_t::Instance().update_anim_editors();
+	app().ui()->update_anim_editors();
 
 	if( radius_->track_mouse())
 		radius_->param_set()->notify_parent();
@@ -136,7 +137,7 @@ void circle_manipulator_t::do_mouse_release_event( const ui::mouse_release_event
 	if( event.dragged)
 	{
 		radius_->param_set()->end_edit( !radius_->track_mouse());
-		ui::user_interface_t::Instance().update();
+		app().ui()->update();
 	}
 
 	event.view->update();

@@ -4,6 +4,7 @@
 
 #include<ramen/nodes/image/key/keyer3d/softness_tool.hpp>
 
+#include<ramen/app/application.hpp>
 #include<ramen/app/document.hpp>
 
 #include<ramen/nodes/image/key/keyer3d/keyer3d_node.hpp>
@@ -56,7 +57,7 @@ void softness_tool_t::mouse_release_event( const ui::mouse_release_event_t& even
 		if( cmd_.get())
 		{
 			document_t::Instance().undo_stack().push_back( cmd_);
-			ui::user_interface_t::Instance().update();
+			app().ui()->update();
 		}
 	}
 	

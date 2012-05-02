@@ -1,13 +1,15 @@
 // Copyright (c) 2010 Esteban Tovagliari
+// Licensed under the terms of the CDDL License.
+// See CDDL_LICENSE.txt for a copy of the license.
 
 #ifndef RAMEN_UI_VIEWER_HPP
 #define	RAMEN_UI_VIEWER_HPP
 
+#include<ramen/ui/viewer/viewer_fwd.hpp>
+
 #include<string>
 #include<vector>
 #include<map>
-
-#include<loki/Singleton.h>
 
 #include<QObject>
 
@@ -20,6 +22,7 @@
 #include<ramen/ui/viewer/viewer_strategy_fwd.hpp>
 #include<ramen/ui/viewer/viewer_context_fwd.hpp>
 
+#include<ramen/ui/widgets/container_widget_fwd.hpp>
 #include<ramen/ui/widgets/double_spinbox_fwd.hpp>
 
 class QWidget;
@@ -35,19 +38,18 @@ namespace ramen
 namespace ui
 {
 
-class container_widget_t;
-
-class viewer_impl : public QObject
+class viewer_t : public QObject
 {
     Q_OBJECT
 
 public:
 
+    viewer_t();
+    ~viewer_t();
+
 	int width() const;
 	int height() const;
 	
-    void init();
-
     QWidget *widget() { return window_;}
 
     int toolbar_height() const;
@@ -96,14 +98,9 @@ public Q_SLOTS:
 
 private:
 
-    viewer_impl();
-	~viewer_impl();
-
     void get_display_devices();
     void get_display_transforms();
     
-    friend struct Loki::CreateUsingNew<viewer_impl>;
-
     QWidget *window_;
     int toolbar_height_;
 
@@ -130,8 +127,6 @@ private:
     std::string display_device_;
     std::string display_transform_;
 };
-
-typedef Loki::SingletonHolder<viewer_impl> viewer_t;
 
 } // ui
 } // ramen

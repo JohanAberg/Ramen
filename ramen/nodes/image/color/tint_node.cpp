@@ -119,7 +119,7 @@ const node_metaclass_t& tint_node_t::tint_node_metaclass()
     return m;
 }
 
-static bool registered = node_factory_t::Instance().register_node( tint_node_t::tint_node_metaclass());
+static bool registered = node_factory_t::instance().register_node( tint_node_t::tint_node_metaclass());
 
 } // namespace
 } // namespace

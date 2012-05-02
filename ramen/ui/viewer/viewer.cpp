@@ -28,11 +28,7 @@ namespace ramen
 namespace ui
 {
 
-viewer_impl::viewer_impl() : QObject() {}
-
-viewer_impl::~viewer_impl() {}
-
-void viewer_impl::init()
+viewer_t::viewer_t() : QObject()
 {
     // TODO: don't harcode this. Get it from some widgets
     toolbar_height_ = 30;
@@ -91,7 +87,7 @@ void viewer_impl::init()
 	result_combo_ = new QComboBox();
 	result_combo_->insertItems(0, QStringList() << "Active" << "Context");
 	QSize s = result_combo_->sizeHint();
-	
+
 	update_btn_ = new QToolButton();
 	update_btn_->setFocusPolicy( Qt::NoFocus);
 	update_btn_->setCheckable(true);
@@ -148,7 +144,7 @@ void viewer_impl::init()
 	connect( gamma_input_, SIGNAL( valueChanged( double)), this, SLOT( change_gamma( double)));
 	connect( gamma_input_, SIGNAL( spinBoxDragged( double)), this, SLOT( change_gamma( double)));
 	horizontalLayout->addWidget( gamma_input_);
-	
+
     separator = new QFrame();
     separator->setFrameStyle( QFrame::VLine | QFrame::Raised);
     separator->setLineWidth( 1);
@@ -165,12 +161,14 @@ void viewer_impl::init()
     window_->setLayout( layout);
 }
 
-int viewer_impl::width() const	{ return view_->width();}
-int viewer_impl::height() const	{ return view_->height();}
+viewer_t::~viewer_t() {}
 
-int viewer_impl::toolbar_height() const { return toolbar_height_;}
+int viewer_t::width() const	{ return view_->width();}
+int viewer_t::height() const	{ return view_->height();}
 
-void viewer_impl::get_display_devices()
+int viewer_t::toolbar_height() const { return toolbar_height_;}
+
+void viewer_t::get_display_devices()
 {
     OCIO::ConstConfigRcPtr config = app().ocio_manager().config();
 
@@ -196,7 +194,7 @@ void viewer_impl::get_display_devices()
     display_device_ = default_device_name;
 }
 
-void viewer_impl::get_display_transforms()
+void viewer_t::get_display_transforms()
 {
     OCIO::ConstConfigRcPtr config = app().ocio_manager().config();
 
@@ -222,23 +220,23 @@ void viewer_impl::get_display_transforms()
     display_transform_ = default_transform;
 }
 
-const std::string& viewer_impl::display_device() const      { return display_device_;}
-const std::string& viewer_impl::display_transform() const   { return display_transform_;}
+const std::string& viewer_t::display_device() const      { return display_device_;}
+const std::string& viewer_t::display_transform() const   { return display_transform_;}
 
-float viewer_impl::exposure() const	{ return exposure_input_->value();}
-float viewer_impl::gamma() const	{ return gamma_input_->value();}
+float viewer_t::exposure() const	{ return exposure_input_->value();}
+float viewer_t::gamma() const	{ return gamma_input_->value();}
 
-void viewer_impl::update_display_transform() { view_->display_transform_changed();}		
+void viewer_t::update_display_transform() { view_->display_transform_changed();}
 
-const viewer::viewer_strategy_t& viewer_impl::current_viewer() const	{ return view_->strategy();}
-viewer::viewer_strategy_t& viewer_impl::current_viewer()				{ return view_->strategy();}
+const viewer::viewer_strategy_t& viewer_t::current_viewer() const	{ return view_->strategy();}
+viewer::viewer_strategy_t& viewer_t::current_viewer()				{ return view_->strategy();}
 
-void viewer_impl::update() const { view_->update();}
-void viewer_impl::swap_buffers() { view_->swapBuffers();}
+void viewer_t::update() const { view_->update();}
+void viewer_t::swap_buffers() { view_->swapBuffers();}
 
-void viewer_impl::set_viewer_toolbar( QWidget *w) { viewer_toolbar_->set_contents( w);}
+void viewer_t::set_viewer_toolbar( QWidget *w) { viewer_toolbar_->set_contents( w);}
 
-void viewer_impl::set_active_node( node_t *n)
+void viewer_t::set_active_node( node_t *n)
 {
     // handle the active toolbar
     if( current_node_toolbar_ != node_toolbars_.end())
@@ -265,11 +263,11 @@ void viewer_impl::set_active_node( node_t *n)
 	update();
 }
 
-void viewer_impl::set_context_node( node_t *n) { view_->set_context_node( n);}
+void viewer_t::set_context_node( node_t *n) { view_->set_context_node( n);}
 
-void viewer_impl::node_added( node_t *n) { view_->node_added( n);}
+void viewer_t::node_added( node_t *n) { view_->node_added( n);}
 
-void viewer_impl::node_released( node_t *n)
+void viewer_t::node_released( node_t *n)
 {
     std::map<node_t*, QWidget*>::iterator it( node_toolbars_.find( n));
 
@@ -282,25 +280,25 @@ void viewer_impl::node_released( node_t *n)
     view_->node_released( n);
 }
 
-void viewer_impl::frame_changed() { view_->frame_changed();}
+void viewer_t::frame_changed() { view_->frame_changed();}
 
-void viewer_impl::set_status( const std::string& text)
+void viewer_t::set_status( const std::string& text)
 {
     status_->setText( QString::fromStdString( text));
 }
 
-void viewer_impl::begin_interaction() {}
-void viewer_impl::end_interaction() {}
+void viewer_t::begin_interaction() {}
+void viewer_t::end_interaction() {}
 
 // slots
-void viewer_impl::autoupdate_toggle( bool state) { view_->set_autoupdate( state);}
+void viewer_t::autoupdate_toggle( bool state) { view_->set_autoupdate( state);}
 
-void viewer_impl::change_active_context_view( int index)
+void viewer_t::change_active_context_view( int index)
 {
     view_->set_view_mode( ( viewer::viewer_context_t::view_mode_t) index);
 }
 
-void viewer_impl::change_display_device( int index)
+void viewer_t::change_display_device( int index)
 {
     display_device_ = display_devices_[index];
 
@@ -340,14 +338,14 @@ void viewer_impl::change_display_device( int index)
 	view_->display_transform_changed();
 }
 
-void viewer_impl::change_display_transform( int index)
+void viewer_t::change_display_transform( int index)
 {
     display_transform_ = display_transforms_[index];
 	view_->display_transform_changed();
 }
 
-void viewer_impl::change_exposure( double d)	{ view_->exposure_changed();}
-void viewer_impl::change_gamma( double d)		{ view_->gamma_changed();}
+void viewer_t::change_exposure( double d)	{ view_->exposure_changed();}
+void viewer_t::change_gamma( double d)		{ view_->gamma_changed();}
 
 } // namespace
 } // namespace

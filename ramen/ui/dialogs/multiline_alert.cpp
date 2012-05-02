@@ -12,6 +12,8 @@
 #include<QDialogButtonBox>
 #include<QTextEdit>
 
+#include<ramen/app/application.hpp>
+
 #include<ramen/ui/user_interface.hpp>
 #include<ramen/ui/main_window.hpp>
 
@@ -26,7 +28,7 @@ multiline_alert_t& multiline_alert_t::instance()
     return dialog;
 }
 
-multiline_alert_t::multiline_alert_t() : QDialog( user_interface_t::Instance().main_window())
+multiline_alert_t::multiline_alert_t() : QDialog( app().ui()->main_window())
 {
     setWindowTitle( "Alert");
 

@@ -198,7 +198,7 @@ const node_metaclass_t& ocio_colorspace_node_t::ocio_colorspace_node_metaclass()
     return info;
 }
 
-static bool registered = node_factory_t::Instance().register_node( ocio_colorspace_node_t::ocio_colorspace_node_metaclass());
+static bool registered = node_factory_t::instance().register_node( ocio_colorspace_node_t::ocio_colorspace_node_metaclass());
 
 } // namespace
 } // namespace

@@ -24,6 +24,7 @@
 #include<ramen/render/render_thread.hpp>
 #include<ramen/ocio/manager_fwd.hpp>
 
+#include<ramen/ui/user_interface_fwd.hpp>
 #include<ramen/ui/dialogs/splash_screen_fwd.hpp>
 
 #include<ramen/filesystem/path.hpp>
@@ -68,6 +69,10 @@ public:
     const ocio::manager_t& ocio_manager() const { return *ocio_manager_;}
     ocio::manager_t& ocio_manager()             { return *ocio_manager_;}
 
+    // user interface
+    const ui::user_interface_t *ui() const  { return ui_.get();}
+    ui::user_interface_t *ui()              { return ui_.get();}
+
 	// document handling
 	void create_new_document();
 	void open_document( const boost::filesystem::path& p);
@@ -108,6 +113,7 @@ private:
     std::auto_ptr<memory::manager_t> mem_manager_;
     render::render_thread_t render_thread_;
     std::auto_ptr<ocio::manager_t> ocio_manager_;
+    std::auto_ptr<ui::user_interface_t> ui_;
 	
 	// rendering
 	boost::optional<int> start_frame_, end_frame_, proxy_level_,

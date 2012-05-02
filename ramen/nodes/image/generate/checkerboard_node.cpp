@@ -145,7 +145,7 @@ const node_metaclass_t& checkerboard_node_t::checkerboard_node_metaclass()
     return info;
 }
 
-static bool registered = node_factory_t::Instance().register_node( checkerboard_node_t::checkerboard_node_metaclass());
+static bool registered = node_factory_t::instance().register_node( checkerboard_node_t::checkerboard_node_metaclass());
 
 } // namespace
 } // namespace

@@ -216,7 +216,7 @@ void param_spinbox_t::contextMenuEvent( QContextMenuEvent *event)
 		copy_anim_->setEnabled( has_anim);
 		del_anim_->setEnabled( has_anim);
 		
-		if( !anim::clipboard_t::Instance().can_paste())
+		if( !anim::clipboard_t::instance().can_paste())
 			paste_anim_->setEnabled( false);
 				
 		menu.addAction( set_key_);
@@ -307,9 +307,9 @@ void param_spinbox_t::copy_anim()
 {
 	RAMEN_ASSERT( aparam_);
 
-	anim::clipboard_t::Instance().begin_copy();
-	anim::clipboard_t::Instance().copy( aparam_->curve( comp_index_));
-	anim::clipboard_t::Instance().end_copy();
+	anim::clipboard_t::instance().begin_copy();
+	anim::clipboard_t::instance().copy( aparam_->curve( comp_index_));
+	anim::clipboard_t::instance().end_copy();
 }
 
 void param_spinbox_t::paste_anim()

@@ -4,6 +4,7 @@
 
 #include<ramen/nodes/image/roto/convert_tool.hpp>
 
+#include<ramen/app/application.hpp>
 #include<ramen/app/document.hpp>
 
 #include<ramen/undo/stack.hpp>
@@ -75,11 +76,11 @@ void convert_tool_t::mouse_press_event( const ui::mouse_press_event_t& event)
 		if( selected->autokey() || !selected->anim_curve().empty())
 		{
 			selected->set_shape_key();
-			ui::user_interface_t::Instance().update_anim_editors();
+			app().ui()->update_anim_editors();
 		}
 		
 		document_t::Instance().undo_stack().push_back( cmd);
-		ui::user_interface_t::Instance().update();
+		app().ui()->update();
     }
 	else
 		selected->deselect_all_points();

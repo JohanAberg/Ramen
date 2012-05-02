@@ -4,6 +4,8 @@
 
 #include<QFrame>
 
+#include<ramen/app/application.hpp>
+
 #include<ramen/ui/user_interface.hpp>
 #include<ramen/ui/inspector/inspector.hpp>
 
@@ -23,8 +25,8 @@ QWidget *separator_param_t::do_create_widgets()
     separator->setLineWidth( 1);
     QSize s = separator->sizeHint();
 
-    separator->setMinimumSize( ui::user_interface_t::Instance().inspector().width(), s.height());
-    separator->setMaximumSize( ui::user_interface_t::Instance().inspector().width(), s.height());
+    separator->setMinimumSize( app().ui()->inspector().width(), s.height());
+    separator->setMaximumSize( app().ui()->inspector().width(), s.height());
     separator->setSizePolicy( QSizePolicy::Fixed, QSizePolicy::Fixed);
     return separator;
 }

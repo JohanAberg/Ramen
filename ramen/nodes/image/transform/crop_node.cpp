@@ -247,7 +247,7 @@ void crop_node_t::do_process( const render::context_t& context)
 }
 
 // factory
-image_node_t *create_crop_node() { return new crop_node_t();}
+node_t *create_crop_node() { return new crop_node_t();}
 
 const node_metaclass_t *crop_node_t::metaclass() const { return &crop_node_metaclass();}
 
@@ -271,7 +271,7 @@ const node_metaclass_t& crop_node_t::crop_node_metaclass()
     return info;
 }
 
-static bool registered = node_factory_t::Instance().register_node( crop_node_t::crop_node_metaclass());
+static bool registered = node_factory_t::instance().register_node( crop_node_t::crop_node_metaclass());
 
 } // namespace
 } // namespace

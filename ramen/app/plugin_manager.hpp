@@ -10,8 +10,6 @@
 #include<boost/noncopyable.hpp>
 #include<boost/ptr_container/ptr_vector.hpp>
 
-#include<loki/Singleton.h>
-
 #include<ramen/filesystem/path.hpp>
 
 #include<ramen/rdk/rdk.hpp>
@@ -19,18 +17,18 @@
 namespace ramen
 {
 
-class plugin_manager_impl : boost::noncopyable
+class plugin_manager_t : boost::noncopyable
 {
 public:
+
+    static plugin_manager_t& instance();
 
 	const std::vector<boost::filesystem::path>& paths() const { return paths_;}
 	
 private:
 
-    friend struct Loki::CreateUsingNew<plugin_manager_impl>;
-
-    plugin_manager_impl();
-    ~plugin_manager_impl();
+    plugin_manager_t();
+    ~plugin_manager_t();
 
     void load_plugins_in_directory( const boost::filesystem::path& p);
     void load_plugin( const boost::filesystem::path& p);
@@ -41,8 +39,6 @@ private:
 	std::vector<boost::filesystem::path> paths_;
 	rdk_app_info_t app_info_;
 };
-
-typedef Loki::SingletonHolder<plugin_manager_impl> plugin_manager_t;
 
 } // namespace
 

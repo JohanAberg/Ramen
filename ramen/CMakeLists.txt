@@ -313,6 +313,7 @@ SET( RAMEN_SOURCES  main.cpp
                     movieio/reader.cpp
                     movieio/writer.cpp
 
+					nodes/composite_node.cpp
 					nodes/edge.cpp
 					nodes/graph_algorithm.cpp
                     nodes/image_node.cpp
@@ -323,6 +324,7 @@ SET( RAMEN_SOURCES  main.cpp
 					nodes/node_plug.cpp
                     nodes/node_output_interface.cpp
                     nodes/node_visitor.cpp
+					nodes/world_node.cpp
 
                     nodes/image/areaop_node.cpp
 					nodes/image/base_blur_node.cpp
@@ -569,6 +571,7 @@ SET( RAMEN_SOURCES  main.cpp
                     ui/events.cpp
                     ui/events_util.cpp
 					ui/expression_editor.cpp
+					ui/graph_layout.cpp
                     ui/main_window.cpp
                     ui/nice_numbers.cpp
                     ui/node_menu.cpp

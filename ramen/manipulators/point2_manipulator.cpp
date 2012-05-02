@@ -6,8 +6,9 @@
 
 #include<ramen/assert.hpp>
 
-#include<ramen/manipulators/point2_manipulator.hpp>
+#include<ramen/app/application.hpp>
 
+#include<ramen/manipulators/point2_manipulator.hpp>
 #include<ramen/manipulators/draw.hpp>
 #include<ramen/manipulators/pick.hpp>
 
@@ -67,7 +68,7 @@ void point2_manipulator_t::do_mouse_drag_event( const ui::mouse_drag_event_t& ev
 	Imath::V2f q = get_absolute_value<Imath::V2f>( *param_);
 	param_->set_absolute_value( q + offset);
 	param_->update_widgets();
-	ui::user_interface_t::Instance().update_anim_editors();
+	app().ui()->update_anim_editors();
 	
 	if( param_->track_mouse())
 		param_->param_set()->notify_parent();
@@ -82,7 +83,7 @@ void point2_manipulator_t::do_mouse_release_event( const ui::mouse_release_event
 	if( event.dragged)
 	{
 		param_->param_set()->end_edit( !param_->track_mouse());
-		ui::user_interface_t::Instance().update();
+		app().ui()->update();
 	}
 
 	event.view->update();

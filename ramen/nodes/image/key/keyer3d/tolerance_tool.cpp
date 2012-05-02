@@ -4,6 +4,7 @@
 
 #include<ramen/nodes/image/key/keyer3d/tolerance_tool.hpp>
 
+#include<ramen/app/application.hpp>
 #include<ramen/app/document.hpp>
 
 #include<ramen/nodes/image/key/keyer3d/keyer3d_node.hpp>
@@ -88,7 +89,7 @@ void tolerance_tool_t::mouse_release_event( const ui::mouse_release_event_t& eve
 	if( any_change_)
 	{
 		document_t::Instance().undo_stack().push_back( cmd_);
-		ui::user_interface_t::Instance().update();
+		app().ui()->update();
 	}
 	else
 		cmd_.reset();

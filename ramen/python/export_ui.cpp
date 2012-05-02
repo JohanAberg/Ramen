@@ -7,6 +7,8 @@ namespace bpy = boost::python;
 
 #include<ramen/python/pyside.hpp>
 
+#include<ramen/app/application.hpp>
+
 #include<ramen/ui/user_interface.hpp>
 #include<ramen/ui/main_window.hpp>
 #include<ramen/ui/expression_editor.hpp>
@@ -45,14 +47,14 @@ public:
 
 	bpy::object as_QMainWindow()
 	{
-		return make_pyside_wrapper( reinterpret_cast<QMainWindow*>( ui::user_interface_t::Instance().main_window()));
+		return make_pyside_wrapper( reinterpret_cast<QMainWindow*>( app().ui()->main_window()));
 	}
 
     /*
 	void add_dock_widget( int area, bpy::object dock)
 	{
 		QDockWidget *dock_ = pyside_to_cpp<QDockWidget>( dock.ptr());
-		ui::user_interface_t::Instance().main_window()->add_dock_widget( ( Qt::DockWidgetArea) area, dock_);
+		app().ui()->main_window()->add_dock_widget( ( Qt::DockWidgetArea) area, dock_);
 	}
     */
 };
@@ -65,27 +67,27 @@ public:
 
 	void update() const
 	{
-		ui::user_interface_t::Instance().update();
+		app().ui()->update();
 	}
 
     void fatal_error( const std::string& msg) const
 	{
-		ui::user_interface_t::Instance().fatal_error( msg);
+		app().ui()->fatal_error( msg);
 	}
 
     void error( const std::string& msg) const
 	{
-		ui::user_interface_t::Instance().error( msg);
+		app().ui()->error( msg);
 	}
 
     void inform( const std::string& msg) const
 	{
-		ui::user_interface_t::Instance().inform( msg);
+		app().ui()->inform( msg);
 	}
 
 	bool question( const std::string& what, bool default_answer) const
 	{
-		ui::user_interface_t::Instance().question( what, default_answer);
+		app().ui()->question( what, default_answer);
 	}
 
 	main_window_t main_window() { return main_window_t();}

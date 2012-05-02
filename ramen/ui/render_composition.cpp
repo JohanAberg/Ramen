@@ -10,6 +10,7 @@
 
 #include<QProgressDialog>
 
+#include<ramen/app/application.hpp>
 #include<ramen/app/composition.hpp>
 #include<ramen/app/application.hpp>
 
@@ -34,7 +35,7 @@ struct render_callback
 		progress_->setValue( x);
 		
 		for( int i = 0; i < 10; ++i)
-			user_interface_t::Instance().process_events();
+			app().ui()->process_events();
 		
 		return progress_->wasCanceled();
 	}
@@ -51,7 +52,7 @@ struct cancel_callback
 	bool operator()()
 	{
 		for( int i = 0; i < 10; ++i)
-			user_interface_t::Instance().process_events();
+			app().ui()->process_events();
 			
 		return progress_->wasCanceled();
 	}
@@ -75,7 +76,7 @@ void render_composition( composition_t& comp, int start, int end, int proxy_leve
     bool stop = false;
 	bool success = false;
 	
-	QProgressDialog progress( "Rendering", "Cancel", 0, num_frames, (QWidget *) user_interface_t::Instance().main_window());
+	QProgressDialog progress( "Rendering", "Cancel", 0, num_frames, (QWidget *) app().ui()->main_window());
 	progress.setWindowModality( Qt::ApplicationModal);
 	progress.setWindowTitle( "Rendering");
 	progress.show();
@@ -119,7 +120,7 @@ void render_composition( composition_t& comp, int start, int end, int proxy_leve
 				}
 				catch( std::exception& e)
 				{
-                    user_interface_t::Instance().error( std::string( "exception thrown during render sequence. what = ") + e.what());					
+                    app().ui()->error( std::string( "exception thrown during render sequence. what = ") + e.what());
 				}
 			}
 			

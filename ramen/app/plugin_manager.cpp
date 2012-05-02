@@ -19,7 +19,13 @@
 namespace ramen
 {
 
-plugin_manager_impl::plugin_manager_impl()
+plugin_manager_t& plugin_manager_t::instance()
+{
+    static plugin_manager_t p;
+    return p;
+}
+
+plugin_manager_t::plugin_manager_t()
 {	
     boost::filesystem::path plugins_path = app().system().app_bundle_path();
     plugins_path /= "plugins";
@@ -32,7 +38,7 @@ plugin_manager_impl::plugin_manager_impl()
 		load_plugins_in_directory( paths_[i]);
 }
 
-plugin_manager_impl::~plugin_manager_impl()
+plugin_manager_t::~plugin_manager_t()
 {
     /*
     BOOST_FOREACH( boost::extensions::shared_library& lib, plugins_)
@@ -46,7 +52,7 @@ plugin_manager_impl::~plugin_manager_impl()
     */
 }
 
-void plugin_manager_impl::load_plugins_in_directory( const boost::filesystem::path& p)
+void plugin_manager_t::load_plugins_in_directory( const boost::filesystem::path& p)
 {
     // TODO: error handling, recurse
 
@@ -66,7 +72,7 @@ void plugin_manager_impl::load_plugins_in_directory( const boost::filesystem::pa
     }
 }
 
-void plugin_manager_impl::load_plugin( const boost::filesystem::path& p)
+void plugin_manager_t::load_plugin( const boost::filesystem::path& p)
 {
     // TODO: add more error handling.
 	

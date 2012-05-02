@@ -212,7 +212,7 @@ const node_metaclass_t& chroma_blur_node_t::chroma_blur_node_metaclass()
     return info;
 }
 
-static bool registered = node_factory_t::Instance().register_node( chroma_blur_node_t::chroma_blur_node_metaclass());
+static bool registered = node_factory_t::instance().register_node( chroma_blur_node_t::chroma_blur_node_metaclass());
 
 } // namespace
 } // namespace

@@ -11,6 +11,8 @@
 #include<adobe/algorithm/for_each.hpp>
 #include<adobe/algorithm/find.hpp>
 
+#include<ramen/app/application.hpp>
+
 #include<ramen/nodes/node.hpp>
 #include<ramen/nodes/graph_algorithm.hpp>
 
@@ -80,7 +82,7 @@ void anim_editor_command_t::undo()
     swap_curves();
 	call_notify_for_tracks();
 	notify_nodes();
-	ui::user_interface_t::Instance().anim_editor().toolbar().selection_changed();
+	app().ui()->anim_editor().toolbar().selection_changed();
     command_t::undo();
 }
 
@@ -89,7 +91,7 @@ void anim_editor_command_t::redo()
     swap_curves();
 	call_notify_for_tracks();
 	notify_nodes();
-	ui::user_interface_t::Instance().anim_editor().toolbar().selection_changed();
+	app().ui()->anim_editor().toolbar().selection_changed();
     command_t::redo();
 }
 

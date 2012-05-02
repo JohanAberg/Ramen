@@ -4,6 +4,8 @@
 
 #include<ramen/ui/dialogs/smooth_anim_curves_dialog.hpp>
 
+#include<ramen/app/application.hpp>
+
 #include<ramen/ui/user_interface.hpp>
 #include<ramen/ui/main_window.hpp>
 
@@ -18,7 +20,7 @@ smooth_anim_curves_dialog_t& smooth_anim_curves_dialog_t::instance()
     return dialog;
 }
 
-smooth_anim_curves_dialog_t::smooth_anim_curves_dialog_t() : QDialog( user_interface_t::Instance().main_window())
+smooth_anim_curves_dialog_t::smooth_anim_curves_dialog_t() : QDialog( app().ui()->main_window())
 {
 	ui_.setupUi( this);
 }

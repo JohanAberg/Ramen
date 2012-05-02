@@ -24,7 +24,7 @@ preferences_dialog_t& preferences_dialog_t::instance()
     return dialog;
 }
 
-preferences_dialog_t::preferences_dialog_t() : QDialog( user_interface_t::Instance().main_window())
+preferences_dialog_t::preferences_dialog_t() : QDialog( app().ui()->main_window())
 {
     setWindowTitle( "Preferences");
 	ui_.setupUi( this);

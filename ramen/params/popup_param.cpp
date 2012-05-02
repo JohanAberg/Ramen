@@ -5,6 +5,8 @@
 #include<QComboBox>
 #include<QLabel>
 
+#include<ramen/app/application.hpp>
+
 #include<ramen/params/param_set.hpp>
 
 #include<ramen/ui/user_interface.hpp>
@@ -109,19 +111,19 @@ QWidget *popup_param_t::do_create_widgets()
     QSize s = menu_->sizeHint();
 
     label->move( 0, 0);
-    label->resize( ui::user_interface_t::Instance().inspector().left_margin() - 5, s.height());
+    label->resize( app().ui()->inspector().left_margin() - 5, s.height());
     label->setAlignment( Qt::AlignRight | Qt::AlignVCenter);
     label->setText( name().c_str());
 	label->setToolTip( id().c_str());
 	
-    menu_->move( ui::user_interface_t::Instance().inspector().left_margin(), 0);
+    menu_->move( app().ui()->inspector().left_margin(), 0);
     menu_->resize( s.width(), s.height());
     menu_->setCurrentIndex( get_value<int>( *this));
     menu_->setEnabled( enabled());
     connect( menu_, SIGNAL( currentIndexChanged( int)), this, SLOT( item_picked( int)));
 
-    top->setMinimumSize( ui::user_interface_t::Instance().inspector().width(), s.height());
-    top->setMaximumSize( ui::user_interface_t::Instance().inspector().width(), s.height());
+    top->setMinimumSize( app().ui()->inspector().width(), s.height());
+    top->setMaximumSize( app().ui()->inspector().width(), s.height());
     top->setSizePolicy( QSizePolicy::Fixed, QSizePolicy::Fixed);
     return top;
 }

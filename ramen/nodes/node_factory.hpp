@@ -17,11 +17,15 @@
 namespace ramen
 {
 
+/*!
+\ingroup nodes
+\brief Singleton node factory.
+*/
 class node_factory_t : boost::noncopyable
 {
 public:
 
-    static node_factory_t& Instance();
+    static node_factory_t& instance();
 
     bool register_node( const node_metaclass_t& m);
 

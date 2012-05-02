@@ -112,11 +112,11 @@ application_t::application_t( int argc, char **argv) : system_(),
 
     if( !command_line_)
         splash_->show_message( "Initializing builtin nodes");
-    node_factory_t::Instance();
+    node_factory_t::instance();
 
     if( !command_line_)
         splash_->show_message( "Loading plugins...");
-    plugin_manager_t::Instance();
+    plugin_manager_t::instance();
 
     if( !command_line_)
         splash_->show_message( "Initializing image processing");
@@ -132,7 +132,7 @@ application_t::application_t( int argc, char **argv) : system_(),
 
     if( !command_line_)
         splash_->show_message( "Initializing Python");
-    python::interpreter_t::Instance();
+    python::interpreter_t::instance();
 
     if( !command_line_)
         splash_->show_message( "Initializing render thread");
@@ -141,7 +141,8 @@ application_t::application_t( int argc, char **argv) : system_(),
     if( !command_line_)
     {
         splash_->show_message( "Initializing user interface");
-        ui::user_interface_t::Instance().init();
+        ui_.reset( new ui::user_interface_t());
+        ui_->init();
         print_app_info();
     }
 }
@@ -169,10 +170,10 @@ int application_t::run()
 {
     if( !command_line_)
     {
-        ui::user_interface_t::Instance().show();
-        splash_->finish( ui::user_interface_t::Instance().main_window());
+        ui()->show();
+        splash_->finish( ui()->main_window());
         splash_.reset();
-        return ui::user_interface_t::Instance().run( infile_);
+        return ui()->run( infile_);
     }
     else
 	{
@@ -485,8 +486,8 @@ void application_t::open_document( const boost::filesystem::path& p)
 // messages
 void application_t::fatal_error( const std::string& message, bool no_gui) const
 {
-    if( !command_line_ && !ui::user_interface_t::Instance().rendering() && !no_gui)
-        ui::user_interface_t::Instance().fatal_error( message);
+    if( !command_line_ && !ui()->rendering() && !no_gui)
+        ui()->fatal_error( message);
     else
         std::cerr << "Fatal error: " << message << "\n";
 
@@ -495,24 +496,24 @@ void application_t::fatal_error( const std::string& message, bool no_gui) const
 
 void application_t::error( const std::string& message, bool no_gui) const
 {
-    if( !command_line_ && !ui::user_interface_t::Instance().rendering() && !no_gui)
-        ui::user_interface_t::Instance().error( message);
+    if( !command_line_ && !ui()->rendering() && !no_gui)
+        ui()->error( message);
     else
         std::cerr << "Error: " << message << "\n";
 }
 
 void application_t::inform( const std::string& message, bool no_gui) const
 {
-    if( !command_line_ && !ui::user_interface_t::Instance().rendering() && !no_gui)
-        ui::user_interface_t::Instance().inform( message);
+    if( !command_line_ && !ui()->rendering() && !no_gui)
+        ui()->inform( message);
     else
         std::cerr << "Info: " << message << "\n";
 }
 
 bool application_t::question( const std::string& what, bool default_answer) const
 {
-    if( !command_line_ && !ui::user_interface_t::Instance().rendering())
-        return ui::user_interface_t::Instance().question( what, default_answer);
+    if( !command_line_ && !ui()->rendering())
+        return ui()->question( what, default_answer);
     else
     {
         if( default_answer)

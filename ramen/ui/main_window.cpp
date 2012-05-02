@@ -106,7 +106,7 @@ main_window_t::main_window_t() : QMainWindow()
     inspector_dock_ = new QDockWidget( "Inspector", this);
     inspector_dock_->setObjectName( "inspector_dock");
     inspector_dock_->setAllowedAreas( Qt::RightDockWidgetArea | Qt::LeftDockWidgetArea | Qt::BottomDockWidgetArea);
-    inspector_dock_->setWidget( user_interface_t::Instance().inspector().widget());
+    inspector_dock_->setWidget( app().ui()->inspector().widget());
     add_dock_widget( Qt::RightDockWidgetArea, inspector_dock_);
 
 	// python
@@ -115,7 +115,7 @@ main_window_t::main_window_t() : QMainWindow()
 	py_console_dock_->setAllowedAreas( Qt::BottomDockWidgetArea | Qt::TopDockWidgetArea |
 										Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
 
-	py_console_dock_->setWidget( python::console_t::Instance().widget());
+	py_console_dock_->setWidget( python::console_t::instance().widget());
 	add_dock_widget( Qt::BottomDockWidgetArea, py_console_dock_);
 
 	py_editor_dock_ = new QDockWidget( "Python Editor", this);
@@ -123,7 +123,7 @@ main_window_t::main_window_t() : QMainWindow()
 	py_editor_dock_->setAllowedAreas( Qt::BottomDockWidgetArea | Qt::TopDockWidgetArea |
 										Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
 
-	py_editor_dock_->setWidget( python::editor_t::Instance().widget());
+	py_editor_dock_->setWidget( python::editor_t::instance().widget());
 	add_dock_widget( Qt::LeftDockWidgetArea, py_editor_dock_);
 
     // anim editor dock
@@ -131,7 +131,7 @@ main_window_t::main_window_t() : QMainWindow()
     anim_editor_dock_->setObjectName( "anim_editor_dock");
     anim_editor_dock_->setAllowedAreas( Qt::BottomDockWidgetArea | Qt::TopDockWidgetArea |
 										Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
-    anim_editor_dock_->setWidget( user_interface_t::Instance().anim_editor().widget());
+    anim_editor_dock_->setWidget( app().ui()->anim_editor().widget());
     add_dock_widget( Qt::BottomDockWidgetArea, anim_editor_dock_);
 	tabifyDockWidget( py_console_dock_, anim_editor_dock_);
 
@@ -164,7 +164,7 @@ main_window_t::main_window_t() : QMainWindow()
 	}
 	
     // image view
-    setCentralWidget( viewer_t::Instance().widget() );
+    setCentralWidget( app().ui()->viewer().widget() );
 
     // time toolbar
 	addToolBar( Qt::BottomToolBarArea, create_time_toolbar());
@@ -195,9 +195,9 @@ QToolBar *main_window_t::create_time_toolbar()
 
     time_slider_ = new time_slider_t();
     time_slider_->setSizePolicy( QSizePolicy::Expanding, time_slider_->sizePolicy().verticalPolicy());
-    connect( time_slider_, SIGNAL( start_frame_changed( int)), &user_interface_t::Instance(), SLOT( set_start_frame( int)));
-    connect( time_slider_, SIGNAL( end_frame_changed( int)), &user_interface_t::Instance(), SLOT( set_end_frame( int)));
-    connect( time_slider_, SIGNAL( time_changed( int)), &user_interface_t::Instance(), SLOT( set_frame( int)));
+    connect( time_slider_, SIGNAL( start_frame_changed( int)), app().ui(), SLOT( set_start_frame( int)));
+    connect( time_slider_, SIGNAL( end_frame_changed( int)), app().ui(), SLOT( set_end_frame( int)));
+    connect( time_slider_, SIGNAL( time_changed( int)), app().ui(), SLOT( set_frame( int)));
 
 	toolbar->addWidget( time_slider_);
 	toolbar->addSeparator();
@@ -216,7 +216,7 @@ void main_window_t::closeEvent( QCloseEvent *event)
 {
     quit();
 
-    if( user_interface_t::Instance().quitting())
+    if( app().ui()->quitting())
 		event->accept();
     else
 		event->ignore();
@@ -461,12 +461,12 @@ void main_window_t::create_node_actions()
         m->add_submenu( "Output");
 
 	// sort the list of registered nodes
-	node_factory_t::Instance().sort_by_menu_item();
+	node_factory_t::instance().sort_by_menu_item();
 
     // add our builtin nodes first
-    BOOST_FOREACH( const node_metaclass_t& mclass, node_factory_t::Instance().registered_nodes())
+    BOOST_FOREACH( const node_metaclass_t& mclass, node_factory_t::instance().registered_nodes())
     {
-        if( mclass.ui_visible && node_factory_t::Instance().is_latest_version( mclass.id))
+        if( mclass.ui_visible && node_factory_t::instance().is_latest_version( mclass.id))
         {
             node_menu_t *menu = find_node_menu( mclass.menu);
             QAction *act = new QAction( QString( mclass.menu_item.c_str()), this);
@@ -507,7 +507,7 @@ bool main_window_t::can_close_document()
 void main_window_t::new_document()
 {
     if( can_close_document())
-        user_interface_t::Instance().create_new_document();
+        app().ui()->create_new_document();
 }
 
 void main_window_t::open_document()
@@ -520,7 +520,7 @@ void main_window_t::open_document()
         if( !( fname.isEmpty()))
         {
             boost::filesystem::path p( fname.toStdString());
-            ui::user_interface_t::Instance().open_document( p);
+            app().ui()->open_document( p);
         }
     }
 }
@@ -535,7 +535,7 @@ void main_window_t::open_recent_document()
         {
             QString fname = action->data().toString();
             boost::filesystem::path p( fname.toStdString());
-            ui::user_interface_t::Instance().open_document( p);
+            app().ui()->open_document( p);
         }
     }
 }
@@ -544,8 +544,8 @@ void main_window_t::save_document()
 {
     if( document_t::Instance().has_file())
 	{
-        ui::user_interface_t::Instance().save_document();
-        ui::user_interface_t::Instance().update();
+        app().ui()->save_document();
+        app().ui()->update();
 	}
     else
         save_document_as();
@@ -566,7 +566,7 @@ void main_window_t::save_document_as()
 		boost::filesystem::path old_file = document_t::Instance().file();
         document_t::Instance().set_file( p);
 
-        if( !ui::user_interface_t::Instance().save_document())
+        if( !app().ui()->save_document())
 		{
 			// save was not successful, restore the relative paths
 			// to the state before trying to save.
@@ -579,7 +579,7 @@ void main_window_t::save_document_as()
 			document_t::Instance().undo_stack().clear();
 		}
 		
-		user_interface_t::Instance().update();		
+		app().ui()->update();
     }
 }
 
@@ -608,7 +608,7 @@ void main_window_t::import_composition()
             QMessageBox::warning( this, "Error opening document", "Old version or corrupted composition");
         }
 
-		ui::user_interface_t::Instance().update();
+		app().ui()->update();
     }
 }
 
@@ -617,7 +617,7 @@ void main_window_t::import_multichannel_exr()
     boost::filesystem::path p;
     bool relative, sequence;
 
-    if( ui::user_interface_t::Instance().image_sequence_file_selector( "Import EXR", "OpenEXR image (*.exr)", p, sequence, relative))
+    if( app().ui()->image_sequence_file_selector( "Import EXR", "OpenEXR image (*.exr)", p, sequence, relative))
 		imageio::import_multichannel_exr( p, relative, sequence);
 }
 
@@ -645,7 +645,7 @@ void main_window_t::import_roto()
 														  "Shake SSF (*.ssf);;"
 														  "Nuke (*.nk)", 0, QFileDialog::DontUseNativeDialog);
     if( !( fname.isEmpty()))
-		ui::user_interface_t::Instance().error( "Feature not implemented yet.");
+		app().ui()->error( "Feature not implemented yet.");
 }
 
 void main_window_t::import_cdl()
@@ -659,7 +659,7 @@ void main_window_t::import_cdl()
 		
 		if( !p.get())
 		{
-			user_interface_t::Instance().error( std::string( "Couldn't create cdl node"));
+			app().ui()->error( std::string( "Couldn't create cdl node"));
 			return;
 		}
 		
@@ -672,7 +672,7 @@ void main_window_t::import_cdl()
 		}
 		catch( std::exception& e)
 		{
-			user_interface_t::Instance().error( std::string( "Couldn't create cdl node ") + e.what());
+			app().ui()->error( std::string( "Couldn't create cdl node ") + e.what());
 			return;
 		}
 	
@@ -683,7 +683,7 @@ void main_window_t::import_cdl()
 		n->select( true);
 		c->redo();
 		document_t::Instance().undo_stack().push_back( c);
-		ui::user_interface_t::Instance().update();
+		app().ui()->update();
 	}
 }
 
@@ -694,7 +694,7 @@ void main_window_t::export_roto()
 												  0, QFileDialog::DontUseNativeDialog);
 
     if( !(fname.isEmpty()))
-		ui::user_interface_t::Instance().error( "Feature not implemented yet.");
+		app().ui()->error( "Feature not implemented yet.");
 }
 
 void main_window_t::export_cdl()
@@ -737,7 +737,7 @@ void main_window_t::quit()
             break;
 
             case QMessageBox::No:
-                user_interface_t::Instance().quit();
+                app().ui()->quit();
             break;
 
             case QMessageBox::Cancel:
@@ -745,19 +745,19 @@ void main_window_t::quit()
         }
     }
 
-    user_interface_t::Instance().quit();
+    app().ui()->quit();
 }
 
 void main_window_t::undo()
 {
     document_t::Instance().undo_stack().undo();
-    user_interface_t::Instance().update();
+    app().ui()->update();
 }
 
 void main_window_t::redo()
 {
     document_t::Instance().undo_stack().redo();
-    user_interface_t::Instance().update();
+    app().ui()->update();
 }
 
 void main_window_t::ignore_nodes()
@@ -772,7 +772,7 @@ void main_window_t::ignore_nodes()
 
     c->redo();
     document_t::Instance().undo_stack().push_back( c);
-    ui::user_interface_t::Instance().update();
+    app().ui()->update();
 }
 
 void main_window_t::delete_nodes()
@@ -842,7 +842,7 @@ void main_window_t::delete_nodes()
 	
     c->redo();
     document_t::Instance().undo_stack().push_back( c);
-    ui::user_interface_t::Instance().update();
+    app().ui()->update();
 }
 
 void main_window_t::duplicate_nodes()
@@ -870,7 +870,7 @@ void main_window_t::duplicate_nodes()
     document_t::Instance().composition().deselect_all();
     c->redo();
     document_t::Instance().undo_stack().push_back( c);
-    ui::user_interface_t::Instance().update();
+    app().ui()->update();
 }
 
 void main_window_t::extract_nodes()
@@ -931,7 +931,7 @@ void main_window_t::extract_nodes()
 	
     c->redo();
     document_t::Instance().undo_stack().push_back( c);
-    ui::user_interface_t::Instance().update();
+    app().ui()->update();
 }
 
 void main_window_t::clear_cache()
@@ -1017,11 +1017,11 @@ void main_window_t::create_node()
     QAction *action = dynamic_cast<QAction*>( sender());
 
     std::string id( create_node_actions_[action]);
-    std::auto_ptr<node_t> p( node_factory_t::Instance().create_by_id( id, true));
+    std::auto_ptr<node_t> p( node_factory_t::instance().create_by_id( id, true));
 	
 	if( !p.get())
 	{
-		//user_interface_t::Instance().error( std::string( "Couldn't create node ") + id);
+		//app().ui()->error( std::string( "Couldn't create node ") + id);
 		return;
 	}
 	
@@ -1033,7 +1033,7 @@ void main_window_t::create_node()
 	}
 	catch( std::exception& e)
 	{
-		user_interface_t::Instance().error( std::string( "Couldn't create node ") + id
+		app().ui()->error( std::string( "Couldn't create node ") + id
 											+ std::string( " ") + e.what());
 		return;
 	}
@@ -1060,7 +1060,7 @@ void main_window_t::create_node()
 	n->select( true);
 	c->redo();
 	document_t::Instance().undo_stack().push_back( c);
-	ui::user_interface_t::Instance().update();
+	app().ui()->update();
 }
 
 void main_window_t::show_about_box()

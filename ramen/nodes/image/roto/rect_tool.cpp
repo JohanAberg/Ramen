@@ -6,6 +6,7 @@
 
 #include<ramen/nodes/image/roto/rect_tool.hpp>
 
+#include<ramen/app/application.hpp>
 #include<ramen/app/document.hpp>
 
 #include<ramen/undo/stack.hpp>
@@ -63,7 +64,7 @@ void rect_tool_t::mouse_release_event( const ui::mouse_release_event_t& event)
 		std::auto_ptr<undo::add_roto_command_t> cmd( new undo::add_roto_command_t( parent(), s));
 		cmd->redo();
 		document_t::Instance().undo_stack().push_back( cmd);
-		ui::user_interface_t::Instance().update();
+		app().ui()->update();
 	}
 
 	creating_ = false;

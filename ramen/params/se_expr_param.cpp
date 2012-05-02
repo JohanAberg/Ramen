@@ -10,6 +10,8 @@
 #include<QHBoxLayout>
 #include<QMenu>
 
+#include<ramen/app/application.hpp>
+
 #include<ramen/ui/user_interface.hpp>
 #include<ramen/ui/inspector/inspector.hpp>
 #include<ramen/ui/widgets/text_edit.hpp>
@@ -107,17 +109,17 @@ void se_expr_param_t::do_enable_widgets( bool e)
 		delete tmp;
 	
 		label->move( 0, 0);
-		label->resize( ui::user_interface_t::Instance().inspector().left_margin() - 5, s.height());
+		label->resize( app().ui()->inspector().left_margin() - 5, s.height());
 		label->setAlignment( Qt::AlignRight | Qt::AlignVCenter);
 		label->setText( name().c_str());
 		label->setToolTip( id().c_str());
 		
-		int width = ui::user_interface_t::Instance().inspector().width() - ui::user_interface_t::Instance().inspector().left_margin() - 10;
+		int width = app().ui()->inspector().width() - app().ui()->inspector().left_margin() - 10;
 		int height = 0;
 
 		std::string str = get_value<std::string>( *this);
 		multi_input_ = new ui::text_edit_t( top);
-		multi_input_->move( ui::user_interface_t::Instance().inspector().left_margin(), height);
+		multi_input_->move( app().ui()->inspector().left_margin(), height);
 		multi_input_->resize( width, s.height() * 7);
 		multi_input_->setEnabled( enabled());
 		multi_input_->setPlainText( str.c_str());
@@ -127,8 +129,8 @@ void se_expr_param_t::do_enable_widgets( bool e)
 		connect( multi_input_, SIGNAL( customContextMenuRequested( const QPoint&)), this, SLOT( show_context_menu( const QPoint&)));
 		height += multi_input_->height();
 	
-		top->setMinimumSize( ui::user_interface_t::Instance().inspector().width(), height);
-		top->setMaximumSize( ui::user_interface_t::Instance().inspector().width(), height);
+		top->setMinimumSize( app().ui()->inspector().width(), height);
+		top->setMaximumSize( app().ui()->inspector().width(), height);
 		top->setSizePolicy( QSizePolicy::Fixed, QSizePolicy::Fixed);
 
 		top_widget_ = top;

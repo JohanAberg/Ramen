@@ -14,6 +14,7 @@
 
 #include<ramen/assert.hpp>
 
+#include<ramen/app/application.hpp>
 #include<ramen/app/document.hpp>
 
 #include<ramen/Qr/QrColorButton.hpp>
@@ -62,19 +63,19 @@ QWidget *roto_shape_param_t::do_create_widgets()
 	QSize s = name_input_->sizeHint();
 
     label->move( 0, 0);
-    label->resize( ui::user_interface_t::Instance().inspector().left_margin() - 5, s.height());
+    label->resize( app().ui()->inspector().left_margin() - 5, s.height());
     label->setAlignment( Qt::AlignRight | Qt::AlignVCenter);
     label->setText( "Name");
 
-    name_input_->move( ui::user_interface_t::Instance().inspector().left_margin(), 0);
-    name_input_->resize( ui::user_interface_t::Instance().inspector().width() - ui::user_interface_t::Instance().inspector().left_margin() - 80, s.height());
+    name_input_->move( app().ui()->inspector().left_margin(), 0);
+    name_input_->resize( app().ui()->inspector().width() - app().ui()->inspector().left_margin() - 80, s.height());
 	name_input_->setEnabled( false);
     connect( name_input_, SIGNAL( editingFinished()), this, SLOT( rename_shape()));
     int current_height = s.height() + 5;
 	
     label = new QLabel( top);
     label->move( 0, current_height);
-    label->resize( ui::user_interface_t::Instance().inspector().left_margin() - 5, s.height());
+    label->resize( app().ui()->inspector().left_margin() - 5, s.height());
     label->setAlignment( Qt::AlignRight | Qt::AlignVCenter);
     label->setText( "Parent");
 
@@ -83,11 +84,11 @@ QWidget *roto_shape_param_t::do_create_widgets()
     parent_menu_->setFocusPolicy( Qt::NoFocus);
 	parent_menu_->addItem( "None");
     s = parent_menu_->sizeHint();
-    parent_menu_->move( ui::user_interface_t::Instance().inspector().left_margin(), current_height);
+    parent_menu_->move( app().ui()->inspector().left_margin(), current_height);
 	parent_menu_->setEnabled( false);
     connect( parent_menu_, SIGNAL( currentIndexChanged( int)), this, SLOT( set_shape_parent( int)));
 	
-	int w = ui::user_interface_t::Instance().inspector().left_margin() + s.width() + 5;
+	int w = app().ui()->inspector().left_margin() + s.width() + 5;
     order_up_ = new QToolButton( top);
     order_up_->setFocusPolicy( Qt::NoFocus);
     order_up_->setArrowType( Qt::UpArrow);
@@ -110,12 +111,12 @@ QWidget *roto_shape_param_t::do_create_widgets()
 	
     label = new QLabel( top);
     label->move( 0, current_height);
-    label->resize( ui::user_interface_t::Instance().inspector().left_margin() - 5, s.height());
+    label->resize( app().ui()->inspector().left_margin() - 5, s.height());
     label->setAlignment( Qt::AlignRight | Qt::AlignVCenter);
     label->setText( "Display Color");
 
 	display_color_ = new QrColorButton( top);
-	display_color_->move( ui::user_interface_t::Instance().inspector().left_margin(), current_height);
+	display_color_->move( app().ui()->inspector().left_margin(), current_height);
 	display_color_->resize( s.height(), s.height());
 	display_color_->setEnabled( false);
     connect( display_color_, SIGNAL( pressed()), this, SLOT( change_shape_color()));
@@ -123,7 +124,7 @@ QWidget *roto_shape_param_t::do_create_widgets()
 	autokey_ = new QToolButton( top);
 	autokey_->setText( "Autokey");
 	autokey_->setCheckable( true);
-	w = ui::user_interface_t::Instance().inspector().left_margin() + s.height() + 5;
+	w = app().ui()->inspector().left_margin() + s.height() + 5;
 	autokey_->move( w, current_height);
 	autokey_->setEnabled( false);
 	connect( autokey_, SIGNAL( toggled( bool)), this, SLOT( set_autokey(bool)));
@@ -137,8 +138,8 @@ QWidget *roto_shape_param_t::do_create_widgets()
 	s = shape_key_->sizeHint();
 	current_height += s.height() + 5;
 	
-    top->setMinimumSize( ui::user_interface_t::Instance().inspector().width(), current_height);
-    top->setMaximumSize( ui::user_interface_t::Instance().inspector().width(), current_height);
+    top->setMinimumSize( app().ui()->inspector().width(), current_height);
+    top->setMaximumSize( app().ui()->inspector().width(), current_height);
     top->setSizePolicy( QSizePolicy::Fixed, QSizePolicy::Fixed);
 	
 	update_parent_menu();
@@ -264,7 +265,7 @@ void roto_shape_param_t::rename_shape()
     name_input_->blockSignals( true);
     name_input_->setText( selected_->name().c_str());
     name_input_->blockSignals( false);
-	ui::user_interface_t::Instance().anim_editor().recreate_tracks( &roto_node());
+	app().ui()->anim_editor().recreate_tracks( &roto_node());
 }
 
 void roto_shape_param_t::set_autokey( bool b) { selected_->set_autokey( b);}
@@ -274,7 +275,7 @@ void roto_shape_param_t::change_shape_color()
     Imath::Color3f col = selected_->display_color();
 
     QColor initial( col.x, col.y, col.z);
-    QColor c = QColorDialog::getColor( initial, (QWidget *) ui::user_interface_t::Instance().main_window());
+    QColor c = QColorDialog::getColor( initial, (QWidget *) app().ui()->main_window());
 
     if( c.isValid())
     {
@@ -286,7 +287,7 @@ void roto_shape_param_t::change_shape_color()
 				   selected_->display_color().z / 255.0f);
 		display_color_->setValue( c);
 		display_color_->blockSignals( false);
-        ui::viewer_t::Instance().update();
+        app().ui()->viewer().update();
     }
 }
 
@@ -295,7 +296,7 @@ void roto_shape_param_t::set_shape_key()
 	std::auto_ptr<undo::modify_shape_command_t> cmd( new undo::modify_shape_command_t( roto_node(), selected_));
 	selected_->set_shape_key();
 	document_t::Instance().undo_stack().push_back( cmd);
-	ui::user_interface_t::Instance().update();
+	app().ui()->update();
 }
 
 void roto_shape_param_t::set_shape_parent( int index)
@@ -339,7 +340,7 @@ void roto_shape_param_t::set_shape_parent( int index)
 	cmd.reset( new undo::set_roto_parent_command_t( roto_node(), selected_, new_parent_));
 	cmd->redo();
 	document_t::Instance().undo_stack().push_back( cmd);
-	ui::user_interface_t::Instance().update();
+	app().ui()->update();
 }
 
 void roto_shape_param_t::move_shape_order_up()
@@ -348,7 +349,7 @@ void roto_shape_param_t::move_shape_order_up()
 	cmd.reset( new undo::order_shape_command_t( roto_node(), selected_, true));
 	cmd->redo();
 	document_t::Instance().undo_stack().push_back( cmd);
-	ui::user_interface_t::Instance().update();
+	app().ui()->update();
 }
 
 void roto_shape_param_t::move_shape_order_down()
@@ -357,7 +358,7 @@ void roto_shape_param_t::move_shape_order_down()
 	cmd.reset( new undo::order_shape_command_t( roto_node(), selected_, false));
 	cmd->redo();
 	document_t::Instance().undo_stack().push_back( cmd);
-	ui::user_interface_t::Instance().update();
+	app().ui()->update();
 }
 
 const image::roto_node_t& roto_shape_param_t::roto_node() const

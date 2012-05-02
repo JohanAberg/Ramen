@@ -9,16 +9,16 @@
 #include<boost/python.hpp>
 #include<boost/filesystem/path.hpp>
 
-#include<loki/Singleton.h>
-
 namespace ramen
 {
 namespace python
 {
 
-class interpreter_impl : boost::noncopyable
+class interpreter_t : boost::noncopyable
 {
 public:
+
+    static interpreter_t& instance();
 
     boost::python::object& main_namespace() { return main_namespace_;}
 
@@ -30,9 +30,7 @@ public:
 
 private:
 
-    friend class Loki::CreateUsingNew<interpreter_impl>;
-
-    interpreter_impl();
+    interpreter_t();
 
 	boost::python::object exec_file( const boost::filesystem::path& p);
 	
@@ -41,8 +39,6 @@ private:
 
     boost::python::object main_namespace_;
 };
-
-typedef Loki::SingletonHolder<interpreter_impl> interpreter_t;
 
 } // namespace
 } // namespace

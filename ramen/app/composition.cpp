@@ -454,7 +454,7 @@ std::auto_ptr<node_t> composition_t::create_node( const std::string& id, const s
 	RAMEN_ASSERT( !id.empty());
 	RAMEN_ASSERT( version.first >= 0 && version.second >= 0);
 	
-	std::auto_ptr<node_t> p( node_factory_t::Instance().create_by_id_with_version( id, version));
+	std::auto_ptr<node_t> p( node_factory_t::instance().create_by_id_with_version( id, version));
 
 	// as a last resort, return an unknown node
     if( !p.get())

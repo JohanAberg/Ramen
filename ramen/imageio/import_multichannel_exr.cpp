@@ -108,7 +108,7 @@ void import_multichannel_exr( const boost::filesystem::path& p, bool relative, b
     node->set_composition( &document_t::Instance().composition());
     node->create_params();
     node->select( true);
-    ui::user_interface_t::Instance().main_window()->composition_view().place_node( node);
+    app().ui()->main_window()->composition_view().place_node( node);
 
     const int node_spacing = 120;
 
@@ -190,7 +190,7 @@ void import_multichannel_exr( const boost::filesystem::path& p, bool relative, b
     command->redo();
     document_t::Instance().undo_stack().push_back( command);
     document_t::Instance().composition().selection_changed();
-    ui::user_interface_t::Instance().update();
+    app().ui()->update();
     delete node;
 }
 

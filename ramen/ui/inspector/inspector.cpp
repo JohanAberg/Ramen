@@ -19,6 +19,7 @@
 
 #include<ramen/nodes/node.hpp>
 
+#include<ramen/app/application.hpp>
 #include<ramen/app/document.hpp>
 
 #include<ramen/undo/stack.hpp>
@@ -176,7 +177,7 @@ void inspector_t::update_header_widgets()
 {
     name_edit_->blockSignals( true);
 
-    node_t *n = user_interface_t::Instance().active_node();
+    node_t *n = app().ui()->active_node();
 
     if( n)
 	{
@@ -228,10 +229,10 @@ private:
 		if( n_->is_active())
 		{
 			name_edit_->setText( n_->name().c_str());
-			user_interface_t::Instance().anim_editor().node_renamed( n_);
+			app().ui()->anim_editor().node_renamed( n_);
 		}
 		
-		user_interface_t::Instance().update();
+		app().ui()->update();
 		name_edit_->setModified( false);
 	    name_edit_->blockSignals( false);
 	}
@@ -247,7 +248,7 @@ void inspector_t::rename_node()
 {
 	if( name_edit_->isModified())
 	{
-	    node_t *n = user_interface_t::Instance().active_node();
+	    node_t *n = app().ui()->active_node();
 		RAMEN_ASSERT( n);
 
 		std::string new_name = name_edit_->text().toStdString();
@@ -257,7 +258,7 @@ void inspector_t::rename_node()
 			std::auto_ptr<rename_node_command_t> c( new rename_node_command_t( n, new_name, name_edit_));
 			c->redo();
 			document_t::Instance().undo_stack().push_back( c);
-		    user_interface_t::Instance().update();
+		    app().ui()->update();
 		}
 		else
 		{
@@ -270,7 +271,7 @@ void inspector_t::rename_node()
 
 void inspector_t::show_help()
 {
-	node_t *n = user_interface_t::Instance().active_node();
+	node_t *n = app().ui()->active_node();
 
 	RAMEN_ASSERT( n);
 	RAMEN_ASSERT( n->help_string());

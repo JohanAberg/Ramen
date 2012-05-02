@@ -331,7 +331,7 @@ const node_metaclass_t& turbulent_displace_node_t::turbulent_displace_node_metac
     return info;
 }
 
-static bool registered = node_factory_t::Instance().register_node( turbulent_displace_node_t::turbulent_displace_node_metaclass());
+static bool registered = node_factory_t::instance().register_node( turbulent_displace_node_t::turbulent_displace_node_metaclass());
 
 } // namespace
 } // namespace

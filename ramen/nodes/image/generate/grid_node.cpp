@@ -169,7 +169,7 @@ const node_metaclass_t& grid_node_t::grid_node_metaclass()
     return info;
 }
 
-static bool registered = node_factory_t::Instance().register_node( grid_node_t::grid_node_metaclass());
+static bool registered = node_factory_t::instance().register_node( grid_node_t::grid_node_metaclass());
 
 } // namespace
 } // namespace

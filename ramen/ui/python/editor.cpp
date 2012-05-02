@@ -11,6 +11,7 @@
 #include<QPlainTextEdit>
 #include<QPushButton>
 
+#include<ramen/app/application.hpp>
 #include<ramen/app/document.hpp>
 
 #include<ramen/python/interpreter.hpp>
@@ -27,7 +28,13 @@ namespace ui
 namespace python
 {
 
-editor_impl::editor_impl() : window_(0)
+editor_t& editor_t::instance()
+{
+    static editor_t e;
+    return e;
+}
+
+editor_t::editor_t() : window_(0)
 {
     window_ = new QWidget();
     window_->setWindowTitle( QObject::tr( "Python Editor"));
@@ -35,7 +42,7 @@ editor_impl::editor_impl() : window_(0)
     QVBoxLayout *layout = new QVBoxLayout();
 
     edit_ = new QPlainTextEdit();
-	edit_->setFont( ui::user_interface_t::Instance().get_fixed_width_code_font());
+	edit_->setFont( app().ui()->get_fixed_width_code_font());
 
 	edit_->setContextMenuPolicy( Qt::CustomContextMenu);
 	connect( edit_, SIGNAL( customContextMenuRequested( const QPoint&)), this, SLOT( show_context_menu( const QPoint&)));
@@ -57,11 +64,11 @@ editor_impl::editor_impl() : window_(0)
     window_->setLayout( layout);
 }
 
-editor_impl::~editor_impl() { window_->deleteLater();}
+editor_t::~editor_t() { window_->deleteLater();}
 
-void editor_impl::run()
+void editor_t::run()
 {
-	python::console_t::Instance().clear();
+	python::console_t::instance().clear();
     document_t::Instance().undo_stack().clear();
 
     QString script = edit_->toPlainText();
@@ -69,10 +76,10 @@ void editor_impl::run()
     try
     {
 		boost::python::handle<> ignored(( PyRun_String( script.toStdString().c_str(), Py_file_input,
-														ramen::python::interpreter_t::Instance().main_namespace().ptr(),
-														ramen::python::interpreter_t::Instance().main_namespace().ptr())));
+														ramen::python::interpreter_t::instance().main_namespace().ptr(),
+														ramen::python::interpreter_t::instance().main_namespace().ptr())));
 
-		ui::user_interface_t::Instance().update();
+		app().ui()->update();
     }
     catch( boost::python::error_already_set)
     {
@@ -81,7 +88,7 @@ void editor_impl::run()
     }
 }
 
-void editor_impl::show_context_menu( const QPoint& p)
+void editor_t::show_context_menu( const QPoint& p)
 {
 }
 

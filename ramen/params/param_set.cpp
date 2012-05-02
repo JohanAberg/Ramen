@@ -21,6 +21,7 @@
 
 #include<adobe/algorithm/for_each.hpp>
 
+#include<ramen/app/application.hpp>
 #include<ramen/app/document.hpp>
 
 #include<ramen/params/parameterised.hpp>
@@ -183,8 +184,8 @@ void param_set_t::end_edit( bool notify)
     if( notify)
 		notify_parent();
 
-	ui::user_interface_t::Instance().update();
-    ui::user_interface_t::Instance().update_anim_editors();
+	app().ui()->update();
+    app().ui()->update_anim_editors();
 }
 
 bool param_set_t::editing() const { return command_.get();}

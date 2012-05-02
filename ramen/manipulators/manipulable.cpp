@@ -15,9 +15,9 @@
 namespace ramen
 {
 
-manipulable_t::manipulable_t() : parameterised_t() {}
+manipulable_t::manipulable_t() {}
 
-manipulable_t::manipulable_t( const manipulable_t& other) : parameterised_t( other) {}
+manipulable_t::manipulable_t( const manipulable_t& other) {}
 
 manipulable_t::~manipulable_t() {}
 

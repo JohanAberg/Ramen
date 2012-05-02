@@ -5,8 +5,6 @@
 
 #include<boost/noncopyable.hpp>
 
-#include<loki/Singleton.h>
-
 #include<QObject>
 
 class QWidget;
@@ -19,11 +17,13 @@ namespace ui
 namespace python
 {
 
-class console_impl : public QObject, boost::noncopyable
+class console_t : public QObject, boost::noncopyable
 {
     Q_OBJECT
 
 public:
+
+    static console_t& instance();
 
     QWidget *widget() { return window_;}
 
@@ -37,16 +37,12 @@ public Q_SLOTS:
 
 private:
 
-    console_impl();
-    ~console_impl();
-
-    friend struct Loki::CreateUsingNew<console_impl>;
+    console_t();
+    ~console_t();
 
     QWidget *window_;
     QPlainTextEdit *output_;
 };
-
-typedef Loki::SingletonHolder<console_impl> console_t;
 
 } // namespace
 } // namespace

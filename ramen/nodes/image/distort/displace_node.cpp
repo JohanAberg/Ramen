@@ -209,7 +209,7 @@ const node_metaclass_t& displace_node_t::displace_node_metaclass()
     return info;
 }
 
-static bool registered = node_factory_t::Instance().register_node( displace_node_t::displace_node_metaclass());
+static bool registered = node_factory_t::instance().register_node( displace_node_t::displace_node_metaclass());
 
 } // namespace
 } // namespace

@@ -8,6 +8,9 @@
 #include<QComboBox>
 #include<QToolButton>
 
+#include<ramen/app/application.hpp>
+
+#include<ramen/ui/user_interface.hpp>
 #include<ramen/ui/viewer/viewer.hpp>
 #include<ramen/ui/viewer/image_view/image_viewer_strategy.hpp>
 
@@ -22,8 +25,8 @@ image_view_toolbar_t::image_view_toolbar_t( image_viewer_strategy_t *image_viewe
 {
     image_viewer_ = image_viewer;
 
-    setMinimumSize( 0, viewer_t::Instance().toolbar_height());
-    setMaximumSize( QWIDGETSIZE_MAX, viewer_t::Instance().toolbar_height());
+    setMinimumSize( 0, app().ui()->viewer().toolbar_height());
+    setMaximumSize( QWIDGETSIZE_MAX, app().ui()->viewer().toolbar_height());
 
     setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Fixed);
     QHBoxLayout *horizontalLayout = new QHBoxLayout( this);

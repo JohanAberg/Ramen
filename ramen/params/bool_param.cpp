@@ -4,6 +4,8 @@
 
 #include<ramen/params/bool_param.hpp>
 
+#include<ramen/app/application.hpp>
+
 #include<ramen/nodes/node.hpp>
 
 #include<ramen/ui/user_interface.hpp>
@@ -86,10 +88,10 @@ QWidget *bool_param_t::do_create_widgets()
 	button_->setText( name().c_str());
 	QSize s = button_->sizeHint();
 
-	w->setMinimumSize( ui::user_interface_t::Instance().inspector().width(), s.height());
-	w->setMaximumSize( ui::user_interface_t::Instance().inspector().width(), s.height());
+	w->setMinimumSize( app().ui()->inspector().width(), s.height());
+	w->setMaximumSize( app().ui()->inspector().width(), s.height());
 
-	button_->move( ui::user_interface_t::Instance().inspector().left_margin(), 0);
+	button_->move( app().ui()->inspector().left_margin(), 0);
 	button_->resize( s.width(), s.height());
 	button_->setChecked( get_value<bool>( *this));
 	button_->setEnabled( enabled());

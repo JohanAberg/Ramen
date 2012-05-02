@@ -6,6 +6,8 @@
 
 #include<boost/foreach.hpp>
 
+#include<ramen/app/application.hpp>
+
 #include<ramen/assert.hpp>
 
 #include<ramen/nodes/image/roto/roto_node.hpp>
@@ -33,7 +35,7 @@ void add_roto_command_t::undo()
 	node_.deselect_all();
 	node_.selection_changed();
 	storage_ = node_.release_shape( shape_);
-	ui::user_interface_t::Instance().anim_editor().recreate_tracks( &node_);
+	app().ui()->anim_editor().recreate_tracks( &node_);
 	node_.notify();
     undo::command_t::undo();
 }
@@ -43,7 +45,7 @@ void add_roto_command_t::redo()
 	node_.deselect_all();
 	storage_->select( true);
 	node_.add_shape( storage_);
-	ui::user_interface_t::Instance().anim_editor().recreate_tracks( &node_);
+	app().ui()->anim_editor().recreate_tracks( &node_);
 	node_.selection_changed();
 	node_.notify();
     undo::command_t::redo();
@@ -71,7 +73,7 @@ void delete_roto_command_t::undo()
 	
 	shape_->update_xforms();
 	
-	ui::user_interface_t::Instance().anim_editor().recreate_tracks( &node_);
+	app().ui()->anim_editor().recreate_tracks( &node_);
 	node_.deselect_all();
 	node_.notify();
     undo::command_t::undo();	
@@ -82,7 +84,7 @@ void delete_roto_command_t::redo()
 	node_.deselect_all();
 	node_.selection_changed();
 	storage_ = node_.release_shape( shape_);
-	ui::user_interface_t::Instance().anim_editor().recreate_tracks( &node_);
+	app().ui()->anim_editor().recreate_tracks( &node_);
 	node_.notify();
     undo::command_t::redo();	
 }

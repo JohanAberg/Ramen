@@ -19,7 +19,7 @@ nop_node_t::nop_node_t() : image_node_t()
 }
 
 // factory
-image_node_t *create_nop_node() { return new nop_node_t();}
+node_t *create_nop_node() { return new nop_node_t();}
 
 const node_metaclass_t *nop_node_t::metaclass() const { return &nop_node_metaclass();}
 
@@ -44,7 +44,7 @@ const node_metaclass_t& nop_node_t::nop_node_metaclass()
     return info;
 }
 
-static bool registered = node_factory_t::Instance().register_node( nop_node_t::nop_node_metaclass());
+static bool registered = node_factory_t::instance().register_node( nop_node_t::nop_node_metaclass());
 
 } // namespace
 } // namespace

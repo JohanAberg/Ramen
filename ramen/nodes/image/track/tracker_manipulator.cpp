@@ -23,6 +23,7 @@
 #include<ramen/manipulators/draw.hpp>
 #include<ramen/manipulators/pick.hpp>
 
+#include<ramen/app/application.hpp>
 #include<ramen/app/composition.hpp>
 
 #include<ramen/ui/user_interface.hpp>
@@ -178,8 +179,8 @@ void tracker_manipulator_t::do_key_release_event( const ui::key_release_event_t&
 			}
 			
 			tracker_node()->param_set().end_edit();			
-			ui::user_interface_t::Instance().update_anim_editors();
-			ui::user_interface_t::Instance().set_frame( frame - 1);
+			app().ui()->update_anim_editors();
+			app().ui()->set_frame( frame - 1);
 		}
 	}
 }
@@ -241,7 +242,7 @@ void tracker_manipulator_t::do_mouse_drag_event( const ui::mouse_drag_event_t& e
 	};
 	
 	tracker_node()->update_widgets();
-	ui::user_interface_t::Instance().update_anim_editors();
+	app().ui()->update_anim_editors();
 	event.view->update();
 }
 

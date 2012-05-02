@@ -9,6 +9,8 @@
 #include<adobe/algorithm/clamp.hpp>
 
 #include<ramen/nodes/node.hpp>
+
+#include<ramen/app/application.hpp>
 #include<ramen/app/document.hpp>
 
 #include<QLabel>
@@ -259,7 +261,7 @@ QWidget *float3_param_t::do_create_widgets()
     QSize s = input0_->sizeHint();
 
     label->move( 0, 0);
-    label->resize( ui::user_interface_t::Instance().inspector().left_margin() - 5, s.height());
+    label->resize( app().ui()->inspector().left_margin() - 5, s.height());
     label->setAlignment( Qt::AlignRight | Qt::AlignVCenter);
     label->setText( name().c_str());
 	label->setToolTip( id().c_str());
@@ -268,7 +270,7 @@ QWidget *float3_param_t::do_create_widgets()
 	// make inputs bigger
 	s.setWidth( s.width() + ( s.width() / 4));
 	
-    int xpos = ui::user_interface_t::Instance().inspector().left_margin();
+    int xpos = app().ui()->inspector().left_margin();
 
     input0_->move( xpos, 0);
     input0_->resize( s.width(), s.height());
@@ -320,8 +322,8 @@ QWidget *float3_param_t::do_create_widgets()
             prop_button_->move( xpos, 0);
     }
 
-    top->setMinimumSize( ui::user_interface_t::Instance().inspector().width(), s.height());
-    top->setMaximumSize( ui::user_interface_t::Instance().inspector().width(), s.height());
+    top->setMinimumSize( app().ui()->inspector().width(), s.height());
+    top->setMaximumSize( app().ui()->inspector().width(), s.height());
     top->setSizePolicy( QSizePolicy::Fixed, QSizePolicy::Fixed);
     return top;
 }
@@ -404,7 +406,7 @@ void float3_param_t::value_changed( double value)
 void float3_param_t::spinbox_pressed()
 {
     if( track_mouse())
-        ui::user_interface_t::Instance().begin_interaction();
+        app().ui()->begin_interaction();
 
     param_set()->begin_edit();
 
@@ -452,9 +454,9 @@ void float3_param_t::spinbox_dragged( double value)
     if( track_mouse())
         param_set()->notify_parent();
 	else
-		ui::viewer_t::Instance().update();
+		app().ui()->viewer().update();
 	
-    ui::user_interface_t::Instance().update_anim_editors();
+    app().ui()->update_anim_editors();
 }
 
 void float3_param_t::spinbox_released()
@@ -462,7 +464,7 @@ void float3_param_t::spinbox_released()
     param_set()->end_edit( !track_mouse());
 
     if( track_mouse())
-        ui::user_interface_t::Instance().end_interaction();
+        app().ui()->end_interaction();
 }
 
 void float3_param_t::expression_set()

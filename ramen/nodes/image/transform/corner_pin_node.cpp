@@ -214,7 +214,7 @@ const node_metaclass_t& corner_pin_node_t::corner_pin_node_metaclass()
     return info;
 }
 
-static bool registered = node_factory_t::Instance().register_node( corner_pin_node_t::corner_pin_node_metaclass());
+static bool registered = node_factory_t::instance().register_node( corner_pin_node_t::corner_pin_node_metaclass());
 
 } // namespace
 } // namespace
