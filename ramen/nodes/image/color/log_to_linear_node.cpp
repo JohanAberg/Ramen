@@ -34,7 +34,7 @@ namespace
 enum log2lin_method
 {
     cineon_conv = 0,
-	ocio_conv, 
+	ocio_conv = 1,
     redlog_conv,
     exrdpx_conv
 };
@@ -223,54 +223,54 @@ void log_to_linear_node_t::do_process( const image::const_image_view_t& src, con
     {
 		switch( get_value<int>( param( "method")))
 		{
-		case cineon_conv:
-		{
-		    IECore::LinearToCineonDataConversion<float,boost::uint16_t> conv( get_value<float>( param( "cin_gamma")),
-																		     get_value<float>( param( "cin_white")),
-																		     get_value<float>( param( "cin_black")));
+            case cineon_conv:
+            {
+                IECore::LinearToCineonDataConversion<float,boost::uint16_t> conv( get_value<float>( param( "cin_gamma")),
+                                                                                 get_value<float>( param( "cin_white")),
+                                                                                 get_value<float>( param( "cin_black")));
 
-			boost::scoped_array<boost::uint16_t> lut( new boost::uint16_t[1<<16]);
-			init_lut( lut.get(), conv);
-			cineon_linear_to_log_lut_fun f( lut.get());
-			boost::gil::tbb_transform_pixels( src, dst, f);
-		}
-		break;
+                boost::scoped_array<boost::uint16_t> lut( new boost::uint16_t[1<<16]);
+                init_lut( lut.get(), conv);
+                cineon_linear_to_log_lut_fun f( lut.get());
+                boost::gil::tbb_transform_pixels( src, dst, f);
+            }
+            break;
 
-		case ocio_conv:
-		{
-			boost::gil::copy_pixels( src, dst);
-			
-			try
-			{												
-				OCIO::ConstConfigRcPtr config = app().ocio_manager().config();
-				OCIO::ConstProcessorRcPtr proc = config->getProcessor( OCIO::ROLE_SCENE_LINEAR, OCIO::ROLE_COMPOSITING_LOG);
-				image::ocio_transform( dst, proc);
-			}
-			catch( OCIO::Exception& e)
-			{
-				// error(e.what());
-				return;
-			}
-		}
-		break;
-		
-		case redlog_conv:
-		{
-			IECore::LinearToCineonDataConversion<float,boost::uint16_t> conv( 1.02f, 1023, 0);
+            case ocio_conv:
+            {
+                boost::gil::copy_pixels( src, dst);
 
-			boost::scoped_array<boost::uint16_t> lut( new boost::uint16_t[1<<16]);
-			init_lut( lut.get(), conv);
-			cineon_linear_to_log_lut_fun f( lut.get());
-			boost::gil::tbb_transform_pixels( src, dst, f);
-		}
-		break;
+                try
+                {
+                    OCIO::ConstConfigRcPtr config = app().ocio_manager().config();
+                    OCIO::ConstProcessorRcPtr proc = config->getProcessor( OCIO::ROLE_SCENE_LINEAR, OCIO::ROLE_COMPOSITING_LOG);
+                    image::ocio_transform( dst, proc);
+                }
+                catch( OCIO::Exception& e)
+                {
+                    // error(e.what());
+                    return;
+                }
+            }
+            break;
 
-		case exrdpx_conv:
-		{
-			exrdpx_linear_to_log_fun f;
-			boost::gil::tbb_transform_pixels( src, dst, f);
-		}
-		break;
+            case redlog_conv:
+            {
+                IECore::LinearToCineonDataConversion<float,boost::uint16_t> conv( 1.02f, 1023, 0);
+
+                boost::scoped_array<boost::uint16_t> lut( new boost::uint16_t[1<<16]);
+                init_lut( lut.get(), conv);
+                cineon_linear_to_log_lut_fun f( lut.get());
+                boost::gil::tbb_transform_pixels( src, dst, f);
+            }
+            break;
+
+            case exrdpx_conv:
+            {
+                exrdpx_linear_to_log_fun f;
+                boost::gil::tbb_transform_pixels( src, dst, f);
+            }
+            break;
 		}
     }
     else

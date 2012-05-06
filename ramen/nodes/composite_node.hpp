@@ -28,29 +28,35 @@ public:
 	virtual ~composite_node_t();
 
 	/// Dispatch function for visitor pattern.
-	//virtual void accept( node_visitor& v);
+	virtual void accept( node_visitor& v);
 
-	typedef node_graph_t::const_node_iterator const_node_iterator;
+    /// Returns a const reference to the node graph inside this node.
+    const node_graph_t& graph() const { return g_;}
 
-	/// Returns a const begin node iterator.
-	const_node_iterator nodes_begin() const { return g_.nodes_begin();}
+    /// Returns a reference to the node graph inside this node.
+    node_graph_t& graph() { return g_;}
 
-	/// Returns a const end node iterator.
-	const_node_iterator nodes_end() const { return g_.nodes_end();}
+	typedef node_graph_t::const_node_iterator const_iterator;
 
-	typedef node_graph_t::node_iterator node_iterator;
+	/// Returns a const iterator to the first children node.
+	const_iterator begin() const { return g_.nodes_begin();}
 
-	/// Returns a begin node iterator.
-	node_iterator nodes_begin() { return g_.nodes_begin();}
+	/// Returns a const end iterator.
+	const_iterator end() const { return g_.nodes_end();}
 
-	/// Returns an end node iterator.
-	node_iterator nodes_end() { return g_.nodes_end();}
+	typedef node_graph_t::node_iterator iterator;
+
+    /// Returns an iterator to the first children node.
+	iterator begin() { return g_.nodes_begin();}
+
+	/// Returns an end iterator.
+	iterator end() { return g_.nodes_end();}
 
     /// Adds a node as a child of this node.
-    virtual void add_child_node( std::auto_ptr<node_t> n);
+    virtual void add_node( std::auto_ptr<node_t> n);
 
     /// Removes a child node from this node.
-    virtual std::auto_ptr<node_t> remove_child_node( node_t *n);
+    virtual std::auto_ptr<node_t> remove_node( node_t *n);
 
 protected:
 

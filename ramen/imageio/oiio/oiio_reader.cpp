@@ -1,4 +1,6 @@
 // Copyright (c) 2010 Esteban Tovagliari
+// Licensed under the terms of the CDDL License.
+// See CDDL_LICENSE.txt for a copy of the license.
 
 #include<ramen/imageio/oiio/oiio_reader.hpp>
 
@@ -73,47 +75,47 @@ void oiio_reader_t::do_read_image( const image::image_view_t& view, const Imath:
 		
 				switch( spec.nchannels)
 				{
-				case 1:
-				for( ; dst_it != view.row_end( yy); ++dst_it)
-				{
-					boost::gil::get_color( *dst_it, boost::gil::red_t())	= q[0];
-					boost::gil::get_color( *dst_it, boost::gil::green_t())	= q[0];
-					boost::gil::get_color( *dst_it, boost::gil::blue_t())	= q[0];
-					boost::gil::get_color( *dst_it, boost::gil::alpha_t())	= 1.0f;
-					q += ( spec.nchannels * subsample);
-		
-					if( q >= q_end)
-						q = buffer.get() + ( crop.max.x * spec.nchannels);
-				}
-				break;
-	
-				case 3:
-					for( ; dst_it != view.row_end( yy); ++dst_it)
-					{
-						boost::gil::get_color( *dst_it, boost::gil::red_t())	= q[0];
-						boost::gil::get_color( *dst_it, boost::gil::green_t())	= q[1];
-						boost::gil::get_color( *dst_it, boost::gil::blue_t())	= q[2];
-						boost::gil::get_color( *dst_it, boost::gil::alpha_t())	= 1.0f;
-						q += ( spec.nchannels * subsample);
-			
-						if( q >= q_end)
-							q = buffer.get() + ( crop.max.x * spec.nchannels);
-					}
-				break;
-	
-				case 4:
-					for( ; dst_it != view.row_end( yy); ++dst_it)
-					{
-						boost::gil::get_color( *dst_it, boost::gil::red_t())	= q[0];
-						boost::gil::get_color( *dst_it, boost::gil::green_t())	= q[1];
-						boost::gil::get_color( *dst_it, boost::gil::blue_t())	= q[2];
-						boost::gil::get_color( *dst_it, boost::gil::alpha_t())	= q[3];
-						q += ( spec.nchannels * subsample);
-			
-						if( q >= q_end)
-							q = buffer.get() + ( crop.max.x * spec.nchannels);
-					}
-				break;
+                    case 1:
+                        for( ; dst_it != view.row_end( yy); ++dst_it)
+                        {
+                            boost::gil::get_color( *dst_it, boost::gil::red_t())	= q[0];
+                            boost::gil::get_color( *dst_it, boost::gil::green_t())	= q[0];
+                            boost::gil::get_color( *dst_it, boost::gil::blue_t())	= q[0];
+                            boost::gil::get_color( *dst_it, boost::gil::alpha_t())	= 1.0f;
+                            q += ( spec.nchannels * subsample);
+
+                            if( q >= q_end)
+                                q = buffer.get() + ( crop.max.x * spec.nchannels);
+                        }
+                    break;
+
+                    case 3:
+                        for( ; dst_it != view.row_end( yy); ++dst_it)
+                        {
+                            boost::gil::get_color( *dst_it, boost::gil::red_t())	= q[0];
+                            boost::gil::get_color( *dst_it, boost::gil::green_t())	= q[1];
+                            boost::gil::get_color( *dst_it, boost::gil::blue_t())	= q[2];
+                            boost::gil::get_color( *dst_it, boost::gil::alpha_t())	= 1.0f;
+                            q += ( spec.nchannels * subsample);
+
+                            if( q >= q_end)
+                                q = buffer.get() + ( crop.max.x * spec.nchannels);
+                        }
+                    break;
+
+                    case 4:
+                        for( ; dst_it != view.row_end( yy); ++dst_it)
+                        {
+                            boost::gil::get_color( *dst_it, boost::gil::red_t())	= q[0];
+                            boost::gil::get_color( *dst_it, boost::gil::green_t())	= q[1];
+                            boost::gil::get_color( *dst_it, boost::gil::blue_t())	= q[2];
+                            boost::gil::get_color( *dst_it, boost::gil::alpha_t())	= q[3];
+                            q += ( spec.nchannels * subsample);
+
+                            if( q >= q_end)
+                                q = buffer.get() + ( crop.max.x * spec.nchannels);
+                        }
+                    break;
 				}
 
 				++yy;

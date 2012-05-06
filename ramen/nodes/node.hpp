@@ -62,9 +62,8 @@ public:
     node_t();
     virtual ~node_t();
 
-    // clone
-    node_t *clone() const;
-    virtual void cloned() {}
+    /// Called for the new node, after being copied.
+    virtual void cloned();
 
     // inputs
     virtual std::size_t num_inputs() const { return inputs_.size();}
@@ -246,8 +245,6 @@ protected:
 
 private:
 
-    virtual node_t *do_clone() const = 0;
-
     // connections
     virtual void do_connected( node_t *src, int port);
 
@@ -298,7 +295,8 @@ private:
 	int dependency_count_;
 };
 
-node_t* new_clone( const node_t& other);
+/// Makes a copy of a node.
+node_t *new_clone( const node_t& other);
 
 } // namespace
 

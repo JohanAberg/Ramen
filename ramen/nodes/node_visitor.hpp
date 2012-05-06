@@ -19,6 +19,7 @@ public:
     virtual ~node_visitor();
 
     virtual void visit( node_t *n) = 0;
+    virtual void visit( composite_node_t *n) = 0;
     virtual void visit( image_node_t *n) = 0;
 };
 
@@ -29,6 +30,7 @@ public:
     virtual ~generic_node_visitor();
 
     virtual void visit( node_t *n) = 0;
+    virtual void visit( composite_node_t *n);
     virtual void visit( image_node_t *n);
 };
 

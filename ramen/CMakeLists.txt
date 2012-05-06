@@ -248,14 +248,14 @@ SET( RAMEN_SOURCES  main.cpp
                     imageio/multichannel_reader.cpp
                     imageio/reader.cpp
 
-                    imageio/cineon/cineon_format.cpp
-                    imageio/cineon/cineon_reader.cpp
-                    imageio/cineon/cineon_writer.cpp
+                    #imageio/cineon/cineon_format.cpp
+                    #imageio/cineon/cineon_reader.cpp
+                    #imageio/cineon/cineon_writer.cpp
 
-                    imageio/dpx/dpx_format.cpp
-                    imageio/dpx/dpx_reader.cpp
-                    imageio/dpx/dpx_writer.cpp
-                    imageio/dpx/dpxHeader.cpp
+                    #imageio/dpx/dpx_format.cpp
+                    #imageio/dpx/dpx_reader.cpp
+                    #imageio/dpx/dpx_writer.cpp
+                    #imageio/dpx/dpxHeader.cpp
 
                     imageio/exr/exr_format.cpp
                     imageio/exr/exr_reader.cpp

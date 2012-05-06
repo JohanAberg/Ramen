@@ -38,13 +38,32 @@
 
 #include<algorithm>
 
-#include<IECore/ImathRandAdapter.h>
-#include<IECore/PerlinNoise.h>
-
 namespace ramen
 {
 namespace noise
 {
+namespace
+{
+
+template<typename T>
+class imath_rand_adapter
+{
+public:
+
+	imath_rand_adapter( unsigned long int seed) : rand_( seed) {}
+
+	int operator()( int n)
+	{
+		int result = rand_.nexti() % n;
+		return result;
+	}
+
+private:
+
+    T rand_;
+};
+
+} // unnamed
 
 unsigned char simplex_noise_t::simplex[64][4] = {
    {0, 1, 2, 3}, {0, 1, 3, 2}, {0, 0, 0, 0}, {0, 2, 3, 1},
@@ -70,7 +89,7 @@ simplex_noise_t::simplex_noise_t( int seed)
 	for( int i = 0; i < 256; ++i)
 		perm[i] = i;
 
-	IECore::ImathRandAdapter<Imath::Rand32> random( seed);
+	imath_rand_adapter<Imath::Rand32> random( seed);
 	std::random_shuffle( perm, perm + 256, random);
 	std::copy( perm, perm + 256, perm + 256 );
 }

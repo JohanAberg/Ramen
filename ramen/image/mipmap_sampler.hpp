@@ -8,11 +8,11 @@
 #include<OpenEXR/ImathVec.h>
 #include<OpenEXR/ImathMath.h>
 
-#include<IECore/FastFloat.h>
-
 #include<ramen/image/typedefs.hpp>
 
 #include<ramen/assert.hpp>
+
+#include<ramen/math/fast_float.hpp>
 
 namespace ramen
 {
@@ -72,12 +72,12 @@ public:
 	{
 		RAMEN_ASSERT( has_top_sampler_);
 
-		int y = IECore::fastFloatFloor( p.y);
+		int y = math::fast_float_floor( p.y);
 
 		if( y < src_area().min.y || y > src_area().max.y)
 	        return pixel_t( 0, 0, 0, 0);
 
-		int x = IECore::fastFloatFloor( p.x);
+		int x = math::fast_float_floor( p.x);
 
 		if( x < src_area().min.x || x > src_area().max.x)
 	        return pixel_t( 0, 0, 0, 0);

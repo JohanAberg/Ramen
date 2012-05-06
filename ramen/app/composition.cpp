@@ -38,6 +38,7 @@ struct add_node_visitor : public node_visitor
 	add_node_visitor( render::context_t& context) : context_( context){}
 
     virtual void visit( node_t *n) {}
+    virtual void visit( composite_node_t *n) {}
 
 	virtual void visit( image_node_t *n)
 	{

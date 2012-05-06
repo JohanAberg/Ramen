@@ -25,9 +25,9 @@ composite_node_t::composite_node_t( const composite_node_t& other) : node_t( oth
 
 composite_node_t::~composite_node_t() {}
 
-//void composite_node_t::accept( node_visitor& v) { v.visit( this);}
+void composite_node_t::accept( node_visitor& v) { v.visit( this);}
 
-void composite_node_t::add_child_node( std::auto_ptr<node_t> n)
+void composite_node_t::add_node( std::auto_ptr<node_t> n)
 {
     RAMEN_ASSERT( false);
 
@@ -44,7 +44,7 @@ void composite_node_t::add_child_node( std::auto_ptr<node_t> n)
     */
 }
 
-std::auto_ptr<node_t> composite_node_t::remove_child_node( node_t *n)
+std::auto_ptr<node_t> composite_node_t::remove_node( node_t *n)
 {
     RAMEN_ASSERT( false);
 

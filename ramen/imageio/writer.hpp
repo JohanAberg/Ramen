@@ -1,4 +1,6 @@
 // Copyright (c) 2010 Esteban Tovagliari
+// Licensed under the terms of the CDDL License.
+// See CDDL_LICENSE.txt for a copy of the license.
 
 #ifndef RAMEN_IMAGEIO_WRITER_HPP
 #define	RAMEN_IMAGEIO_WRITER_HPP
@@ -12,11 +14,11 @@
 #include<adobe/dictionary.hpp>
 #include<adobe/algorithm/clamp.hpp>
 
-#include<IECore/FastFloat.h>
-
 #include<ramen/assert.hpp>
 
 #include<ramen/filesystem/path.hpp>
+
+#include<ramen/math/fast_float.hpp>
 
 #include<ramen/image/typedefs.hpp>
 
@@ -46,12 +48,12 @@ protected:
 
     boost::uint8_t convert8( float x) const
     {
-       return IECore::fastFloat2Int( adobe::clamp( x, 0.0f, 1.0f) * 255.0);
+       return math::fast_float_to_int( adobe::clamp( x, 0.0f, 1.0f) * 255.0);
     }
 
     boost::uint16_t convert16( float x) const
     {
-       return IECore::fastFloat2Int( adobe::clamp( x, 0.0f, 1.0f) * 65535.0);
+       return math::fast_float_to_int( adobe::clamp( x, 0.0f, 1.0f) * 65535.0);
     }
 
     template<class PixelIter>

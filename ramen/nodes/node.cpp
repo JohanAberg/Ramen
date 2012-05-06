@@ -54,16 +54,12 @@ node_t::node_t( const node_t& other) : composite_parameterised_t( other), output
 
 node_t::~node_t() {}
 
-node_t *node_t::clone() const
+void node_t::cloned()
 {
-    node_t *n = do_clone();
+    for( int i = 0; i < num_inputs(); ++i)
+        connected( 0, i);
 
-    for( int i = 0; i < n->num_inputs(); ++i)
-        n->connected( 0, i);
-
-    n->create_manipulators();
-    n->cloned();
-    return n;
+    create_manipulators();
 }
 
 // visitor
@@ -640,9 +636,9 @@ void node_t::write_node_info( serialization::yaml_oarchive_t& out) const
 		out << YAML::Key << "num_inputs" << YAML::Value << num_inputs();
 }
 
-node_t* new_clone( const node_t& other)
+node_t *new_clone( const node_t& other)
 {
-    return other.clone();
+    return dynamic_cast<node_t*>( new_clone( dynamic_cast<const parameterised_t&>( other)));
 }
 
 } // namespace
