@@ -576,7 +576,7 @@ void main_window_t::save_document_as()
 		else
 		{
 			update_recent_files_menu( app().document().file());
-			app().document().undo_stack().clear();
+			app().document().undo_stack().clear_all();
 		}
 		
 		app().ui()->update();
@@ -595,7 +595,7 @@ void main_window_t::import_composition()
             boost::filesystem::path p( fname.toStdString());
             std::auto_ptr<serialization::yaml_iarchive_t> in( ramen::import_composition( p));
             app().document().set_dirty( true);
-            app().document().undo_stack().clear();
+            app().document().undo_stack().clear_all();
 			
 			// report errors to the user
 			std::string err = in->errors();

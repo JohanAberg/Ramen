@@ -39,7 +39,7 @@ public:
     parameterised_t();
 
     /// Makes a copy of the parameterised.
-    node_t *clone() const;
+    parameterised_t *clone() const;
 
     /// Called for the new parameterised, after being copied.
     virtual void cloned() {}

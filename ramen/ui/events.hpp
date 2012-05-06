@@ -16,7 +16,10 @@ namespace ramen
 namespace ui
 {
 
-// base event class
+/**
+\ingroup events
+\brief base class for events
+*/
 struct event_t
 {
     enum modifiers_t
@@ -38,7 +41,10 @@ struct event_t
 	int subsample;
 };
 
-// key events
+/**
+\ingroup events
+\brief base class for key events
+*/
 struct key_event_t : public event_t
 {
     enum key_t
@@ -85,13 +91,34 @@ struct key_event_t : public event_t
     key_t key;
 };
 
+/**
+\ingroup events
+\brief key press event class
+*/
 struct key_press_event_t    : public key_event_t {};
+
+/**
+\ingroup events
+\brief key release event class
+*/
 struct key_release_event_t  : public key_event_t {};
 
-// mouse events (2D)
+/**
+\ingroup events
+\brief mouse enter event class
+*/
 struct mouse_enter_event_t : public event_t {};
+
+/**
+\ingroup events
+\brief mouse leave event class
+*/
 struct mouse_leave_event_t : public event_t {};
 
+/**
+\ingroup events
+\brief base class for mouse events
+*/
 struct mouse_event_t : public event_t
 {
     enum mouse_button_t
@@ -110,10 +137,22 @@ struct mouse_event_t : public event_t
     Imath::V2f wpos;
 };
 
+/**
+\ingroup events
+\brief mouse press event class
+*/
 struct mouse_press_event_t : public mouse_event_t {};
 
+/**
+\ingroup events
+\brief mouse move event class
+*/
 struct mouse_move_event_t : public mouse_event_t {};
 
+/**
+\ingroup events
+\brief mouse drag event class
+*/
 struct mouse_drag_event_t : public mouse_event_t
 {
     bool first_drag;
@@ -121,6 +160,10 @@ struct mouse_drag_event_t : public mouse_event_t
     Imath::V2f click_wpos, last_wpos;
 };
 
+/**
+\ingroup events
+\brief mouse release event class
+*/
 struct mouse_release_event_t : public mouse_event_t
 {
     bool dragged;
@@ -128,7 +171,10 @@ struct mouse_release_event_t : public mouse_event_t
     Imath::V2f click_wpos;
 };
 
-// redraw
+/**
+\ingroup events
+\brief paint event class
+*/
 struct paint_event_t
 {
 	paint_event_t();

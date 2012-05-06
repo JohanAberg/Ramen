@@ -22,6 +22,7 @@
 #include<ramen/ui/node_menu.hpp>
 #include<ramen/ui/compview/composition_view_fwd.hpp>
 #include<ramen/ui/time_controls_fwd.hpp>
+#include<ramen/ui/widgets/time_slider_fwd.hpp>
 
 class QAction;
 class QMenu;
@@ -35,9 +36,10 @@ namespace ramen
 namespace ui
 {
 
-class composition_view_t;
-class time_slider_t;
-
+/**
+\ingroup ui
+\brief main window class.
+*/
 class main_window_t : public QMainWindow
 {
     Q_OBJECT

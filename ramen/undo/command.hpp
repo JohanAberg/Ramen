@@ -15,23 +15,45 @@ namespace ramen
 namespace undo
 {
 
+/*!
+\ingroup undo
+\brief Base class for actions that can be undone and redone.
+*/
 class command_t
 {
 public:
 
+    /// Constructor.
 	command_t();
+
+    /*!
+     Constructor.
+     \param name Command name.
+     */
     explicit command_t( const std::string& name);
+
+    /// Destructor.
     virtual ~command_t();
 
+    /// Returns this command name.
     const std::string& name() const;
-	void set_name( const std::string& name) { name_ = name;}
 
+    /// Sets this command name.
+    void set_name( const std::string& name) { name_ = name;}
+
+    /// Returns true if this command is already executed.
     bool done() const { return done_;}
+
+    /// Sets if this command is executed.
     void set_done( bool b);
 
+    /// For composite commands, returns true if this command is empty.
 	virtual bool empty() const { return false;}
 	
+    /// Undoes this command.
     virtual void undo();
+
+    /// Redoes this command.
     virtual void redo();
 
 protected:
@@ -41,14 +63,28 @@ protected:
     bool done_;
 };
 
+/*!
+\ingroup undo
+\brief Generic command that uses boost::functions for undo and redo.
+*/
 class generic_command_t : public command_t
 {
 public:
 
     typedef boost::function<void()> function_type;
 
+    /*!
+	 Constructor
+     \param name This command name, for undo / redo menus.
+	 \param undo_fun Function to call for undo.
+	 \param redo_fun Function to call for redo.
+	 */
     generic_command_t( const std::string& name, const function_type& undo_fun, const function_type& redo_fun);
+
+    /// Undoes this command.
     virtual void undo();
+
+    /// Redoes this command.
     virtual void redo();
 
 private:
@@ -61,13 +97,19 @@ class composite_command_t : public command_t
 {
 public:
 
-    composite_command_t( const std::string& name);
+    /// Constructor.
+    explicit composite_command_t( const std::string& name);
 
+    /// Undoes this command.
     virtual void undo();
+
+    /// Redoes this command.
     virtual void redo();
 
+    /// Returns true if this command is empty.
     virtual bool empty() const { return commands_.empty();}
 
+    /// Adds a child command to this command.
     void push_back( std::auto_ptr<command_t> c);
 
 protected:

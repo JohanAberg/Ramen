@@ -71,7 +71,7 @@ editor_t::~editor_t() { window_->deleteLater();}
 void editor_t::run()
 {
 	python::console_t::instance().clear();
-    app().document().undo_stack().clear();
+    app().document().undo_stack().clear_all();
 
     QString script = edit_->toPlainText();
 

@@ -5,6 +5,8 @@
 #ifndef RAMEN_NODES_NODE_GRAPH_HPP
 #define RAMEN_NODES_NODE_GRAPH_HPP
 
+#include<ramen/nodes/node_graph_fwd.hpp>
+
 #include<algorithm>
 #include<memory>
 #include<vector>

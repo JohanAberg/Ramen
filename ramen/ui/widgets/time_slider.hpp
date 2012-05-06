@@ -1,13 +1,17 @@
 // Copyright (c) 2010 Esteban Tovagliari
+// Licensed under the terms of the CDDL License.
+// See CDDL_LICENSE.txt for a copy of the license.
 
 #ifndef RAMEN_UI_TIME_SLIDER_HPP
 #define	RAMEN_UI_TIME_SLIDER_HPP
 
+#include<ramen/ui/widgets/time_slider_fwd.hpp>
+
 #include<QWidget>
 
-class QSlider;
-
 #include<ramen/ui/widgets/double_spinbox_fwd.hpp>
+
+class QSlider;
 
 namespace ramen
 {

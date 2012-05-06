@@ -4,6 +4,10 @@
 
 #include<ramen/nodes/composite_node.hpp>
 
+#include<boost/bind.hpp>
+
+#include<adobe/algorithm/for_each.hpp>
+
 #include<ramen/assert.hpp>
 
 #include<ramen/nodes/world_node.hpp>
@@ -24,6 +28,11 @@ composite_node_t::composite_node_t( const composite_node_t& other) : node_t( oth
 }
 
 composite_node_t::~composite_node_t() {}
+
+void composite_node_t::cloned()
+{
+    adobe::for_each( graph().nodes(), boost::bind( &node_t::cloned, _1));
+}
 
 void composite_node_t::accept( node_visitor& v) { v.visit( this);}
 
@@ -56,6 +65,11 @@ std::auto_ptr<node_t> composite_node_t::remove_node( node_t *n)
 
     return g_.remove_node( n);
     */
+}
+
+void composite_node_t::set_layout( std::auto_ptr<ui::graph_layout_t> layout)
+{
+    layout_ = layout;
 }
 
 } // namespace

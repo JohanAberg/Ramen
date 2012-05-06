@@ -11,6 +11,11 @@
 
 #include<boost/noncopyable.hpp>
 
+#include<OpenEXR/ImathBox.h>
+
+#include<ramen/nodes/node_fwd.hpp>
+#include<ramen/nodes/node_graph_fwd.hpp>
+
 namespace ramen
 {
 namespace ui
@@ -24,6 +29,11 @@ public:
     virtual ~graph_layout_t();
 
     graph_layout_t *clone() const;
+
+    Imath::Box2f node_bbox( const node_t& n) const;
+
+    virtual void place_node( node_t& n, const node_graph_t& g) = 0;
+    virtual void layout_selected_nodes( node_graph_t& g) = 0;
 
 protected:
 
@@ -42,6 +52,9 @@ class RAMEN_API simple_graph_layout_t : public graph_layout_t
 public:
 
     simple_graph_layout_t();
+
+    virtual void place_node( node_t& n, const node_graph_t& g);
+    virtual void layout_selected_nodes( node_graph_t& g);
 
 protected:
 

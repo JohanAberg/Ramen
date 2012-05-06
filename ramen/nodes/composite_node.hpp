@@ -7,7 +7,7 @@
 
 #include<ramen/nodes/node.hpp>
 
-#include<boost/scoped_ptr.hpp>
+#include<memory>
 
 #include<ramen/nodes/node_graph.hpp>
 #include<ramen/nodes/node_visitor.hpp>
@@ -25,7 +25,14 @@ class composite_node_t : public node_t
 {
 public:
 
+    /// Constructor.
+    composite_node_t();
+
+    /// Destructor.
 	virtual ~composite_node_t();
+
+    /// Called for the new node, after being copied.
+    virtual void cloned();
 
 	/// Dispatch function for visitor pattern.
 	virtual void accept( node_visitor& v);
@@ -58,9 +65,16 @@ public:
     /// Removes a child node from this node.
     virtual std::auto_ptr<node_t> remove_node( node_t *n);
 
-protected:
+    /// Returns a const reference to this node graph layout.
+    const ui::graph_layout_t& layout() const { return *layout_;}
 
-	composite_node_t();
+    /// Returns a reference to this node graph layout.
+    ui::graph_layout_t& layout() { return *layout_;}
+
+    /// Sets this node graph layout.
+    void set_layout( std::auto_ptr<ui::graph_layout_t> layout);
+
+protected:
 
 	composite_node_t( const composite_node_t& other);
 	void operator=( const composite_node_t&);
@@ -68,7 +82,7 @@ protected:
 private:
 
 	node_graph_t g_;
-	boost::scoped_ptr<ui::graph_layout_t> layout_;
+	std::auto_ptr<ui::graph_layout_t> layout_;
 };
 
 } // namespace

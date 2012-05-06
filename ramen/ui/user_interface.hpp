@@ -36,6 +36,10 @@ namespace ramen
 namespace ui
 {
 
+/**
+\ingroup ui
+\brief user interface class.
+*/
 class user_interface_t : public QObject, boost::noncopyable
 {
     Q_OBJECT

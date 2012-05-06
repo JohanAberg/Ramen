@@ -12,10 +12,15 @@ namespace undo
 stack_t::stack_t() {}
 stack_t::~stack_t() {}
 
-void stack_t::clear()
+void stack_t::clear_redo()
 {
-    undo_stack_.clear();
     redo_stack_.clear();
+}
+
+void stack_t::clear_all()
+{
+    clear_redo();
+    undo_stack_.clear();
 }
 
 void stack_t::erase_last_command() { undo_stack_.pop_back();}

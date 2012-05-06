@@ -22,15 +22,27 @@ namespace ramen
 namespace undo
 {
 
+/*!
+\ingroup undo
+\brief An undo stack.
+*/
 class stack_t : boost::noncopyable
 {
 public:
 
+    /// Constructor.
     stack_t();
+
+    /// Destructor.
     ~stack_t();
 
-    void clear();
+    /// Clears all redo commands.
+    void clear_redo();
 
+    /// Clears all commands.
+    void clear_all();
+
+    /// Pushes an undo command.
     template<class T>
     void push_back( std::auto_ptr<T> c)
     {
@@ -41,15 +53,25 @@ public:
 			undo_stack_.pop_front();
     }
 
+    /// Erases the last undo command.
     void erase_last_command();
 
+    /// Returns the last undo command.
     command_t& last_undo_command() { return undo_stack_.back();}
+
+    /// Returns the last redo command.
     command_t& last_redo_command() { return redo_stack_.back();}
 
+    /// Undoes the last command.
     void undo();
+
+    /// Redoes the last command.
     void redo();
 
+    /// Returns true if the undo stack is empty.
     bool undo_empty() const { return undo_stack_.empty();}
+
+    /// Returns true if the redo stack is empty.
     bool redo_empty() const { return redo_stack_.empty();}
 	
 private:
