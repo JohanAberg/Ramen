@@ -28,6 +28,10 @@
 namespace ramen
 {
 
+/*!
+\ingroup app
+\brief Composition class.
+*/
 class composition_t : boost::noncopyable
 {
 public:

@@ -11,6 +11,7 @@
 #include<ramen/assert.hpp>
 
 #include<ramen/nodes/world_node.hpp>
+#include<ramen/nodes/node_factory.hpp>
 
 #include<ramen/ui/graph_layout.hpp>
 
@@ -35,6 +36,38 @@ void composite_node_t::cloned()
 }
 
 void composite_node_t::accept( node_visitor& v) { v.visit( this);}
+
+node_t *composite_node_t::create_node_by_id( const std::string& id, bool ui)
+{
+    std::auto_ptr<node_t> n( do_create_node_by_id( id, ui));
+    node_t *nn = n.get();
+
+    if( nn)
+        add_node( n);
+
+    return nn;
+}
+
+std::auto_ptr<node_t> composite_node_t::do_create_node_by_id( const std::string& id, bool ui) const
+{
+    return node_factory_t::instance().create_by_id( id, ui);
+}
+
+node_t *composite_node_t::create_node_by_id_with_version( const std::string& id, const std::pair<int, int>& version)
+{
+    std::auto_ptr<node_t> n( do_create_node_by_id_with_version( id, version));
+    node_t *nn = n.get();
+
+    if( nn)
+        add_node( n);
+
+    return nn;
+}
+
+std::auto_ptr<node_t> composite_node_t::do_create_node_by_id_with_version( const std::string& id, const std::pair<int, int>& version) const
+{
+    return node_factory_t::instance().create_by_id_with_version( id, version);
+}
 
 void composite_node_t::add_node( std::auto_ptr<node_t> n)
 {

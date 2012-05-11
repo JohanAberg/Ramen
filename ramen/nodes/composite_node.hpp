@@ -59,6 +59,12 @@ public:
 	/// Returns an end iterator.
 	iterator end() { return g_.nodes_end();}
 
+    /// Creates a new node as a child of this node.
+    node_t *create_node_by_id( const std::string& id, bool ui = false);
+
+    /// Creates a new node as a child of this node.
+    node_t *create_node_by_id_with_version( const std::string& id, const std::pair<int, int>& version);
+
     /// Adds a node as a child of this node.
     virtual void add_node( std::auto_ptr<node_t> n);
 
@@ -78,6 +84,10 @@ protected:
 
 	composite_node_t( const composite_node_t& other);
 	void operator=( const composite_node_t&);
+
+    // node factory
+    std::auto_ptr<node_t> do_create_node_by_id( const std::string& id, bool ui = false) const;
+    std::auto_ptr<node_t> do_create_node_by_id_with_version( const std::string& id, const std::pair<int, int>& version) const;
 
 private:
 

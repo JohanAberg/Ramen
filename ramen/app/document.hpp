@@ -22,6 +22,10 @@
 namespace ramen
 {
 
+/*!
+\ingroup app
+\brief Document class.
+*/
 class document_t : boost::noncopyable
 {
 public:
