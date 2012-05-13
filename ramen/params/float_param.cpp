@@ -6,8 +6,12 @@
 
 #include<boost/bind.hpp>
 
+#include<QLabel>
+
 #include<ramen/app/application.hpp>
 #include<ramen/app/composition.hpp>
+
+#include<ramen/params/parameterised.hpp>
 
 #include<ramen/ui/user_interface.hpp>
 #include<ramen/ui/anim/anim_editor.hpp>
@@ -15,13 +19,9 @@
 
 #include<ramen/serialization/yaml_node.hpp>
 #include<ramen/serialization/yaml_oarchive.hpp>
-
-#ifndef RAMEN_NO_GUI
-	#include<QLabel>
 	
-	#include<ramen/ui/inspector/inspector.hpp>
-	#include<ramen/ui/widgets/param_spinbox.hpp>
-#endif
+#include<ramen/ui/inspector/inspector.hpp>
+#include<ramen/ui/widgets/param_spinbox.hpp>
 
 namespace ramen
 {
@@ -286,8 +286,8 @@ void float_param_t::do_enable_widgets( bool e)
 		if( track_mouse())
 			param_set()->notify_parent();
 		else
-			app().ui()->viewer().update();
-	
+            parameterised()->update_overlay();
+
 		app().ui()->update_anim_editors();
 	}
 	

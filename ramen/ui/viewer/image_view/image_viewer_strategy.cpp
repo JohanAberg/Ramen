@@ -80,11 +80,17 @@ void image_viewer_strategy_t::do_begin_active_view()
 	display_transform_changed();
 
     if( node_t *n = app().ui()->active_node())
+    {
 		active_connection_ = n->changed.connect( boost::bind( &image_viewer_strategy_t::active_node_changed, this));
+        active_overlay_connection_ = n->overlay_changed.connect( boost::bind( &image_viewer_strategy_t::active_overlay_changed, this));
+    }
 
     if( node_t *n = app().ui()->context_node())
+    {
 		context_connection_ = n->changed.connect( boost::bind( &image_viewer_strategy_t::context_node_changed, this));
-	
+        context_overlay_connection_ = n->overlay_changed.connect( boost::bind( &image_viewer_strategy_t::context_overlay_changed, this));
+    }
+
 	if( toolbar_.get())
 		toolbar_->update_widgets( visible_node());
 }
@@ -92,7 +98,9 @@ void image_viewer_strategy_t::do_begin_active_view()
 void image_viewer_strategy_t::do_end_active_view()
 {
     active_connection_.disconnect();
+    active_overlay_connection_.disconnect();
     context_connection_.disconnect();
+    context_overlay_connection_.disconnect();
 	clear_texture();
 }
 
@@ -104,10 +112,12 @@ bool image_viewer_strategy_t::can_display_node( node_t *n) const
 void image_viewer_strategy_t::set_active_node( node_t *n, bool process)
 {
     active_connection_.disconnect();
+    active_overlay_connection_.disconnect();
 
     if( n)
     {
         active_connection_ = n->changed.connect( boost::bind( &image_viewer_strategy_t::active_node_changed, this));
+        active_overlay_connection_ = n->overlay_changed.connect( boost::bind( &image_viewer_strategy_t::active_overlay_changed, this));
 
         if( process)
             active_node_changed();
@@ -143,13 +153,17 @@ void image_viewer_strategy_t::active_node_changed()
     render_visible_node();
 }
 
+void image_viewer_strategy_t::active_overlay_changed() { parent()->update();}
+
 void image_viewer_strategy_t::set_context_node( node_t *n, bool process)
 {
     context_connection_.disconnect();
+    context_overlay_connection_.disconnect();
 
     if( n)
     {
         context_connection_ = n->changed.connect( boost::bind( &image_viewer_strategy_t::context_node_changed, this));
+        context_overlay_connection_ = n->overlay_changed.connect( boost::bind( &image_viewer_strategy_t::context_overlay_changed, this));
 
         if( process)
             context_node_changed();
@@ -181,6 +195,8 @@ void image_viewer_strategy_t::context_node_changed()
 
     render_visible_node();
 }
+
+void image_viewer_strategy_t::context_overlay_changed() {}
 
 void image_viewer_strategy_t::call_node_changed()
 {

@@ -8,10 +8,10 @@
 
 #include<adobe/algorithm/clamp.hpp>
 
-#include<ramen/nodes/node.hpp>
-
 #include<ramen/app/application.hpp>
 #include<ramen/app/document.hpp>
+
+#include<ramen/nodes/node.hpp>
 
 #include<ramen/ui/user_interface.hpp>
 #include<ramen/ui/anim/anim_editor.hpp>
@@ -421,8 +421,8 @@ void float2_param_t::do_enable_widgets( bool e)
 		if( track_mouse())
 			param_set()->notify_parent();
 		else
-			app().ui()->viewer().update();
-	
+            parameterised()->update_overlay();
+
 		app().ui()->update_anim_editors();
 	}
 	

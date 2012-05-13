@@ -231,9 +231,6 @@ void viewer_t::update_display_transform() { view_->display_transform_changed();}
 const viewer::viewer_strategy_t& viewer_t::current_viewer() const	{ return view_->strategy();}
 viewer::viewer_strategy_t& viewer_t::current_viewer()				{ return view_->strategy();}
 
-void viewer_t::update() const { view_->update();}
-void viewer_t::swap_buffers() { view_->swapBuffers();}
-
 void viewer_t::set_viewer_toolbar( QWidget *w) { viewer_toolbar_->set_contents( w);}
 
 void viewer_t::set_active_node( node_t *n)
@@ -260,7 +257,7 @@ void viewer_t::set_active_node( node_t *n)
     }
 
     view_->set_active_node( n);
-	update();
+    view_->update();
 }
 
 void viewer_t::set_context_node( node_t *n) { view_->set_context_node( n);}

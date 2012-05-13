@@ -56,6 +56,9 @@ public:
     /// Emitted when the overlay needs redrawing.
     boost::signals2::signal<void ( manipulable_t*)> overlay_changed;
 
+    /// Emits the overlay_changed signal.
+    void update_overlay() { overlay_changed( this);}
+
     /// Called when the overlay needs redrawing.
     void draw_overlay( const ui::paint_event_t& event) const;
 

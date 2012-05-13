@@ -115,8 +115,12 @@ private:
     virtual void do_end_active_view();
 
 	void active_node_changed();
-	void context_node_changed();
-	void call_node_changed();
+    void active_overlay_changed();
+
+    void context_node_changed();
+    void context_overlay_changed();
+
+    void call_node_changed();
 
 	node_t *visible_node();
 	
@@ -130,7 +134,9 @@ private:
 	ui::viewport_t viewport_;
 	
 	boost::signals2::connection active_connection_;
-	boost::signals2::connection context_connection_;
+    boost::signals2::connection active_overlay_connection_;
+    boost::signals2::connection context_connection_;
+    boost::signals2::connection context_overlay_connection_;
 
 	std::auto_ptr<ocio::gl_display_manager_t> display_;
 	image_t image_;
@@ -147,23 +153,21 @@ private:
 	bool aspect_;
 	
 	// event handling
-	bool scroll_mode_;
-	bool zoom_mode_;
-	Imath::V2f zoom_center_;
-	bool event_accepted_by_node_;
-	float aspect_ratio_;
-		
 	mouse_press_event_t     press_event_;
 	mouse_move_event_t		move_event_;
 	mouse_drag_event_t      drag_event_;
 	mouse_release_event_t   release_event_;
 	mouse_enter_event_t		enter_event_;
 	mouse_leave_event_t		leave_event_;
-	
 	key_press_event_t		key_press_event_;
 	key_release_event_t		key_release_event_;
-	
 	paint_event_t           paint_event_;
+
+    bool scroll_mode_;
+    bool zoom_mode_;
+    Imath::V2f zoom_center_;
+    bool event_accepted_by_node_;
+    float aspect_ratio_;
 };
 
 } // viewer

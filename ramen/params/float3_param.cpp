@@ -15,6 +15,8 @@
 
 #include<QLabel>
 
+#include<ramen/params/parameterised.hpp>
+
 #include<ramen/ui/user_interface.hpp>
 #include<ramen/ui/anim/anim_editor.hpp>
 #include<ramen/ui/inspector/inspector.hpp>
@@ -454,8 +456,8 @@ void float3_param_t::spinbox_dragged( double value)
     if( track_mouse())
         param_set()->notify_parent();
 	else
-		app().ui()->viewer().update();
-	
+        parameterised()->update_overlay();
+
     app().ui()->update_anim_editors();
 }
 

@@ -286,7 +286,7 @@ void roto_shape_param_t::change_shape_color()
 				   selected_->display_color().z / 255.0f);
 		display_color_->set_value( c);
 		display_color_->blockSignals( false);
-        app().ui()->viewer().update();
+        parameterised()->update_overlay();
     }
 }
 

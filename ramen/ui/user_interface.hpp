@@ -55,6 +55,10 @@ public:
     int run( const boost::filesystem::path& p = boost::filesystem::path());
     void quit();
 
+    // components
+    const main_window_t *main_window() const    { return window_;}
+    main_window_t *main_window()                { return window_;}
+
     const inspector_t& inspector() const    { return *inspector_;}
     inspector_t& inspector()                { return *inspector_;}
 
@@ -69,10 +73,9 @@ public:
     void open_document( const boost::filesystem::path& p);
     bool save_document();
 
+    // nodes
     void node_added( node_t *n);
     void node_released( node_t *n);
-
-    void update();
 
     void begin_interaction();
     void end_interaction();
@@ -84,10 +87,7 @@ public:
     node_t *context_node() const { return context_;}
     void set_context_node( node_t *n);
 
-    const main_window_t *main_window() const    { return window_;}
-    main_window_t *main_window()                { return window_;}
-
-    const QString& image_types_string() const { return image_types_str_;}
+    void update();
 
     // time
     int start_frame() const;
@@ -120,11 +120,16 @@ public:
 
     virtual bool eventFilter( QObject *watched, QEvent *event);
 
+    // render
 	boost::unique_future<bool>& render_image( render::context_t context, render::image_node_renderer_t& renderer);
 	
 	bool rendering() const { return rendering_;}
 	
-	// misc utils
+    // util
+    int viewer_toolbar_height() const;
+
+    const QString& image_types_string() const { return image_types_str_;}
+
 	QFont get_fixed_width_code_font();
 
 public Q_SLOTS:

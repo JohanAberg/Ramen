@@ -79,9 +79,6 @@ public:
 	const viewer::viewer_strategy_t& current_viewer() const;
 	viewer::viewer_strategy_t& current_viewer();	
 	
-	void update() const;
-	void swap_buffers();
-
 	void begin_interaction();
 	void end_interaction();
 
