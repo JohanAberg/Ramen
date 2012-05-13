@@ -28,7 +28,7 @@ class image_cache_t : public lru_cache_interface, boost::noncopyable
 {
 public:
 
-	typedef hash_generator_t::digest_type digest_type;
+    typedef util::hash_generator_t::digest_type digest_type;
 
     image_cache_t();
     explicit image_cache_t( image_disk_cache_t *disk_cache);

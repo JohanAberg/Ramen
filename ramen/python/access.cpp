@@ -26,8 +26,8 @@ boost::python::list access::get_param_ids( const param_set_t& p) const
 {
 	boost::python::list l;
 
-	for( std::map<std::string, param_t*>::const_iterator it( p.param_map_.begin()); it != p.param_map_.end(); ++it)
-		l.append( it->first);
+	//for( std::map<std::string, param_t*>::const_iterator it( p.param_map_.begin()); it != p.param_map_.end(); ++it)
+	//	l.append( it->first);
 
 	return l;
 }

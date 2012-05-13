@@ -43,7 +43,7 @@ private:
 
     virtual param_t *do_clone() const { return new motion_blur_param_t( *this);}
 
-	virtual void do_add_to_hash( hash_generator_t& hash_gen) const;
+    virtual void do_add_to_hash( util::hash_generator_t& hash_gen) const;
 
 	virtual void do_read( const serialization::yaml_node_t& node);
     virtual void do_write( serialization::yaml_oarchive_t& out) const;

@@ -46,7 +46,7 @@ private:
     void calc_proportional_factors();
     void set_component_value_from_slot();
 	
-	virtual void do_add_to_hash( hash_generator_t& hash_gen) const;
+    virtual void do_add_to_hash( util::hash_generator_t& hash_gen) const;
 
 	virtual boost::python::object to_python( const poly_param_value_t& v) const;
 	virtual poly_param_value_t from_python( const boost::python::object& obj) const;

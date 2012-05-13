@@ -20,14 +20,14 @@
 
 #include<ramen/anim/track.hpp>
 
-#include<ramen/Qr/QrColorButton.hpp>
-#include<ramen/Qr/ColorPicker/QrColorPicker.hpp>
-
 #include<ramen/ui/user_interface.hpp>
 #include<ramen/ui/main_window.hpp>
 #include<ramen/ui/inspector/inspector.hpp>
 #include<ramen/ui/anim/anim_editor.hpp>
 #include<ramen/ui/widgets/param_spinbox.hpp>
+#include<ramen/ui/widgets/color_button.hpp>
+#include<ramen/ui/widgets/eyedropper_button.hpp>
+#include<ramen/ui/widgets/color_picker.hpp>
 
 #include<ramen/python/util.hpp>
 
@@ -160,7 +160,7 @@ void color_param_t::do_create_tracks( anim::track_t *parent)
     parent->add_child( t);
 }
 
-void color_param_t::do_add_to_hash( hash_generator_t& hash_gen) const
+void color_param_t::do_add_to_hash( util::hash_generator_t& hash_gen) const
 { 
 	Imath::Color4f c = get_value<Imath::Color4f>( *this);
 	hash_gen << c.r <<"," << c.g << "," << c.b;
@@ -230,9 +230,9 @@ void color_param_t::do_update_widgets()
         if( input3_)
             input3_->setValue( col.a);
 
-        QrColor c( col.r, col.g, col.b, col.a);
-        c.applyGamma( 1.0 / 2.2);
-        button_->setValue( c);
+        ui::color_t c( col.r, col.g, col.b, col.a);
+        c.apply_gamma( 1.0 / 2.2);
+        button_->set_value( c);
 
         input0_->blockSignals( false);
         input1_->blockSignals( false);
@@ -265,7 +265,7 @@ QWidget *color_param_t::do_create_widgets()
 {
     QWidget *top = new QWidget();
     QLabel *label = new QLabel( top);
-    button_ = new QrColorButton( top);
+    button_ = new ui::color_button_t( top);
 
     input0_ = new ui::param_spinbox_t( *this, 0, top);
     input1_ = new ui::param_spinbox_t( *this, 1, top);
@@ -287,9 +287,9 @@ QWidget *color_param_t::do_create_widgets()
 
     button_->move( xpos, 0);
     button_->resize( s.height(), s.height());
-    button_->setValue( QrColor( std::pow( (double) col.r, 1.0 / 2.2),
-                                std::pow( (double) col.g, 1.0 / 2.2),
-                                std::pow( (double) col.b, 1.0 / 2.2)));
+    button_->set_value( ui::color_t( std::pow( (double) col.r, 1.0 / 2.2),
+                                      std::pow( (double) col.g, 1.0 / 2.2),
+                                        std::pow( (double) col.b, 1.0 / 2.2)));
 
     button_->setEnabled( enabled());
     connect( button_, SIGNAL( pressed()), this, SLOT( color_button_pressed()));
@@ -299,7 +299,7 @@ QWidget *color_param_t::do_create_widgets()
     eyedropper_->move( xpos, 0);
     eyedropper_->resize( s.height(), s.height());
     eyedropper_->setEnabled( enabled());
-    connect( eyedropper_, SIGNAL( color_picked( const QrColor&)), this, SLOT( eyedropper_color_picked( const QrColor&)));
+    connect( eyedropper_, SIGNAL( color_picked( const ramen::ui::color_t&)), this, SLOT( eyedropper_color_picked( const ramen::ui::color_t&)));
     xpos += s.height() + 3;
 
     // make spinboxes a bit smaller
@@ -312,7 +312,7 @@ QWidget *color_param_t::do_create_widgets()
     input0_->setValue( col.r);
     input0_->setSingleStep( step());
     input0_->setEnabled( enabled());
-    connect( input0_, SIGNAL( valueChanged(double)), button_, SLOT( setRed(double)));
+    connect( input0_, SIGNAL( valueChanged(double)), button_, SLOT( set_red(double)));
     connect( input0_, SIGNAL( valueChanged( double)), this, SLOT( value_changed( double)));
     connect( input0_, SIGNAL( spinBoxPressed()), this, SLOT( spinbox_pressed()));
     connect( input0_, SIGNAL( spinBoxDragged( double)), this, SLOT( spinbox_dragged( double)));
@@ -327,7 +327,7 @@ QWidget *color_param_t::do_create_widgets()
     input1_->setValue( col.g);
     input1_->setSingleStep( step());
     input1_->setEnabled( enabled());
-    connect( input1_, SIGNAL( valueChanged(double)), button_, SLOT( setGreen(double)));
+    connect( input1_, SIGNAL( valueChanged(double)), button_, SLOT( set_green(double)));
     connect( input1_, SIGNAL( valueChanged( double)), this, SLOT( value_changed( double)));
     connect( input1_, SIGNAL( spinBoxPressed()), this, SLOT( spinbox_pressed()));
     connect( input1_, SIGNAL( spinBoxDragged( double)), this, SLOT( spinbox_dragged( double)));
@@ -342,7 +342,7 @@ QWidget *color_param_t::do_create_widgets()
     input2_->setValue( col.b);
     input2_->setSingleStep( step());
     input2_->setEnabled( enabled());
-    connect( input2_, SIGNAL( valueChanged(double)), button_, SLOT( setBlue(double)));
+    connect( input2_, SIGNAL( valueChanged(double)), button_, SLOT( set_blue(double)));
     connect( input2_, SIGNAL( valueChanged( double)), this, SLOT( value_changed( double)));
     connect( input2_, SIGNAL( spinBoxPressed()), this, SLOT( spinbox_pressed()));
     connect( input2_, SIGNAL( spinBoxDragged( double)), this, SLOT( spinbox_dragged( double)));
@@ -451,7 +451,7 @@ void color_param_t::expression_set()
 {
 }
 
-void color_param_t::eyedropper_color_picked( const QrColor& c)
+void color_param_t::eyedropper_color_picked( const ramen::ui::color_t& c)
 {
     param_set()->begin_edit();
 
@@ -467,10 +467,10 @@ void color_param_t::eyedropper_color_picked( const QrColor& c)
 void color_param_t::color_button_pressed()
 {
     Imath::Color4f col = get_value<Imath::Color4f>( *this);
-    QrColor c( col.r, col.g, col.b);
-    QrColorPicker *picker = new QrColorPicker( app().ui()->main_window(), c);
+    ui::color_t c( col.r, col.g, col.b);
+    ui::color_picker_t *picker = new ui::color_picker_t( app().ui()->main_window(), c);
 
-    if( picker->exec_dialog() == QDialog::Accepted)
+    if( picker->exec() == QDialog::Accepted)
     {
         c = picker->color();
 

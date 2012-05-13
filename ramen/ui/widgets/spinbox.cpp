@@ -11,7 +11,7 @@ namespace ramen
 namespace ui
 {
 
-ramen::calculator_t spinbox_t::calc_;
+util::calculator_t spinbox_t::calc_;
 QChar spinbox_t::thousand_sep_ = 0;
 QChar spinbox_t::decimal_sep_ = 0;
 	

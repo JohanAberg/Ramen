@@ -106,7 +106,6 @@ param_set_t::param_set_t( parameterised_t *p) : parent_( p) {}
 param_set_t::param_set_t( const param_set_t& other) : params_( other.params_)
 {
     parent_ = 0;
-    adobe::for_each( params_, boost::bind( &param_set_t::add_param_to_map, this, _1));
     adobe::for_each( params_, boost::bind( &param_t::set_param_set, _1, this));
 }
 
@@ -119,48 +118,40 @@ param_set_t::~param_set_t()
 void param_set_t::clear()
 {
     command_.reset();
-    param_map_.clear();
     params_.clear();
 }
 
-void param_set_t::add_param_to_map( param_t& p)
+void param_set_t::do_add_param( param_t *p)
 {
-    // if the id string is not empty, add it to the map
-    if( !p.id().empty())
+    p->set_param_set( this);
+    params_.push_back( p);
+}
+
+const param_t& param_set_t::find( const std::string& id) const
+{
+    param_set_t& self = const_cast<param_set_t&>( *this);
+    return self.find( id);
+}
+
+param_t& param_set_t::find( const std::string& id)
+{
+    RAMEN_ASSERT( !id.empty());
+
+    BOOST_FOREACH( param_t& p, params())
     {
-        std::map<std::string, param_t*>::const_iterator it( param_map_.find( p.id()));
+        if( p.id() == id)
+            return p;
 
-        if( it != param_map_.end())
+        if( composite_param_t *cp = dynamic_cast<composite_param_t*>( &p))
         {
-            std::cout <<  "Duplicated param id: " << p.id() << " error\n";
-            abort();
+            param_t *q = cp->find( id);
+
+            if( q)
+                return *q;
         }
+    }
 
-        param_map_[ p.id()] = &p;
-    }    
-
-    if( composite_param_t *cp = dynamic_cast<composite_param_t*>( &p))
-        adobe::for_each( cp->params(), boost::bind( &param_set_t::add_param_to_map, this, _1));
-}
-
-const param_t& param_set_t::find( const std::string id) const
-{
-    std::map<std::string, param_t*>::const_iterator it( param_map_.find( id));
-
-    if( it == param_map_.end())
-		throw std::runtime_error( std::string( "Param not found: ").append( id));
-
-    return *(it->second);
-}
-
-param_t& param_set_t::find( const std::string id)
-{
-    std::map<std::string, param_t*>::iterator it( param_map_.find( id));
-
-    if( it == param_map_.end())
-		throw std::runtime_error( std::string( "Param not found: ").append( id));
-
-    return *(it->second);
+    throw std::runtime_error( std::string( "Param not found: ").append( id));
 }
 
 void param_set_t::notify_parent()
@@ -223,7 +214,7 @@ bool param_set_t::autokey() const
 		return false;
 }
 
-void param_set_t::add_to_hash( hash_generator_t& hash_gen) const
+void param_set_t::add_to_hash( util::hash_generator_t& hash_gen) const
 {
     BOOST_FOREACH( const param_t& p, params())
 	{ 

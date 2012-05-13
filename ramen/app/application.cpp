@@ -41,11 +41,13 @@
 
 #include<ramen/undo/stack.hpp>
 
+#include<ramen/util/command_line_parser.hpp>
+
+#include<ramen/python/interpreter.hpp>
+
 #include<ramen/ui/user_interface.hpp>
 #include<ramen/ui/main_window.hpp>
 #include<ramen/ui/dialogs/splash_screen.hpp>
-
-#include<ramen/python/interpreter.hpp>
 
 #ifndef NDEBUG
 	#include<ramen/test/test.hpp>
@@ -56,100 +58,102 @@ namespace ramen
 
 application_t *g_app = 0;
 
-application_t::application_t( int argc, char **argv) : system_(),
-                                                       preferences_()
+application_t::application_t( int argc, char **argv) : system_(), preferences_()
 {
-    RAMEN_ASSERT( g_app == 0 );
-    g_app = this;
+	RAMEN_ASSERT( g_app == 0 );
+	g_app = this;
 
-    max_threads_ = 0;
-    img_cache_size_ = 0;
-    command_line_ = false;
-	render_mode_ = false;    
-    quitting_ = false;
+	max_threads_ = 0;
+	img_cache_size_ = 0;
+	command_line_ = false;
+	render_mode_ = false;
+	quitting_ = false;
 
-    QApplication *q_app = new QApplication( argc, argv);
-    boost::filesystem::path bundle_path( system().app_bundle_path());
-    bundle_path /= "lib/Qt_plugins";
-    qApp->setLibraryPaths( QStringList( QString( ramen::filesystem::file_cstring( bundle_path))));
+    cmd_parser_.reset( new util::command_line_parser_t( argc, argv));
 
-    parse_command_line( argc, argv);
+	// Create QApplication
+    QApplication *q_app = new QApplication( cmd_parser_->argc, cmd_parser_->argv);
+	boost::filesystem::path bundle_path( system().app_bundle_path());
+	bundle_path /= "lib/Qt_plugins";
+	qApp->setLibraryPaths( QStringList( QString( ramen::filesystem::file_cstring( bundle_path))));
 
-    int simd = system().simd_type();
+    parse_command_line( cmd_parser_->argc, cmd_parser_->argv);
 
-    if( !simd & system::simd_sse2)
-    {
-        std::cout << "No SSE2 instructions, exiting\n";
-        exit( 0);
-    }
+	int simd = system().simd_type();
 
-    // init prefs
-    preferences_.reset( new preferences_t());
+	if( !simd & system::simd_sse2)
+	{
+		std::cout << "No SSE2 instructions, exiting\n";
+		exit( 0);
+	}
 
-    create_dirs();
+	// init prefs
+	preferences_.reset( new preferences_t());
 
-    if( max_threads_ == 0)
-        max_threads_ = boost::thread::hardware_concurrency();
+	create_dirs();
 
-    task_scheduler_.initialize( max_threads_);
-    Imf::setGlobalThreadCount( max_threads_);
+	if( max_threads_ == 0)
+		max_threads_ = boost::thread::hardware_concurrency();
 
-    if( !command_line_)
-    {
-        splash_.reset( new ui::splash_screen_t());
-        splash_->show();
-        splash_->show_message( RAMEN_NAME_VERSION_STR);
-    }
+	task_scheduler_.initialize( max_threads_);
+	Imf::setGlobalThreadCount( max_threads_);
 
-    // init memory manager
-    if( img_cache_size_ == 0)
-    {
-        boost::uint64_t percent  = preferences().max_image_memory();
-        boost::uint64_t ram_size = system().ram_size();
-        img_cache_size_ = ram_size / (boost::uint64_t) 100 * percent;
-    }
+	if( !command_line_)
+	{
+		splash_.reset( new ui::splash_screen_t());
+		splash_->show();
+		splash_->show_message( RAMEN_NAME_VERSION_STR);
+	}
 
-    mem_manager_.reset( new memory::manager_t( img_cache_size_));
+	// init memory manager
+	if( img_cache_size_ == 0)
+	{
+		boost::uint64_t percent  = preferences().max_image_memory();
+		boost::uint64_t ram_size = system().ram_size();
+		img_cache_size_ = ram_size / (boost::uint64_t) 100 * percent;
+	}
 
-    if( !command_line_)
-        splash_->show_message( "Initializing builtin nodes");
-    node_factory_t::instance();
+	mem_manager_.reset( new memory::manager_t( img_cache_size_));
 
-    if( !command_line_)
-        splash_->show_message( "Loading plugins...");
-    plugin_manager_t::instance();
+	if( !command_line_)
+		splash_->show_message( "Initializing builtin nodes");
+	node_factory_t::instance();
 
-    if( !command_line_)
-        splash_->show_message( "Initializing image processing");
-    image::init_image_processing();
+	if( !command_line_)
+		splash_->show_message( "Loading plugins...");
+	plugin_manager_t::instance();
 
-    if( !command_line_)
-        splash_->show_message( "Initializing movieio");
-    movieio::factory_t::instance();
+	if( !command_line_)
+		splash_->show_message( "Initializing image processing");
+	image::init_image_processing();
 
-    if( !command_line_)
-        splash_->show_message( "Initializing OpenColorIO");
-    ocio_manager_.reset( new ocio::manager_t());
+	if( !command_line_)
+		splash_->show_message( "Initializing movieio");
+	movieio::factory_t::instance();
 
-    if( !command_line_)
-        splash_->show_message( "Initializing Python");
-    python::interpreter_t::instance();
+	if( !command_line_)
+		splash_->show_message( "Initializing OpenColorIO");
+	ocio_manager_.reset( new ocio::manager_t());
 
-    if( !command_line_)
-        splash_->show_message( "Initializing render thread");
-    render_thread_.init();
+	if( !command_line_)
+		splash_->show_message( "Initializing Python");
+	python::interpreter_t::instance();
 
-    if( !command_line_)
-    {
-        splash_->show_message( "Initializing user interface");
-        ui_.reset( new ui::user_interface_t());
-        ui_->init();
-        print_app_info();
-    }
+	if( !command_line_)
+		splash_->show_message( "Initializing render thread");
+	render_thread_.init();
+
+	if( !command_line_)
+	{
+		splash_->show_message( "Initializing user interface");
+		ui_.reset( new ui::user_interface_t());
+		ui_->init();
+		print_app_info();
+	}
 }
 
 application_t::~application_t()
-{ 
+{
 	//	TODO: implement this.
 	//delete_tmp_files();
 }
@@ -157,26 +161,26 @@ application_t::~application_t()
 void application_t::create_dirs()
 {
 	// home
-    boost::filesystem::path base( system().app_user_path());
-    boost::filesystem::create_directories( base / "ocio");
-    boost::filesystem::create_directories( base / "prefs");
-    boost::filesystem::create_directories( base / "python");
-    boost::filesystem::create_directories( base / "ui");
+	boost::filesystem::path base( system().app_user_path());
+	boost::filesystem::create_directories( base / "ocio");
+	boost::filesystem::create_directories( base / "prefs");
+	boost::filesystem::create_directories( base / "python");
+	boost::filesystem::create_directories( base / "ui");
 
 	// tmp
-    boost::filesystem::create_directories( preferences().tmp_dir());
+	boost::filesystem::create_directories( preferences().tmp_dir());
 }
 
 int application_t::run()
 {
-    if( !command_line_)
-    {
-        ui()->show();
-        splash_->finish( ui()->main_window());
-        splash_.reset();
-        return ui()->run( infile_);
-    }
-    else
+	if( !command_line_)
+	{
+		ui()->show();
+		splash_->finish( ui()->main_window());
+		splash_.reset();
+		return ui()->run( infile_);
+	}
+	else
 	{
 		if( render_mode_)
 		{
@@ -188,10 +192,10 @@ int application_t::run()
 			{
 				fatal_error( e.what(), true);
 			}
-			
+
 			if( !start_frame_)
 				start_frame_ = document().composition().start_frame();
-			
+
 			if( !end_frame_)
 				end_frame_ = document().composition().end_frame();
 
@@ -200,10 +204,10 @@ int application_t::run()
 
 			if( !subsample_)
 				subsample_ = 1;
-			
+
 			if( !mb_extra_samples_)
 				mb_extra_samples_ = 0;
-			
+
 			if( !mb_shutter_factor_)
 				mb_shutter_factor_ = 1.0f;
 
@@ -212,7 +216,7 @@ int application_t::run()
 		}
 	}
 
-    return 0;
+	return 0;
 }
 
 // command line things
@@ -220,7 +224,7 @@ bool application_t::matches_option( char *arg, const char *opt) const
 {
 	if( !strcmp( arg, opt))
 		return true;
-	
+
 	return false;
 }
 
@@ -228,18 +232,18 @@ boost::optional<int> application_t::parse_int( int num, int argc, char **argv) c
 {
 	RAMEN_ASSERT( num > 0);
 	RAMEN_ASSERT( argc > 0);
-	
+
 	boost::optional<int> result;
-	
+
 	if( num < argc)
 	{
-		try 
-		{ 
+		try
+		{
 			result = boost::lexical_cast<int>( argv[num]);
 		}
 		catch( std::exception& e) {}
 	}
-	
+
 	return result;
 }
 
@@ -247,18 +251,18 @@ boost::optional<float> application_t::parse_float( int num, int argc, char **arg
 {
 	RAMEN_ASSERT( num > 0);
 	RAMEN_ASSERT( argc > 0);
-	
+
 	boost::optional<float> result;
-	
+
 	if( num < argc)
 	{
-		try 
-		{ 
+		try
+		{
 			result = boost::lexical_cast<float>( argv[num]);
 		}
 		catch( std::exception& e) {}
 	}
-	
+
 	return result;
 }
 
@@ -266,7 +270,7 @@ void application_t::parse_input_file( char *arg)
 {
 	// input file name
 	infile_ = boost::filesystem::path( arg);
-	
+
 	if( infile_.is_relative())
 		infile_ = boost::filesystem::absolute( infile_);
 }
@@ -276,7 +280,7 @@ bool application_t::parse_common_option( int argc, char **argv, int& num)
 	if( matches_option( argv[num], "-threads"))
 	{
 		boost::optional<int> op( parse_int( num + 1, argc, argv));
-		
+
 		if( op)
 		{
 			if( op.get() > 0)
@@ -298,7 +302,7 @@ bool application_t::parse_common_option( int argc, char **argv, int& num)
 		if( argv[num][0] == '-')
 			fatal_error( std::string( "unknown option: ") + argv[num], true);
 	}
-	
+
 	return false;
 }
 
@@ -309,7 +313,7 @@ void application_t::parse_command_line( int argc, char **argv)
 
 	if( matches_option( argv[1], "-help") || matches_option( argv[1], "-h"))
 		usage();
-	
+
 	if( matches_option( argv[1], "-version"))
 	{
 		std::cout << RAMEN_NAME_FULL_VERSION_STR << ", " << __DATE__ << std::endl;
@@ -323,11 +327,11 @@ void application_t::parse_command_line( int argc, char **argv)
 			exit( result);
 		}
 	#endif
-	
-    int i = 1;
-	
-    while (i < argc)
-    {
+
+	int i = 1;
+
+	while (i < argc)
+	{
 		if( matches_option( argv[i], "-render"))
 		{
 			command_line_ = true;
@@ -348,19 +352,19 @@ void application_t::parse_command_line( int argc, char **argv)
 
 void application_t::parse_render_command_line( int argc, char **argv, int num)
 {
-    int i = num;
-    while (i < argc)
-    {
+	int i = num;
+	while (i < argc)
+	{
 		if( matches_option( argv[i], "-help") || matches_option( argv[i], "-h"))
 			render_usage();
 		else if( matches_option( argv[i], "-frames"))
-		{		
+		{
 			start_frame_ = parse_int( i + 1, argc, argv);
 			end_frame_ = parse_int( i + 2, argc, argv);
-			
+
 			if( !start_frame_ || !end_frame_)
 				render_usage();
-			
+
 			i += 3;
 		}
 		// TODO: add more options here...
@@ -371,9 +375,9 @@ void application_t::parse_render_command_line( int argc, char **argv, int num)
 		{
 			parse_input_file( argv[i]);
 			++i;
-		}		
+		}
 	}
-	
+
 	if( infile_.empty())
 		fatal_error( "No composition file given", true);
 
@@ -382,101 +386,101 @@ void application_t::parse_render_command_line( int argc, char **argv, int num)
 
 void application_t::usage()
 {
-    std::cout <<	RAMEN_NAME_FULL_VERSION_STR << ", " << __DATE__ << "\n" <<
+	std::cout <<	RAMEN_NAME_FULL_VERSION_STR << ", " << __DATE__ << "\n" <<
 					"Usage: ramen [options] file...\n\n"
 					"Options:\n"
 					"-help, -h:       Print help message and exit.\n"
 					"-version:        Print version number and exit.\n"
 					"-threads n:      Use n threads.\n\n"
 					"-render:         Render composition. Run ramen -render -help for more information.\n"
-					
+
 					#ifndef NDEBUG
 					"-runtests:       Run unit tests and exit.\n"
 					#endif
-					
+
 					<< std::endl;
-    exit( 0);
+	exit( 0);
 }
 
 void application_t::render_usage()
 {
-    std::cout <<	RAMEN_NAME_FULL_VERSION_STR << ", " << __DATE__ << "\n" <<
+	std::cout <<	RAMEN_NAME_FULL_VERSION_STR << ", " << __DATE__ << "\n" <<
 					"Usage: ramen -render [options] file...\n\n"
 					"Options:\n"
 					"-help, -h:       Print this help message and exit.\n"
 					"-threads n:      Use n threads.\n\n"
 					"-frames n m:     Render frames n to m.\n"
 					<< std::endl;
-    exit( 0);
+	exit( 0);
 }
 
 void application_t::print_app_info()
 {
-    std::cout << RAMEN_NAME_FULL_VERSION_STR << ", " << __DATE__ << std::endl;
-    std::cout << "System = " << system().system_name() << std::endl;
+	std::cout << RAMEN_NAME_FULL_VERSION_STR << ", " << __DATE__ << std::endl;
+	std::cout << "System = " << system().system_name() << std::endl;
 
-    switch( system().cpu_type())
-    {
+	switch( system().cpu_type())
+	{
 		case system::cpu_x86:
 		{
 			std::cout << "CPU = Intel compatible\n";
-	
+
 			#ifdef RAMEN_SSE_SUPPORT
 				int sset = system().simd_type();
-	
+
 				if( sset == system::simd_none)
 					std::cout << "SIMD = None\n";
 				else
 				{
 					std::cout << "SIMD = SSE ";
-	
+
 					if( sset & system::simd_sse2)
 						std::cout << "SSE2 ";
-	
+
 					if( sset & system::simd_sse3)
 						std::cout << "SSE3 ";
-	
+
 					std::cout << std::endl;
 				}
 			#endif
 		}
 		break;
-	
+
 		default:
 			std::cout << "CPU = Unknown\n";
-    }
+	}
 
-    std::cout << "Using " << max_threads_ << " threads\n";
-    std::cout << "Ram Size = " << system().ram_size() / 1024 / 1024 << " Mb\n";
-    std::cout << "Image Cache Memory = " << mem_manager_->image_allocator().max_size() / 1024 / 1024 << " Mb\n";
+	std::cout << "Using " << max_threads_ << " threads\n";
+	std::cout << "Ram Size = " << system().ram_size() / 1024 / 1024 << " Mb\n";
+	std::cout << "Image Cache Memory = " << mem_manager_->image_allocator().max_size() / 1024 / 1024 << " Mb\n";
 }
 
 // document handling
 void application_t::create_new_document()
 {
-    delete_document();
-    document_.reset( new document_t());
+	delete_document();
+	document_.reset( new document_t());
 }
 
 void application_t::open_document( const boost::filesystem::path& p)
 {
-    create_new_document();	
-    boost::filesystem::ifstream ifs( p, serialization::yaml_iarchive_t::file_open_mode());
+	create_new_document();
+	boost::filesystem::ifstream ifs( p, serialization::yaml_iarchive_t::file_open_mode());
 
-    if( !ifs.is_open() || !ifs.good())
+	if( !ifs.is_open() || !ifs.good())
 		throw std::runtime_error( std::string( "Couldn't open input file ") + filesystem::file_string( p));
 
 	std::auto_ptr<serialization::yaml_iarchive_t> in;
 	in.reset( new serialization::yaml_iarchive_t( ifs));
-		
+
 	if( !in->read_composition_header())
 		throw std::runtime_error( std::string( "Couldn't read file header ") + filesystem::file_string( p));
-		
+
 	document().set_file( p);
 	document().load( *in);
 
 	std::string err = in->errors();
-	
+
 	if( !err.empty())
 	{
 		// TODO: display errors here
@@ -486,56 +490,56 @@ void application_t::open_document( const boost::filesystem::path& p)
 
 void application_t::delete_document()
 {
-    document_.reset( 0);
-    memory_manager().clear_caches();
+	document_.reset( 0);
+	memory_manager().clear_caches();
 }
 
 // messages
 void application_t::fatal_error( const std::string& message, bool no_gui) const
 {
-    if( !command_line_ && !ui()->rendering() && !no_gui)
-        ui()->fatal_error( message);
-    else
-        std::cerr << "Fatal error: " << message << "\n";
+	if( !command_line_ && !ui()->rendering() && !no_gui)
+		ui()->fatal_error( message);
+	else
+		std::cerr << "Fatal error: " << message << "\n";
 
-    abort();
+	abort();
 }
 
 void application_t::error( const std::string& message, bool no_gui) const
 {
-    if( !command_line_ && !ui()->rendering() && !no_gui)
-        ui()->error( message);
-    else
-        std::cerr << "Error: " << message << "\n";
+	if( !command_line_ && !ui()->rendering() && !no_gui)
+		ui()->error( message);
+	else
+		std::cerr << "Error: " << message << "\n";
 }
 
 void application_t::inform( const std::string& message, bool no_gui) const
 {
-    if( !command_line_ && !ui()->rendering() && !no_gui)
-        ui()->inform( message);
-    else
-        std::cerr << "Info: " << message << "\n";
+	if( !command_line_ && !ui()->rendering() && !no_gui)
+		ui()->inform( message);
+	else
+		std::cerr << "Info: " << message << "\n";
 }
 
 bool application_t::question( const std::string& what, bool default_answer) const
 {
-    if( !command_line_ && !ui()->rendering())
-        return ui()->question( what, default_answer);
-    else
-    {
-        if( default_answer)
-            std::cout << "Ramen, question: " << what << ", replying yes by default\n";
-        else
-            std::cout << "Ramen, question: " << what << ", replying no by default\n";
-    }
-	
+	if( !command_line_ && !ui()->rendering())
+		return ui()->question( what, default_answer);
+	else
+	{
+		if( default_answer)
+			std::cout << "Ramen, question: " << what << ", replying yes by default\n";
+		else
+			std::cout << "Ramen, question: " << what << ", replying no by default\n";
+	}
+
 	return default_answer;
 }
 
 application_t& app()
 {
-    RAMEN_ASSERT( g_app);
-    return *g_app;
+	RAMEN_ASSERT( g_app);
+	return *g_app;
 }
 
 } // namespace

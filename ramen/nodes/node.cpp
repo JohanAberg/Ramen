@@ -495,7 +495,7 @@ void node_t::do_calc_hash_str( const render::context_t& context)
 
 std::string node_t::hash_str() const { return hash_generator().str();}
 
-const hash_generator_t::digest_type& node_t::digest() { return hash_generator().digest();}
+const util::hash_generator_t::digest_type& node_t::digest() { return hash_generator().digest();}
 
 void node_t::add_context_to_hash_string( const render::context_t& context)
 {
@@ -573,9 +573,9 @@ void node_t::read( const serialization::yaml_node_t& node, const std::pair<int,i
 	std::string n;
 	node.get_value( "name", n);
 	
-	RAMEN_ASSERT( is_string_valid_identifier( n));
+    RAMEN_ASSERT( util::is_string_valid_identifier( n));
 	
-	if( !is_string_valid_identifier( n))
+    if( !util::is_string_valid_identifier( n))
 		throw std::runtime_error( "Bad name in node_t");
 
 	set_name( n);

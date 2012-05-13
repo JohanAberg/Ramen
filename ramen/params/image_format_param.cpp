@@ -45,7 +45,7 @@ void image_format_param_t::init()
         value().assign( image::format_t());
 }
 
-void image_format_param_t::do_add_to_hash( hash_generator_t& hash_gen) const
+void image_format_param_t::do_add_to_hash( util::hash_generator_t& hash_gen) const
 {
 	image::format_t format( get_value<image::format_t>( *this));
 	hash_gen << format.width << "," << format.height << "," << format.aspect;

@@ -264,7 +264,7 @@ void inspector_t::rename_node()
 
 		std::string new_name = name_edit_->text().toStdString();
 
-		if( is_string_valid_identifier( new_name))
+        if( util::is_string_valid_identifier( new_name))
 		{
 			std::auto_ptr<rename_node_command_t> c( new rename_node_command_t( n, new_name, name_edit_));
 			c->redo();

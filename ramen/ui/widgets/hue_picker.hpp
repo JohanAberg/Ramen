@@ -1,18 +1,25 @@
 // Copyright (c) 2010 Esteban Tovagliari
+// Licensed under the terms of the CDDL License.
+// See CDDL_LICENSE.txt for a copy of the license.
 
-#ifndef QR_HUE_PICKER_HPP
-#define	QR_HUE_PICKER_HPP
+#ifndef RAMEN_UI_WIDGETS_HUE_PICKER_HPP
+#define	RAMEN_UI_WIDGETS_HUE_PICKER_HPP
 
 #include<QWidget>
 #include<QImage>
 
-class QrHuePicker : public QWidget
+namespace ramen
+{
+namespace ui
+{
+
+class hue_picker_t : public QWidget
 {
     Q_OBJECT
 
 public:
 
-    QrHuePicker( QWidget *parent = 0);
+    hue_picker_t( QWidget *parent = 0);
 
     QSize sizeHint() const;
 
@@ -20,11 +27,11 @@ public:
 
 Q_SIGNALS:
 
-    void hueChanged( double hue);
+    void hue_changed( double hue);
 
 public Q_SLOTS:
 
-    void setHue( double h);
+    void set_hue( double h);
 
 protected:
 
@@ -36,14 +43,17 @@ protected:
     
 private:
 
-    double pickHue( int y) const;
+    double pick_hue( int y) const;
 
-    void updateBackground();
+    void update_background();
 
     QImage background_;
     bool valid_background_;
 
     double hue_;
 };
+
+} // ui
+} // ramen
 
 #endif

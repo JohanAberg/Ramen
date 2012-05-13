@@ -8,7 +8,7 @@
 #include<QMouseEvent>
 #include<QKeyEvent>
 
-#include<ramen/Qr/QrColorButton.hpp>
+#include<ramen/ui/widgets/color_button.hpp>
 
 #include<ramen/ui/viewer/viewer_context.hpp>
 
@@ -49,20 +49,20 @@ bool eyedropper_button_t::eventFilter( QObject *watched, QEvent *event)
 		{
 		    QPoint local_pos = view->mapFromGlobal( mouse_event->globalPos());
 			Imath::Color4f col = view->color_at( local_pos.x(), local_pos.y());
-		    value_ = QrColor( col.r, col.g, col.b, col.a);
+		    value_ = color_t( col.r, col.g, col.b, col.a);
 		}
 		else
 		{
-			if( const QrColorButton *but = dynamic_cast<const QrColorButton*>( watched))
+			if( const color_button_t *but = dynamic_cast<const color_button_t*>( watched))
 			{
-				QrColor col = but->value();
-				col.applyGamma( 2.2);
+				color_t col = but->value();
+				col.apply_gamma( 2.2);
 				value_ = col;
 			}
 			else
 			{
 			    // TODO: can we do better here?
-			    value_ = QrColor( 0, 0, 0);
+			    value_ = color_t( 0, 0, 0);
 			}
 		}
 

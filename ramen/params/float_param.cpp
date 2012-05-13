@@ -138,7 +138,7 @@ void float_param_t::do_format_changed( const Imath::Box2i& new_domain, float asp
 	#endif
 }
 
-void float_param_t::do_add_to_hash( hash_generator_t& hash_gen) const
+void float_param_t::do_add_to_hash( util::hash_generator_t& hash_gen) const
 {
 	hash_gen << get_value<float>( *this);
 }

@@ -205,7 +205,7 @@ void float3_param_t::calc_proportional_factors()
     }
 }
 
-void float3_param_t::do_add_to_hash( hash_generator_t& hash_gen) const
+void float3_param_t::do_add_to_hash( util::hash_generator_t& hash_gen) const
 {
 	Imath::V3f v( get_value<Imath::V3f>( *this));
 	hash_gen << v.x << "," << v.y << "," << v.z;

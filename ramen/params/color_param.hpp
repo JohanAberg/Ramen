@@ -10,10 +10,10 @@
 #include<QPointer>
 #include<QToolButton>
 	
+#include<ramen/ui/widgets/color.hpp>
 #include<ramen/ui/widgets/param_spinbox_fwd.hpp>
-#include<ramen/ui/widgets/eyedropper_button.hpp>
-
-class QrColorButton;
+#include<ramen/ui/widgets/color_button_fwd.hpp>
+#include<ramen/ui/widgets/eyedropper_button_fwd.hpp>
 
 namespace ramen
 {
@@ -49,7 +49,7 @@ private:
 
     virtual void do_create_tracks( anim::track_t *parent);
 
-	virtual void do_add_to_hash( hash_generator_t& hash_gen) const;
+    virtual void do_add_to_hash( util::hash_generator_t& hash_gen) const;
 
 	virtual boost::python::object to_python( const poly_param_value_t& v) const;
 	virtual poly_param_value_t from_python( const boost::python::object& obj) const;
@@ -67,7 +67,7 @@ private:
 	void set_component_value_from_slot();
 		
 	   QPointer<ui::param_spinbox_t> input0_, input1_, input2_, input3_;
-	   QPointer<QrColorButton> button_;
+	   QPointer<ui::color_button_t> button_;
 	   QPointer<ui::eyedropper_button_t> eyedropper_;
 
 private Q_SLOTS:
@@ -78,7 +78,7 @@ private Q_SLOTS:
     void spinbox_released();
 	void expression_set();
 
-    void eyedropper_color_picked( const QrColor& c);
+    void eyedropper_color_picked( const ramen::ui::color_t& c);
 
     void color_button_pressed();
 };

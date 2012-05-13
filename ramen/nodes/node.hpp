@@ -201,12 +201,12 @@ public:
 	// hash
     virtual void clear_hash();
 
-    const hash_generator_t& hash_generator() const	{ return hash_gen_;}
-    hash_generator_t& hash_generator()				{ return hash_gen_;}
+    const util::hash_generator_t& hash_generator() const	{ return hash_gen_;}
+    util::hash_generator_t& hash_generator()				{ return hash_gen_;}
 	
     std::string hash_str() const;
 
-    const hash_generator_t::digest_type& digest();
+    const util::hash_generator_t::digest_type& digest();
 	
     void calc_hash_str( const render::context_t& context);
 	
@@ -289,7 +289,7 @@ private:
     composition_t *composition_;
 	
 	// hash
-    hash_generator_t hash_gen_;
+    util::hash_generator_t hash_gen_;
 	
 	// expressions
 	int dependency_count_;

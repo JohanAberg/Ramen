@@ -1,18 +1,25 @@
 // Copyright (c) 2010 Esteban Tovagliari
+// Licensed under the terms of the CDDL License.
+// See CDDL_LICENSE.txt for a copy of the license.
 
-#ifndef QR_SAT_VALUE_PICKER_HPP
-#define	QR_SAT_VALUE_PICKER_HPP
+#ifndef RAMEN_UI_WIDGETS_SAT_VALUE_PICKER_HPP
+#define	RAMEN_UI_WIDGETS_SAT_VALUE_PICKER_HPP
 
 #include<QWidget>
 #include<QImage>
 
-class QrSaturationValuePicker : public QWidget
+namespace ramen
+{
+namespace ui
+{
+
+class saturation_value_picker_t : public QWidget
 {
     Q_OBJECT
 
 public:
 
-    QrSaturationValuePicker( QWidget *parent = 0);
+    saturation_value_picker_t( QWidget *parent = 0);
 
     QSize sizeHint() const;
 
@@ -22,12 +29,12 @@ public:
 
 Q_SIGNALS:
 
-    void saturationValueChanged( double sat, double val);
+    void saturation_value_changed( double sat, double val);
 
 public Q_SLOTS:
 
-    void setHue( double h);
-    void setSaturationValue( double s, double v);
+    void set_hue( double h);
+    void set_saturation_value( double s, double v);
 
 protected:
 
@@ -39,9 +46,9 @@ protected:
 
 private:
 
-    void pickSatVal( QMouseEvent *event);
+    void pick_sat_val( QMouseEvent *event);
 
-    void updateBackground();
+    void update_background();
 
     QImage background_;
     bool valid_background_;
@@ -50,5 +57,8 @@ private:
     double saturation_;
     double value_;
 };
+
+} // ui
+} // ramen
 
 #endif

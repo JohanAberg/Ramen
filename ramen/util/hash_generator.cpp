@@ -8,6 +8,8 @@
 
 namespace ramen
 {
+namespace util
+{
 
 hash_generator_t::hash_generator_t() { set_empty( true);}
 	
@@ -63,4 +65,5 @@ hash_generator_t::digest_type digest_from_string( const std::string& s)
 	return digest;
 }
 
-} // namespace
+} // util
+} // ramen

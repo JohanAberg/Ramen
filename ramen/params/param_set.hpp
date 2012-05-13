@@ -62,13 +62,11 @@ public:
     template<class T>
     void add_param( std::auto_ptr<T> p)
     {
-		p->set_param_set( this);
-		add_param_to_map( *p);
-		params_.push_back( p.release());
+        do_add_param( p.release());
     }
 
-    const param_t& find( const std::string id) const;
-    param_t& find( const std::string id);
+    const param_t& find( const std::string& id) const;
+    param_t& find( const std::string& id);
 
     boost::signals2::signal<void ( param_t*, param_t::change_reason)> param_changed;
     void notify_parent();
@@ -87,7 +85,7 @@ public:
 
     bool autokey() const;
 
-	void add_to_hash( hash_generator_t& hash_gen) const;
+    void add_to_hash( util::hash_generator_t& hash_gen) const;
 
 	// util
 	void for_each_param( const boost::function<void ( param_t*)>& f);
@@ -101,15 +99,12 @@ private:
     friend class composite_param_t;
 	friend class python::access;
 
-    void add_param_to_map( param_t& p);
+    void do_add_param( param_t *p);
 
 	void read_param( const serialization::yaml_node_t& node);
 	
     parameterised_t *parent_;
-
     boost::ptr_vector<param_t> params_;
-    std::map<std::string, param_t*> param_map_;
-
     std::auto_ptr<param_set_command_t> command_;
 };
 

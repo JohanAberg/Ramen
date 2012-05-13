@@ -57,7 +57,7 @@ protected:
 
 	void setLineEditContents( double v);
 	
-	const ramen::calculator_t& calc() const { return calc_;}
+    const util::calculator_t& calc() const { return calc_;}
 	
 	QChar thousandSeparator() const;
 	QChar decimalSeparator() const;
@@ -79,7 +79,7 @@ protected:
 
 private:
 
-	static ramen::calculator_t calc_;
+    static util::calculator_t calc_;
 	static QChar thousand_sep_;
 	static QChar decimal_sep_;
 	

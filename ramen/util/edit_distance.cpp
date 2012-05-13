@@ -11,6 +11,8 @@
 
 namespace ramen
 {
+namespace util
+{
 
 edit_distance_t::edit_distance_t() : rows_( 0), cols_( 0) {}
 
@@ -81,7 +83,8 @@ void edit_distance_t::realloc_matrix( int rows, int cols)
 	cols_ = cols;
 }
 	
-} // namespace
+} // util
+} // ramen
 
 /*
 int distance(const std::string src, const std::string dst)

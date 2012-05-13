@@ -790,7 +790,7 @@ void shape_t::do_create_tracks( anim::track_t *parent)
 }
 
 // hash
-void shape_t::add_to_hash_str(  hash_generator_t& hash_gen) const
+void shape_t::add_to_hash_str(  util::hash_generator_t& hash_gen) const
 {
 	if( is_null() && children().empty())
 		return;

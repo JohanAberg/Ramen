@@ -60,7 +60,7 @@ public:
 	
 	void update_bbox();
 
-	void add_to_hash_str( hash_generator_t& gen) const;
+    void add_to_hash_str( util::hash_generator_t& gen) const;
 	
 	void read( const serialization::yaml_node_t& node);
 	void write( serialization::yaml_oarchive_t& out) const;

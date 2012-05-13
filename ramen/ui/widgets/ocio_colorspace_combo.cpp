@@ -19,7 +19,6 @@ namespace ui
 ocio_colorspace_combo_t::ocio_colorspace_combo_t( QWidget *parent) : ocio_combo_t( parent)
 {
     OCIO::ConstConfigRcPtr config = app().ocio_manager().config();
-
     int num_color_spaces = config->getNumColorSpaces();
 
     for( int i = 0; i < num_color_spaces; ++i )
@@ -36,6 +35,23 @@ void ocio_colorspace_combo_t::set_colorspace( const std::string& cs)
 
 	current_colorspace_ = cs;
 	setCurrentIndex( index);
+}
+
+bool ocio_colorspace_combo_t::set_colorspace_or_default( const std::string& cs)
+{
+	int index = index_for_string( cs);
+
+    if( index != -1)
+    {
+        current_colorspace_ = cs;
+        setCurrentIndex( index);
+        return true;
+    }
+    else
+    {
+        set_default();
+        return false;
+    }
 }
 
 void ocio_colorspace_combo_t::set_default()

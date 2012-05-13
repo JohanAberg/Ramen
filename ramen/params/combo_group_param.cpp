@@ -57,7 +57,7 @@ std::auto_ptr<undo::command_t> combo_group_param_t::create_command()
     return std::auto_ptr<undo::command_t>( new static_param_command_t( *param_set(), id()));
 }
 
-void combo_group_param_t::do_add_to_hash( hash_generator_t& hash_gen) const
+void combo_group_param_t::do_add_to_hash( util::hash_generator_t& hash_gen) const
 {
 	int val = get_value<int>( *this);
 	hash_gen << params()[val].name();

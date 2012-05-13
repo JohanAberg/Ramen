@@ -229,7 +229,7 @@ void km_keyer_t::update_bbox()
 	}
 }
 
-void km_keyer_t::add_to_hash_str( hash_generator_t& gen) const
+void km_keyer_t::add_to_hash_str( util::hash_generator_t& gen) const
 {
 	for( int i = 0; i < clusters().size(); ++i)
 	{

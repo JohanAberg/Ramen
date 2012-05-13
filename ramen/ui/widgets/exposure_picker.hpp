@@ -1,18 +1,25 @@
 // Copyright (c) 2010 Esteban Tovagliari
+// Licensed under the terms of the CDDL License.
+// See CDDL_LICENSE.txt for a copy of the license.
 
-#ifndef QR_EXPOSURE_PICKER_HPP
-#define	QR_EXPOSURE_PICKER_HPP
+#ifndef RAMEN_UI_WIDGETS_EXPOSURE_PICKER_HPP
+#define	RAMEN_UI_WIDGETS_EXPOSURE_PICKER_HPP
 
 #include<QWidget>
 #include<QImage>
 
-class QrExposurePicker : public QWidget
+namespace ramen
+{
+namespace ui
+{
+
+class exposure_picker_t : public QWidget
 {
     Q_OBJECT
 
 public:
 
-    QrExposurePicker( QWidget *parent = 0);
+    exposure_picker_t( QWidget *parent = 0);
 
     QSize sizeHint() const;
 
@@ -21,11 +28,11 @@ public:
 
 Q_SIGNALS:
 
-    void exposureChanged( double e);
+    void exposure_changed( double e);
 
 public Q_SLOTS:
 
-    void setExposure( double e);
+    void set_exposure( double e);
 
 protected:
 
@@ -37,14 +44,16 @@ protected:
     
 private:
 
-    double pickExposure( int x) const;
+    double pick_exposure( int x) const;
 
-    void updateBackground();
+    void update_background();
 
     QImage background_;
     bool valid_background_;
-
     double exposure_;
 };
+
+} // ui
+} // ramen
 
 #endif

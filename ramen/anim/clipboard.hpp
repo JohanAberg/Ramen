@@ -58,7 +58,7 @@ private:
 	bool copy_curves_mode_;
 	bool copying_;
 	
-	edit_distance_t distance_fun_;
+    util::edit_distance_t distance_fun_;
 };
 
 } // namespace

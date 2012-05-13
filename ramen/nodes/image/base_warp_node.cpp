@@ -133,7 +133,7 @@ void base_warp_node_t::make_mipmap( image_node_t *src, mipmap_type& mipmap, std:
 		if( area.size().x < mipmap.min_size() || area.size().y < mipmap.min_size())
 			return;
 
-		hash_generator_t gen;
+        util::hash_generator_t gen;
 		gen << src_hash_str << "mipmap" << i;
 
 		/*

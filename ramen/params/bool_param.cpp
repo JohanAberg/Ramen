@@ -37,7 +37,7 @@ void bool_param_t::set_value( bool x, change_reason reason)
 
 param_t *bool_param_t::do_clone() const { return new bool_param_t( *this);}
 
-void bool_param_t::do_add_to_hash( hash_generator_t& hash_gen) const { hash_gen << get_value<bool>( *this);}
+void bool_param_t::do_add_to_hash( util::hash_generator_t& hash_gen) const { hash_gen << get_value<bool>( *this);}
 
 boost::python::object bool_param_t::to_python( const poly_param_value_t& v) const
 {

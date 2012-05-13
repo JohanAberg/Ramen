@@ -67,7 +67,7 @@ void string_param_t::set_value( const std::string& x, change_reason reason)
 	}
 }
 
-void string_param_t::do_add_to_hash( hash_generator_t& hash_gen) const
+void string_param_t::do_add_to_hash( util::hash_generator_t& hash_gen) const
 {
 	hash_gen << get_value<std::string>( *this);
 }

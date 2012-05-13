@@ -17,8 +17,6 @@
 #include<ramen/app/application.hpp>
 #include<ramen/app/document.hpp>
 
-#include<ramen/Qr/QrColorButton.hpp>
-
 #include<ramen/undo/stack.hpp>
 
 #include<ramen/ui/user_interface.hpp>
@@ -27,6 +25,7 @@
 #include<ramen/ui/anim/anim_editor.hpp>
 
 #include<ramen/ui/widgets/line_edit.hpp>
+#include<ramen/ui/widgets/color_button.hpp>
 
 #include<ramen/nodes/image/roto/roto_node.hpp>
 #include<ramen/nodes/image/roto/shape.hpp>
@@ -115,7 +114,7 @@ QWidget *roto_shape_param_t::do_create_widgets()
     label->setAlignment( Qt::AlignRight | Qt::AlignVCenter);
     label->setText( "Display Color");
 
-	display_color_ = new QrColorButton( top);
+	display_color_ = new ui::color_button_t( top);
 	display_color_->move( app().ui()->inspector().left_margin(), current_height);
 	display_color_->resize( s.height(), s.height());
 	display_color_->setEnabled( false);
@@ -187,10 +186,10 @@ void roto_shape_param_t::set_active_shape( roto::shape_t *s)
 
 		parent_menu_->setEnabled( true);
 
-		QrColor c( s->display_color().x / 255.0f,
+		ui::color_t c( s->display_color().x / 255.0f,
 				   s->display_color().y / 255.0f, 
 				   s->display_color().z / 255.0f);
-		display_color_->setValue( c);
+		display_color_->set_value( c);
 		display_color_->setEnabled( true);
 		
 		autokey_->setEnabled( true);
@@ -206,7 +205,7 @@ void roto_shape_param_t::set_active_shape( roto::shape_t *s)
 		parent_menu_->setEnabled( false);
 		parent_menu_->setCurrentIndex( 0);
 		display_color_->setEnabled( false);
-		display_color_->setValue( QrColor( 0, 0, 0));
+		display_color_->set_value( ui::color_t( 0, 0, 0));
 		autokey_->setEnabled( false);		
 		shape_key_->setEnabled( false);
 		order_up_->setEnabled( false);
@@ -282,10 +281,10 @@ void roto_shape_param_t::change_shape_color()
 		selected_->set_display_color( Imath::Color3f( c.red(), c.green(), c.blue()));
 		
 		display_color_->blockSignals( true);
-		QrColor c( selected_->display_color().x / 255.0f,
+		ui::color_t c( selected_->display_color().x / 255.0f,
 				   selected_->display_color().y / 255.0f, 
 				   selected_->display_color().z / 255.0f);
-		display_color_->setValue( c);
+		display_color_->set_value( c);
 		display_color_->blockSignals( false);
         app().ui()->viewer().update();
     }

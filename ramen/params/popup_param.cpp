@@ -40,7 +40,7 @@ void popup_param_t::set_value( int x, change_reason reason)
 
 void popup_param_t::add_menu_item( const std::string& item) { menu_items_.push_back( item);}
 
-void popup_param_t::do_add_to_hash( hash_generator_t& hash_gen) const
+void popup_param_t::do_add_to_hash( util::hash_generator_t& hash_gen) const
 {
 	hash_gen << menu_items()[ get_value<int>( *this)];
 }

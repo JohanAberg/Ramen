@@ -50,7 +50,7 @@ motion_blur_info_t::loop_data_t motion_blur_param_t::loop_data( float time, int 
 											info.shutter_offset, info.filter);
 }
 
-void motion_blur_param_t::do_add_to_hash( hash_generator_t& hash_gen) const
+void motion_blur_param_t::do_add_to_hash( util::hash_generator_t& hash_gen) const
 { 
     motion_blur_info_t info( get_value<motion_blur_info_t>( *this));
 	hash_gen << info.samples << "," << info.shutter << ","

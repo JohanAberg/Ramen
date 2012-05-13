@@ -13,11 +13,11 @@
 #include<ramen/nodes/image/roto/shape_fwd.hpp>
 
 #include<ramen/ui/widgets/line_edit_fwd.hpp>
+#include<ramen/ui/widgets/color_button_fwd.hpp>
 
 class QComboBox;
 class QToolButton;
 class QPushButton;
-class QrColorButton;
 
 namespace ramen
 {
@@ -62,12 +62,11 @@ private:
 	
 	QPointer<ui::line_edit_t> name_input_;
 	QPointer<QComboBox> parent_menu_;
-	QPointer<QrColorButton> display_color_;
+	QPointer<ui::color_button_t> display_color_;
 	QPointer<QToolButton> autokey_;
 	QPointer<QPushButton> shape_key_;
 	QPointer<QToolButton> order_up_;
 	QPointer<QToolButton> order_down_;
-	
 	roto::shape_t *selected_;
 };
 

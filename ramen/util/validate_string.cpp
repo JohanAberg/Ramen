@@ -4,6 +4,8 @@
 
 namespace ramen
 {
+namespace util
+{
 
 bool is_string_valid_identifier( const std::string& str)
 {
@@ -14,5 +16,6 @@ bool is_string_valid_identifier( const std::string& str)
 
 	return true;
 }
-	
+
+} // util
 } // ramen

@@ -27,7 +27,7 @@ class image_disk_cache_t : boost::noncopyable
 {
 public:
 
-	typedef hash_generator_t::digest_type digest_type;
+    typedef util::hash_generator_t::digest_type digest_type;
 
 	struct entry_t : public ref_counted_t {};
 

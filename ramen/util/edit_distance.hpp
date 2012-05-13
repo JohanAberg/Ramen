@@ -12,7 +12,9 @@
 
 namespace ramen
 {
-	
+namespace util
+{
+
 struct edit_distance_t
 {
 public:
@@ -43,6 +45,7 @@ private:
 	int rows_, cols_;
 };
 	
-} // namespace
+} // util
+} // ramen
 
 #endif

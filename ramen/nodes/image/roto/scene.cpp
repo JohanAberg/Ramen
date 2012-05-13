@@ -163,12 +163,12 @@ void scene_t::set_frame( float f, bool motion_blur)
 	}	
 }
 
-void scene_t::add_to_hash_str( hash_generator_t& hash_gen) const
+void scene_t::add_to_hash_str( util::hash_generator_t& hash_gen) const
 {
 	adobe::for_each( shapes(), boost::bind( &shape_t::add_to_hash_str, _1, boost::ref( hash_gen)));
 }
 
-void scene_t::add_to_hash_str( const std::vector<float>& frames, hash_generator_t& hash_gen) const
+void scene_t::add_to_hash_str( const std::vector<float>& frames, util::hash_generator_t& hash_gen) const
 {
 	float current_frame = parent().composition()->frame();
 

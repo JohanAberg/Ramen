@@ -7,6 +7,8 @@
 
 namespace ramen
 {
+namespace util
+{
 
 class error_log_t
 {
@@ -29,6 +31,7 @@ private:
 	std::stringstream error_stream_;
 };
 
-} // namespace
+} // util
+} // ramen
 
 #endif

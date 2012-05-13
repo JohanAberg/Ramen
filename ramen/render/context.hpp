@@ -54,7 +54,7 @@ struct RAMEN_API context_t
     float motion_blur_shutter_factor;
 
     boost::function<bool ()> cancel;
-	error_log_t *error_log;
+    util::error_log_t *error_log;
 	
 private:
 

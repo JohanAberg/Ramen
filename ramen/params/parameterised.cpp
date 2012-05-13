@@ -136,9 +136,9 @@ composition_t *parameterised_t::composition()
 
 void parameterised_t::set_name( const std::string& n)
 {
-	RAMEN_ASSERT( is_string_valid_identifier( n));
+    RAMEN_ASSERT( util::is_string_valid_identifier( n));
 	
-	if( !is_string_valid_identifier( n))
+    if( !util::is_string_valid_identifier( n))
 		throw std::runtime_error( "Invalid name for parameterised_t");
 	
 	name_ = n;

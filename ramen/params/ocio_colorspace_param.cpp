@@ -14,6 +14,7 @@
 
 #include<ramen/ui/user_interface.hpp>
 #include<ramen/ui/inspector/inspector.hpp>
+#include<ramen/ui/widgets/ocio_colorspace_combo.hpp>
 
 namespace ramen
 {
@@ -40,26 +41,10 @@ QWidget *ocio_colorspace_param_t::do_create_widgets()
 {
     QWidget *top = new QWidget();
     QLabel *label = new QLabel( top);
-    menu_ = new QComboBox( top);
+    menu_ = new ui::ocio_colorspace_combo_t( top);
     menu_->setFocusPolicy( Qt::NoFocus);
 
-    OCIO::ConstConfigRcPtr config = app().ocio_manager().config();
-    std::string current_colorspace = get_value<std::string>( *this);
-    int index = 0;
-    int num_color_spaces = config->getNumColorSpaces();
-
-    for(int i = 0; i < num_color_spaces; i++)
-    {
-        std::string csname = config->getColorSpaceNameByIndex( i);
-
-        if( csname == current_colorspace)
-            index = i;
-
-        menu_->addItem( csname.c_str());
-    }
-
     QSize s = menu_->sizeHint();
-
     label->move( 0, 0);
     label->resize( app().ui()->inspector().left_margin() - 5, s.height());
     label->setAlignment( Qt::AlignRight | Qt::AlignVCenter);
@@ -68,9 +53,11 @@ QWidget *ocio_colorspace_param_t::do_create_widgets()
 	
     menu_->move( app().ui()->inspector().left_margin(), 0);
     menu_->resize( s.width(), s.height());
-    menu_->setCurrentIndex( index);
+
+    std::string current_colorspace = get_value<std::string>( *this);
+    menu_->set_colorspace_or_default( current_colorspace);
     menu_->setEnabled( enabled());
-    connect( menu_, SIGNAL( currentIndexChanged( int)), this, SLOT( item_picked( int)));
+    connect( menu_, SIGNAL( colorspace_changed( const std::string&)), this, SLOT( colorspace_picked( const std::string&)));
 
     top->setMinimumSize( app().ui()->inspector().width(), s.height());
     top->setMaximumSize( app().ui()->inspector().width(), s.height());
@@ -85,16 +72,7 @@ void ocio_colorspace_param_t::do_update_widgets()
         menu_->blockSignals( true);
 
         std::string csname = get_value<std::string>( *this);
-
-        for( int i = 0; i < menu_->count(); ++i)
-        {
-            if( csname == menu_->itemText( i).toStdString())
-            {
-                menu_->setCurrentIndex( i);
-                break;
-            }
-        }
-
+        menu_->set_colorspace( csname);
         menu_->blockSignals( false);
     }
 }
@@ -105,14 +83,14 @@ void ocio_colorspace_param_t::do_enable_widgets( bool e)
         menu_->setEnabled( e);
 }
 
-void ocio_colorspace_param_t::item_picked( int index)
+void ocio_colorspace_param_t::colorspace_picked( const std::string& cs)
 {
     param_set()->begin_edit();
-    set_value( menu_->itemText( index).toStdString());
+    set_value( menu_->get_current_colorspace());
     param_set()->end_edit();
 }
 
-void ocio_colorspace_param_t::do_add_to_hash( hash_generator_t& hash_gen) const
+void ocio_colorspace_param_t::do_add_to_hash( util::hash_generator_t& hash_gen) const
 { 
 	hash_gen << get_value<std::string>( *this);
 }
@@ -133,7 +111,7 @@ void ocio_colorspace_param_t::do_read( const serialization::yaml_node_t& node)
 	serialization::yaml_node_t n = node.get_node( "value");
 	std::string val;
 	n >> val;
-	
+
     OCIO::ConstConfigRcPtr config = app().ocio_manager().config();
     int index = -1;
 	

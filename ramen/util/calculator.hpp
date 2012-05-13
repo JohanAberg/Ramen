@@ -10,6 +10,8 @@
 
 namespace ramen
 {
+namespace util
+{
 
 class calculator_t : boost::noncopyable
 {
@@ -26,6 +28,7 @@ private:
 	impl *pimpl_;
 };
 	
+} // util
 } // ramen
 
 #endif

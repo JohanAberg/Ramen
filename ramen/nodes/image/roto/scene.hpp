@@ -64,8 +64,8 @@ public:
 	void set_frame( float f, bool motion_blur = false);
 
 	// hash
-	void add_to_hash_str( hash_generator_t& hash_gen) const;
-	void add_to_hash_str( const std::vector<float>& frames, hash_generator_t& hash_gen) const;
+    void add_to_hash_str( util::hash_generator_t& hash_gen) const;
+    void add_to_hash_str( const std::vector<float>& frames, util::hash_generator_t& hash_gen) const;
 	
 	// bounding boxes
 	Imath::Box2f bounding_box() const;

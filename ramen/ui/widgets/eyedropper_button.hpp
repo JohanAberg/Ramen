@@ -5,9 +5,11 @@
 #ifndef RAMEN_UI_EYEDROPPER_BUTTON_HPP
 #define	RAMEN_UI_EYEDROPPER_BUTTON_HPP
 
+#include<ramen/ui/widgets/eyedropper_button_fwd.hpp>
+
 #include<QPushButton>
 
-#include<ramen/Qr/QrColor.hpp>
+#include<ramen/ui/widgets/color.hpp>
 
 namespace ramen
 {
@@ -26,7 +28,7 @@ public:
 
 Q_SIGNALS:
 
-    void color_picked( const QrColor&);
+    void color_picked( const ramen::ui::color_t&);
 
 private Q_SLOTS:
 
@@ -34,7 +36,7 @@ private Q_SLOTS:
 
 private:
 
-    QrColor value_;
+    color_t value_;
 };
 
 } // namespace

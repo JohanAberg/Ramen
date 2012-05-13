@@ -12,7 +12,7 @@
 
 #include<QPointer>
 
-class QComboBox;
+#include<ramen/ui/widgets/ocio_colorspace_combo_fwd.hpp>
 
 namespace ramen
 {
@@ -37,7 +37,7 @@ private:
 
     virtual param_t *do_clone() const { return new ocio_colorspace_param_t( *this);}
 
-	virtual void do_add_to_hash( hash_generator_t& hash_gen) const;
+    virtual void do_add_to_hash( util::hash_generator_t& hash_gen) const;
 
 	virtual boost::python::object to_python( const poly_param_value_t& v) const;
 	virtual poly_param_value_t from_python( const boost::python::object& obj) const;
@@ -51,11 +51,11 @@ private:
 	
     std::string default_colorspace() const;
 
-    QPointer<QComboBox> menu_;
+    QPointer<ui::ocio_colorspace_combo_t> menu_;
 
 private Q_SLOTS:
 
-    void item_picked( int index);
+    void colorspace_picked( const std::string& cs);
 };
 
 } // namespace

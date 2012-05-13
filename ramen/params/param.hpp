@@ -166,7 +166,7 @@ public:
 	expressions::expression_t& expression( int indx = 0);	
 	
     // hash
-	void add_to_hash( hash_generator_t& hash_gen) const;
+    void add_to_hash( util::hash_generator_t& hash_gen) const;
     
     // undo
     virtual std::auto_ptr<undo::command_t> create_command() { return std::auto_ptr<undo::command_t>();}
@@ -228,7 +228,7 @@ private:
 	expressions::expression_t *find_expression( const std::string& name);
 	
 	// hash
-	virtual void do_add_to_hash( hash_generator_t& hash_gen) const;
+    virtual void do_add_to_hash( util::hash_generator_t& hash_gen) const;
 
 	// python interop
 	friend class python::access;

@@ -1,15 +1,22 @@
 // Copyright (c) 2010 Esteban Tovagliari
+// Licensed under the terms of the CDDL License.
+// See CDDL_LICENSE.txt for a copy of the license.
 
-#include<ramen/Qr/ColorPicker/QrSaturationValuePicker.hpp>
+#include<ramen/ui/widgets/saturation_value_picker.hpp>
 
 #include<QPaintEvent>
 #include<QMouseEvent>
 #include<QResizeEvent>
 #include<QPainter>
 
-#include<ramen/Qr/QrColor.hpp>
+#include<ramen/ui/widgets/color.hpp>
 
-QrSaturationValuePicker::QrSaturationValuePicker( QWidget *parent) : QWidget( parent), background_( sizeHint(), QImage::Format_RGB32)
+namespace ramen
+{
+namespace ui
+{
+
+saturation_value_picker_t::saturation_value_picker_t( QWidget *parent) : QWidget( parent), background_( sizeHint(), QImage::Format_RGB32)
 {
     setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding);
     setFocusPolicy( Qt::StrongFocus);
@@ -19,9 +26,9 @@ QrSaturationValuePicker::QrSaturationValuePicker( QWidget *parent) : QWidget( pa
     value_ = 0;
 }
 
-QSize QrSaturationValuePicker::sizeHint() const { return QSize( 200, 200);}
+QSize saturation_value_picker_t::sizeHint() const { return QSize( 200, 200);}
 
-void QrSaturationValuePicker::setHue( double h)
+void saturation_value_picker_t::set_hue( double h)
 {
     if( hue_ != h)
     {
@@ -31,18 +38,18 @@ void QrSaturationValuePicker::setHue( double h)
     }
 }
 
-void QrSaturationValuePicker::setSaturationValue( double s, double v)
+void saturation_value_picker_t::set_saturation_value( double s, double v)
 {
     if( v != value_ || s != saturation_)
     {
-	saturation_ = s;
-	value_ = v;
-	saturationValueChanged( s, v);
-	update();
+        saturation_ = s;
+        value_ = v;
+        saturation_value_changed( s, v);
+        update();
     }
 }
 
-void QrSaturationValuePicker::paintEvent( QPaintEvent *event)
+void saturation_value_picker_t::paintEvent( QPaintEvent *event)
 {
     QPainter painter( this);
 
@@ -51,8 +58,8 @@ void QrSaturationValuePicker::paintEvent( QPaintEvent *event)
 
     if( !valid_background_)
     {
-	updateBackground();
-	valid_background_ = true;
+        update_background();
+        valid_background_ = true;
     }
 
     painter.drawImage( contentsRect().topLeft(), background_);
@@ -76,21 +83,21 @@ void QrSaturationValuePicker::paintEvent( QPaintEvent *event)
     painter.drawLine( xpos, 0, xpos, height());
 }
 
-void QrSaturationValuePicker::mousePressEvent( QMouseEvent *event)
+void saturation_value_picker_t::mousePressEvent( QMouseEvent *event)
 {
-    pickSatVal( event);
+    pick_sat_val( event);
     event->accept();
 }
 
-void QrSaturationValuePicker::mouseMoveEvent( QMouseEvent *event)
+void saturation_value_picker_t::mouseMoveEvent( QMouseEvent *event)
 {
-    pickSatVal( event);
+    pick_sat_val( event);
     event->accept();
 }
 
-void QrSaturationValuePicker::mouseReleaseEvent( QMouseEvent *event) { event->accept();}
+void saturation_value_picker_t::mouseReleaseEvent( QMouseEvent *event) { event->accept();}
 
-void QrSaturationValuePicker::pickSatVal( QMouseEvent *event)
+void saturation_value_picker_t::pick_sat_val( QMouseEvent *event)
 {
     double v = 1.0 - ((double) event->y() / height());
     double s = (double) event->x() / width();
@@ -101,16 +108,16 @@ void QrSaturationValuePicker::pickSatVal( QMouseEvent *event)
     if( s < 0) s = 0;
     if( s > 1) s = 1;
 
-    setSaturationValue( s, v);
+    set_saturation_value( s, v);
 }
 
-void QrSaturationValuePicker::resizeEvent( QResizeEvent *event)
+void saturation_value_picker_t::resizeEvent( QResizeEvent *event)
 {
     valid_background_ = false;
     update();
 }
 
-void QrSaturationValuePicker::updateBackground()
+void saturation_value_picker_t::update_background()
 {
     background_ = QImage(contentsRect().size(), QImage::Format_RGB32);
 
@@ -135,8 +142,8 @@ void QrSaturationValuePicker::updateBackground()
 
 		for( int i = 0; i < background_.width(); ++i)
 		{
-			QrColor c( r, g, b);
-			c.applyGamma( 1.0 / 2.2);
+			color_t c( r, g, b);
+			c.apply_gamma( 1.0 / 2.2);
 			c.clamp();
 			c *= 255.0;
 			*p++ = qRgb( c.red(), c.green(), c.blue());
@@ -146,3 +153,6 @@ void QrSaturationValuePicker::updateBackground()
 		}
     }
 }
+
+} // ui
+} // ramen

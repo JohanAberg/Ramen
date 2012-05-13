@@ -37,6 +37,9 @@ public:
     template<class T>
     void add_param( std::auto_ptr<T> p) { do_add_param( p.release());}
 
+    const param_t *find( const std::string& id) const;
+    param_t *find( const std::string& id);
+
 	// time
 	virtual void set_frame( float frame);
 	
@@ -66,7 +69,7 @@ private:
 
     virtual void do_evaluate( float frame);
 	
-	virtual void do_add_to_hash( hash_generator_t& hash_gen) const;
+    virtual void do_add_to_hash( util::hash_generator_t& hash_gen) const;
 	
     virtual void do_update_widgets();
     virtual void do_enable_widgets( bool e);

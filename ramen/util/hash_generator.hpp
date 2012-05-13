@@ -15,6 +15,8 @@
 
 namespace ramen
 {
+namespace util
+{
 
 class hash_generator_t
 {
@@ -57,7 +59,8 @@ hash_generator_t& operator<<( hash_generator_t& hash_gen, const T& x)
     return hash_gen;
 }
 
-} // namespace
+} // util
+} // ramen
 
 #endif
 

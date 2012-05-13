@@ -2,8 +2,10 @@
 // Licensed under the terms of the CDDL License.
 // See CDDL_LICENSE.txt for a copy of the license.
 
-#ifndef RAMEN_QR_OCIO_COLORSPACE_COMBO_HPP
-#define RAMEN_QR_OCIO_COLORSPACE_COMBO_HPP
+#ifndef RAMEN_UI_WIDGETS_OCIO_COLORSPACE_COMBO_HPP
+#define RAMEN_UI_WIDGETS_OCIO_COLORSPACE_COMBO_HPP
+
+#include<ramen/ui/widgets/ocio_colorspace_combo_fwd.hpp>
 
 #include<ramen/ui/widgets/ocio_combo.hpp>
 
@@ -21,6 +23,8 @@ public:
 	ocio_colorspace_combo_t( QWidget *parent = 0);
 
 	const std::string& get_current_colorspace() const { return current_colorspace_;}
+
+    bool set_colorspace_or_default( const std::string& s);
 
 public Q_SLOTS:
 

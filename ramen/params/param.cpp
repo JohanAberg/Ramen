@@ -67,9 +67,9 @@ composition_t *param_t::composition()
 
 void param_t::set_id( const std::string& identifier)
 { 
-	RAMEN_ASSERT( is_string_valid_identifier( identifier));
+    RAMEN_ASSERT( util::is_string_valid_identifier( identifier));
 	
-	if( !is_string_valid_identifier( identifier))
+    if( !util::is_string_valid_identifier( identifier))
 		throw std::runtime_error( "Invalid id for param_t");
 
 	id_ = identifier;
@@ -161,12 +161,12 @@ void param_t::emit_param_changed( change_reason reason)
 	}
 }
 
-void param_t::add_to_hash( hash_generator_t& hash_gen) const
+void param_t::add_to_hash( util::hash_generator_t& hash_gen) const
 {
 	do_add_to_hash( hash_gen);
 }
 
-void param_t::do_add_to_hash( hash_generator_t& hash_gen) const {}
+void param_t::do_add_to_hash( util::hash_generator_t& hash_gen) const {}
 
 void param_t::create_tracks( anim::track_t *parent)
 {

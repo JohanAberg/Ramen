@@ -2,20 +2,17 @@
 // Licensed under the terms of the CDDL License.
 // See CDDL_LICENSE.txt for a copy of the license.
 
-#include<ramen/system/shared_library.hpp>
+#ifndef RAMEN_UI_EYEDROPPER_BUTTON_FWD_HPP
+#define	RAMEN_UI_EYEDROPPER_BUTTON_FWD_HPP
 
 namespace ramen
 {
-namespace system
+namespace ui
 {
 
-shared_library_t::shared_library_t( const boost::filesystem::path& p)
-{
-}
-
-shared_library_t::~shared_library_t()
-{
-}
+class eyedropper_button_t;
 
 } // namespace
 } // namespace
+
+#endif

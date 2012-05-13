@@ -7,9 +7,12 @@
 
 namespace ramen
 {
+namespace util
+{
 
 bool is_string_valid_identifier( const std::string& str);
-	
+
+} // util
 } // ramen
 
 #endif

@@ -220,7 +220,7 @@ public:
 	void insert_point( int span, float t);
 	
 	// hash
-	void add_to_hash_str( hash_generator_t& hash_gen) const;
+    void add_to_hash_str( util::hash_generator_t& hash_gen) const;
 
 	// misc
 	bool is_first_shape() const;
