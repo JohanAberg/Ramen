@@ -4,6 +4,10 @@
 
 #include<ramen/params/composite_parameterised.hpp>
 
+#include<boost/bind.hpp>
+
+#include<adobe/algorithm/for_each.hpp>
+
 #include<ramen/container/ptr_vector_util.hpp>
 
 namespace ramen
@@ -11,7 +15,10 @@ namespace ramen
 
 composite_parameterised_t::composite_parameterised_t() : parameterised_t() {}
 
-composite_parameterised_t::composite_parameterised_t( const composite_parameterised_t& other) : parameterised_t( other) {}
+composite_parameterised_t::composite_parameterised_t( const composite_parameterised_t& other) : parameterised_t( other), children_( other.children_)
+{
+    adobe::for_each( children_, boost::bind( &parameterised_t::set_parent, _1, this));
+}
 
 composite_parameterised_t::~composite_parameterised_t()
 {
@@ -27,6 +34,7 @@ void composite_parameterised_t::add_parameterised( std::auto_ptr<parameterised_t
 
 std::auto_ptr<parameterised_t> composite_parameterised_t::remove_parameterised( parameterised_t *p)
 {
+    p->set_parent( 0);
     return container::release_ptr( p, children_);
 }
 

@@ -12,26 +12,17 @@ SET( CMAKE_SKIP_RPATH ON)
 #disable in source builds
 IF( ${CMAKE_SOURCE_DIR} STREQUAL ${CMAKE_BINARY_DIR})
     MESSAGE(FATAL_ERROR "CMake generation for Ramen is not allowed within the source directory!")
-ENDIF(${CMAKE_SOURCE_DIR} STREQUAL ${CMAKE_BINARY_DIR})
+ENDIF()
 
 ####################################################################
 # edit the paths if needed
 
-IF( WIN32)
-	# windows
-ELSE( WIN32)
-    IF( APPLE)
-		# OSX
-	ELSE( APPLE)
-		# linux
-		SET( CMAKE_INCLUDE_PATH ${CMAKE_INCLUDE_PATH}
-		                        /usr/include/jpeg
-		                        /usr/include/tiff
-								)
+SET( CMAKE_INCLUDE_PATH ${CMAKE_INCLUDE_PATH}
+                        /usr/include/jpeg
+                        /usr/include/tiff
+                        )
 
-		SET( CMAKE_LIBRARY_PATH ${CMAKE_LIBRARY_PATH})
-	ENDIF( APPLE)
-ENDIF( WIN32)
+SET( CMAKE_LIBRARY_PATH ${CMAKE_LIBRARY_PATH})
 
 ####################################################################
 # options
@@ -46,21 +37,19 @@ SET( CMAKE_SKIP_RPATH ON)
 # Set the default built type
 IF( NOT CMAKE_BUILD_TYPE)
   SET( CMAKE_BUILD_TYPE Debug CACHE STRING "Choose the type of build, options are: None Debug Release RelWithDebInfo MinSizeRel." FORCE)
-ENDIF( NOT CMAKE_BUILD_TYPE)
+ENDIF()
 
-IF( CMAKE_COMPILER_IS_GNUCXX)
-	# OSX and linux
-	SET( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -rdynamic")
-	SET( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pipe -fvisibility=hidden -fvisibility-inlines-hidden -msse -msse2 -mfpmath=sse")
-
-	IF( CMAKE_BUILD_TYPE MATCHES Release)
-        SET( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -funroll-loops -fexpensive-optimizations -march=core2")
-	ELSE( CMAKE_BUILD_TYPE MATCHES Release)
-        SET( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-inline")
-	ENDIF( CMAKE_BUILD_TYPE MATCHES Release)
-
-	SET( CMAKE_EXE_LINKER_FLAGS "-Wl,--export-dynamic")
-ENDIF( CMAKE_COMPILER_IS_GNUCXX)
+IF( CMAKE_BUILD_TYPE MATCHES Release)
+    SET( CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -rdynamic -pipe -fvisibility=hidden -fvisibility-inlines-hidden -msse -msse2 -mfpmath=sse")
+    SET( CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -funroll-loops -fexpensive-optimizations -march=core2")
+    SET( CMAKE_EXE_LINKER_FLAGS_RELEASE "-Wl,--export-dynamic")
+ELSE()
+    IF( CMAKE_BUILD_TYPE MATCHES Debug)
+        SET( CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -rdynamic -pipe -fvisibility=hidden -fvisibility-inlines-hidden -msse -msse2 -mfpmath=sse")
+        SET( CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -fno-inline")
+        SET( CMAKE_EXE_LINKER_FLAGS_DEBUG "-Wl,--export-dynamic")
+    ENDIF()
+ENDIF()
 
 ADD_DEFINITIONS( -DRAMEN_ENABLE_ASSERT_HANDLER)
 
@@ -77,7 +66,7 @@ SET( BOOST_NEEDED_LIBS filesystem thread signals system regex date_time python)
 
 IF( CMAKE_BUILD_TYPE MATCHES Debug)
 	SET( BOOST_NEEDED_LIBS ${BOOST_NEEDED_LIBS} unit_test_framework)
-ENDIF( CMAKE_BUILD_TYPE MATCHES Debug)
+ENDIF()
 
 FIND_PACKAGE( Boost COMPONENTS ${BOOST_NEEDED_LIBS} REQUIRED)
 ADD_DEFINITIONS( -DBOOST_FILESYSTEM_VERSION=3)

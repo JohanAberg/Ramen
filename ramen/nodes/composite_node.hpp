@@ -11,6 +11,10 @@
 
 #include<ramen/nodes/node_graph.hpp>
 #include<ramen/nodes/node_visitor.hpp>
+#include<ramen/nodes/edge.hpp>
+
+#include<ramen/serialization/archive_fwd.hpp>
+#include<ramen/serialization/yaml.hpp>
 
 #include<ramen/ui/graph_layout_fwd.hpp>
 
@@ -90,6 +94,26 @@ protected:
     std::auto_ptr<node_t> do_create_node_by_id_with_version( const std::string& id, const std::pair<int, int>& version) const;
 
 private:
+
+    /*!
+        \brief Customization hook for node_t::read.
+        Implement in subclasses to read extra data from node.
+    */
+    virtual void do_read( const serialization::yaml_node_t& node, const std::pair<int,int>& version);
+
+    /*!
+        \brief Customization hook for node_t::write.
+        Implement in subclasses to write extra data to out.
+    */
+    virtual void do_write( serialization::yaml_oarchive_t& out) const;
+
+    std::auto_ptr<node_t> create_node( const std::string& id, const std::pair<int,int>& version) const;
+    std::auto_ptr<node_t> create_unknown_node( const std::string& id, const std::pair<int, int>& version) const;
+
+    void read_node( const serialization::yaml_node_t& node);
+
+    void read_edge( const serialization::yaml_node_t& node);
+    void write_edge( serialization::yaml_oarchive_t& out, const edge_t& e) const;
 
 	node_graph_t g_;
 	std::auto_ptr<ui::graph_layout_t> layout_;

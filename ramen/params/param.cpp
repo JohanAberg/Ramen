@@ -8,7 +8,7 @@
 
 #include<ramen/serialization/yaml_oarchive.hpp>
 
-#include<ramen/util/validate_string.hpp>
+#include<ramen/util/string.hpp>
 
 namespace ramen
 {
@@ -354,6 +354,6 @@ void param_t::do_write( serialization::yaml_oarchive_t& out) const
 	}
 #endif
 
-param_t* new_clone( const param_t& other) { return other.clone();}
+param_t *new_clone( const param_t& other) { return other.clone();}
 
 } // namespace

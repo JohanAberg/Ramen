@@ -304,7 +304,7 @@ S get_value_at_frame( const param_t& p, float frame)
 	#endif
 }
 
-param_t* new_clone( const param_t& other);
+RAMEN_API param_t *new_clone( const param_t& other);
 
 } // namespace
 

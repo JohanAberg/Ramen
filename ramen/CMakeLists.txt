@@ -1,3 +1,6 @@
+######################################################
+# Ramen lib
+
 CONFIGURE_FILE( ${PROJECT_SOURCE_DIR}/ramen/version.hpp.in ${PROJECT_SOURCE_DIR}/ramen/version.hpp)
 
 INCLUDE_DIRECTORIES( ${CMAKE_CURRENT_BINARY_DIR})
@@ -111,9 +114,7 @@ SET( RAMEN_MOC_CLASSES  flipbook/djv_flipbook.hpp
 						ui/widgets/time_slider.hpp
 						)
 
-SET( RAMEN_SOURCES  main.cpp
-					assert.cpp
-					ref_counted.cpp
+SET( RAMEN_SOURCES  ref_counted.cpp
 
 					anim/any_curve.cpp
 					anim/clipboard.cpp
@@ -656,7 +657,7 @@ SET( RAMEN_SOURCES  main.cpp
 					util/edit_distance.cpp
 					util/error_log.cpp
 					util/hash_generator.cpp
-					util/validate_string.cpp
+                    util/string.cpp
 
 					system/system.cpp
 					)
@@ -703,8 +704,7 @@ QT4_WRAP_CPP( RAMEN_MOC_SOURCES	${RAMEN_MOC_CLASSES} ${RAMEN_MOC_NODE_CLASSES} O
 QT4_WRAP_UI( RAMEN_DESIGNER_SOURCES ${RAMEN_DESIGNER_FILES})
 QT4_ADD_RESOURCES( RAMEN_RESOURCES ${PROJECT_SOURCE_DIR}/resources/resources.qrc)
 
-
-SET( RAMEN_ALL_SOURCES	${RAMEN_SOURCES}
+SET( RAMEN_LIB_SOURCES	${RAMEN_SOURCES}
 						${RAMEN_MOC_SOURCES}
 						${RAMEN_NODE_SOURCES}
 						${RAMEN_MOC_NODE_SOURCES}
@@ -714,23 +714,28 @@ SET( RAMEN_ALL_SOURCES	${RAMEN_SOURCES}
 						${RAMEN_RESOURCES}
 						)
 
-IF( CMAKE_SYSTEM_NAME MATCHES "Linux")
-	# make the package
-	# EXECUTE_PROCESS( COMMAND ${PROJECT_SOURCE_DIR}/linux/make_package.sh ${PROJECT_SOURCE_DIR} ${PROJECT_BINARY_DIR}/ramen-${RAMEN_VERSION})
+ADD_LIBRARY( ramen SHARED ${RAMEN_LIB_SOURCES})
+SET_TARGET_PROPERTIES( ramen PROPERTIES COMPILE_FLAGS -DRAMEN_MAKING_DSO)
+SET_TARGET_PROPERTIES( ramen PROPERTIES VERSION ${RAMEN_VERSION_MAJOR}.${RAMEN_VERSION_MINOR}.${RAMEN_VERSION_PATCH}
+                                        SOVERSION ${RAMEN_VERSION_MAJOR} )
+TARGET_LINK_LIBRARIES( ramen	${RAMEN_ALL_LIBS}
+                                ${EXTRA_PLATFORM_LIBS}
+                                 )
 
-	ADD_EXECUTABLE( ramen.bin ${RAMEN_ALL_SOURCES})
+SET( LIBRARY_OUTPUT_PATH ${PROJECT_BINARY_DIR}/ramen-${RAMEN_VERSION}/lib/)
 
-	TARGET_LINK_LIBRARIES( ramen.bin	${RAMEN_ALL_LIBS}
-										${EXTRA_PLATFORM_LIBS}
-										)
+######################################################
+# Ramen app
 
-	SET( EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR}/ramen-${RAMEN_VERSION}/bin/)
-ENDIF( CMAKE_SYSTEM_NAME MATCHES "Linux")
+SET( RAMEN_APP_SOURCES  main.cpp
+                        assert.cpp
+                        )
 
-IF( WIN32)
-	# ...
-ENDIF( WIN32)
+ADD_EXECUTABLE( ramen.bin ${RAMEN_APP_SOURCES})
 
-IF( APPLE)
-	# ...
-ENDIF( APPLE)
+TARGET_LINK_LIBRARIES( ramen.bin	ramen
+                                    ${RAMEN_ALL_LIBS}
+                                    ${EXTRA_PLATFORM_LIBS}
+                                    )
+
+SET( EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR}/ramen-${RAMEN_VERSION}/bin/)

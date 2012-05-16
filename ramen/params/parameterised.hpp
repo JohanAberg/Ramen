@@ -169,7 +169,7 @@ private:
 };
 
 /// Makes a copy of a parameterised
-parameterised_t *new_clone( const parameterised_t& other);
+RAMEN_API parameterised_t *new_clone( const parameterised_t& other);
 
 } // namespace
 

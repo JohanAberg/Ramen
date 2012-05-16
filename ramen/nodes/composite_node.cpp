@@ -105,4 +105,100 @@ void composite_node_t::set_layout( std::auto_ptr<ui::graph_layout_t> layout)
     layout_ = layout;
 }
 
+void composite_node_t::do_read( const serialization::yaml_node_t& node, const std::pair<int,int>& version)
+{
+    serialization::yaml_node_t nodes = node.get_node( "children").get_node( "nodes");
+
+    for( int i = 0; i < nodes.size(); ++i)
+        read_node( nodes[i]);
+
+    serialization::yaml_node_t edges = node.get_node( "children").get_node( "edges");
+
+    for( int i = 0; i < edges.size(); ++i)
+        read_edge( edges[i]);
+}
+
+void composite_node_t::do_write( serialization::yaml_oarchive_t& out) const
+{
+    out << YAML::Key << "children" << YAML::Value;
+        out.begin_map();
+            out << YAML::Key << "nodes" << YAML::Value;
+            out.begin_seq();
+                adobe::for_each( graph().nodes(), boost::bind( &node_t::write, _1, boost::ref( out)));
+            out.end_seq();
+
+        out << YAML::Key << "edges" << YAML::Value;
+            out.begin_seq();
+                adobe::for_each( graph().edges(), boost::bind( &composite_node_t::write_edge, this, boost::ref( out), _1));
+            out.end_seq();
+        out.end_map();
+}
+
+std::auto_ptr<node_t> composite_node_t::create_node( const std::string& id, const std::pair<int,int>& version) const
+{
+    // TODO: implent this.
+    return std::auto_ptr<node_t>();
+    RAMEN_ASSERT( false);
+}
+
+std::auto_ptr<node_t> composite_node_t::create_unknown_node( const std::string& id, const std::pair<int, int>& version) const
+{
+    // TODO: implent this.
+    return std::auto_ptr<node_t>();
+    RAMEN_ASSERT( false);
+}
+
+void composite_node_t::read_node( const serialization::yaml_node_t& node)
+{
+    // TODO: implent this.
+    serialization::yaml_node_t class_node( node.get_node( "class"));
+
+    std::string id;
+    class_node[0] >> id;
+
+    std::pair<int,int> version;
+    class_node[1] >> version.first;
+    class_node[2] >> version.second;
+
+    std::auto_ptr<node_t> p( create_node( id, version));
+
+    if( !p.get())
+    {
+        node.error_stream() << "Error creating node: " << id << "\n";
+        return;
+    }
+
+    //p->set_composition( this); // some nodes needs this set early...
+    p->read( node, version);
+    //p->set_frame( frame_);
+
+    /*
+    if( image_node_t *img_node = dynamic_cast<image_node_t*>( p.get()))
+    {
+        render::context_t context = current_context();
+        img_node->calc_format( context);
+        img_node->format_changed();
+    }
+    */
+
+    //node_map_.insert( p.get());
+    //g_.add_node( p);
+
+    RAMEN_ASSERT( false);
+}
+
+void composite_node_t::read_edge( const serialization::yaml_node_t& node)
+{
+    // TODO: implent this.
+    RAMEN_ASSERT( false);
+}
+
+void composite_node_t::write_edge( serialization::yaml_oarchive_t& out, const edge_t& e) const
+{
+    out.flow();
+    out.begin_seq();
+        out << e.src->name() << e.dst->name() << e.port;
+    out.end_seq();
+}
+
 } // namespace

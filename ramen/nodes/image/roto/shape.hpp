@@ -3,6 +3,8 @@
 #ifndef RAMEN_ROTO_SHAPE_HPP
 #define RAMEN_ROTO_SHAPE_HPP
 
+#include<ramen/config.hpp>
+
 #include<ramen/nodes/image/roto/shape_fwd.hpp>
 
 #include<ramen/params/parameterised.hpp>
@@ -35,7 +37,7 @@ namespace ramen
 namespace roto
 {
 
-class shape_t : public parameterised_t, public boost::intrusive::list_base_hook<>
+class RAMEN_API shape_t : public parameterised_t, public boost::intrusive::list_base_hook<>
 {
 public:
 	
@@ -280,7 +282,7 @@ private:
 	anim::shape_curve2f_t curve_;
 };
 
-shape_t *new_clone( const shape_t& other);
+RAMEN_API shape_t *new_clone( const shape_t& other);
 
 } // roto
 } // ramen

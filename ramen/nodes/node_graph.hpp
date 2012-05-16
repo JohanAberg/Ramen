@@ -58,6 +58,7 @@ public:
     void add_edge( const edge_t& e);
     void remove_edge( const edge_t& e);
 
+    // iterators & ranges
     node_iterator nodes_begin() { return nodes_.begin();}
     node_iterator nodes_end()   { return nodes_.end();}
 

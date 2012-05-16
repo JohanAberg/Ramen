@@ -30,7 +30,7 @@
 #include<ramen/ui/widgets/double_spinbox.hpp>
 #include<ramen/ui/widgets/line_edit.hpp>
 
-#include<ramen/util/validate_string.hpp>
+#include<ramen/util/string.hpp>
 
 namespace ramen
 {

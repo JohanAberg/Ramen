@@ -110,6 +110,6 @@ node_output_plug_t *node_output_plug_t::do_clone() const
     return new node_output_plug_t( *this);
 }
 
-node_output_plug_t* new_clone( const node_output_plug_t& other) { return other.clone();}
+node_output_plug_t *new_clone( const node_output_plug_t& other) { return other.clone();}
 
 } // namespace

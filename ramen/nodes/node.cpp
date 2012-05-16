@@ -18,7 +18,7 @@
 #include<ramen/serialization/yaml_iarchive.hpp>
 #include<ramen/serialization/yaml_oarchive.hpp>
 
-#include<ramen/util/validate_string.hpp>
+#include<ramen/util/string.hpp>
 
 namespace ramen
 {
@@ -41,12 +41,11 @@ struct frames_needed_less
 	
 } // unnamed
 	
-node_t::node_t() : composite_parameterised_t(), flags_( 0), dependency_count_( 0), composition_( 0) {}
+node_t::node_t() : composite_parameterised_t(), flags_( 0), composition_( 0) {}
 
 node_t::node_t( const node_t& other) : composite_parameterised_t( other), outputs_( other.outputs_)
 {
     adobe::for_each( outputs_, boost::bind( &node_output_plug_t::set_parent_node, _1, this));
-	dependency_count_ = 0;
     flags_ = other.flags_;
     loc_ = other.loc_;
     composition_ = other.composition_;
@@ -267,14 +266,7 @@ void node_t::param_edit_finished() { notify();}
 
 void node_t::notify()
 {
-	if( dependency_count())
-	{
-		RAMEN_ASSERT( composition());
-		set_notify_dirty( true);
-		composition()->notify_all_dirty();
-	}
-	else
-		breadth_first_outputs_search( *this, boost::bind( &node_t::do_notify, _1));
+    breadth_first_outputs_search( *this, boost::bind( &node_t::do_notify, _1));
 }
 
 void node_t::do_notify()
@@ -296,21 +288,6 @@ void node_t::calc_frames_needed( const render::context_t& context)
 }
 
 void node_t::do_calc_frames_needed( const render::context_t& context) {}
-
-// expressions
-void node_t::inc_dependency_count() { ++dependency_count_;}
-
-void node_t::dec_dependency_count()
-{
-	RAMEN_ASSERT( dependency_count_ >= 1);
-	--dependency_count_;
-}
-
-int node_t::dependency_count() const
-{ 
-	RAMEN_ASSERT( dependency_count_ >= 0);
-	return dependency_count_;
-}
 
 void node_t::begin_active()
 {

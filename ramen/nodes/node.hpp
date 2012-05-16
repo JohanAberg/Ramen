@@ -177,11 +177,6 @@ public:
 	std::vector<std::pair<int, float> >& frames_needed()				{ return frames_needed_;}
 	
 	typedef std::vector<std::pair<int, float> >::const_iterator const_frames_needed_iterator;
-
-	// expressions
-	void inc_dependency_count();
-	void dec_dependency_count();
-	int dependency_count() const;
 	
     // edit
     void begin_active();
@@ -217,9 +212,7 @@ public:
     // user interface
     virtual const char *help_string() const;
 
-	#ifndef RAMEN_NO_GUI	
-	    virtual std::auto_ptr<QWidget> create_toolbar() { return std::auto_ptr<QWidget>();}
-	#endif
+    virtual std::auto_ptr<QWidget> create_toolbar() { return std::auto_ptr<QWidget>();}
 
     // paths
     virtual void convert_relative_paths( const boost::filesystem::path& old_base,
@@ -266,9 +259,17 @@ private:
 	virtual frame_interval_type do_calc_frame_interval() const { return frame_interval_type();}
 
 	virtual void do_calc_frames_needed( const render::context_t& context);
-		
-    // serialization
-	virtual void do_read( const serialization::yaml_node_t& node, const std::pair<int,int>& version);	
+
+    /*!
+        \brief Customization hook for node_t::read.
+        Implement in subclasses to read extra data from node.
+    */
+    virtual void do_read( const serialization::yaml_node_t& node, const std::pair<int,int>& version);
+
+    /*!
+        \brief Customization hook for node_t::write.
+        Implement in subclasses to write extra data to out.
+    */
     virtual void do_write( serialization::yaml_oarchive_t& out) const;
 
 	// serialization utils
@@ -289,14 +290,11 @@ private:
     composition_t *composition_;
 	
 	// hash
-    util::hash_generator_t hash_gen_;
-	
-	// expressions
-	int dependency_count_;
+    util::hash_generator_t hash_gen_;	
 };
 
 /// Makes a copy of a node.
-node_t *new_clone( const node_t& other);
+RAMEN_API node_t *new_clone( const node_t& other);
 
 } // namespace
 

@@ -14,10 +14,10 @@
     #define RAMEN_PRIVATE
 #endif
 
-#ifdef RAMEN_PLUGIN
-	#define RAMEN_API RAMEN_EXPORT
+#ifdef RAMEN_MAKING_DSO
+    #define RAMEN_API RAMEN_EXPORT
 #else
-	#define RAMEN_API RAMEN_IMPORT
+    #define RAMEN_API RAMEN_IMPORT
 #endif
 
 #endif

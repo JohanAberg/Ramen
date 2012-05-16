@@ -5,6 +5,8 @@
 #ifndef RAMEN_UI_HPP
 #define RAMEN_UI_HPP
 
+#include<ramen/config.hpp>
+
 #include<ramen/ui/user_interface_fwd.hpp>
 
 #include<ramen/python/python.hpp>
@@ -40,7 +42,7 @@ namespace ui
 \ingroup ui
 \brief user interface class.
 */
-class user_interface_t : public QObject, boost::noncopyable
+class RAMEN_API user_interface_t : public QObject, boost::noncopyable
 {
     Q_OBJECT
 

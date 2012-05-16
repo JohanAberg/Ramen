@@ -1,7 +1,9 @@
 // Copyright (c) 2011 Esteban Tovagliari
+// Licensed under the terms of the CDDL License.
+// See CDDL_LICENSE.txt for a copy of the license.
 
-#ifndef RAMEN_UTIL_VALIDATE_STRING_HPP
-#define RAMEN_UTIL_VALIDATE_STRING_HPP
+#ifndef RAMEN_UTIL_STRING_HPP
+#define RAMEN_UTIL_STRING_HPP
 
 #include<string>
 

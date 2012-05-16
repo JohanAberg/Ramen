@@ -190,7 +190,7 @@ private:
 	std::vector<connection_t > connections_;
 };
 
-node_output_plug_t* new_clone( const node_output_plug_t& other);
+RAMEN_API node_output_plug_t *new_clone( const node_output_plug_t& other);
 
 } // namespace
 

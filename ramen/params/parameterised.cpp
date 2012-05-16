@@ -17,7 +17,7 @@
 
 #include<ramen/serialization/yaml_oarchive.hpp>
 
-#include<ramen/util/validate_string.hpp>
+#include<ramen/util/string.hpp>
 
 namespace ramen
 {

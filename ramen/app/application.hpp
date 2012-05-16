@@ -5,6 +5,8 @@
 #ifndef RAMEN_APP_APPLICATION_HPP
 #define RAMEN_APP_APPLICATION_HPP
 
+#include<ramen/config.hpp>
+
 #include<ramen/app/application_fwd.hpp>
 
 #include<ramen/python/python.hpp>
@@ -40,7 +42,7 @@ namespace ramen
 \ingroup app
 \brief Application class.
 */
-class application_t : boost::noncopyable
+class RAMEN_API application_t : boost::noncopyable
 {
 public:
 
@@ -139,7 +141,7 @@ private:
 	bool quitting_;
 };
 
-application_t& app();
+RAMEN_API application_t& app();
 
 } // namespace
 
