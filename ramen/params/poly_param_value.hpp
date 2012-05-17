@@ -10,6 +10,8 @@
 
 #include<adobe/poly_regular.hpp>
 
+#include<ramen/params/concepts/ParamValueConcept.hpp>
+
 namespace ramen
 {
 
@@ -20,6 +22,10 @@ struct poly_param_value_interface : adobe::poly_regular_interface
 template <typename T>
 struct poly_param_value_instance : adobe::optimized_storage_type<T, poly_param_value_interface>::type
 {
+private:
+
+    BOOST_CONCEPT_ASSERT(( ParamValueConcept<T>));
+
 public:
 
     typedef typename adobe::optimized_storage_type<T, poly_param_value_interface>::type base_t;
@@ -59,6 +65,10 @@ struct poly_param_indexable_value_interface : poly_param_value_interface
 template <typename T>
 struct poly_param_indexable_value_instance : adobe::optimized_storage_type<T, poly_param_indexable_value_interface>::type
 {
+private:
+
+    BOOST_CONCEPT_ASSERT(( IndexableParamValueConcept<T>));
+
 public:
 
     typedef typename adobe::optimized_storage_type<T, poly_param_indexable_value_interface>::type base_t;
