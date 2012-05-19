@@ -669,6 +669,10 @@ SET( RAMEN_NODE_SOURCES )
 IF( CMAKE_BUILD_TYPE MATCHES Debug)
 	SET( RAMEN_TEST_SOURCES	test/test.cpp
                             test/expressions.cpp
+                            test/memory.cpp
+                            test/nodes.cpp
+                            test/params.cpp
+                            test/string.cpp
                             test/python.cpp
 							)
 ENDIF( CMAKE_BUILD_TYPE MATCHES Debug)

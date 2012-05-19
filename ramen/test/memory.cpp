@@ -4,6 +4,6 @@
 
 #include<ramen/test/test.hpp>
 
-void register_expression_tests()
+void register_memory_tests()
 {
 }
