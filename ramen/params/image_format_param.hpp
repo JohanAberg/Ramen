@@ -24,8 +24,6 @@ public:
 
     explicit image_format_param_t( const std::string& name);
 
-    virtual void init();
-
     void set_value( const image::format_t& format, change_reason = user_edited);
 
 protected:
@@ -35,6 +33,7 @@ protected:
 
 private:
 
+    virtual void do_init();
     virtual param_t *do_clone() const;
 
     virtual void do_add_to_hash( util::hash_generator_t& hash_gen) const;

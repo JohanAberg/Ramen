@@ -30,12 +30,12 @@ composite_param_t::composite_param_t( const composite_param_t& other) : param_t(
 	create_track_ = other.create_track_;
 }
 
-void composite_param_t::init()
+void composite_param_t::do_init()
 {
     adobe::for_each( params(), boost::bind( &param_t::init, _1));
 }
 
-void composite_param_t::set_param_set( param_set_t *parent)
+void composite_param_t::do_set_param_set( param_set_t *parent)
 {
     param_t::set_param_set( parent);
     adobe::for_each( params(), boost::bind( &param_t::set_param_set, _1, parent));
@@ -88,9 +88,8 @@ param_t *composite_param_t::find( const std::string& id)
     return 0;
 }
 
-void composite_param_t::set_frame( float frame)
+void composite_param_t::do_set_frame( float frame)
 {
-	emit_param_changed( time_changed);
     adobe::for_each( params(), boost::bind( &param_t::set_frame, _1, frame));	
 }
 
@@ -134,34 +133,43 @@ void composite_param_t::do_format_changed( const Imath::Box2i& new_format, float
     adobe::for_each( params_, boost::bind( &param_t::format_changed, _1, new_format, aspect, proxy_scale));
 }
 
-void composite_param_t::convert_relative_paths( const boost::filesystem::path& old_base, const boost::filesystem::path& new_base)
+void composite_param_t::do_convert_relative_paths( const boost::filesystem::path& old_base, const boost::filesystem::path& new_base)
 {
     adobe::for_each( params_, boost::bind( &param_t::convert_relative_paths, _1, old_base, new_base));
 }
 
-void composite_param_t::make_paths_absolute()
+void composite_param_t::do_make_paths_absolute()
 {
     adobe::for_each( params_, boost::bind( &param_t::make_paths_absolute, _1));
 }
 
-void composite_param_t::make_paths_relative()
+void composite_param_t::do_make_paths_relative()
 {
-    adobe::for_each( params_, boost::bind( &param_t::make_paths_relative, _1));
+    adobe::for_each( params(), boost::bind( &param_t::make_paths_relative, _1));
 }
 
 // util
-void composite_param_t::apply_function( const boost::function<void ( param_t*)>& f)
-{ 
-	param_t::apply_function( f);
-	
-    BOOST_FOREACH( param_t& p, params())
-		p.apply_function( f);
+void composite_param_t::do_apply_function( const boost::function<void ( param_t*)>& f)
+{
+    adobe::for_each( params(), boost::bind( &param_t::apply_function, _1, f));
 }
 
-void composite_param_t::write( serialization::yaml_oarchive_t& out) const
+void composite_param_t::do_read( serialization::yaml_iarchive_t& node)
 {
-	param_t::write( out);
-    adobe::for_each( params_, boost::bind( &param_t::write, _1, boost::ref( out)));
+    RAMEN_ASSERT( param_set());
+
+    serialization::yaml_node_t nodes = node.get_node( "children");
+
+    for( int i = 0; i < nodes.size(); ++i)
+        param_set()->read_param( nodes[i]);
+}
+
+void composite_param_t::do_write( serialization::yaml_oarchive_t& out) const
+{
+    out << YAML::Key << "children" << YAML::Value;
+        out.begin_seq();
+            adobe::for_each( params(), boost::bind( &param_t::write, _1, boost::ref( out)));
+        out.end_seq();
 }
 
 QWidget *composite_param_t::do_create_widgets()

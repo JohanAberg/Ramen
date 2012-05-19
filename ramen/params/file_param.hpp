@@ -38,11 +38,6 @@ public:
     std::string extension() const;
     void set_extension( const std::string& ext);
 
-    // paths
-    virtual void convert_relative_paths( const boost::filesystem::path& old_base, const boost::filesystem::path& new_base);
-	virtual void make_paths_absolute();
-	virtual void make_paths_relative();
-
 protected:
 
     file_param_t( const file_param_t& other);
@@ -56,6 +51,11 @@ private:
 
 	virtual boost::python::object to_python( const poly_param_value_t& v) const;
 	virtual poly_param_value_t from_python( const boost::python::object& obj) const;
+
+    // paths
+    virtual void do_convert_relative_paths( const boost::filesystem::path& old_base, const boost::filesystem::path& new_base);
+    virtual void do_make_paths_absolute();
+    virtual void do_make_paths_relative();
 
 	virtual void do_read( const serialization::yaml_node_t& node);
     virtual void do_write( serialization::yaml_oarchive_t& out) const;

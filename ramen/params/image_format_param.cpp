@@ -37,7 +37,7 @@ void image_format_param_t::set_value( const image::format_t& format, change_reas
 
 param_t *image_format_param_t::do_clone() const { return new image_format_param_t( *this);}
 
-void image_format_param_t::init()
+void image_format_param_t::do_init()
 {
     if( composition())
         value().assign( composition()->default_format());

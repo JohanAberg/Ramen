@@ -50,8 +50,6 @@ public:
 	
     void anim_curve_changed( anim::any_curve_ptr_t& c);
 
-    virtual std::auto_ptr<undo::command_t> create_command();
-
 	// spinbox
 	void set_key( int curve_index);
 	void delete_key( int curve_index, float time);
@@ -83,6 +81,8 @@ private:
     virtual void do_evaluate( float frame);
 
     virtual void do_create_tracks( anim::track_t *parent);
+
+    virtual std::auto_ptr<undo::command_t> do_create_command();
 
 	anim::float_curve_t *find_curve( const std::string& name);
 	

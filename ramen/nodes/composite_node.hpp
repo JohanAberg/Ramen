@@ -8,6 +8,7 @@
 #include<ramen/nodes/node.hpp>
 
 #include<memory>
+#include<set>
 
 #include<ramen/nodes/node_graph.hpp>
 #include<ramen/nodes/node_visitor.hpp>
@@ -75,6 +76,14 @@ public:
     /// Removes a child node from this node.
     virtual std::auto_ptr<node_t> remove_node( node_t *n);
 
+    /// Finds the children node with the given name.
+    const node_t *find_node( const std::string& name) const;
+
+    /// Finds the children node with the given name.
+    node_t *find_node( const std::string& name);
+
+    void all_children_node_names( std::set<std::string>& names) const;
+
     /// Returns a const reference to this node graph layout.
     const ui::graph_layout_t& layout() const { return *layout_;}
 
@@ -99,7 +108,7 @@ private:
         \brief Customization hook for node_t::read.
         Implement in subclasses to read extra data from node.
     */
-    virtual void do_read( const serialization::yaml_node_t& node, const std::pair<int,int>& version);
+    virtual void do_read( const serialization::yaml_node_t& in, const std::pair<int,int>& version);
 
     /*!
         \brief Customization hook for node_t::write.
@@ -107,12 +116,11 @@ private:
     */
     virtual void do_write( serialization::yaml_oarchive_t& out) const;
 
-    std::auto_ptr<node_t> create_node( const std::string& id, const std::pair<int,int>& version) const;
     std::auto_ptr<node_t> create_unknown_node( const std::string& id, const std::pair<int, int>& version) const;
 
-    void read_node( const serialization::yaml_node_t& node);
+    void read_node( const serialization::yaml_node_t& in);
 
-    void read_edge( const serialization::yaml_node_t& node);
+    void read_edge( const serialization::yaml_node_t& in);
     void write_edge( serialization::yaml_oarchive_t& out, const edge_t& e) const;
 
 	node_graph_t g_;

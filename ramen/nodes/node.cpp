@@ -19,6 +19,7 @@
 #include<ramen/serialization/yaml_oarchive.hpp>
 
 #include<ramen/util/string.hpp>
+#include<ramen/util/flags.hpp>
 
 namespace ramen
 {
@@ -84,74 +85,26 @@ void node_t::select( bool state)
 
 void node_t::toggle_selection()	{ select( !selected());}
 
-bool node_t::ignored() const	{ return flags_ & ignored_bit;}
+bool node_t::ignored() const        { return util::test_flag( flags_, ignored_bit);}
+void node_t::set_ignored( bool b)   { util::set_flag( flags_, ignored_bit, b );}
 
-void node_t::set_ignored( bool b)
-{
-    if( b)
-		flags_ |= ignored_bit;
-    else
-		flags_ &= ~ignored_bit;
-}
+bool node_t::plugin_error() const       { return util::test_flag( flags_, plugin_error_bit);}
+void node_t::set_plugin_error( bool b)  { util::set_flag( flags_, plugin_error_bit, b );}
 
-bool node_t::plugin_error() const
-{
-    return flags_ & plugin_error_bit;
-}
+bool node_t::autolayout() const         { return util::test_flag( flags_, autolayout_bit);}
+void node_t::set_autolayout( bool b)    { util::set_flag( flags_, autolayout_bit, b );}
 
-void node_t::set_plugin_error( bool b)
-{
-    if( b)
-		flags_ |= plugin_error_bit;
-    else
-		flags_ &= ~plugin_error_bit;
-}
+bool node_t::cacheable() const          { return flags_ & cacheable_bit;}
+void node_t::set_cacheable( bool b)     { util::set_flag( flags_, cacheable_bit, b );}
 
-bool node_t::autolayout() const
-{
-    return flags_ & autolayout_bit;
-}
+bool node_t::notify_dirty() const       { return util::test_flag( flags_, notify_dirty_bit);}
+void node_t::set_notify_dirty( bool b)  { util::set_flag( flags_, notify_dirty_bit, b );}
 
-void node_t::set_autolayout( bool b)
-{
-    if( b)
-		flags_ |= autolayout_bit;
-    else
-		flags_ &= ~autolayout_bit;
-}
+bool node_t::ui_invisible() const       { return flags_ & ui_invisible_bit;}
+void node_t::set_ui_invisible( bool b)  { util::set_flag( flags_, ui_invisible_bit, b );}
 
-bool node_t::cacheable() const	{ return flags_ & cacheable_bit;}
-
-void node_t::set_cacheable( bool b)
-{
-    if( b)
-		flags_ |= cacheable_bit;
-    else
-		flags_ &= ~cacheable_bit;
-}
-
-bool node_t::notify_dirty() const { return flags_ & notify_dirty_bit;}
-
-void node_t::set_notify_dirty( bool b)
-{
-    if( b)
-		flags_ |= notify_dirty_bit;
-    else
-		flags_ &= ~notify_dirty_bit;
-}
-
-bool node_t::ui_invisible() const { return flags_ & ui_invisible_bit;}
-
-void node_t::set_ui_invisible( bool b)
-{
-    if( b)
-		flags_ |= ui_invisible_bit;
-    else
-		flags_ &= ~ui_invisible_bit;
-}
-
-bool node_t::is_active() const     { return flags_ & active_bit;}
-bool node_t::is_context() const    { return flags_ & context_bit;}
+bool node_t::is_active() const     { return util::test_flag( flags_, active_bit);}
+bool node_t::is_context() const    { return util::test_flag( flags_, context_bit);}
 
 // inputs
 
@@ -545,10 +498,10 @@ void node_t::make_paths_relative()
 }
 
 // serialization
-void node_t::read( const serialization::yaml_node_t& node, const std::pair<int,int>& version)
+void node_t::read(const serialization::yaml_node_t& in, const std::pair<int,int>& version)
 {
 	std::string n;
-	node.get_value( "name", n);
+    in.get_value( "name", n);
 	
     RAMEN_ASSERT( util::is_string_valid_identifier( n));
 	
@@ -557,30 +510,30 @@ void node_t::read( const serialization::yaml_node_t& node, const std::pair<int,i
 
 	set_name( n);
 	
-	if( !node.get_optional_value( "comp_pos", loc_))
+    if( !in.get_optional_value( "comp_pos", loc_))
 		set_autolayout( true);
 
 	// create needed extra inputs if needed.
 	if( variable_num_inputs())
 	{
 		int num_ins = num_inputs();
-		node.get_optional_value( "num_inputs", num_ins);
+        in.get_optional_value( "num_inputs", num_ins);
 
 		while( num_ins != num_inputs())
 			add_new_input_plug();
 	}
 
 	bool flag = false;
-	if( node.get_optional_value( "ignored", flag))
+    if( in.get_optional_value( "ignored", flag))
 		set_ignored( flag);
 
-	serialization::yaml_node_t prms( node.get_node( "params"));
+    serialization::yaml_node_t prms( in.get_node( "params"));
 	param_set().read( prms);
 
-	do_read( node, version);
+    do_read( in, version);
 }
 
-void node_t::do_read( const serialization::yaml_node_t& node, const std::pair<int,int>& version) {}
+void node_t::do_read( const serialization::yaml_node_t& in, const std::pair<int,int>& version) {}
 
 void node_t::write( serialization::yaml_oarchive_t& out) const
 {

@@ -94,14 +94,13 @@ public:
 	void read( const serialization::yaml_node_t& node);
     void write( serialization::yaml_oarchive_t& out) const;
 
+    void read_param( const serialization::yaml_node_t& node);
+
 private:
 
-    friend class composite_param_t;
 	friend class python::access;
 
     void do_add_param( param_t *p);
-
-	void read_param( const serialization::yaml_node_t& node);
 	
     parameterised_t *parent_;
     boost::ptr_vector<param_t> params_;

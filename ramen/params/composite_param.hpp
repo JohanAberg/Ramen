@@ -25,10 +25,6 @@ public:
 	composite_param_t();
     explicit composite_param_t( const std::string& name);
 
-    virtual void init();
-
-    virtual void set_param_set( param_set_t *parent);
-
 	void set_create_track( bool b) { create_track_ = b;}
 	
     const boost::ptr_vector<param_t>& params() const	{ return params_;}
@@ -40,33 +36,23 @@ public:
     const param_t *find( const std::string& id) const;
     param_t *find( const std::string& id);
 
-	// time
-	virtual void set_frame( float frame);
-	
-    // paths
-    virtual void convert_relative_paths( const boost::filesystem::path& old_base,
-                                            const boost::filesystem::path& new_base);
-
-	virtual void make_paths_absolute();
-	virtual void make_paths_relative();
-
-	// util
-	virtual void apply_function( const boost::function<void ( param_t*)>& f);
-	
-	// serialization
-    virtual void write( serialization::yaml_oarchive_t& out) const;
-
 protected:
 
     composite_param_t( const composite_param_t& other);
     void operator=( const composite_param_t& other);
 
+    void create_widgets_inside_widget( QWidget *parent);
+
 private:
 
+    virtual void do_init();
     virtual param_t *do_clone() const { return new composite_param_t( *this);}
+
+    virtual void do_set_param_set( param_set_t *parent);
 
     void do_add_param( param_t *p);
 
+    virtual void do_set_frame( float frame);
     virtual void do_evaluate( float frame);
 	
     virtual void do_add_to_hash( util::hash_generator_t& hash_gen) const;
@@ -78,18 +64,24 @@ private:
 
     virtual void do_format_changed( const Imath::Box2i& new_format, float aspect, const Imath::V2f& proxy_scale);
 
-    boost::ptr_vector<param_t> params_;
-	bool create_track_;
-	
-	#ifndef RAMEN_NO_GUI
-	protected:
-	
-	    void create_widgets_inside_widget( QWidget *parent);
-		
-	private:
+    // paths
+    virtual void do_convert_relative_paths( const boost::filesystem::path& old_base,
+                                            const boost::filesystem::path& new_base);
 
-		virtual QWidget *do_create_widgets() RAMEN_WARN_UNUSED_RESULT;
-	#endif
+    virtual void do_make_paths_absolute();
+    virtual void do_make_paths_relative();
+
+    // util
+    virtual void do_apply_function( const boost::function<void ( param_t*)>& f);
+
+    // serialization
+    virtual void do_read( serialization::yaml_iarchive_t& node);
+    virtual void do_write( serialization::yaml_oarchive_t& out) const;
+
+    virtual QWidget *do_create_widgets() RAMEN_WARN_UNUSED_RESULT;
+
+    boost::ptr_vector<param_t> params_;
+    bool create_track_;
 };
 
 } // namespace

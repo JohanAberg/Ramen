@@ -157,7 +157,7 @@ void animated_param_t::do_anim_curve_changed( anim::any_curve_ptr_t& c)
 	emit_param_changed( user_edited);
 }
 
-std::auto_ptr<undo::command_t> animated_param_t::create_command()
+std::auto_ptr<undo::command_t> animated_param_t::do_create_command()
 {
     return std::auto_ptr<undo::command_t>( new animated_param_command_t( *this->param_set(), id()));
 }

@@ -14,6 +14,8 @@ namespace util
 
 bool is_string_valid_identifier( const std::string& str);
 
+void increment_string_number( std::string& str);
+
 } // util
 } // ramen
 

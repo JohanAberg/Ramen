@@ -5,6 +5,7 @@
 #include<ramen/nodes/composite_node.hpp>
 
 #include<boost/bind.hpp>
+#include<boost/foreach.hpp>
 
 #include<adobe/algorithm/for_each.hpp>
 
@@ -69,6 +70,13 @@ std::auto_ptr<node_t> composite_node_t::do_create_node_by_id_with_version( const
     return node_factory_t::instance().create_by_id_with_version( id, version);
 }
 
+std::auto_ptr<node_t> composite_node_t::create_unknown_node( const std::string& id, const std::pair<int, int>& version) const
+{
+    // TODO: implent this.
+    return std::auto_ptr<node_t>();
+    RAMEN_ASSERT( false);
+}
+
 void composite_node_t::add_node( std::auto_ptr<node_t> n)
 {
     RAMEN_ASSERT( false);
@@ -88,6 +96,7 @@ void composite_node_t::add_node( std::auto_ptr<node_t> n)
 
 std::auto_ptr<node_t> composite_node_t::remove_node( node_t *n)
 {
+    // TODO: implement this.
     RAMEN_ASSERT( false);
 
     /*
@@ -100,19 +109,52 @@ std::auto_ptr<node_t> composite_node_t::remove_node( node_t *n)
     */
 }
 
-void composite_node_t::set_layout( std::auto_ptr<ui::graph_layout_t> layout)
+const node_t *composite_node_t::find_node( const std::string& name) const
 {
-    layout_ = layout;
+    composite_node_t& self = const_cast<composite_node_t&>( *this);
+    return self.find_node( name);
 }
 
-void composite_node_t::do_read( const serialization::yaml_node_t& node, const std::pair<int,int>& version)
+node_t *composite_node_t::find_node( const std::string& name)
 {
-    serialization::yaml_node_t nodes = node.get_node( "children").get_node( "nodes");
+    BOOST_FOREACH( node_t& n, graph().nodes())
+    {
+        if( n.name() == name)
+            return &n;
+
+        if( composite_node_t *cn = dynamic_cast<composite_node_t*>( &n))
+        {
+            node_t *nn = cn->find_node( name);
+
+            if( nn)
+                return nn;
+        }
+    }
+
+    return 0;
+}
+
+void composite_node_t::all_children_node_names( std::set<std::string>& names) const
+{
+    BOOST_FOREACH( const node_t& n, graph().nodes())
+    {
+        names.insert( n.name());
+
+        if( const composite_node_t *cn = dynamic_cast<const composite_node_t*>( &n))
+            cn->all_children_node_names( names);
+    }
+}
+
+void composite_node_t::set_layout( std::auto_ptr<ui::graph_layout_t> layout) { layout_ = layout;}
+
+void composite_node_t::do_read(const serialization::yaml_node_t& in, const std::pair<int,int>& version)
+{
+    serialization::yaml_node_t nodes = in.get_node( "children").get_node( "nodes");
 
     for( int i = 0; i < nodes.size(); ++i)
         read_node( nodes[i]);
 
-    serialization::yaml_node_t edges = node.get_node( "children").get_node( "edges");
+    serialization::yaml_node_t edges = in.get_node( "children").get_node( "edges");
 
     for( int i = 0; i < edges.size(); ++i)
         read_edge( edges[i]);
@@ -134,24 +176,10 @@ void composite_node_t::do_write( serialization::yaml_oarchive_t& out) const
         out.end_map();
 }
 
-std::auto_ptr<node_t> composite_node_t::create_node( const std::string& id, const std::pair<int,int>& version) const
+void composite_node_t::read_node(const serialization::yaml_node_t& in)
 {
     // TODO: implent this.
-    return std::auto_ptr<node_t>();
-    RAMEN_ASSERT( false);
-}
-
-std::auto_ptr<node_t> composite_node_t::create_unknown_node( const std::string& id, const std::pair<int, int>& version) const
-{
-    // TODO: implent this.
-    return std::auto_ptr<node_t>();
-    RAMEN_ASSERT( false);
-}
-
-void composite_node_t::read_node( const serialization::yaml_node_t& node)
-{
-    // TODO: implent this.
-    serialization::yaml_node_t class_node( node.get_node( "class"));
+    serialization::yaml_node_t class_node( in.get_node( "class"));
 
     std::string id;
     class_node[0] >> id;
@@ -160,16 +188,16 @@ void composite_node_t::read_node( const serialization::yaml_node_t& node)
     class_node[1] >> version.first;
     class_node[2] >> version.second;
 
-    std::auto_ptr<node_t> p( create_node( id, version));
+    std::auto_ptr<node_t> p( create_node_by_id_with_version( id, version));
 
     if( !p.get())
     {
-        node.error_stream() << "Error creating node: " << id << "\n";
+        in.error_stream() << "Error creating node: " << id << "\n";
         return;
     }
 
     //p->set_composition( this); // some nodes needs this set early...
-    p->read( node, version);
+    p->read( in, version);
     //p->set_frame( frame_);
 
     /*
@@ -187,7 +215,7 @@ void composite_node_t::read_node( const serialization::yaml_node_t& node)
     RAMEN_ASSERT( false);
 }
 
-void composite_node_t::read_edge( const serialization::yaml_node_t& node)
+void composite_node_t::read_edge(const serialization::yaml_node_t& in)
 {
     // TODO: implent this.
     RAMEN_ASSERT( false);

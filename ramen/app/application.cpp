@@ -49,8 +49,9 @@
 #include<ramen/ui/main_window.hpp>
 #include<ramen/ui/dialogs/splash_screen.hpp>
 
+// Tests
 #ifndef NDEBUG
-	#include<ramen/test/test.hpp>
+    int run_ramen_unit_tests( int argc, char **argv);
 #endif
 
 namespace ramen
@@ -69,6 +70,10 @@ application_t::application_t( int argc, char **argv) : system_(), preferences_()
 	render_mode_ = false;
 	quitting_ = false;
 
+    #ifndef NDEBUG
+        run_unit_tests_ = false;
+    #endif
+
     cmd_parser_.reset( new util::command_line_parser_t( argc, argv));
 
 	// Create QApplication
@@ -79,13 +84,8 @@ application_t::application_t( int argc, char **argv) : system_(), preferences_()
 
     parse_command_line( cmd_parser_->argc, cmd_parser_->argv);
 
-	int simd = system().simd_type();
-
-	if( !simd & system::simd_sse2)
-	{
-		std::cout << "No SSE2 instructions, exiting\n";
-		exit( 0);
-	}
+    if( !system().simd_type() & system::simd_sse2)
+        fatal_error( "No SSE2 instruction set, exiting", true);
 
 	// init prefs
 	preferences_.reset( new preferences_t());
@@ -216,6 +216,14 @@ int application_t::run()
 		}
 	}
 
+    #ifndef NDEBUG
+        if( run_unit_tests_)
+        {
+            int result = run_ramen_unit_tests( cmd_parser_->argc, cmd_parser_->argv);
+            std::exit( result);
+        }
+    #endif
+
 	return 0;
 }
 
@@ -317,14 +325,16 @@ void application_t::parse_command_line( int argc, char **argv)
 	if( matches_option( argv[1], "-version"))
 	{
 		std::cout << RAMEN_NAME_FULL_VERSION_STR << ", " << __DATE__ << std::endl;
-		exit( 0);
+        std::exit( 0);
 	}
 
 	#ifndef NDEBUG
 		if( matches_option( argv[1], "-runtests"))
 		{
-			int result = run_unit_tests( argc, argv);
-			exit( result);
+            run_unit_tests_ = true;
+            command_line_ = true;
+            render_mode_ = false;
+            return;
 		}
 	#endif
 
@@ -399,7 +409,7 @@ void application_t::usage()
 					#endif
 
 					<< std::endl;
-	exit( 0);
+    std::exit( 0);
 }
 
 void application_t::render_usage()
@@ -411,7 +421,7 @@ void application_t::render_usage()
 					"-threads n:      Use n threads.\n\n"
 					"-frames n m:     Render frames n to m.\n"
 					<< std::endl;
-	exit( 0);
+    std::exit( 0);
 }
 
 void application_t::print_app_info()
@@ -497,7 +507,7 @@ void application_t::delete_document()
 // messages
 void application_t::fatal_error( const std::string& message, bool no_gui) const
 {
-	if( !command_line_ && !ui()->rendering() && !no_gui)
+    if( !command_line_ && ui() && !ui()->rendering() && !no_gui)
 		ui()->fatal_error( message);
 	else
 		std::cerr << "Fatal error: " << message << "\n";
@@ -507,7 +517,7 @@ void application_t::fatal_error( const std::string& message, bool no_gui) const
 
 void application_t::error( const std::string& message, bool no_gui) const
 {
-	if( !command_line_ && !ui()->rendering() && !no_gui)
+    if( !command_line_ && ui() && !ui()->rendering() && !no_gui)
 		ui()->error( message);
 	else
 		std::cerr << "Error: " << message << "\n";
@@ -515,7 +525,7 @@ void application_t::error( const std::string& message, bool no_gui) const
 
 void application_t::inform( const std::string& message, bool no_gui) const
 {
-	if( !command_line_ && !ui()->rendering() && !no_gui)
+    if( !command_line_ && ui() && !ui()->rendering() && !no_gui)
 		ui()->inform( message);
 	else
 		std::cerr << "Info: " << message << "\n";
@@ -523,7 +533,7 @@ void application_t::inform( const std::string& message, bool no_gui) const
 
 bool application_t::question( const std::string& what, bool default_answer) const
 {
-	if( !command_line_ && !ui()->rendering())
+    if( !command_line_ && ui() && !ui()->rendering())
 		return ui()->question( what, default_answer);
 	else
 	{

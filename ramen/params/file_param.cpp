@@ -154,7 +154,7 @@ void file_param_t::update_input_text()
     update_input_text( get_value<boost::filesystem::path>( *this));
 }
 
-void file_param_t::convert_relative_paths( const boost::filesystem::path& old_base, const boost::filesystem::path& new_base)
+void file_param_t::do_convert_relative_paths( const boost::filesystem::path& old_base, const boost::filesystem::path& new_base)
 {
     boost::filesystem::path p( get_value<boost::filesystem::path>( *this));
 	
@@ -165,7 +165,7 @@ void file_param_t::convert_relative_paths( const boost::filesystem::path& old_ba
 	}
 }
 
-void file_param_t::make_paths_absolute()
+void file_param_t::do_make_paths_absolute()
 {
 	RAMEN_ASSERT( composition());
 
@@ -178,7 +178,7 @@ void file_param_t::make_paths_absolute()
 	}
 }
 
-void file_param_t::make_paths_relative()
+void file_param_t::do_make_paths_relative()
 {
 	RAMEN_ASSERT( composition());
 

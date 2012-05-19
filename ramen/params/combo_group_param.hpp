@@ -25,8 +25,6 @@ public:
 
     void set_value( int x, change_reason reason = user_edited);
 
-    std::auto_ptr<undo::command_t> create_command();
-
 protected:
 
     combo_group_param_t( const combo_group_param_t& other);
@@ -40,6 +38,8 @@ private:
     virtual void do_enable_widgets( bool e);
 
     virtual void do_add_to_hash( util::hash_generator_t& hash_gen) const;
+
+    virtual std::auto_ptr<undo::command_t> do_create_command();
 
 	virtual boost::python::object to_python( const poly_param_value_t& v) const;
 	virtual poly_param_value_t from_python( const boost::python::object& obj) const;

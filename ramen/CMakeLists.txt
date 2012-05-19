@@ -668,8 +668,8 @@ SET( RAMEN_NODE_SOURCES )
 #tests
 IF( CMAKE_BUILD_TYPE MATCHES Debug)
 	SET( RAMEN_TEST_SOURCES	test/test.cpp
-							expressions/test.cpp
-							python/test.cpp
+                            test/expressions.cpp
+                            test/python.cpp
 							)
 ENDIF( CMAKE_BUILD_TYPE MATCHES Debug)
 

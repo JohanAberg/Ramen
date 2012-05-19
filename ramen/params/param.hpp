@@ -7,6 +7,8 @@
 
 #include<ramen/config.hpp>
 
+#include<ramen/params/param_fwd.hpp>
+
 #include<ramen/python/python.hpp>
 
 #include<memory>
@@ -16,6 +18,9 @@
 #include<utility>
 
 #include<boost/flyweight.hpp>
+#include<boost/filesystem/fstream.hpp>
+#include<boost/python/object.hpp>
+#include<boost/python/extract.hpp>
 
 #include<OpenEXR/ImathBox.h>
 
@@ -23,17 +28,13 @@
 
 #include<ramen/assert.hpp>
 
-#include<ramen/params/poly_param_value.hpp>
+#include<ramen/app/composition_fwd.hpp>
 
+#include<ramen/params/poly_param_value.hpp>
 #include<ramen/params/parameterised_fwd.hpp>
 #include<ramen/params/param_set_fwd.hpp>
-
 #include<ramen/params/static_param_command_fwd.hpp>
 #include<ramen/params/animated_param_command_fwd.hpp>
-
-#include<boost/filesystem/fstream.hpp>
-
-#include<ramen/app/composition_fwd.hpp>
 
 #include<ramen/anim/track_fwd.hpp>
 
@@ -46,13 +47,9 @@
 #include<ramen/serialization/yaml_iarchive.hpp>
 #include<ramen/serialization/yaml_oarchive.hpp>
 
-#include<boost/python/object.hpp>
-#include<boost/python/extract.hpp>
 #include<ramen/python/access_fwd.hpp>
 
-#ifndef RAMEN_NO_GUI
-	#include<ramen/ui/widgets/param_spinbox_fwd.hpp>
-#endif
+#include<ramen/ui/widgets/param_spinbox_fwd.hpp>
 
 class QWidget;
 
@@ -80,7 +77,7 @@ protected:
         round_to_int_bit			= 1 << 6,   // for float params, round to value to integer. Emulates an integer_param.
         proportional_bit			= 1 << 7,   // param is a float2 or float3 and the values can be modified proportionally.
 		include_in_hash_bit			= 1 << 8,	// param is included in hash
-		can_have_expressions_bit	= 1 << 9
+        can_have_expressions_bit	= 1 << 9    // param can have expressions
     };
 
 public:
@@ -98,20 +95,20 @@ public:
     explicit param_t( const std::string& name);
     virtual ~param_t() {}
 
-    virtual void init() {}
+    void init();
 
     param_t *clone() const { return do_clone();}
 
-    const std::string& name() const	    { return name_;}
+    const std::string& name() const         { return name_;}
     void set_name( const std::string& name) { name_ = name;}
 
-    const std::string& id() const		{ return id_;}
+    const std::string& id() const { return id_;}
     void set_id( const std::string& identifier);
 
     const param_set_t *param_set() const    { return param_set_;}
     param_set_t *param_set()				{ return param_set_;}
 
-    virtual void set_param_set( param_set_t *parent);
+    void set_param_set( param_set_t *parent);
 
     const parameterised_t *parameterised() const;
     parameterised_t *parameterised();
@@ -119,25 +116,25 @@ public:
     const composition_t *composition() const;
     composition_t *composition();
 
-    bool enabled() const { return flags_ & enabled_bit;}
+    bool enabled() const;
     void set_enabled( bool e);
 
-    bool is_static() const      { return flags_ & static_bit;}
+    bool is_static() const;
     void set_static( bool b);
 
-    bool secret() const		{ return flags_ & secret_bit;}
+    bool secret() const;
     void set_secret( bool b);
 
-    bool persist() const	{ return flags_ & persist_bit;}
+    bool persist() const;
     void set_persist( bool b);
 
-    bool can_undo() const	{ return flags_ & can_undo_bit;}
+    bool can_undo() const;
     void set_can_undo( bool b);
 
-	bool include_in_hash() const { return flags_ &  include_in_hash_bit;}
+    bool include_in_hash() const;
 	void set_include_in_hash( bool b);			
 
-    bool can_have_expressions() const	{ return flags_ & can_have_expressions_bit;}
+    bool can_have_expressions() const;
     void set_can_have_expressions( bool b);
 	
     bool track_mouse() const;
@@ -151,14 +148,11 @@ public:
 	void emit_param_changed( change_reason reason);
 	
 	// formats
-    void format_changed( const Imath::Box2i& new_format, float aspect, const Imath::V2f& proxy_scale)
-	{ 
-		do_format_changed( new_format, aspect, proxy_scale);
-	}
+    void format_changed( const Imath::Box2i& new_format, float aspect, const Imath::V2f& proxy_scale);
 	
     // animation
     void create_tracks( anim::track_t *parent);
-	virtual void set_frame( float frame);
+    void set_frame( float frame);
     void evaluate( float frame);
 
 	int num_expressions() const;
@@ -169,27 +163,24 @@ public:
     void add_to_hash( util::hash_generator_t& hash_gen) const;
     
     // undo
-    virtual std::auto_ptr<undo::command_t> create_command() { return std::auto_ptr<undo::command_t>();}
+    std::auto_ptr<undo::command_t> create_command();
 
     // paths
-    virtual void convert_relative_paths( const boost::filesystem::path& old_base, const boost::filesystem::path& new_base);
-	virtual void make_paths_absolute();
-	virtual void make_paths_relative();
+    void convert_relative_paths( const boost::filesystem::path& old_base, const boost::filesystem::path& new_base);
+    void make_paths_absolute();
+    void make_paths_relative();
 	
     // serialization
-	virtual void read( const serialization::yaml_node_t& node);
-    virtual void write( serialization::yaml_oarchive_t& out) const;
+    void read( const serialization::yaml_node_t& in);
+    void write( serialization::yaml_oarchive_t& out) const;
 
 	// util
-	virtual void apply_function( const boost::function<void ( param_t*)>& f);
+    void apply_function( const boost::function<void ( param_t*)>& f);
 	
     // widgets
-	#ifndef RAMEN_NO_GUI	
-	    QWidget *create_widgets();
-	#endif
-		
-    void update_widgets()           { do_update_widgets();}
-    void enable_widgets( bool e)    { do_enable_widgets( e);}
+    QWidget *create_widgets();
+    void update_widgets();
+    void enable_widgets( bool e);
 	
 protected:
 
@@ -220,13 +211,21 @@ private:
 		
     virtual param_t *do_clone() const = 0;
 	
-    virtual void do_format_changed( const Imath::Box2i& new_format, float aspect, const Imath::V2f& proxy_scale) {}
+    virtual void do_init();
+
+    virtual void do_format_changed( const Imath::Box2i& new_format, float aspect, const Imath::V2f& proxy_scale);
+
+    virtual void do_set_param_set( param_set_t *parent);
 
 	// time and anim
-    virtual void do_create_tracks( anim::track_t *parent) {}
+    virtual void do_create_tracks( anim::track_t *parent);
+    virtual void do_set_frame( float frame);
     virtual void do_evaluate( float frame);
 	expressions::expression_t *find_expression( const std::string& name);
 	
+    // undo
+    virtual std::auto_ptr<undo::command_t> do_create_command();
+
 	// hash
     virtual void do_add_to_hash( util::hash_generator_t& hash_gen) const;
 
@@ -236,17 +235,22 @@ private:
 	virtual boost::python::object to_python( const poly_param_value_t& v) const;
 	virtual poly_param_value_t from_python( const boost::python::object& obj) const;
 
+    // paths
+    virtual void do_convert_relative_paths( const boost::filesystem::path& old_base, const boost::filesystem::path& new_base);
+    virtual void do_make_paths_absolute();
+    virtual void do_make_paths_relative();
+
 	// serialization
-	virtual void do_read( const serialization::yaml_node_t& node);
+    virtual void do_read( const serialization::yaml_node_t& in);
     virtual void do_write( serialization::yaml_oarchive_t& out) const;
 	
+    // util
+    virtual void do_apply_function( const boost::function<void ( param_t*)>& f);
+
 	// widgets
-	#ifndef RAMEN_NO_GUI
-	    virtual QWidget *do_create_widgets()        { return 0;}
-	#endif
-		
-    virtual void do_update_widgets()            {}
-    virtual void do_enable_widgets( bool e)     {}
+    virtual QWidget *do_create_widgets();
+    virtual void do_update_widgets();
+    virtual void do_enable_widgets( bool e);
 
     template<class S> friend S get_value( const param_t& p);
     template<class S> friend S get_value_at_frame( const param_t& p, float frame);

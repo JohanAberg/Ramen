@@ -52,7 +52,7 @@ void combo_group_param_t::set_value( int x, change_reason reason)
 	emit_param_changed( reason);
 }
 
-std::auto_ptr<undo::command_t> combo_group_param_t::create_command()
+std::auto_ptr<undo::command_t> combo_group_param_t::do_create_command()
 {
     return std::auto_ptr<undo::command_t>( new static_param_command_t( *param_set(), id()));
 }

@@ -222,8 +222,8 @@ public:
 	virtual void make_paths_relative();
 
     // serialization
-	virtual void read( const serialization::yaml_node_t& node, const std::pair<int,int>& version);
-    virtual void write( serialization::yaml_oarchive_t& out) const;
+    void read( const serialization::yaml_node_t& in, const std::pair<int,int>& version);
+    void write( serialization::yaml_oarchive_t& out) const;
 
 protected:
 
@@ -264,7 +264,7 @@ private:
         \brief Customization hook for node_t::read.
         Implement in subclasses to read extra data from node.
     */
-    virtual void do_read( const serialization::yaml_node_t& node, const std::pair<int,int>& version);
+    virtual void do_read(const serialization::yaml_node_t& in, const std::pair<int,int>& version);
 
     /*!
         \brief Customization hook for node_t::write.

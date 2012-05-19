@@ -11,6 +11,8 @@
 
 #include<boost/lexical_cast.hpp>
 
+#include<ramen/util/string.hpp>
+
 namespace ramen
 {
 namespace detail
@@ -21,48 +23,6 @@ class unique_name_map_base_t
 public:
 	
 	unique_name_map_base_t() {}
-
-protected:
-		
-	std::string get_number( const std::string& str) const
-	{
-		try
-		{
-			// this is a quick fix, if all str are nums
-			int num = boost::lexical_cast<int>( str);
-			return str;
-		}
-		catch( ...) {}
-	
-		std::string::size_type n = str.length() - 1;
-	
-		while( n != 0)
-		{
-			char c = str[n];
-	
-			if( !isdigit( c))
-				break;
-	
-			--n;
-		}
-	
-		return std::string( str, n + 1, str.length());
-	}
-		
-	void increment_string( std::string& str) const
-	{
-		std::string num_str = get_number( str);
-	
-		if( num_str.empty())
-			str.append( "_2");
-		else
-		{
-			std::string base( str, 0, str.length() - num_str.length());
-			int num = boost::lexical_cast<int>( num_str);
-			num_str = boost::lexical_cast<std::string>( ++num);
-			str = base + num_str;
-		}
-	}	
 };
 	
 } // detail
@@ -94,7 +54,7 @@ public:
 				return;
 			}
 			
-			increment_string( name);
+            util::increment_string_number( name);
 		}
 	}
 	
@@ -121,8 +81,8 @@ public:
 			if( it == map_.end())
 				return name;
 			else
-				increment_string( name);
-		}
+                util::increment_string_number( name);
+        }
 	}
 
 private:
@@ -157,8 +117,8 @@ public:
 				return;
 			}
 			
-			increment_string( name);
-		}
+            util::increment_string_number( name);
+        }
 	}
 	
 	void insert_null( const std::string& name)
@@ -191,8 +151,8 @@ public:
 			if( it == map_.end())
 				return name;
 			else
-				increment_string( name);
-		}
+                util::increment_string_number( name);
+        }
 	}
 
 private:
