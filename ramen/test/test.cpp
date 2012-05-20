@@ -46,12 +46,29 @@ private:
     map_type tests_;
 };
 
+// gmock interop
+struct init_gmock
+{
+    init_gmock()
+    {
+        ::testing::GTEST_FLAG(throw_on_failure) = true;
+        ::testing::InitGoogleMock( &boost::unit_test::framework::master_test_suite().argc,
+                                   boost::unit_test::framework::master_test_suite().argv);
+    }
+
+    ~init_gmock() {}
+};
+
 } // unnamed
 
+// for internal use
 bool do_register_ramen_test( const char *name, const boost::function<void()>& fun)
 {
     return test_registry_t::instance().register_test( name, fun);
 }
+
+// gmock interop
+BOOST_GLOBAL_FIXTURE( init_gmock);
 
 bool init_tests()
 {
@@ -65,12 +82,8 @@ bool init_tests()
     return true;
 }
 
-int run_ramen_unit_tests( int *argc, char **argv)
+// run tests entry point
+int run_ramen_unit_tests( int argc, char **argv)
 {
-    // init gmock
-    ::testing::GTEST_FLAG(throw_on_failure) = true;
-    ::testing::InitGoogleMock( argc, argv);
-
-    // run tests
-    return ::boost::unit_test::unit_test_main( &init_tests, *argc, argv);
+    return ::boost::unit_test::unit_test_main( &init_tests, argc, argv);
 }
