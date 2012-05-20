@@ -592,6 +592,7 @@ void main_window_t::import_composition()
     {
         try
         {
+            /*
             boost::filesystem::path p( fname.toStdString());
             std::auto_ptr<serialization::yaml_iarchive_t> in( ramen::import_composition( p));
             app().document().set_dirty( true);
@@ -602,6 +603,7 @@ void main_window_t::import_composition()
 			
 			if( !err.empty())
 				multiline_alert_t::instance().show_alert( "Errors during file open", err);
+            */
         }
         catch( std::exception& e)
         {

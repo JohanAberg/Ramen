@@ -53,7 +53,7 @@
 
 // Tests
 #ifndef NDEBUG
-    int run_ramen_unit_tests( int *argc, char **argv);
+    int run_ramen_unit_tests( int argc, char **argv);
 #endif
 
 namespace ramen
@@ -226,7 +226,7 @@ int application_t::run()
     #ifndef NDEBUG
         if( run_unit_tests_)
         {
-            int result = run_ramen_unit_tests( &cmd_parser_->argc, cmd_parser_->argv);
+            int result = run_ramen_unit_tests( cmd_parser_->argc, cmd_parser_->argv);
             std::exit( result);
         }
     #endif

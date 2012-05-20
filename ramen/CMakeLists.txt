@@ -665,21 +665,29 @@ SET( RAMEN_SOURCES  ref_counted.cpp
 SET( RAMEN_MOC_NODES_CLASSES )
 SET( RAMEN_NODE_SOURCES )
 
-#tests
+# tests
 IF( CMAKE_BUILD_TYPE MATCHES Debug)
 	SET( RAMEN_TEST_SOURCES	test/test.cpp
+                            test/composite_nodes.cpp
+                            test/container.cpp
+                            test/depgraph.cpp
                             test/expressions.cpp
+                            test/math.cpp
                             test/memory.cpp
+                            test/filesystem.cpp
+                            test/ImathExt.cpp
                             test/nodes.cpp
                             test/params.cpp
+                            test/param_set.cpp
                             test/string.cpp
                             test/python.cpp
+                            test/undo.cpp
 							)
 
     SET( RAMEN_TEST_LIBRARIES ${GMOCK_LIBRARIES})
 ENDIF( CMAKE_BUILD_TYPE MATCHES Debug)
 
-#platform sources
+# platform sources
 IF( APPLE)
 	SET( RAMEN_PLATFORM_SOURCES system/system_pvt_osx.cpp)
 ENDIF( APPLE)
@@ -693,7 +701,7 @@ IF( CMAKE_SYSTEM_NAME MATCHES "Linux")
 		SET( RAMEN_PLATFORM_SOURCES system/system_pvt_linux.cpp)
 ENDIF( CMAKE_SYSTEM_NAME MATCHES "Linux")
 
-#ui files
+# ui files
 SET( RAMEN_DESIGNER_FILES	../designer/about.ui
 							../designer/apply_corner_track.ui
 							../designer/apply_point_track.ui
@@ -705,7 +713,7 @@ SET( RAMEN_DESIGNER_FILES	../designer/about.ui
 							../designer/smooth_anim_curves.ui
 							)
 
-#QT
+# QT
 QT4_WRAP_CPP( RAMEN_MOC_SOURCES	${RAMEN_MOC_CLASSES} ${RAMEN_MOC_NODE_CLASSES} OPTIONS ${MOC_EXTRA_ARGS})
 QT4_WRAP_UI( RAMEN_DESIGNER_SOURCES ${RAMEN_DESIGNER_FILES})
 QT4_ADD_RESOURCES( RAMEN_RESOURCES ${PROJECT_SOURCE_DIR}/resources/resources.qrc)

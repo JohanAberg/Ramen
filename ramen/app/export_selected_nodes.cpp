@@ -22,6 +22,7 @@ namespace ramen
 
 void export_selected_nodes( const boost::filesystem::path& p)
 {
+    /*
 	boost::filesystem::path comp_dir( app().document().composition().composition_dir());
 
     composition_t comp;
@@ -60,6 +61,7 @@ void export_selected_nodes( const boost::filesystem::path& p)
 	{
 		app().ui()->error( std::string( "Couldn't save file. Exception, what = ") + e.what());
 	}
+    */
 }
 
 } // namespace

@@ -27,6 +27,7 @@ std::auto_ptr<serialization::yaml_iarchive_t> import_composition( const boost::f
 
 	std::auto_ptr<serialization::yaml_iarchive_t> in;
 	
+    /*
 	in.reset( new serialization::yaml_iarchive_t( ifs));
 		
 	if( !in->read_composition_header())
@@ -38,7 +39,7 @@ std::auto_ptr<serialization::yaml_iarchive_t> import_composition( const boost::f
 	comp.select_all();
 
 	app().document().composition().merge_composition( comp);
-
+    */
 	return in;
 }
 
