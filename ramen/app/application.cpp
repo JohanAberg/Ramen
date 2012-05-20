@@ -21,6 +21,8 @@
 
 #include<QApplication>
 
+#include<glog/logging.h>
+
 #include<ramen/version.hpp>
 
 #include<ramen/app/preferences.hpp>
@@ -51,7 +53,7 @@
 
 // Tests
 #ifndef NDEBUG
-    int run_ramen_unit_tests( int argc, char **argv);
+    int run_ramen_unit_tests( int *argc, char **argv);
 #endif
 
 namespace ramen
@@ -75,6 +77,9 @@ application_t::application_t( int argc, char **argv) : system_(), preferences_()
     #endif
 
     cmd_parser_.reset( new util::command_line_parser_t( argc, argv));
+
+    google::InitGoogleLogging( cmd_parser_->argv[0]);
+    //google::SetLogDestination( google::INFO, "filename.log");
 
 	// Create QApplication
     QApplication *q_app = new QApplication( cmd_parser_->argc, cmd_parser_->argv);
@@ -156,6 +161,8 @@ application_t::~application_t()
 {
 	//	TODO: implement this.
 	//delete_tmp_files();
+
+    google::ShutdownGoogleLogging();
 }
 
 void application_t::create_dirs()
@@ -219,7 +226,7 @@ int application_t::run()
     #ifndef NDEBUG
         if( run_unit_tests_)
         {
-            int result = run_ramen_unit_tests( cmd_parser_->argc, cmd_parser_->argv);
+            int result = run_ramen_unit_tests( &cmd_parser_->argc, cmd_parser_->argv);
             std::exit( result);
         }
     #endif
@@ -510,9 +517,11 @@ void application_t::fatal_error( const std::string& message, bool no_gui) const
     if( !command_line_ && ui() && !ui()->rendering() && !no_gui)
 		ui()->fatal_error( message);
 	else
+    {
 		std::cerr << "Fatal error: " << message << "\n";
-
-	abort();
+        DLOG( FATAL) << message;
+        abort();
+    }
 }
 
 void application_t::error( const std::string& message, bool no_gui) const
@@ -520,7 +529,10 @@ void application_t::error( const std::string& message, bool no_gui) const
     if( !command_line_ && ui() && !ui()->rendering() && !no_gui)
 		ui()->error( message);
 	else
+    {
 		std::cerr << "Error: " << message << "\n";
+        DLOG( ERROR) << message;
+    }
 }
 
 void application_t::inform( const std::string& message, bool no_gui) const
@@ -528,7 +540,10 @@ void application_t::inform( const std::string& message, bool no_gui) const
     if( !command_line_ && ui() && !ui()->rendering() && !no_gui)
 		ui()->inform( message);
 	else
+    {
 		std::cerr << "Info: " << message << "\n";
+        DLOG( INFO) << message;
+    }
 }
 
 bool application_t::question( const std::string& what, bool default_answer) const

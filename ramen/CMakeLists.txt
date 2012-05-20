@@ -675,6 +675,8 @@ IF( CMAKE_BUILD_TYPE MATCHES Debug)
                             test/string.cpp
                             test/python.cpp
 							)
+
+    SET( RAMEN_TEST_LIBRARIES ${GMOCK_LIBRARIES})
 ENDIF( CMAKE_BUILD_TYPE MATCHES Debug)
 
 #platform sources
@@ -724,7 +726,8 @@ SET_TARGET_PROPERTIES( ramen PROPERTIES VERSION ${RAMEN_VERSION_MAJOR}.${RAMEN_V
                                         SOVERSION ${RAMEN_VERSION_MAJOR} )
 TARGET_LINK_LIBRARIES( ramen	${RAMEN_ALL_LIBS}
                                 ${EXTRA_PLATFORM_LIBS}
-                                 )
+                                ${RAMEN_TEST_LIBRARIES}
+                                )
 
 SET( LIBRARY_OUTPUT_PATH ${PROJECT_BINARY_DIR}/ramen-${RAMEN_VERSION}/lib/)
 
@@ -740,6 +743,8 @@ ADD_EXECUTABLE( ramen.bin ${RAMEN_APP_SOURCES})
 TARGET_LINK_LIBRARIES( ramen.bin	ramen
                                     ${RAMEN_ALL_LIBS}
                                     ${EXTRA_PLATFORM_LIBS}
+                                    ${BREAKPAD_CLIENT_LIBRARY}
+                                    ${RAMEN_TEST_LIBRARIES}
                                     )
 
 SET( EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR}/ramen-${RAMEN_VERSION}/bin/)

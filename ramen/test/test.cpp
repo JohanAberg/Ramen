@@ -6,6 +6,8 @@
 
 #include<map>
 
+#include<gmock/gmock.h>
+
 #include<ramen/assert.hpp>
 
 namespace
@@ -63,7 +65,12 @@ bool init_tests()
     return true;
 }
 
-int run_ramen_unit_tests( int argc, char **argv)
+int run_ramen_unit_tests( int *argc, char **argv)
 {
-	return ::boost::unit_test::unit_test_main( &init_tests, argc, argv);
+    // init gmock
+    ::testing::GTEST_FLAG(throw_on_failure) = true;
+    ::testing::InitGoogleMock( argc, argv);
+
+    // run tests
+    return ::boost::unit_test::unit_test_main( &init_tests, *argc, argv);
 }

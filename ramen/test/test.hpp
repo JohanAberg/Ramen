@@ -12,10 +12,10 @@
 #include<boost/test/unit_test.hpp>
 using namespace boost::unit_test;
 
+// for internal use, better use the following macro.
+bool do_register_ramen_test( const char *name, const boost::function<void()>& fun);
+
 #define RAMEN_REGISTER_TEST_CASE( test_function) \
     do_register_ramen_test( BOOST_PP_STRINGIZE( test_function), boost::function<void()>( test_function))
-
-// for internal use
-bool do_register_ramen_test( const char *name, const boost::function<void()>& fun);
 
 #endif

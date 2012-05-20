@@ -7,12 +7,15 @@
 #include<cstdlib>
 #include<iostream>
 
+#include<glog/logging.h>
+
 namespace ramen
 {
 
 void assertion_failed( char const *expr, char const *function, char const *file, long line)
 {
 	std::cerr << "assertion failed, file: " << file << " , function: " << function  << " " << line << ": " << expr << "\n";
+    DLOG( ERROR) << "assertion failed, file: " << file << " , function: " << function  << " " << line << ": " << expr;
 	std::abort();
 }
 

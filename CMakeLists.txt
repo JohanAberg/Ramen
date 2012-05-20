@@ -62,7 +62,15 @@ FIND_PACKAGE( GLEW REQUIRED)
 
 # boost
 SET( Boost_ADDITIONAL_VERSIONS "1.49.0")
-SET( BOOST_NEEDED_LIBS filesystem thread signals system regex date_time python)
+SET( BOOST_NEEDED_LIBS  filesystem
+                        thread
+                        signals
+                        system
+                        regex
+                        date_time
+                        program_options
+                        python
+                        )
 
 IF( CMAKE_BUILD_TYPE MATCHES Debug)
 	SET( BOOST_NEEDED_LIBS ${BOOST_NEEDED_LIBS} unit_test_framework)
@@ -117,10 +125,15 @@ FIND_PACKAGE( Freetype REQUIRED)
 FIND_PACKAGE( ZLIB REQUIRED)
 FIND_PACKAGE( SEEXPR REQUIRED)
 
-#python
+# python
 FIND_PACKAGE( PythonLibs REQUIRED)
 FIND_PACKAGE( SHIBOKEN REQUIRED)
 FIND_PACKAGE( PYSIDE REQUIRED)
+
+# testing, debugging, ...
+FIND_PACKAGE( GMOCK REQUIRED)
+FIND_PACKAGE( GLOG REQUIRED)
+FIND_PACKAGE( BREAKPAD REQUIRED)
 
 INCLUDE_DIRECTORIES(    ${PROJECT_SOURCE_DIR}
 						${PROJECT_SOURCE_DIR}/ramen/
@@ -158,6 +171,9 @@ INCLUDE_DIRECTORIES(    ${PROJECT_SOURCE_DIR}
                         ${PYTHON_INCLUDE_DIRS}
 
 						${ZLIB_INCLUDE_DIRS}
+                        ${GLOG_INCLUDE_DIRS}
+                        ${GMOCK_INCLUDE_DIRS}
+                        ${BREAKPAD_INCLUDE_DIRS}
                         )
 
 SET( RAMEN_ALL_LIBS	${NEEDED_QT_LIBS}
@@ -188,6 +204,7 @@ SET( RAMEN_ALL_LIBS	${NEEDED_QT_LIBS}
 					${PYTHON_LIBRARIES}
 								
 					${ZLIB_LIBRARIES}
+                    ${GLOG_LIBRARIES}
 					)
 
 ADD_SUBDIRECTORY( ramen)

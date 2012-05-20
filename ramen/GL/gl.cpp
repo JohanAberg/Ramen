@@ -4,11 +4,9 @@
 
 #include<ramen/GL/gl.hpp>
 
-#include<ramen/assert.hpp>
+#include<glog/logging.h>
 
-#ifndef NDEBUG
-	#include<iostream>
-#endif
+#include<ramen/assert.hpp>
 
 namespace ramen
 {
@@ -34,12 +32,11 @@ void check_gl_errors()
 
 		if( err != GL_NO_ERROR)
 		{
-			std::cout << "OpenGL error: " << err << "\n";
-			std::cout << "inside begin block = " << inside_begin_block() << "\n";
-			std::cout << "current texture unit = " << current_texture_unit << "\n";
-			std::cout << "current texture = " << current_texture << "\n";
-			std::cout << "push / pop num = " << num_push_matrix << "\n";
-			RAMEN_ASSERT( 0);
+            DLOG( FATAL) << "OpenGL error: " << err << "\n" <<
+                            "inside begin block = " << inside_begin_block() << "\n" <<
+                            "current texture unit = " << current_texture_unit << "\n" <<
+                            "current texture = " << current_texture << "\n" <<
+                            "push / pop num = " << num_push_matrix << "\n";
 		}
 	#endif
 }
