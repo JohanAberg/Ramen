@@ -66,7 +66,7 @@ public:
     virtual void cloned();
 
     // inputs
-    virtual std::size_t num_inputs() const { return inputs_.size();}
+    std::size_t num_inputs() const { return inputs_.size();}
 
     const std::vector<node_input_plug_t>& input_plugs() const { return inputs_;}
     std::vector<node_input_plug_t>& input_plugs()             { return inputs_;}

@@ -38,10 +38,7 @@ parameterised_t::parameterised_t( const parameterised_t& other) : params_( other
 
 parameterised_t::~parameterised_t() { deleted( this);}
 
-parameterised_t *parameterised_t::clone() const
-{
-    return do_clone();
-}
+parameterised_t *parameterised_t::clone() const { return do_clone();}
 
 void parameterised_t::create_params()
 {
@@ -49,9 +46,13 @@ void parameterised_t::create_params()
     adobe::for_each( param_set(), boost::bind( &param_t::init, _1));
 }
 
+void parameterised_t::set_parent( parameterised_t *parent)
+{
+    parent_ = parent;
+    do_set_parent( parent);
+}
 
-
-void parameterised_t::set_parent( parameterised_t *parent) { parent_ = parent;}
+void do_set_parent( parameterised_t *parent) {}
 
 const node_t *parameterised_t::node() const
 {

@@ -65,11 +65,11 @@ private:
 
     QPointer<QComboBox> menu_;
 	QPointer<ui::double_spinbox_t> input_;
-		
-	private Q_SLOTS:
 
-		void item_picked( int index);
-        void value_changed( double value);
+private Q_SLOTS:
+
+    void item_picked( int index);
+    void value_changed( double value);
 };
 
 } // namespace

@@ -68,7 +68,7 @@ public:
     parameterised_t *parent() { return parent_;}
 
     /// Sets the parameterised parent.
-    virtual void set_parent( parameterised_t *parent);
+    void set_parent( parameterised_t *parent);
 
     /// Returns the composition this parameterised belongs to.
     const composition_t *composition() const;
@@ -77,10 +77,10 @@ public:
     composition_t *composition();
 	
     /// Returns the node this parameterised belongs to.
-	virtual const node_t *node() const;
+	const node_t *node() const;
 
     /// Returns the node this parameterised belongs to.
-    virtual node_t *node();
+    node_t *node();
 	
     /// Returns the world node this parameterised belongs to.
     const world_node_t *world() const;
@@ -98,10 +98,10 @@ public:
     param_set_t& param_set()				{ return params_;}
 
     /// Returns a const reference to the param with identifier id.
-    virtual const param_t& param( const std::string& identifier) const;
+    const param_t& param( const std::string& identifier) const;
 
     /// Returns a reference to the param with identifier id.
-    virtual param_t& param( const std::string& identifier);
+    param_t& param( const std::string& identifier);
 
     /// Adds a param to this parameterised.
     template<class T>
@@ -137,6 +137,12 @@ private:
     	For subclasses to implement.
 	*/
     virtual parameterised_t *do_clone() const = 0;
+
+    /*!
+    	\brief Customization hook for parameterised_t::set_parent.
+    	For subclasses to implement.
+	*/
+    virtual void do_set_parent( parameterised_t *parent);
 
     /*!
     	\brief Customization hook for parameterised_t::create_params.

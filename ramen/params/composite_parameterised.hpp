@@ -27,6 +27,11 @@ public:
     composite_parameterised_t();
 	virtual ~composite_parameterised_t();
 
+protected:
+
+	composite_parameterised_t( const composite_parameterised_t& other);
+	void operator=( const parameterised_t& other);
+
     void add_parameterised( std::auto_ptr<parameterised_t> p);
     std::auto_ptr<parameterised_t> remove_parameterised( parameterised_t *p);
 
@@ -39,10 +44,7 @@ public:
     iterator begin() { return children_.begin();}
     iterator end()   { return children_.end();}
 
-protected:
-
-	composite_parameterised_t( const composite_parameterised_t& other);
-	void operator=( const parameterised_t& other);
+private:
 
     parameterised_container_type children_;
 };
