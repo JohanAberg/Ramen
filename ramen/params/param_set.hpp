@@ -5,6 +5,8 @@
 #ifndef RAMEN_PARAM_PARAM_SET_HPP
 #define	RAMEN_PARAM_PARAM_SET_HPP
 
+#include<ramen/params/param_set_fwd.hpp>
+
 #include<ramen/python/python.hpp>
 
 #include<map>
@@ -76,9 +78,9 @@ public:
 
     bool editing() const;
 
-	const param_set_command_t *command() const;
-	param_set_command_t	*command();
-	
+    const param_set_command_t *command() const;
+    param_set_command_t	*command();
+
     bool is_command_empty() const;
 
     void add_command( param_t *p);
@@ -87,21 +89,21 @@ public:
 
     void add_to_hash( util::hash_generator_t& hash_gen) const;
 
-	// util
-	void for_each_param( const boost::function<void ( param_t*)>& f);
-	
+    // util
+    void for_each_param( const boost::function<void ( param_t*)>& f);
+
     // serialization
-	void read( const serialization::yaml_node_t& node);
+    void read( const serialization::yaml_node_t& node);
     void write( serialization::yaml_oarchive_t& out) const;
 
     void read_param( const serialization::yaml_node_t& node);
 
 private:
 
-	friend class python::access;
+    friend class python::access;
 
     void do_add_param( param_t *p);
-	
+
     parameterised_t *parent_;
     boost::ptr_vector<param_t> params_;
     std::auto_ptr<param_set_command_t> command_;

@@ -44,6 +44,7 @@ public:
     /// Called for the new parameterised, after being copied.
     virtual void cloned() {}
 
+    /// Destructor.
     virtual ~parameterised_t();
 
     /// Emitted when this object is deleted.
@@ -59,7 +60,7 @@ public:
     void set_dont_persist_params( bool b)   { dont_persist_params_ = b;}
 
     virtual bool autokey() const;
-	virtual bool track_mouse() const;
+    virtual bool track_mouse() const;
 
     /// Returns the parameterised parent.
     const parameterised_t *parent() const { return parent_;}
@@ -75,13 +76,13 @@ public:
 
     /// Returns the composition this parameterised belongs to.
     composition_t *composition();
-	
+
     /// Returns the node this parameterised belongs to.
-	const node_t *node() const;
+    const node_t *node() const;
 
     /// Returns the node this parameterised belongs to.
     node_t *node();
-	
+
     /// Returns the world node this parameterised belongs to.
     const world_node_t *world() const;
 
@@ -109,69 +110,69 @@ public:
 
     /// Called after editing of params finished.
     virtual void param_edit_finished() = 0;
-	
+
     /// Calls a function f for each param.
-	virtual void for_each_param( const boost::function<void ( param_t*)>& f);
-	
+    virtual void for_each_param( const boost::function<void ( param_t*)>& f);
+
     /// Creates anim tracks for this parameterised and adds them to root.
     void create_tracks( anim::track_t *root);
 
     /// Sets the current frame to f.
     void set_frame( float f);
-	
+
     /// Updates widgets associated with this parameterised's params.
-	void update_widgets();
-		
+    void update_widgets();
+
 protected:
-	
+
     parameterised_t( const parameterised_t& other);
     void operator=( const parameterised_t& other);
 
     /// Evaluate all params at frame frame.
     void evaluate_params( float frame);
-	
+
 private:
 
     /*!
-    	\brief Customization hook for parameterised_t::clone.
-    	For subclasses to implement.
-	*/
+        \brief Customization hook for parameterised_t::clone.
+        For subclasses to implement.
+    */
     virtual parameterised_t *do_clone() const = 0;
 
     /*!
-    	\brief Customization hook for parameterised_t::set_parent.
-    	For subclasses to implement.
-	*/
+        \brief Customization hook for parameterised_t::set_parent.
+        For subclasses to implement.
+    */
     virtual void do_set_parent( parameterised_t *parent);
 
     /*!
-    	\brief Customization hook for parameterised_t::create_params.
-    	For subclasses to implement.
-	*/
+        \brief Customization hook for parameterised_t::create_params.
+        For subclasses to implement.
+    */
     virtual void do_create_params() {}
-	
+
     /*!
-    	\brief Customization hook for parameterised_t::create_tracks.
-    	For subclasses to implement.
-	*/
+        \brief Customization hook for parameterised_t::create_tracks.
+        For subclasses to implement.
+    */
     virtual void do_create_tracks( anim::track_t *parent) {}
 
     /*!
-    	\brief Customization hook for parameterised_t::set_frame.
-    	For subclasses to implement.
-	*/
+        \brief Customization hook for parameterised_t::set_frame.
+        For subclasses to implement.
+    */
     virtual void do_set_frame( float t) {}
 
     /*!
-    	\brief Customization hook for parameterised_t::update_widgets.
-    	For subclasses to implement.
-	*/
+        \brief Customization hook for parameterised_t::update_widgets.
+        For subclasses to implement.
+    */
     virtual void do_update_widgets() {}
-	
+
     std::string name_;
     parameterised_t *parent_;
     param_set_t params_;
-    bool dont_persist_params_;	
+    bool dont_persist_params_;
 };
 
 /// Makes a copy of a parameterised
