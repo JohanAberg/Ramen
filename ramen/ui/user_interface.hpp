@@ -21,10 +21,10 @@
 #include<QString>
 #include<QFont>
 
+#include<ramen/nodes/node_fwd.hpp>
+
 #include<ramen/filesystem/path.hpp>
 #include<boost/filesystem/fstream.hpp>
-
-#include<ramen/render/image_node_renderer.hpp>
 
 #include<ramen/ui/main_window_fwd.hpp>
 #include<ramen/ui/inspector/inspector_fwd.hpp>
@@ -117,9 +117,6 @@ public:
     bool process_cancelled() const;
 
     virtual bool eventFilter( QObject *watched, QEvent *event);
-
-    // render
-    boost::unique_future<bool>& render_image( render::context_t context, render::image_node_renderer_t& renderer);
 
     bool rendering() const { return rendering_;}
 

@@ -18,9 +18,6 @@
 
 #include<ramen/nodes/image_node.hpp>
 
-#include<ramen/flipbook/factory.hpp>
-#include<ramen/flipbook/render_flipbook.hpp>
-
 #include<ramen/ui/user_interface.hpp>
 #include<ramen/ui/inspector/inspector.hpp>
 

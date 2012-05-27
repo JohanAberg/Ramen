@@ -12,8 +12,6 @@
 
 #include<ramen/filesystem/path.hpp>
 
-#include<ramen/rdk/rdk.hpp>
-
 namespace ramen
 {
 
@@ -23,8 +21,8 @@ public:
 
     static plugin_manager_t& instance();
 
-	const std::vector<boost::filesystem::path>& paths() const { return paths_;}
-	
+    const std::vector<boost::filesystem::path>& paths() const { return paths_;}
+
 private:
 
     plugin_manager_t();
@@ -33,11 +31,10 @@ private:
     void load_plugins_in_directory( const boost::filesystem::path& p);
     void load_plugin( const boost::filesystem::path& p);
 
-	std::set<std::string> plugin_names_;
+    std::set<std::string> plugin_names_;
     //boost::ptr_vector<boost::extensions::shared_library> plugins_;
-	
-	std::vector<boost::filesystem::path> paths_;
-	rdk_app_info_t app_info_;
+
+    std::vector<boost::filesystem::path> paths_;
 };
 
 } // namespace

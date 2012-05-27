@@ -36,7 +36,7 @@ public:
     // memory
     int max_image_memory() const        { return max_image_memory_;}
     void set_max_image_memory( int m)   { max_image_memory_ = m;}
-	
+
     // format
     void set_default_format( const image::format_t& format);
     image::format_t default_format() const { return default_format_;}
@@ -44,19 +44,19 @@ public:
     int frame_rate() const      { return frame_rate_;}
     void set_frame_rate( int f) { frame_rate_ = f;}
 
-	// image limits
-	int max_image_width() const;
-	int max_image_height() const;
-	
-	// paths
-	const boost::filesystem::path& tmp_dir() const;
-	
-	// flip
-	const std::string& default_flipbook()  const;
-	void set_default_flipbook( const std::string& f);
-	
-	// user interface
-	int pick_distance() const { return pick_distance_;}
+    // image limits
+    int max_image_width() const;
+    int max_image_height() const;
+
+    // paths
+    const boost::filesystem::path& tmp_dir() const;
+
+    // flip
+    const std::string& default_flipbook()  const;
+    void set_default_flipbook( const std::string& f);
+
+    // user interface
+    int pick_distance() const { return pick_distance_;}
 
     void save();
 
@@ -85,9 +85,9 @@ private:
     image::format_t default_format_;
     int frame_rate_;
     int max_image_memory_;
-	boost::filesystem::path tmp_dir_;
-	std::string flipbook_;
-	int pick_distance_;
+    boost::filesystem::path tmp_dir_;
+    std::string flipbook_;
+    int pick_distance_;
 };
 
 } // namespace

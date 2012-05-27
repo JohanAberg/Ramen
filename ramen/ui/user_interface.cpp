@@ -34,10 +34,6 @@
 
 #include<ramen/memory/manager.hpp>
 
-#include<ramen/movieio/factory.hpp>
-
-#include<ramen/render/image_node_renderer.hpp>
-
 #include<ramen/ui/main_window.hpp>
 #include<ramen/ui/palette.hpp>
 
@@ -45,8 +41,6 @@
 #include<ramen/ui/anim/anim_editor.hpp>
 
 #include<ramen/ui/dialogs/multiline_alert.hpp>
-#include<ramen/ui/dialogs/render_composition_dialog.hpp>
-#include<ramen/ui/dialogs/render_flipbook_dialog.hpp>
 
 #include<ramen/ui/widgets/time_slider.hpp>
 
@@ -70,12 +64,14 @@ user_interface_t::user_interface_t() : QObject()
 
     image_types_str_ = "Image Files (";
 
-        BOOST_FOREACH( const std::string& ext, movieio::factory_t::instance().extensions())
-        {
-            image_types_str_.append( "*.");
-            image_types_str_.append( ext.c_str());
-            image_types_str_.append( " ");
-        }
+    /*
+    BOOST_FOREACH( const std::string& ext, movieio::factory_t::instance().extensions())
+    {
+        image_types_str_.append( "*.");
+        image_types_str_.append( ext.c_str());
+        image_types_str_.append( " ");
+    }
+    */
 
     image_types_str_.append( ")");
 
@@ -167,14 +163,6 @@ void user_interface_t::create_new_document()
     app().document().composition().attach_add_observer( boost::bind( &user_interface_t::node_added, this, _1));
     app().document().composition().attach_release_observer( boost::bind( &user_interface_t::node_released, this, _1));
 
-    render_composition_dialog_t::instance().set_frame_range( app().document().composition().start_frame(),
-                                                                app().document().composition().end_frame());
-
-    render_composition_dialog_t::instance().set_mblur_settings( 0, 1);
-
-    render_flipbook_dialog_t::instance().set_frame_range( app().document().composition().start_frame(),
-                                                            app().document().composition().end_frame());
-
     update();
 }
 
@@ -219,13 +207,6 @@ void user_interface_t::open_document( const boost::filesystem::path& p)
     // read here ui info
 
     // update the dialogs
-    render_composition_dialog_t::instance().set_frame_range( app().document().composition().start_frame(),
-                                                    app().document().composition().end_frame());
-
-    render_composition_dialog_t::instance().set_mblur_settings( 0, 1);
-
-    render_flipbook_dialog_t::instance().set_frame_range( app().document().composition().start_frame(),
-                                                            app().document().composition().end_frame());
 
     update();
     std::string err = in->errors();
@@ -361,12 +342,6 @@ void user_interface_t::set_start_frame( int t)
     main_window()->time_slider().update( app().document().composition().start_frame(),
                                          app().document().composition().frame(),
                                          app().document().composition().end_frame());
-
-    render_composition_dialog_t::instance().set_frame_range( app().document().composition().start_frame(),
-                                                            app().document().composition().end_frame());
-
-    render_flipbook_dialog_t::instance().set_frame_range( app().document().composition().start_frame(),
-                                                        app().document().composition().end_frame());
 }
 
 void user_interface_t::set_end_frame( int t)
@@ -375,12 +350,6 @@ void user_interface_t::set_end_frame( int t)
     main_window()->time_slider().update( app().document().composition().start_frame(),
                                          app().document().composition().frame(),
                                          app().document().composition().end_frame());
-
-    render_composition_dialog_t::instance().set_frame_range( app().document().composition().start_frame(),
-                                                            app().document().composition().end_frame());
-
-    render_flipbook_dialog_t::instance().set_frame_range( app().document().composition().start_frame(),
-                                                            app().document().composition().end_frame());
 }
 
 void user_interface_t::set_frame( int t)
@@ -567,37 +536,6 @@ bool user_interface_t::eventFilter( QObject *watched, QEvent *event)
     default:
         return false; // pass all other events
     }
-}
-
-boost::unique_future<bool>& user_interface_t::render_image( render::context_t context, render::image_node_renderer_t& renderer)
-{
-    RAMEN_ASSERT( !rendering_);
-
-    cancelled_ = false;
-    context.mode = render::interface_render;
-    context.cancel = boost::bind( &user_interface_t::process_cancelled, this);
-    renderer.set_context( context);
-    rendering_ = true;
-    boost::unique_future<bool>& future( app().render_thread().render_image( renderer));
-
-    if( future.is_ready())
-    {
-        rendering_ = false;
-        return future;
-    }
-
-    /*
-    start_long_process();
-
-    while( !future.timed_wait( boost::posix_time::milliseconds( 30)))
-        process_events();
-
-    end_long_process();
-    */
-
-    future.wait();
-    rendering_ = false;
-    return future;
 }
 
 QFont user_interface_t::get_fixed_width_code_font()

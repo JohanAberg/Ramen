@@ -33,12 +33,6 @@
 
 #include<ramen/nodes/node_factory.hpp>
 
-#include<ramen/image/init_image_processing.hpp>
-#include<ramen/movieio/factory.hpp>
-
-#include<ramen/render/render_thread.hpp>
-#include<ramen/render/render_sequence.hpp>
-
 #include<ramen/ocio/manager.hpp>
 
 #include<ramen/undo/stack.hpp>
@@ -127,20 +121,8 @@ application_t::application_t( int argc, char **argv) : system_(), preferences_()
     plugin_manager_t::instance();
 
     if( !command_line_)
-        splash_->show_message( "Initializing image processing");
-    image::init_image_processing();
-
-    if( !command_line_)
-        splash_->show_message( "Initializing movieio");
-    movieio::factory_t::instance();
-
-    if( !command_line_)
         splash_->show_message( "Initializing OpenColorIO");
     ocio_manager_.reset( new ocio::manager_t());
-
-    if( !command_line_)
-        splash_->show_message( "Initializing render thread");
-    render_thread_.init();
 
     if( !command_line_)
     {
@@ -212,8 +194,8 @@ int application_t::run()
             if( !mb_shutter_factor_)
                 mb_shutter_factor_ = 1.0f;
 
-            render::render_sequence( document().composition(), start_frame_.get(), end_frame_.get(),
-                                     proxy_level_.get(), subsample_.get(), mb_extra_samples_.get(), mb_shutter_factor_.get());
+            //render::render_sequence( document().composition(), start_frame_.get(), end_frame_.get(),
+              //                       proxy_level_.get(), subsample_.get(), mb_extra_samples_.get(), mb_shutter_factor_.get());
         }
     }
 

@@ -35,8 +35,6 @@
 
 #include<ramen/app/application.hpp>
 #include<ramen/app/document.hpp>
-#include<ramen/app/export_selected_nodes.hpp>
-#include<ramen/app/import_composition.hpp>
 
 #include<ramen/system/system.hpp>
 
@@ -49,11 +47,6 @@
 
 #include<ramen/undo/stack.hpp>
 
-#include<ramen/render/render_sequence.hpp>
-
-#include<ramen/flipbook/factory.hpp>
-#include<ramen/flipbook/render_flipbook.hpp>
-
 #include<ramen/ui/user_interface.hpp>
 #include<ramen/ui/inspector/inspector.hpp>
 #include<ramen/ui/compview/composition_view.hpp>
@@ -62,12 +55,9 @@
 #include<ramen/ui/add_node_command.hpp>
 #include<ramen/ui/edit_commands.hpp>
 #include<ramen/ui/time_controls.hpp>
-#include<ramen/ui/render_composition.hpp>
 #include<ramen/ui/widgets/time_slider.hpp>
 
 #include<ramen/ui/dialogs/about_dialog.hpp>
-#include<ramen/ui/dialogs/render_composition_dialog.hpp>
-#include<ramen/ui/dialogs/render_flipbook_dialog.hpp>
 #include<ramen/ui/dialogs/composition_settings_dialog.hpp>
 #include<ramen/ui/dialogs/preferences_dialog.hpp>
 #include<ramen/ui/dialogs/multiline_alert.hpp>
@@ -577,7 +567,7 @@ void main_window_t::export_selection()
         if( p.extension() == std::string())
             p.replace_extension( document_extension());
 
-        export_selected_nodes( p);
+        //export_selected_nodes( p);
     }
 }
 
@@ -815,6 +805,7 @@ void main_window_t::show_composition_settings_dialog()
 
 void main_window_t::render_composition()
 {
+    /*
     bool any_output = ( render::count_output_nodes( app().document().composition()) != 0);
 
     if( !any_output)
@@ -844,10 +835,12 @@ void main_window_t::render_composition()
                                 render_composition_dialog_t::instance().mblur_shutter_factor(),
                                 render_composition_dialog_t::instance().selected_only());
     }
+    */
 }
 
 void main_window_t::render_flipbook()
 {
+    /*
     int result = render_flipbook_dialog_t::instance().exec();
 
     if( result == QDialog::Accepted)
@@ -874,6 +867,7 @@ void main_window_t::render_flipbook()
             }
         }
     }
+    */
 }
 
 void main_window_t::show_preferences_dialog()

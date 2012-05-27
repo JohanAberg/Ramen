@@ -5,11 +5,7 @@ CONFIGURE_FILE( ${PROJECT_SOURCE_DIR}/ramen/version.hpp.in ${PROJECT_SOURCE_DIR}
 
 INCLUDE_DIRECTORIES( ${CMAKE_CURRENT_BINARY_DIR})
 
-SET( RAMEN_MOC_CLASSES  flipbook/djv_flipbook.hpp
-						flipbook/external_flipbook.hpp
-						flipbook/internal_flipbook.hpp
-
-						params/animated_param.hpp
+SET( RAMEN_MOC_CLASSES  params/animated_param.hpp
 						params/aspect_ratio_param.hpp
 						params/bool_param.hpp
 						params/button_param.hpp
@@ -52,8 +48,6 @@ SET( RAMEN_MOC_CLASSES  flipbook/djv_flipbook.hpp
 						ui/dialogs/composition_settings_dialog.hpp
 						ui/dialogs/multiline_alert.hpp
 						ui/dialogs/preferences_dialog.hpp
-						ui/dialogs/render_composition_dialog.hpp
-						ui/dialogs/render_flipbook_dialog.hpp
 						ui/dialogs/smooth_anim_curves_dialog.hpp
 
 						ui/inspector/inspector.hpp
@@ -102,17 +96,10 @@ SET( RAMEN_SOURCES  ref_counted.cpp
 					app/application.cpp
 					app/composition.cpp
 					app/document.cpp
-					app/export_selected_nodes.cpp
-					app/import_composition.cpp
 					app/plugin_manager.cpp
 					app/preferences.cpp
 
 					bezier/algorithm.cpp
-
-					camera/ortho_projection.cpp
-					camera/persp_projection.cpp
-					camera/projection.cpp
-					camera/syntheyes_lens_distortion.cpp
 
 					expressions/context.cpp
 					expressions/expression.cpp
@@ -124,16 +111,6 @@ SET( RAMEN_SOURCES  ref_counted.cpp
 
 					filesystem/path.cpp
 					filesystem/path_sequence.cpp
-
-					flipbook/external_flipbook.cpp
-					flipbook/djv_flipbook.cpp
-					flipbook/factory.cpp
-					flipbook/FileReadingThread.cpp
-					flipbook/flipbook.cpp
-					flipbook/ImageBuffers.cpp
-					flipbook/internal_flipbook.cpp
-					flipbook/render_flipbook.cpp
-					flipbook/Timer.cpp
 
 					ggems/ggveclib.c
 					ggems/nearestpoint.c
@@ -149,108 +126,11 @@ SET( RAMEN_SOURCES  ref_counted.cpp
 
 					half/halfExpLogTable.cpp
 
-					hash/goulburn.cpp
 					hash/generator.cpp
 
-					image/accumulator.cpp
-					image/agg_renderers.cpp
-					image/box_blur.cpp
 					image/buffer.cpp
-					image/channel_range.cpp
-					image/cimg_to_image.cpp
-					image/color.cpp
 					image/color_bars.cpp
-					image/denan.cpp
-					image/dilate.cpp
-					image/filters.cpp
 					image/format.cpp
-					image/gaussian_blur.cpp
-					image/gaussian_pyramid.cpp
-					image/init_image_processing.cpp
-					image/invalid_pixels.cpp
-					image/ocio_transform.cpp
-					#image/opencv.cpp
-					image/percentile_filter.cpp
-					image/pyramid.cpp
-					image/resize.cpp
-					image/smart_blur.cpp
-					image/watermark.cpp
-
-					image/processing.cpp
-
-					image/generic/affine_warp.cpp
-					image/generic/alpha_composite.cpp
-					image/generic/alpha_layer_modes.cpp
-					image/generic/apply_color_matrix.cpp
-					image/generic/apply_gamma_exp_log.cpp
-					image/generic/box_blur_channel.cpp
-					image/generic/composite.cpp
-					image/generic/convolve33.cpp
-					image/generic/gaussian_blur_channel.cpp
-					image/generic/gaussian_blur_rgb.cpp
-					image/generic/layer_modes.cpp
-					image/generic/math.cpp
-					image/generic/projective_warp.cpp
-					image/generic/resize.cpp
-					image/generic/samplers.cpp
-
-					image/sse2/affine_warp.cpp
-					image/sse2/box_blur.cpp
-					image/sse2/channel_math.cpp
-					image/sse2/composite.cpp
-					image/sse2/gaussian_blur.cpp
-					image/sse2/key_mix.cpp
-					image/sse2/layer_modes.cpp
-					image/sse2/math.cpp
-					image/sse2/projective_warp.cpp
-					image/sse2/resize.cpp
-					image/sse2/samplers.cpp
-					image/util.cpp
-					image/sse2/warp.cpp
-
-					imageio/exceptions.cpp
-					imageio/factory.cpp
-					imageio/format.cpp
-					imageio/multichannel_reader.cpp
-					imageio/reader.cpp
-
-					#imageio/cineon/cineon_format.cpp
-					#imageio/cineon/cineon_reader.cpp
-					#imageio/cineon/cineon_writer.cpp
-
-					#imageio/dpx/dpx_format.cpp
-					#imageio/dpx/dpx_reader.cpp
-					#imageio/dpx/dpx_writer.cpp
-					#imageio/dpx/dpxHeader.cpp
-
-					imageio/exr/exr_format.cpp
-					imageio/exr/exr_reader.cpp
-					imageio/exr/exr_writer.cpp
-					imageio/imf_memory_stream.cpp
-
-					imageio/flo/flo_format.cpp
-					imageio/flo/flo_reader.cpp
-					imageio/flo/flo_writer.cpp
-
-					imageio/hdr/hdr_format.cpp
-					imageio/hdr/hdr_writer.cpp
-
-					imageio/jpg/jpg_format.cpp
-					imageio/jpg/jpg_reader.cpp
-					imageio/jpg/jpg_writer.cpp
-					imageio/jpg/jpg_size.cpp
-
-					imageio/oiio/oiio_reader.cpp
-					imageio/oiio/oiio_writer.cpp
-
-					imageio/png/png_format.cpp
-					imageio/png/png_writer.cpp
-
-					imageio/tga/tga_format.cpp
-					imageio/tga/tga_writer.cpp
-
-					imageio/tiff/tiff_format.cpp
-					imageio/tiff/tiff_writer.cpp
 
 					ImathExt/ImathBoxAlgo.cpp
 					ImathExt/ImathMatrixColorAlgo.cpp
@@ -266,14 +146,6 @@ SET( RAMEN_SOURCES  ref_counted.cpp
 					memory/manager.cpp
 					memory/pool.cpp
 
-					movieio/exceptions.cpp
-					movieio/factory.cpp
-					movieio/format.cpp
-					movieio/image_seq_reader.cpp
-					movieio/image_seq_writer.cpp
-					movieio/reader.cpp
-					movieio/writer.cpp
-
 					nodes/composite_node.cpp
 					nodes/edge.cpp
 					nodes/graph_algorithm.cpp
@@ -281,21 +153,12 @@ SET( RAMEN_SOURCES  ref_counted.cpp
 					nodes/node.cpp
 					nodes/node_factory.cpp
 					nodes/node_graph.cpp
+					nodes/node_graph_modifier.cpp
 					nodes/node_metaclass.cpp
 					nodes/node_plug.cpp
 					nodes/node_output_interface.cpp
 					nodes/node_visitor.cpp
 					nodes/world_node.cpp
-
-					noise/catrom2.cpp
-					noise/cellular.c
-					noise/global_noise.cpp
-					noise/noise_base.cpp
-					noise/perlin.cpp
-					noise/permutation_array.cpp
-					noise/simplex_noise.cpp
-					noise/simplex_noise_generator.cpp
-					noise/vcnoise.cpp
 
 					ocio/context.cpp
 					ocio/manager.cpp
@@ -337,20 +200,7 @@ SET( RAMEN_SOURCES  ref_counted.cpp
 
 					python/pyside.cpp
 
-					polyscan/clip.cpp
-					polyscan/poly.cpp
-					polyscan/scan.cpp
-					polyscan/vertex.cpp
-
-					rdk/rdk.cpp
-
 					render/context.cpp
-					render/context_guard.cpp
-					render/image_node_renderer.cpp
-					render/render_sequence.cpp
-					render/render_thread.cpp
-
-					SeExpr/OcioSeExprFuncs.cpp
 
 					serialization/yaml.cpp
 					serialization/yaml_iarchive.cpp
@@ -366,7 +216,6 @@ SET( RAMEN_SOURCES  ref_counted.cpp
 					ui/nice_numbers.cpp
 					ui/node_menu.cpp
 					ui/palette.cpp
-					ui/render_composition.cpp
 					ui/time_controls.cpp
 					ui/tool.cpp
 					ui/user_interface.cpp
@@ -396,8 +245,6 @@ SET( RAMEN_SOURCES  ref_counted.cpp
 					ui/dialogs/composition_settings_dialog.cpp
 					ui/dialogs/multiline_alert.cpp
 					ui/dialogs/preferences_dialog.cpp
-					ui/dialogs/render_composition_dialog.cpp
-					ui/dialogs/render_flipbook_dialog.cpp
 					ui/dialogs/smooth_anim_curves_dialog.cpp
 					ui/dialogs/splash_screen.cpp
 
@@ -442,6 +289,170 @@ SET( RAMEN_SOURCES  ref_counted.cpp
 
 					system/system.cpp
 					)
+
+SET( RAMEN_UNUSED_MOC_SOURCES	flipbook/internal_flipbook.cpp
+								flipbook/djv_flipbook.hpp
+								flipbook/external_flipbook.hpp
+								flipbook/internal_flipbook.hpp
+
+								ui/dialogs/render_composition_dialog.hpp
+								ui/dialogs/render_flipbook_dialog.hpp
+								)
+
+SET( RAMEN_UNUSED_SOURCES	app/export_selected_nodes.cpp
+							app/import_composition.cpp
+
+							camera/ortho_projection.cpp
+							camera/persp_projection.cpp
+							camera/projection.cpp
+							camera/syntheyes_lens_distortion.cpp
+
+							flipbook/factory.cpp
+							flipbook/internal_flipbook.cpp
+							flipbook/flipbook.cpp
+							flipbook/external_flipbook.cpp
+							flipbook/djv_flipbook.cpp
+							flipbook/FileReadingThread.cpp
+							flipbook/ImageBuffers.cpp
+							flipbook/render_flipbook.cpp
+							flipbook/Timer.cpp
+
+							hash/goulburn.cpp
+
+							image/accumulator.cpp
+							image/agg_renderers.cpp
+							image/box_blur.cpp
+							image/channel_range.cpp
+							image/cimg_to_image.cpp
+							image/color.cpp
+							image/denan.cpp
+							image/dilate.cpp
+							image/filters.cpp
+							image/gaussian_blur.cpp
+							image/gaussian_pyramid.cpp
+							image/init_image_processing.cpp
+							image/invalid_pixels.cpp
+							image/ocio_transform.cpp
+							#image/opencv.cpp
+							image/percentile_filter.cpp
+							image/pyramid.cpp
+							image/resize.cpp
+							image/smart_blur.cpp
+							image/watermark.cpp
+
+							image/processing.cpp
+
+							image/generic/affine_warp.cpp
+							image/generic/alpha_composite.cpp
+							image/generic/alpha_layer_modes.cpp
+							image/generic/apply_color_matrix.cpp
+							image/generic/apply_gamma_exp_log.cpp
+							image/generic/box_blur_channel.cpp
+							image/generic/composite.cpp
+							image/generic/convolve33.cpp
+							image/generic/gaussian_blur_channel.cpp
+							image/generic/gaussian_blur_rgb.cpp
+							image/generic/layer_modes.cpp
+							image/generic/math.cpp
+							image/generic/projective_warp.cpp
+							image/generic/resize.cpp
+							image/generic/samplers.cpp
+
+							image/sse2/affine_warp.cpp
+							image/sse2/box_blur.cpp
+							image/sse2/channel_math.cpp
+							image/sse2/composite.cpp
+							image/sse2/gaussian_blur.cpp
+							image/sse2/key_mix.cpp
+							image/sse2/layer_modes.cpp
+							image/sse2/math.cpp
+							image/sse2/projective_warp.cpp
+							image/sse2/resize.cpp
+							image/sse2/samplers.cpp
+							image/util.cpp
+							image/sse2/warp.cpp
+
+							imageio/exceptions.cpp
+							imageio/factory.cpp
+							imageio/format.cpp
+							imageio/multichannel_reader.cpp
+							imageio/reader.cpp
+
+							#imageio/cineon/cineon_format.cpp
+							#imageio/cineon/cineon_reader.cpp
+							#imageio/cineon/cineon_writer.cpp
+
+							#imageio/dpx/dpx_format.cpp
+							#imageio/dpx/dpx_reader.cpp
+							#imageio/dpx/dpx_writer.cpp
+							#imageio/dpx/dpxHeader.cpp
+
+							imageio/exr/exr_format.cpp
+							imageio/exr/exr_reader.cpp
+							imageio/exr/exr_writer.cpp
+							imageio/imf_memory_stream.cpp
+
+							imageio/flo/flo_format.cpp
+							imageio/flo/flo_reader.cpp
+							imageio/flo/flo_writer.cpp
+
+							imageio/hdr/hdr_format.cpp
+							imageio/hdr/hdr_writer.cpp
+
+							imageio/jpg/jpg_format.cpp
+							imageio/jpg/jpg_reader.cpp
+							imageio/jpg/jpg_writer.cpp
+							imageio/jpg/jpg_size.cpp
+
+							imageio/oiio/oiio_reader.cpp
+							imageio/oiio/oiio_writer.cpp
+
+							imageio/png/png_format.cpp
+							imageio/png/png_writer.cpp
+
+							imageio/tga/tga_format.cpp
+							imageio/tga/tga_writer.cpp
+
+							imageio/tiff/tiff_format.cpp
+							imageio/tiff/tiff_writer.cpp
+
+							movieio/exceptions.cpp
+							movieio/factory.cpp
+							movieio/format.cpp
+							movieio/image_seq_reader.cpp
+							movieio/image_seq_writer.cpp
+							movieio/reader.cpp
+							movieio/writer.cpp
+
+							noise/catrom2.cpp
+							noise/cellular.c
+							noise/global_noise.cpp
+							noise/noise_base.cpp
+							noise/perlin.cpp
+							noise/permutation_array.cpp
+							noise/simplex_noise.cpp
+							noise/simplex_noise_generator.cpp
+							noise/vcnoise.cpp
+
+							polyscan/clip.cpp
+							polyscan/poly.cpp
+							polyscan/scan.cpp
+							polyscan/vertex.cpp
+
+							render/context_guard.cpp
+							render/image_node_renderer.cpp
+							render/render_sequence.cpp
+							render/render_thread.cpp
+
+							rdk/rdk.cpp
+
+							SeExpr/OcioSeExprFuncs.cpp
+
+							ui/render_composition.cpp
+
+							ui/dialogs/render_composition_dialog.cpp
+							ui/dialogs/render_flipbook_dialog.cpp
+							)
 
 SET( RAMEN_MOC_NODES_CLASSES	nodes/image/input/image_channels_param.hpp
 								nodes/image/input/image_seq_param.hpp
