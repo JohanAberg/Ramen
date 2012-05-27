@@ -15,7 +15,6 @@
 
 #include<ramen/ui/user_interface.hpp>
 #include<ramen/ui/anim/anim_editor.hpp>
-#include<ramen/ui/viewer/viewer.hpp>
 
 #include<ramen/serialization/yaml_node.hpp>
 #include<ramen/serialization/yaml_oarchive.hpp>
@@ -71,9 +70,7 @@ void float_param_t::set_value_at_frame( float x, float frame, change_reason reas
     if( !is_static() && ( param_set()->autokey() || !curve().empty()))
     {
         curve().insert( frame, x);
-
-        if( composition_t * c = composition())
-            evaluate( c->frame());
+        evaluate( frame);
     }
     else
         value().assign( x);

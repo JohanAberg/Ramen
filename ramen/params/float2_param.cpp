@@ -19,7 +19,6 @@
 
 #include<ramen/ui/user_interface.hpp>
 #include<ramen/ui/anim/anim_editor.hpp>
-#include<ramen/ui/viewer/viewer.hpp>
 
 #include<ramen/ui/widgets/param_spinbox.hpp>
 #include<ramen/ui/inspector/inspector.hpp>

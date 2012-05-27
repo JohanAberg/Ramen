@@ -133,6 +133,12 @@ public:
     /// Returns a pointer to the parameterised this param belongs to.
     parameterised_t *parameterised();
 
+    /// Returns the world node this param belongs to.
+    const world_node_t *world() const;
+
+    /// Returns the world node this param belongs to.
+    world_node_t *world();
+
     /// Returns a const pointer to the composition this param belongs to.
     const composition_t *composition() const;
 

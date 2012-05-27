@@ -59,13 +59,6 @@ SET( RAMEN_MOC_CLASSES  flipbook/djv_flipbook.hpp
 						ui/inspector/inspector.hpp
 						ui/inspector/panel.hpp
 
-						ui/viewer/image_view/image_viewer_strategy.hpp
-						ui/viewer/image_view/image_view_toolbar.hpp
-
-						ui/viewer/viewer.hpp
-						ui/viewer/viewer_context.hpp
-						ui/viewer/viewer_strategy.hpp
-
 						ui/widgets/color_button.hpp
 						ui/widgets/color_picker.hpp
 						ui/widgets/color_swatch.hpp
@@ -411,17 +404,6 @@ SET( RAMEN_SOURCES  ref_counted.cpp
 					ui/inspector/inspector.cpp
 					ui/inspector/panel.cpp
 					ui/inspector/panel_factory.cpp
-
-					ui/viewer/image_view/empty_image_strategy.cpp
-					ui/viewer/image_view/image.cpp
-					ui/viewer/image_view/image_strategy.cpp
-					ui/viewer/image_view/image_viewer_strategy.cpp
-					ui/viewer/image_view/image_view_toolbar.cpp
-					ui/viewer/image_view/tiled_image_strategy.cpp
-
-					ui/viewer/viewer_context.cpp
-					ui/viewer/viewer_strategy.cpp
-					ui/viewer/viewer.cpp
 
 					ui/widgets/color.cpp
 					ui/widgets/color_button.cpp

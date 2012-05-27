@@ -27,7 +27,6 @@
 #include<ramen/render/image_node_renderer.hpp>
 
 #include<ramen/ui/main_window_fwd.hpp>
-#include<ramen/ui/viewer/viewer_fwd.hpp>
 #include<ramen/ui/inspector/inspector_fwd.hpp>
 #include<ramen/ui/anim/anim_editor_fwd.hpp>
 
@@ -67,9 +66,6 @@ public:
     const anim_editor_t& anim_editor() const { return *anim_editor_;}
     anim_editor_t& anim_editor()             { return *anim_editor_;}
 
-    const viewer_t& viewer() const  { return *viewer_;}
-    viewer_t& viewer()              { return *viewer_;}
-
     // document handling
     void create_new_document();
     void open_document( const boost::filesystem::path& p);
@@ -82,7 +78,7 @@ public:
     void begin_interaction();
     void end_interaction();
     bool interacting() const { return interacting_;}
-    
+
     node_t *active_node() const { return active_;}
     void set_active_node( node_t *n);
 
@@ -96,8 +92,8 @@ public:
     int end_frame() const;
     float frame() const;
 
-	// anim
-	void update_anim_editors();
+    // anim
+    void update_anim_editors();
 
     // error reporting
     void fatal_error( const std::string& msg) const;
@@ -108,58 +104,54 @@ public:
     // sequence file selector
     bool image_sequence_file_selector( boost::filesystem::path& p, bool& sequence, bool& relative) const;
     bool image_sequence_file_selector( const std::string& title, const std::string& types, boost::filesystem::path& p,
-										bool& sequence, bool& relative) const;
+                                        bool& sequence, bool& relative) const;
 
-	// serialization
-	void read_ui_state( const serialization::yaml_iarchive_t& in);
-	void write_ui_state( serialization::yaml_oarchive_t& out) const;
+    // serialization
+    void read_ui_state( const serialization::yaml_iarchive_t& in);
+    void write_ui_state( serialization::yaml_oarchive_t& out) const;
 
-	// event filtering
-	void start_long_process();
-	void process_events();
-	void end_long_process();
-	bool process_cancelled() const;
+    // event filtering
+    void start_long_process();
+    void process_events();
+    void end_long_process();
+    bool process_cancelled() const;
 
     virtual bool eventFilter( QObject *watched, QEvent *event);
 
     // render
-	boost::unique_future<bool>& render_image( render::context_t context, render::image_node_renderer_t& renderer);
-	
-	bool rendering() const { return rendering_;}
-	
-    // util
-    int viewer_toolbar_height() const;
+    boost::unique_future<bool>& render_image( render::context_t context, render::image_node_renderer_t& renderer);
+
+    bool rendering() const { return rendering_;}
 
     const QString& image_types_string() const { return image_types_str_;}
 
-	QFont get_fixed_width_code_font();
+    QFont get_fixed_width_code_font();
 
 public Q_SLOTS:
-    
+
     void set_start_frame( int t);
     void set_end_frame( int t);
     void set_frame( int t);
 
 private:
-	
-	void init_ui_style();
-	void restore_window_state();
-	
+
+    void init_ui_style();
+    void restore_window_state();
+
     main_window_t *window_;
     inspector_t *inspector_;
     anim_editor_t *anim_editor_;
-    viewer_t *viewer_;
 
     node_t *active_, *context_;
 
-	bool rendering_;
+    bool rendering_;
     bool interacting_;
 
     QString image_types_str_;
 
-	// long calculations
-	bool event_filter_installed_;
-	bool cancelled_;
+    // long calculations
+    bool event_filter_installed_;
+    bool cancelled_;
 };
 
 } // namespace

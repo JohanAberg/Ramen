@@ -32,7 +32,6 @@
 
 #include<ramen/ui/user_interface.hpp>
 #include<ramen/ui/anim/anim_editor.hpp>
-#include<ramen/ui/viewer/viewer.hpp>
 
 #include<ramen/serialization/yaml_oarchive.hpp>
 #include<ramen/serialization/yaml_node.hpp>

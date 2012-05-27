@@ -128,9 +128,7 @@ void color_param_t::set_value_at_frame( const Imath::Color4f& x, float frame, ch
     if( is_rgba() && !is_static() && ( autokey || !curve( 3).empty()))
         curve( 3).insert( frame, x.a);
 
-    if( composition_t * c = composition())
-        evaluate( c->frame());
-
+    evaluate( frame);
     emit_param_changed( reason);
 }
 

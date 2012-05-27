@@ -56,14 +56,15 @@
 
 #include<ramen/ui/user_interface.hpp>
 #include<ramen/ui/inspector/inspector.hpp>
+#include<ramen/ui/compview/composition_view.hpp>
+#include<ramen/ui/anim/anim_editor.hpp>
+
 #include<ramen/ui/add_node_command.hpp>
 #include<ramen/ui/edit_commands.hpp>
 #include<ramen/ui/time_controls.hpp>
-#include<ramen/ui/compview/composition_view.hpp>
-#include<ramen/ui/viewer/viewer.hpp>
-#include<ramen/ui/anim/anim_editor.hpp>
 #include<ramen/ui/render_composition.hpp>
 #include<ramen/ui/widgets/time_slider.hpp>
+
 #include<ramen/ui/dialogs/about_dialog.hpp>
 #include<ramen/ui/dialogs/render_composition_dialog.hpp>
 #include<ramen/ui/dialogs/render_flipbook_dialog.hpp>
@@ -139,7 +140,8 @@ main_window_t::main_window_t() : QMainWindow()
     }
 
     // image view
-    setCentralWidget( app().ui()->viewer().widget() );
+    QWidget *viewer_ = new QWidget( this);
+    setCentralWidget( viewer_);
 
     // time toolbar
     addToolBar( Qt::BottomToolBarArea, create_time_toolbar());

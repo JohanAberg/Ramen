@@ -23,8 +23,6 @@
 
 #include<ramen/ui/user_interface.hpp>
 #include<ramen/ui/inspector/inspector.hpp>
-#include<ramen/ui/viewer/viewer.hpp>
-#include<ramen/ui/viewer/image_view/image_viewer_strategy.hpp>
 
 namespace ramen
 {
@@ -100,7 +98,7 @@ time_controls_t::time_controls_t() : window_(0), stop_playing_( true)
     end_->setFocusPolicy( Qt::NoFocus);
     connect( end_, SIGNAL( pressed()), this, SLOT( goto_end()));
     layout->addWidget( end_);
-	
+
     QSpacerItem *horizontal_spacer = new QSpacerItem(40, height(), QSizePolicy::Expanding, QSizePolicy::Minimum);
     layout->addItem( horizontal_spacer);
 
@@ -109,17 +107,17 @@ time_controls_t::time_controls_t() : window_(0), stop_playing_( true)
     flipbook_->setEnabled( false);
     connect( flipbook_, SIGNAL( pressed()), this, SLOT( make_flipbook()));
     layout->addWidget( flipbook_);
-	
+
     autokey_ = new QToolButton();
     autokey_->setText( "Autokey");
     autokey_->setCheckable( true);
     autokey_->setChecked( app().document().composition().autokey());
-	connect( autokey_, SIGNAL( toggled( bool)), this, SLOT( set_autokey(bool)));
+    connect( autokey_, SIGNAL( toggled( bool)), this, SLOT( set_autokey(bool)));
     layout->addWidget( autokey_);
 }
 
 int time_controls_t::width() const
-{ 
+{
     return app().ui()->inspector().widget()->width();
 }
 
@@ -149,9 +147,11 @@ bool time_controls_t::eventFilter( QObject *watched, QEvent *event)
 
 void time_controls_t::update()
 {
-	node_t *n = app().document().composition().selected_node();
-	const image_node_t *in = dynamic_cast<const image_node_t*>( n);
-	flipbook_->setEnabled( in != 0);
+    /*
+    node_t *n = app().document().composition().selected_node();
+    const image_node_t *in = dynamic_cast<const image_node_t*>( n);
+    flipbook_->setEnabled( in != 0);
+    */
 
     autokey_->blockSignals( true);
     autokey_->setChecked( app().document().composition().autokey());
@@ -226,7 +226,7 @@ void time_controls_t::next_frame()
     int frame = app().ui()->frame() + 1;
 
     if( frame > app().ui()->end_frame())
-	frame = app().ui()->end_frame();
+    frame = app().ui()->end_frame();
 
     app().ui()->set_frame( frame);
 }
@@ -252,41 +252,43 @@ void time_controls_t::stop_playing()
 
 void time_controls_t::set_autokey( bool b)
 {
-	app().document().composition().set_autokey( b);
+    app().document().composition().set_autokey( b);
 }
 
 void time_controls_t::make_flipbook()
 {
-	node_t *n = app().document().composition().selected_node();
-	image_node_t *inode = dynamic_cast<image_node_t*>( n);
-	RAMEN_ASSERT( inode);
+    /*
+    node_t *n = app().document().composition().selected_node();
+    image_node_t *inode = dynamic_cast<image_node_t*>( n);
+    RAMEN_ASSERT( inode);
 
     int frame_rate = app().document().composition().frame_rate();
-	int start = app().document().composition().start_frame();
+    int start = app().document().composition().start_frame();
     int end   = app().document().composition().end_frame();
-	int subsample = 1;
-	int proxy_level = 0;
-	float mb_shutter_factor = 0;
-	
-	const viewer::image_viewer_strategy_t *s = 0;
-	if( s = dynamic_cast<const viewer::image_viewer_strategy_t*>( &app().ui()->viewer().current_viewer()))
-	{
-		subsample = s->subsample();
-		
-		if( s->mblur_active())
-			mb_shutter_factor = 1;
-	}
+    int subsample = 1;
+    int proxy_level = 0;
+    float mb_shutter_factor = 0;
+
+    const viewer::image_viewer_strategy_t *s = 0;
+    if( s = dynamic_cast<const viewer::image_viewer_strategy_t*>( &app().ui()->viewer().current_viewer()))
+    {
+        subsample = s->subsample();
+
+        if( s->mblur_active())
+            mb_shutter_factor = 1;
+    }
 
     std::string display_device = app().ui()->viewer().display_device();
-	std::string display_transform = app().ui()->viewer().display_transform();
+    std::string display_transform = app().ui()->viewer().display_transform();
 
-	flipbook::flipbook_t *flip = flipbook::factory_t::instance().create( frame_rate, display_device, display_transform);
+    flipbook::flipbook_t *flip = flipbook::factory_t::instance().create( frame_rate, display_device, display_transform);
 
-	if( flip)
-	{
-		if( flipbook::render_flipbook( flip, inode, start, end, proxy_level, subsample, 0, mb_shutter_factor))
-			flip->play();
-	}
+    if( flip)
+    {
+        if( flipbook::render_flipbook( flip, inode, start, end, proxy_level, subsample, 0, mb_shutter_factor))
+            flip->play();
+    }
+    */
 }
 
 } // namespace

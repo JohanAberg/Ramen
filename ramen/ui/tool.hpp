@@ -8,7 +8,6 @@
 #include<ramen/GL/gl.hpp>
 
 #include<ramen/ui/events.hpp>
-#include<ramen/ui/viewer/viewer_strategy.hpp>
 
 namespace ramen
 {
@@ -22,11 +21,11 @@ public:
     tool_t();
     virtual ~tool_t();
 
-	virtual void begin_active();
-	virtual void end_active();
-	
+    virtual void begin_active();
+    virtual void end_active();
+
     virtual void draw_overlay( const paint_event_t& event) const;
-	
+
     virtual void key_press_event( const key_press_event_t& event);
     virtual void key_release_event( const key_release_event_t& event);
 
@@ -40,11 +39,11 @@ public:
 
 protected:
 
-	bool inside_pick_distance( const Imath::V2f& p, const mouse_event_t& event) const;
-	bool inside_pick_distance( const Imath::Box2f& b, const mouse_event_t& event) const;
+    bool inside_pick_distance( const Imath::V2f& p, const mouse_event_t& event) const;
+    bool inside_pick_distance( const Imath::Box2f& b, const mouse_event_t& event) const;
 
-	bool inside_pick_distance( const Imath::V2f& p, const Imath::V2f& q, float pixel_scale) const;
-	bool inside_pick_distance( const Imath::Box2f& b, const Imath::V2f& p, float pixel_scale) const;
+    bool inside_pick_distance( const Imath::V2f& p, const Imath::V2f& q, float pixel_scale) const;
+    bool inside_pick_distance( const Imath::Box2f& b, const Imath::V2f& p, float pixel_scale) const;
 };
 
 } // namespace
