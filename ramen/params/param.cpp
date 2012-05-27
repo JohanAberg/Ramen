@@ -167,12 +167,12 @@ void param_t::format_changed( const Imath::Box2i& new_format, float aspect, cons
 
 void param_t::do_format_changed( const Imath::Box2i& new_format, float aspect, const Imath::V2f& proxy_scale) {}
 
-void param_t::add_to_hash( util::hash_generator_t& hash_gen) const
+void param_t::add_to_hash( hash::generator_t& hash_gen) const
 {
     do_add_to_hash( hash_gen);
 }
 
-void param_t::do_add_to_hash( util::hash_generator_t& hash_gen) const {}
+void param_t::do_add_to_hash( hash::generator_t& hash_gen) const {}
 
 void param_t::create_tracks( anim::track_t *parent)
 {

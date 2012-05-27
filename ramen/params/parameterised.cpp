@@ -52,7 +52,7 @@ void parameterised_t::set_parent( parameterised_t *parent)
     do_set_parent( parent);
 }
 
-void do_set_parent( parameterised_t *parent) {}
+void parameterised_t::do_set_parent( parameterised_t *parent) {}
 
 const node_t *parameterised_t::node() const
 {
@@ -117,32 +117,32 @@ world_node_t *parameterised_t::world()
 // composition
 const composition_t *parameterised_t::composition() const
 {
-	const node_t *n = node();
-	
-	if( n)
-		return n->composition();
-	
-	return 0;
+    const node_t *n = node();
+
+    if( n)
+        return n->composition();
+
+    return 0;
 }
 
 composition_t *parameterised_t::composition()
 {
-	node_t *n = node();
-	
-	if( n)
-		return n->composition();
-	
-	return 0;
+    node_t *n = node();
+
+    if( n)
+        return n->composition();
+
+    return 0;
 }
 
 void parameterised_t::set_name( const std::string& n)
 {
     RAMEN_ASSERT( util::is_string_valid_identifier( n));
-	
+
     if( !util::is_string_valid_identifier( n))
-		throw std::runtime_error( "Invalid name for parameterised_t");
-	
-	name_ = n;
+        throw std::runtime_error( "Invalid name for parameterised_t");
+
+    name_ = n;
 }
 
 bool parameterised_t::autokey() const
@@ -167,19 +167,19 @@ param_t& parameterised_t::param( const std::string& identifier)
 
 void parameterised_t::for_each_param( const boost::function<void ( param_t*)>& f)
 {
-	param_set().for_each_param( f);
+    param_set().for_each_param( f);
 }
 
 // anim & time
 void parameterised_t::create_tracks( anim::track_t *root)
 {
     std::auto_ptr<anim::track_t> top( new anim::track_t( name()));
-	
+
     BOOST_FOREACH( param_t& p, param_set())
-	{ 
-		p.create_tracks( top.get());
-	}
-	
+    {
+        p.create_tracks( top.get());
+    }
+
     do_create_tracks( top.get());
     root->add_child( top);
 }
@@ -198,7 +198,7 @@ void parameterised_t::evaluate_params( float frame)
 void parameterised_t::update_widgets()
 {
     adobe::for_each( param_set(), boost::bind( &param_t::update_widgets, _1));
-	do_update_widgets();
+    do_update_widgets();
 }
 
 parameterised_t *new_clone( const parameterised_t& other) { return other.clone();}

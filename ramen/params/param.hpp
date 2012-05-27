@@ -42,7 +42,7 @@
 
 #include<ramen/undo/command.hpp>
 
-#include<ramen/util/hash_generator.hpp>
+#include<ramen/hash/generator.hpp>
 
 #include<ramen/serialization/yaml_iarchive.hpp>
 #include<ramen/serialization/yaml_oarchive.hpp>
@@ -118,13 +118,25 @@ public:
     /// Sets the param id.
     void set_id( const std::string& identifier);
 
+    /// Returns a const pointer to the param set this param belongs to.
     const param_set_t *param_set() const    { return param_set_;}
+
+    /// Returns a pointer to the param set this param belongs to.
     param_set_t *param_set()				{ return param_set_;}
 
+    /// Sets the param set this param belongs to.
+    void set_param_set( param_set_t *parent);
+
+    /// Returns a const pointer to the parameterised this param belongs to.
     const parameterised_t *parameterised() const;
+
+    /// Returns a pointer to the parameterised this param belongs to.
     parameterised_t *parameterised();
 
+    /// Returns a const pointer to the composition this param belongs to.
     const composition_t *composition() const;
+
+    /// Returns a const pointer to the composition this param belongs to.
     composition_t *composition();
 
     // flags
@@ -172,7 +184,7 @@ public:
     expressions::expression_t& expression( int indx = 0);
 
     // hash
-    void add_to_hash( util::hash_generator_t& hash_gen) const;
+    void add_to_hash( hash::generator_t& hash_gen) const;
 
     // undo
     std::auto_ptr<undo::command_t> create_command();
@@ -201,8 +213,6 @@ protected:
 
     int flags() const			{ return flags_;}
     void set_flags( int flags)	{ flags_ = flags;}
-
-    void set_param_set( param_set_t *parent);
 
     const poly_param_value_t& value() const	{ return value_;}
     poly_param_value_t& value()             { return value_;}
@@ -241,7 +251,7 @@ private:
     virtual std::auto_ptr<undo::command_t> do_create_command();
 
     // hash
-    virtual void do_add_to_hash( util::hash_generator_t& hash_gen) const;
+    virtual void do_add_to_hash( hash::generator_t& hash_gen) const;
 
     // python interop
     friend class python::access;

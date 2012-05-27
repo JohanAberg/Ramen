@@ -15,7 +15,7 @@
 
 #include<ramen/nodes/node_fwd.hpp>
 #include<ramen/image/buffer.hpp>
-#include<ramen/util/hash_generator.hpp>
+#include<ramen/hash/generator.hpp>
 
 #include<ramen/memory/image_disk_cache.hpp>
 
@@ -28,12 +28,12 @@ class image_cache_t : public lru_cache_interface, boost::noncopyable
 {
 public:
 
-    typedef util::hash_generator_t::digest_type digest_type;
+    typedef hash::generator_t::digest_type digest_type;
 
     image_cache_t();
     explicit image_cache_t( image_disk_cache_t *disk_cache);
 
-	virtual ~image_cache_t() {}
+    virtual ~image_cache_t() {}
 
     virtual bool empty() const;
     virtual void clear();
@@ -45,20 +45,20 @@ public:
     boost::optional<image::buffer_t> find( const digest_type& key, const Imath::Box2i& area);
 
     virtual void erase_lru();
-	virtual boost::posix_time::ptime lru_time() const;
+    virtual boost::posix_time::ptime lru_time() const;
 
 private:
 
-	struct entry_t
-	{
-		entry_t( image::buffer_t buf) : buffer( buf)
-		{
-			touch_time = boost::posix_time::microsec_clock::universal_time();
-		}
+    struct entry_t
+    {
+        entry_t( image::buffer_t buf) : buffer( buf)
+        {
+            touch_time = boost::posix_time::microsec_clock::universal_time();
+        }
 
-		image::buffer_t buffer;
-		boost::posix_time::ptime touch_time;
-	};
+        image::buffer_t buffer;
+        boost::posix_time::ptime touch_time;
+    };
 
     typedef std::multimap<digest_type, entry_t> map_type;
     typedef map_type::iterator map_iterator;
@@ -72,8 +72,8 @@ private:
     // interactions
     bool interacting_;
     std::map<node_t*, map_iterator> added_while_interacting_;
-	
-	image_disk_cache_t *disk_cache_;
+
+    image_disk_cache_t *disk_cache_;
 };
 
 } // namespace

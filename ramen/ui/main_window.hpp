@@ -49,7 +49,7 @@ public:
     main_window_t();
     ~main_window_t();
 
-	void add_dock_widget( Qt::DockWidgetArea area, QDockWidget *dock);
+    void add_dock_widget( Qt::DockWidgetArea area, QDockWidget *dock);
 
     const composition_view_t& composition_view() const  { return *comp_view_;}
     composition_view_t& composition_view()              { return *comp_view_;}
@@ -60,7 +60,7 @@ public:
     const time_controls_t& time_controls() const    { return *time_controls_;}
     time_controls_t& time_controls()                { return *time_controls_;}
 
-	const std::vector<node_menu_t*>& node_menus() const;
+    const std::vector<node_menu_t*>& node_menus() const;
 
     void update();
 
@@ -82,14 +82,9 @@ public Q_SLOTS:
     void save_document_as();
 
     void import_composition();
-    void import_multichannel_exr();
-	void import_roto();
-	void import_cdl();
 
     void export_selection();
-	void export_roto();
-	void export_cdl();
-	
+
     void quit();
 
     void undo();
@@ -98,7 +93,7 @@ public Q_SLOTS:
     void ignore_nodes();
     void delete_nodes();
     void duplicate_nodes();
-	void extract_nodes();
+    void extract_nodes();
 
     void clear_cache();
 
@@ -113,7 +108,7 @@ public Q_SLOTS:
     void go_to_project_website();
 
     void create_node();
-    
+
 private:
 
     QToolBar *create_time_toolbar();
@@ -129,9 +124,9 @@ private:
 
     node_menu_t *find_node_menu( const std::string& s);
 
-	static const char *document_extension();
-	static const char *file_dialog_extension();
-	
+    static const char *document_extension();
+    static const char *file_dialog_extension();
+
     time_slider_t *time_slider_;
     composition_view_t *comp_view_;
     std::auto_ptr<time_controls_t> time_controls_;
@@ -139,9 +134,7 @@ private:
     QDockWidget *inspector_dock_;
     QDockWidget *composition_dock_;
     QDockWidget *viewer_dock_;
-    QDockWidget *anim_editor_dock_;	
-    QDockWidget *py_console_dock_;
-    QDockWidget *py_editor_dock_;
+    QDockWidget *anim_editor_dock_;
 
     QMenuBar *menubar_;
 
@@ -149,33 +142,28 @@ private:
     QMenu *open_recent_;
     QMenu *import_, *export_;
 
-	std::vector<QAction *> recently_opened_;
+    std::vector<QAction *> recently_opened_;
 
     std::vector<QMenu*> create_submenus_;
 
-	// file
+    // file
     QAction *new_, *open_, *save_, *save_as_;
-		
-    QAction *import_comp_; 
-    QAction *import_multiexr_;
-	QAction *import_roto_;
-	QAction *import_cdl_;
-	
-	QAction *export_sel_;
-	QAction *export_roto_;
-	QAction *export_cdl_;
-	
+
+    QAction *import_comp_;
+
+    QAction *export_sel_;
+
     QAction *quit_;
 
-	// edit
+    // edit
     QAction *undo_, *redo_, *ignore_, *delete_;
     QAction *duplicate_, *group_, *ungroup_, *extract_;
     QAction *clear_cache_, *preferences_;
 
-	// comp
+    // comp
     QAction *comp_settings_, *comp_flipbook_, *comp_render_;
-    
-	// more
+
+    // more
     QAction *about_, *project_web_;
 
     // non - menu actions
@@ -184,7 +172,7 @@ private:
     std::vector<node_menu_t*> node_menus_;
     std::map<QAction*,std::string> create_node_actions_;
 
-	const static int max_recently_opened_files;
+    const static int max_recently_opened_files;
 };
 
 } // namespace

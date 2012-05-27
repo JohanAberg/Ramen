@@ -87,7 +87,7 @@ public:
 
     bool autokey() const;
 
-    void add_to_hash( util::hash_generator_t& hash_gen) const;
+    void add_to_hash( hash::generator_t& hash_gen) const;
 
     // util
     void for_each_param( const boost::function<void ( param_t*)>& f);

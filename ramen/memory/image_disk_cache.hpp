@@ -16,7 +16,7 @@
 #include<ramen/filesystem/path.hpp>
 
 #include<ramen/image/buffer.hpp>
-#include<ramen/util/hash_generator.hpp>
+#include<ramen/hash/generator.hpp>
 
 namespace ramen
 {
@@ -27,28 +27,28 @@ class image_disk_cache_t : boost::noncopyable
 {
 public:
 
-    typedef util::hash_generator_t::digest_type digest_type;
+    typedef hash::generator_t::digest_type digest_type;
 
-	struct entry_t : public ref_counted_t {};
+    struct entry_t : public ref_counted_t {};
 
-	typedef boost::intrusive_ptr<entry_t> entry_ptr_t;
+    typedef boost::intrusive_ptr<entry_t> entry_ptr_t;
 
     image_disk_cache_t( const boost::filesystem::path& p, std::size_t max_size_in_kb);
-	~image_disk_cache_t();
+    ~image_disk_cache_t();
 
-	bool empty() const;
-	void clear();
+    bool empty() const;
+    void clear();
 
-	void begin_interaction();
-	void end_interaction();
+    void begin_interaction();
+    void end_interaction();
 
-	void insert( const digest_type& key, image::buffer_t& img);
-	entry_ptr_t find( const digest_type& key, const Imath::Box2i& area);
+    void insert( const digest_type& key, image::buffer_t& img);
+    entry_ptr_t find( const digest_type& key, const Imath::Box2i& area);
 
 private:
-	
-	struct impl;
-	impl *pimpl_;
+
+    struct impl;
+    impl *pimpl_;
 };
 
 } // namespace

@@ -37,32 +37,32 @@ bool motion_blur_param_t::motion_blur_enabled() const
 {
     motion_blur_info_t info( get_value<motion_blur_info_t>( *this));
 
-	if( info.samples == 1 || info.shutter == 0)
-		return false;
+    if( info.samples == 1 || info.shutter == 0)
+        return false;
 
-	return true;
+    return true;
 }
 
 motion_blur_info_t::loop_data_t motion_blur_param_t::loop_data( float time, int extra_samples, float shutter_factor) const
 {
     motion_blur_info_t info( get_value<motion_blur_info_t>( *this));
     return motion_blur_info_t::loop_data_t( time, info.samples + extra_samples, info.shutter * shutter_factor,
-											info.shutter_offset, info.filter);
+                                            info.shutter_offset, info.filter);
 }
 
-void motion_blur_param_t::do_add_to_hash( util::hash_generator_t& hash_gen) const
-{ 
+void motion_blur_param_t::do_add_to_hash( hash::generator_t& hash_gen) const
+{
     motion_blur_info_t info( get_value<motion_blur_info_t>( *this));
-	hash_gen << info.samples << "," << info.shutter << ","
-			<< info.shutter_offset << "," << info.filter;
+    hash_gen << info.samples << "," << info.shutter << ","
+            << info.shutter_offset << "," << info.filter;
 }
 
 void motion_blur_param_t::do_read( const serialization::yaml_node_t& node)
 {
-	motion_blur_info_t val;
-	
-	if( node.get_optional_value( "value", val))
-		value().assign( val);
+    motion_blur_info_t val;
+
+    if( node.get_optional_value( "value", val))
+        value().assign( val);
 }
 
 void motion_blur_param_t::do_write( serialization::yaml_oarchive_t& out) const
@@ -80,9 +80,9 @@ QWidget *motion_blur_param_t::do_create_widgets()
     shutter_ = new ui::double_spinbox_t( top);
     shutter_->setRange( 0, 1);
     shutter_->setSingleStep( 0.05);
-	
+
     QSize s = shutter_->sizeHint();
-	s.setWidth( s.width() + ( s.width() / 3));	
+    s.setWidth( s.width() + ( s.width() / 3));
     int h = 0;
 
     QLabel *label = new QLabel( top);
@@ -92,8 +92,8 @@ QWidget *motion_blur_param_t::do_create_widgets()
     label->setText( "Motion Blur Samples");
 
     samples_ = new ui::double_spinbox_t( top);
-	samples_->setDecimals( 0);
-	samples_->setTrackMouse( false);
+    samples_->setDecimals( 0);
+    samples_->setTrackMouse( false);
     samples_->setRange( 1, 64);
     samples_->setValue( info.samples);
     samples_->move( app().ui()->inspector().left_margin(), h);
@@ -108,7 +108,7 @@ QWidget *motion_blur_param_t::do_create_widgets()
     label->setAlignment( Qt::AlignRight | Qt::AlignVCenter);
     label->setText( "Shutter");
 
-	shutter_->setTrackMouse( false);
+    shutter_->setTrackMouse( false);
     shutter_->setValue( info.shutter);
     shutter_->move( app().ui()->inspector().left_margin(), h);
     shutter_->resize( s.width(), s.height());
@@ -123,7 +123,7 @@ QWidget *motion_blur_param_t::do_create_widgets()
     label->setText( "Shutter Offset");
 
     shutter_off_ = new ui::double_spinbox_t( top);
-	shutter_off_->setTrackMouse( false);
+    shutter_off_->setTrackMouse( false);
     shutter_off_->setRange( -1, 1);
     shutter_off_->setValue( info.shutter_offset);
     shutter_off_->setSingleStep( 0.05);
@@ -199,7 +199,7 @@ void motion_blur_param_t::samples_changed( double v)
     param_set()->begin_edit();
     param_set()->add_command( this);
     value().assign( info);
-	emit_param_changed( user_edited);
+    emit_param_changed( user_edited);
     param_set()->end_edit();
 }
 
@@ -211,7 +211,7 @@ void motion_blur_param_t::shutter_changed( double v)
     param_set()->begin_edit();
     param_set()->add_command( this);
     value().assign( info);
-	emit_param_changed( user_edited);
+    emit_param_changed( user_edited);
     param_set()->end_edit();
 }
 
@@ -222,7 +222,7 @@ void motion_blur_param_t::filter_changed( int index)
     param_set()->begin_edit();
     param_set()->add_command( this);
     value().assign( info);
-	emit_param_changed( user_edited);
+    emit_param_changed( user_edited);
     param_set()->end_edit();
 }
 

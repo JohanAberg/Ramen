@@ -31,19 +31,19 @@ void curve_param_t::do_create_tracks( anim::track_t *parent)
     parent->add_child( t);
 }
 
-void curve_param_t::do_add_to_hash( util::hash_generator_t& hash_gen) const { hash_gen << curve().str();}
+void curve_param_t::do_add_to_hash( hash::generator_t& hash_gen) const { hash_gen << curve().str();}
 
 // serialization
 void curve_param_t::do_read( const serialization::yaml_node_t& node)
 {
-	serialization::yaml_node_t c( node.get_node( "curve"));
-	curve().read( c);
+    serialization::yaml_node_t c( node.get_node( "curve"));
+    curve().read( c);
 }
 
 void curve_param_t::do_write( serialization::yaml_oarchive_t& out) const
 {
-	out << YAML::Key << "curve" << YAML::Value;
-	curve().write( out);
+    out << YAML::Key << "curve" << YAML::Value;
+    curve().write( out);
 }
 
 } // namespace

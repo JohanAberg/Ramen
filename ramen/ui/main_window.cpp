@@ -46,10 +46,6 @@
 #include<ramen/nodes/node_factory.hpp>
 #include<ramen/nodes/node_output_interface.hpp>
 #include<ramen/nodes/image_node.hpp>
-#include<ramen/nodes/image/roto/roto_node.hpp>
-#include<ramen/nodes/image/color/cdl_node.hpp>
-
-#include<ramen/imageio/import_multichannel_exr.hpp>
 
 #include<ramen/undo/stack.hpp>
 
@@ -74,8 +70,6 @@
 #include<ramen/ui/dialogs/composition_settings_dialog.hpp>
 #include<ramen/ui/dialogs/preferences_dialog.hpp>
 #include<ramen/ui/dialogs/multiline_alert.hpp>
-#include<ramen/ui/python/console.hpp>
-#include<ramen/ui/python/editor.hpp>
 
 namespace ramen
 {
@@ -89,9 +83,9 @@ const char *main_window_t::file_dialog_extension()	{ return "Ramen Composition (
 
 main_window_t::main_window_t() : QMainWindow()
 {
-	menubar_ = menuBar();
+    menubar_ = menuBar();
 
-	recently_opened_.assign( max_recently_opened_files, (QAction *) 0);
+    recently_opened_.assign( max_recently_opened_files, (QAction *) 0);
 
     time_controls_.reset( new time_controls_t());
 
@@ -109,65 +103,46 @@ main_window_t::main_window_t() : QMainWindow()
     inspector_dock_->setWidget( app().ui()->inspector().widget());
     add_dock_widget( Qt::RightDockWidgetArea, inspector_dock_);
 
-	// python
-	py_console_dock_ = new QDockWidget( "Python Console", this);
-	py_console_dock_->setObjectName( "py_console_dock");
-	py_console_dock_->setAllowedAreas( Qt::BottomDockWidgetArea | Qt::TopDockWidgetArea |
-										Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
-
-	py_console_dock_->setWidget( python::console_t::instance().widget());
-	add_dock_widget( Qt::BottomDockWidgetArea, py_console_dock_);
-
-	py_editor_dock_ = new QDockWidget( "Python Editor", this);
-	py_editor_dock_->setObjectName( "py_editor_dock");
-	py_editor_dock_->setAllowedAreas( Qt::BottomDockWidgetArea | Qt::TopDockWidgetArea |
-										Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
-
-	py_editor_dock_->setWidget( python::editor_t::instance().widget());
-	add_dock_widget( Qt::LeftDockWidgetArea, py_editor_dock_);
-
     // anim editor dock
     anim_editor_dock_ = new QDockWidget( "Curve Editor", this);
     anim_editor_dock_->setObjectName( "anim_editor_dock");
     anim_editor_dock_->setAllowedAreas( Qt::BottomDockWidgetArea | Qt::TopDockWidgetArea |
-										Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
+                                        Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
     anim_editor_dock_->setWidget( app().ui()->anim_editor().widget());
     add_dock_widget( Qt::BottomDockWidgetArea, anim_editor_dock_);
-	tabifyDockWidget( py_console_dock_, anim_editor_dock_);
 
     // Composition view
-	{
-	    composition_dock_ = new QDockWidget( "Composition", this);
-		composition_dock_->setObjectName( "composition_dock");
-	    composition_dock_->setAllowedAreas( Qt::BottomDockWidgetArea | Qt::TopDockWidgetArea |
-											Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
+    {
+        composition_dock_ = new QDockWidget( "Composition", this);
+        composition_dock_->setObjectName( "composition_dock");
+        composition_dock_->setAllowedAreas( Qt::BottomDockWidgetArea | Qt::TopDockWidgetArea |
+                                            Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
 
 
-		QWidget *all_comp_view = new QWidget();
-		QVBoxLayout *layout = new QVBoxLayout();
-	    layout->setContentsMargins( 5, 5, 5, 5);
+        QWidget *all_comp_view = new QWidget();
+        QVBoxLayout *layout = new QVBoxLayout();
+        layout->setContentsMargins( 5, 5, 5, 5);
 
-	    comp_view_ = new composition_view_t();
-		layout->addWidget( comp_view_);
+        comp_view_ = new composition_view_t();
+        layout->addWidget( comp_view_);
 
-		QFrame *separator = new QFrame();
-	    separator->setFrameStyle( QFrame::HLine | QFrame::Raised);
-	    separator->setLineWidth( 1);
-	    layout->addWidget( separator);
+        QFrame *separator = new QFrame();
+        separator->setFrameStyle( QFrame::HLine | QFrame::Raised);
+        separator->setLineWidth( 1);
+        layout->addWidget( separator);
 
-		layout->addWidget( composition_view().create_toolbar());
-		all_comp_view->setLayout( layout);
+        layout->addWidget( composition_view().create_toolbar());
+        all_comp_view->setLayout( layout);
 
-		composition_dock_->setWidget( all_comp_view);
-	    add_dock_widget( Qt::LeftDockWidgetArea, composition_dock_);
-		tabifyDockWidget( py_editor_dock_, composition_dock_);
-	}
-	
+        composition_dock_->setWidget( all_comp_view);
+        add_dock_widget( Qt::LeftDockWidgetArea, composition_dock_);
+    }
+
     // image view
     setCentralWidget( app().ui()->viewer().widget() );
 
     // time toolbar
-	addToolBar( Qt::BottomToolBarArea, create_time_toolbar());
+    addToolBar( Qt::BottomToolBarArea, create_time_toolbar());
 
     // create the status bar
     statusBar()->showMessage( RAMEN_NAME_FULL_VERSION_STR);
@@ -188,10 +163,10 @@ main_window_t::~main_window_t()
 
 QToolBar *main_window_t::create_time_toolbar()
 {
-	QToolBar *toolbar = new QToolBar( "Time Controls");
-	toolbar->setObjectName( "time_controls");
-	toolbar->setFloatable( false);
-	toolbar->setMovable( false);
+    QToolBar *toolbar = new QToolBar( "Time Controls");
+    toolbar->setObjectName( "time_controls");
+    toolbar->setFloatable( false);
+    toolbar->setMovable( false);
 
     time_slider_ = new time_slider_t();
     time_slider_->setSizePolicy( QSizePolicy::Expanding, time_slider_->sizePolicy().verticalPolicy());
@@ -199,17 +174,17 @@ QToolBar *main_window_t::create_time_toolbar()
     connect( time_slider_, SIGNAL( end_frame_changed( int)), app().ui(), SLOT( set_end_frame( int)));
     connect( time_slider_, SIGNAL( time_changed( int)), app().ui(), SLOT( set_frame( int)));
 
-	toolbar->addWidget( time_slider_);
-	toolbar->addSeparator();
+    toolbar->addWidget( time_slider_);
+    toolbar->addSeparator();
 
-	toolbar->addWidget( time_controls_->widget());
-	return toolbar;
+    toolbar->addWidget( time_controls_->widget());
+    return toolbar;
 }
 
 void main_window_t::add_dock_widget( Qt::DockWidgetArea area, QDockWidget *dock)
 {
-	addDockWidget( area, dock);
-	view_->addAction( dock->toggleViewAction());
+    addDockWidget( area, dock);
+    view_->addAction( dock->toggleViewAction());
 }
 
 void main_window_t::closeEvent( QCloseEvent *event)
@@ -217,9 +192,9 @@ void main_window_t::closeEvent( QCloseEvent *event)
     quit();
 
     if( app().quitting())
-		event->accept();
+        event->accept();
     else
-		event->ignore();
+        event->ignore();
 }
 
 void main_window_t::create_actions()
@@ -261,23 +236,6 @@ void main_window_t::create_actions()
     export_sel_->setEnabled( false);
     connect( export_sel_, SIGNAL( triggered()), this, SLOT( export_selection()));
 
-    import_multiexr_ = new QAction( "Import All EXR Layers...", this);
-    connect( import_multiexr_, SIGNAL( triggered()), this, SLOT( import_multichannel_exr()));
-
-	import_roto_ = new QAction( "Import Roto...", this);
-	import_roto_->setEnabled( false);
-    connect( import_roto_, SIGNAL( triggered()), this, SLOT( import_roto()));
-
-	import_cdl_ = new QAction( "Import CDL...", this);
-	connect( import_cdl_, SIGNAL( triggered()), this, SLOT( import_cdl()));
-	
-	export_roto_ = new QAction( "Export Roto...", this);
-	export_roto_->setEnabled( false);
-    connect( export_roto_, SIGNAL( triggered()), this, SLOT( export_roto()));
-
-	export_cdl_ = new QAction( "Export CDL...", this);
-	connect( export_cdl_, SIGNAL( triggered()), this, SLOT( export_cdl()));
-	
     undo_ = new QAction( "Undo", this);
     undo_->setShortcut( QString( "Ctrl+Z"));
     undo_->setShortcutContext( Qt::ApplicationShortcut);
@@ -301,9 +259,9 @@ void main_window_t::create_actions()
     duplicate_->setShortcutContext( Qt::ApplicationShortcut);
     connect( duplicate_, SIGNAL( triggered()), this, SLOT( duplicate_nodes()));
 
-	extract_ = new QAction( "Extract", this);
+    extract_ = new QAction( "Extract", this);
     connect( extract_, SIGNAL( triggered()), this, SLOT( extract_nodes()));
-	
+
     group_ = new QAction( "Group", this);
     ungroup_ = new QAction( "Ungroup", this);
 
@@ -331,7 +289,7 @@ void main_window_t::create_actions()
 
     project_web_ = new QAction( tr( "Project Website..."), this);
     connect( project_web_, SIGNAL( triggered()), this, SLOT( go_to_project_website()));
-	
+
     // non-menu actions
     next_frame_ = new QAction( this);
     next_frame_->setShortcut( Qt::Key_Right);
@@ -349,77 +307,68 @@ void main_window_t::create_actions()
 void main_window_t::create_menus()
 {
     file_ = menubar_->addMenu( "File");
-	file_->addAction( new_);
-	file_->addAction( open_);
+    file_->addAction( new_);
+    file_->addAction( open_);
 
-	open_recent_ = file_->addMenu( "Open Recent");
+    open_recent_ = file_->addMenu( "Open Recent");
     for( int i = 0; i < max_recently_opened_files; ++i)
-		open_recent_->addAction( recently_opened_[i]);
+        open_recent_->addAction( recently_opened_[i]);
 
-	init_recent_files_menu();
+    init_recent_files_menu();
 
-	file_->addAction( save_);
-	file_->addAction( save_as_);
-	file_->addSeparator();
+    file_->addAction( save_);
+    file_->addAction( save_as_);
+    file_->addSeparator();
 
-	import_ = file_->addMenu( "Import");
-	export_ = file_->addMenu( "Export");
-	create_import_export_menus();
+    import_ = file_->addMenu( "Import");
+    export_ = file_->addMenu( "Export");
+    create_import_export_menus();
 
-	file_->addSeparator();
-	file_->addAction( quit_);
+    file_->addSeparator();
+    file_->addAction( quit_);
 
     edit_ = menubar_->addMenu( "Edit");
     edit_->addAction( undo_);
-	edit_->addAction( redo_);
-	edit_->addSeparator();
-	edit_->addAction( ignore_);
-	edit_->addAction( delete_);
-	edit_->addAction( duplicate_);
-	edit_->addAction( extract_);
-	edit_->addSeparator();
+    edit_->addAction( redo_);
+    edit_->addSeparator();
+    edit_->addAction( ignore_);
+    edit_->addAction( delete_);
+    edit_->addAction( duplicate_);
+    edit_->addAction( extract_);
+    edit_->addSeparator();
     //edit_->addAction( group_);
     //edit_->addAction( ungroup_);
     //edit_->addSeparator();
-	edit_->addAction( clear_cache_);
-	edit_->addSeparator();
-	edit_->addAction( preferences_);
+    edit_->addAction( clear_cache_);
+    edit_->addSeparator();
+    edit_->addAction( preferences_);
 
     composition_ = menubar_->addMenu( "Composition");
-	composition_->addAction( comp_settings_);
-	composition_->addSeparator();
-	composition_->addAction( comp_flipbook_);
-	composition_->addAction( comp_render_);
+    composition_->addAction( comp_settings_);
+    composition_->addSeparator();
+    composition_->addAction( comp_flipbook_);
+    composition_->addAction( comp_render_);
 
     create_node_actions();
 
     for( int i = 0; i < node_menus_.size(); ++i)
-	{
-		node_menus_[i]->menu()->setTearOffEnabled( true);
+    {
+        node_menus_[i]->menu()->setTearOffEnabled( true);
         menubar_->addMenu( node_menus_[i]->menu());
-	}
+    }
 
     view_ = menubar_->addMenu( "Window");
 
     help_ = menubar_->addMenu( "Help");
-	help_->addAction( about_);
-	help_->addAction( project_web_);	
+    help_->addAction( about_);
+    help_->addAction( project_web_);
 }
 
 void main_window_t::create_import_export_menus()
 {
     import_->addAction( import_comp_);
-    import_->addSeparator();
-    import_->addAction( import_multiexr_);
-	import_->addAction( import_cdl_);
-	import_->addAction( import_roto_);
-	// add plugin import menus here
-	
+
     export_->addAction( export_sel_);
-	export_->addSeparator();
-	export_->addAction( export_cdl_);
-	export_->addAction( export_roto_);
-	// add plugin export menus here
 }
 
 node_menu_t *main_window_t::find_node_menu( const std::string& s)
@@ -457,11 +406,11 @@ void main_window_t::create_node_actions()
         m->add_submenu( "Tonemap");
         m->add_submenu( "Time");
         m->add_submenu( "Util");
-		//m->add_submenu( "Video");
+        //m->add_submenu( "Video");
         m->add_submenu( "Output");
 
-	// sort the list of registered nodes
-	node_factory_t::instance().sort_by_menu_item();
+    // sort the list of registered nodes
+    node_factory_t::instance().sort_by_menu_item();
 
     // add our builtin nodes first
     BOOST_FOREACH( const node_metaclass_t& mclass, node_factory_t::instance().registered_nodes())
@@ -479,8 +428,8 @@ void main_window_t::create_node_actions()
 
 const std::vector<node_menu_t*>& main_window_t::node_menus() const
 {
-	RAMEN_ASSERT( !node_menus_.empty());
-	return node_menus_;
+    RAMEN_ASSERT( !node_menus_.empty());
+    return node_menus_;
 }
 
 bool main_window_t::can_close_document()
@@ -515,7 +464,7 @@ void main_window_t::open_document()
     if( can_close_document())
     {
         QString fname = QFileDialog::getOpenFileName( 0, "Open Composition", QString::null, file_dialog_extension(),
-													  0, QFileDialog::DontUseNativeDialog);
+                                                      0, QFileDialog::DontUseNativeDialog);
 
         if( !( fname.isEmpty()))
         {
@@ -543,10 +492,10 @@ void main_window_t::open_recent_document()
 void main_window_t::save_document()
 {
     if( app().document().has_file())
-	{
+    {
         app().ui()->save_document();
         app().ui()->update();
-	}
+    }
     else
         save_document_as();
 }
@@ -554,7 +503,7 @@ void main_window_t::save_document()
 void main_window_t::save_document_as()
 {
     QString fname = QFileDialog::getSaveFileName( 0, "Save Composition As", QString::null, file_dialog_extension(),
-												  0, QFileDialog::DontUseNativeDialog);
+                                                  0, QFileDialog::DontUseNativeDialog);
 
     if( !(fname.isEmpty()))
     {
@@ -563,30 +512,30 @@ void main_window_t::save_document_as()
         if( p.extension() == std::string())
             p.replace_extension( document_extension());
 
-		boost::filesystem::path old_file = app().document().file();
+        boost::filesystem::path old_file = app().document().file();
         app().document().set_file( p);
 
         if( !app().ui()->save_document())
-		{
-			// save was not successful, restore the relative paths
-			// to the state before trying to save.
-			if( !old_file.empty())
-				app().document().set_file( old_file);
-		}
-		else
-		{
-			update_recent_files_menu( app().document().file());
-			app().document().undo_stack().clear_all();
-		}
-		
-		app().ui()->update();
+        {
+            // save was not successful, restore the relative paths
+            // to the state before trying to save.
+            if( !old_file.empty())
+                app().document().set_file( old_file);
+        }
+        else
+        {
+            update_recent_files_menu( app().document().file());
+            app().document().undo_stack().clear_all();
+        }
+
+        app().ui()->update();
     }
 }
 
 void main_window_t::import_composition()
 {
     QString fname = QFileDialog::getOpenFileName( 0, "Open Composition", QString::null, file_dialog_extension(),
-												  0, QFileDialog::DontUseNativeDialog);
+                                                  0, QFileDialog::DontUseNativeDialog);
 
     if( !( fname.isEmpty()))
     {
@@ -597,12 +546,12 @@ void main_window_t::import_composition()
             std::auto_ptr<serialization::yaml_iarchive_t> in( ramen::import_composition( p));
             app().document().set_dirty( true);
             app().document().undo_stack().clear_all();
-			
-			// report errors to the user
-			std::string err = in->errors();
-			
-			if( !err.empty())
-				multiline_alert_t::instance().show_alert( "Errors during file open", err);
+
+            // report errors to the user
+            std::string err = in->errors();
+
+            if( !err.empty())
+                multiline_alert_t::instance().show_alert( "Errors during file open", err);
             */
         }
         catch( std::exception& e)
@@ -610,23 +559,14 @@ void main_window_t::import_composition()
             QMessageBox::warning( this, "Error opening document", "Old version or corrupted composition");
         }
 
-		app().ui()->update();
+        app().ui()->update();
     }
-}
-
-void main_window_t::import_multichannel_exr()
-{
-    boost::filesystem::path p;
-    bool relative, sequence;
-
-    if( app().ui()->image_sequence_file_selector( "Import EXR", "OpenEXR image (*.exr)", p, sequence, relative))
-		imageio::import_multichannel_exr( p, relative, sequence);
 }
 
 void main_window_t::export_selection()
 {
     QString fname = QFileDialog::getSaveFileName( 0, "Save Composition As", QString::null, file_dialog_extension(),
-												  0, QFileDialog::DontUseNativeDialog);
+                                                  0, QFileDialog::DontUseNativeDialog);
 
     if( !(fname.isEmpty()))
     {
@@ -637,81 +577,6 @@ void main_window_t::export_selection()
 
         export_selected_nodes( p);
     }
-}
-
-void main_window_t::import_roto()
-{
-    QString fname = QFileDialog::getOpenFileName( 0, "Import Roto", QString::null,
-														"Ramen Shapes (*.yaml);;"  
-														"Autodesk GMask (*.gmask);;"
-														  "Shake SSF (*.ssf);;"
-														  "Nuke (*.nk)", 0, QFileDialog::DontUseNativeDialog);
-    if( !( fname.isEmpty()))
-		app().ui()->error( "Feature not implemented yet.");
-}
-
-void main_window_t::import_cdl()
-{
-    QString fname = QFileDialog::getOpenFileName( 0, "Import CDL Transform", QString::null, "CDL transform (*.cc)",
-												  0, QFileDialog::DontUseNativeDialog);
-
-    if( !( fname.isEmpty()))
-	{
-		std::auto_ptr<image::cdl_node_t> p( new image::cdl_node_t());
-		
-		if( !p.get())
-		{
-			app().ui()->error( std::string( "Couldn't create cdl node"));
-			return;
-		}
-		
-		try
-		{
-			p->set_composition( &( app().document().composition()));
-			p->create_params();
-			p->create_manipulators();
-			p->read_from_file( boost::filesystem::path( fname.toStdString()));
-		}
-		catch( std::exception& e)
-		{
-			app().ui()->error( std::string( "Couldn't create cdl node ") + e.what());
-			return;
-		}
-	
-		composition_view().place_node( p.get());
-		node_t *n = p.get(); // save for later use
-        std::auto_ptr<undo::command_t> c( new undo::add_node_command_t( std::auto_ptr<node_t>( p.release()), 0));
-		app().document().composition().deselect_all();
-		n->select( true);
-		c->redo();
-		app().document().undo_stack().push_back( c);
-		app().ui()->update();
-	}
-}
-
-void main_window_t::export_roto()
-{
-    QString fname = QFileDialog::getSaveFileName( 0, "Export Roto...", QString::null,
-													"Roto Files (*.yaml *.gmask *.ssf *.nk)",
-												  0, QFileDialog::DontUseNativeDialog);
-
-    if( !(fname.isEmpty()))
-		app().ui()->error( "Feature not implemented yet.");
-}
-
-void main_window_t::export_cdl()
-{
-    QString fname = QFileDialog::getSaveFileName( 0, "Export CDL Transform...", QString::null, "CDL Transform (*.cc)",
-												  0, QFileDialog::DontUseNativeDialog);
-
-    if( !(fname.isEmpty()))
-	{
-		node_t *n = app().document().composition().selected_node();
-		image::cdl_node_t *cdl_node = dynamic_cast<image::cdl_node_t*>( n);
-		RAMEN_ASSERT( cdl_node);
-
-		cdl_node->write_to_file( boost::filesystem::path( fname.toStdString()));
-	}
 }
 
 void main_window_t::quit()
@@ -734,7 +599,7 @@ void main_window_t::quit()
                     // if the document is still dirty, it means
                     // save was cancelled, so we return without quitting
                 if( app().document().dirty())
-					return;
+                    return;
             }
             break;
 
@@ -779,7 +644,7 @@ void main_window_t::ignore_nodes()
 
 void main_window_t::delete_nodes()
 {
-	bool autoconnect = true;
+    bool autoconnect = true;
 
     if( !app().document().composition().any_selected())
         return;
@@ -804,44 +669,44 @@ void main_window_t::delete_nodes()
             c->add_edge_to_remove( e);
     }
 
-	if( autoconnect)
-	{
-		std::vector<edge_t> edges_to_add;
-		
-		BOOST_FOREACH( node_t& n, app().document().composition().nodes())
-		{
-			if( n.selected())
-			{
-				if( n.num_outputs() == 0)
-					continue;
-				
-				node_t *src = 0;
-				
-				// find first input
-				for( int i = 0; i < n.num_inputs(); ++i)
-				{
-					if( n.input( i) && !n.input( i)->selected())
-					{
-						src = n.input( i);
-						break;
-					}
-				}
+    if( autoconnect)
+    {
+        std::vector<edge_t> edges_to_add;
 
-				if( src)
-				{
-					breadth_first_out_edges_apply( n, boost::bind( &undo::delete_command_t::add_candidate_edge,
-																			  _1, src, boost::ref( edges_to_add)));
-				}
-			}
-		}
-		
-		std::stable_sort( edges_to_add.begin(), edges_to_add.end(), &undo::delete_command_t::edge_less);
-		std::unique( edges_to_add.begin(), edges_to_add.end(), &undo::delete_command_t::edge_compare);
-		
-		for( int i = 0; i < edges_to_add.size(); ++i)
-			c->add_edge_to_add( edges_to_add[i]);
-	}
-	
+        BOOST_FOREACH( node_t& n, app().document().composition().nodes())
+        {
+            if( n.selected())
+            {
+                if( n.num_outputs() == 0)
+                    continue;
+
+                node_t *src = 0;
+
+                // find first input
+                for( int i = 0; i < n.num_inputs(); ++i)
+                {
+                    if( n.input( i) && !n.input( i)->selected())
+                    {
+                        src = n.input( i);
+                        break;
+                    }
+                }
+
+                if( src)
+                {
+                    breadth_first_out_edges_apply( n, boost::bind( &undo::delete_command_t::add_candidate_edge,
+                                                                              _1, src, boost::ref( edges_to_add)));
+                }
+            }
+        }
+
+        std::stable_sort( edges_to_add.begin(), edges_to_add.end(), &undo::delete_command_t::edge_less);
+        std::unique( edges_to_add.begin(), edges_to_add.end(), &undo::delete_command_t::edge_compare);
+
+        for( int i = 0; i < edges_to_add.size(); ++i)
+            c->add_edge_to_add( edges_to_add[i]);
+    }
+
     c->redo();
     app().document().undo_stack().push_back( c);
     app().ui()->update();
@@ -877,7 +742,7 @@ void main_window_t::duplicate_nodes()
 
 void main_window_t::extract_nodes()
 {
-	bool autoconnect = true;
+    bool autoconnect = true;
 
     if( !app().document().composition().any_selected())
         return;
@@ -896,41 +761,41 @@ void main_window_t::extract_nodes()
             c->add_edge_to_remove( e);
     }
 
-	if( autoconnect)
-	{
-		std::vector<edge_t> edges_to_add;
-		
-		BOOST_FOREACH( node_t& n, app().document().composition().nodes())
-		{
-			if( n.selected())
-			{
-				if( n.num_outputs() == 0)
-					continue;
-				
-				node_t *src = 0;
-				
-				// find first input
-				for( int i = 0; i < n.num_inputs(); ++i)
-				{
-					if( n.input( i) && !n.input( i)->selected())
-					{
-						src = n.input( i);
-						break;
-					}
-				}
+    if( autoconnect)
+    {
+        std::vector<edge_t> edges_to_add;
 
-				if( src)
-					breadth_first_out_edges_apply( n, boost::bind( &undo::delete_command_t::add_candidate_edge, _1, src, boost::ref( edges_to_add)));
-			}
-		}
-		
-		std::stable_sort( edges_to_add.begin(), edges_to_add.end(), &undo::delete_command_t::edge_less);
-		std::unique( edges_to_add.begin(), edges_to_add.end(), &undo::delete_command_t::edge_compare);
-		
-		for( int i = 0; i < edges_to_add.size(); ++i)
-			c->add_edge_to_add( edges_to_add[i]);
-	}
-	
+        BOOST_FOREACH( node_t& n, app().document().composition().nodes())
+        {
+            if( n.selected())
+            {
+                if( n.num_outputs() == 0)
+                    continue;
+
+                node_t *src = 0;
+
+                // find first input
+                for( int i = 0; i < n.num_inputs(); ++i)
+                {
+                    if( n.input( i) && !n.input( i)->selected())
+                    {
+                        src = n.input( i);
+                        break;
+                    }
+                }
+
+                if( src)
+                    breadth_first_out_edges_apply( n, boost::bind( &undo::delete_command_t::add_candidate_edge, _1, src, boost::ref( edges_to_add)));
+            }
+        }
+
+        std::stable_sort( edges_to_add.begin(), edges_to_add.end(), &undo::delete_command_t::edge_less);
+        std::unique( edges_to_add.begin(), edges_to_add.end(), &undo::delete_command_t::edge_compare);
+
+        for( int i = 0; i < edges_to_add.size(); ++i)
+            c->add_edge_to_add( edges_to_add[i]);
+    }
+
     c->redo();
     app().document().undo_stack().push_back( c);
     app().ui()->update();
@@ -955,8 +820,8 @@ void main_window_t::render_composition()
         QMessageBox::warning( this, "Ramen", "No output nodes in composition");
         return;
     }
-	
-	bool any_output_selected = ( render::count_output_nodes( app().document().composition(), true) != 0);
+
+    bool any_output_selected = ( render::count_output_nodes( app().document().composition(), true) != 0);
 
     render_composition_dialog_t::instance().set_any_output_selected( any_output_selected);
 
@@ -964,18 +829,18 @@ void main_window_t::render_composition()
 
     if( result == QDialog::Accepted)
     {
-		int start = render_composition_dialog_t::instance().start_frame();
-		int end = render_composition_dialog_t::instance().end_frame();
-		
-		if( end < start)
-			return;
-		
-		ui::render_composition( app().document().composition(),
-								start, end, render_composition_dialog_t::instance().proxy_level(),
-								render_composition_dialog_t::instance().resolution(),
-								render_composition_dialog_t::instance().mblur_extra_samples(),
-								render_composition_dialog_t::instance().mblur_shutter_factor(),
-								render_composition_dialog_t::instance().selected_only());
+        int start = render_composition_dialog_t::instance().start_frame();
+        int end = render_composition_dialog_t::instance().end_frame();
+
+        if( end < start)
+            return;
+
+        ui::render_composition( app().document().composition(),
+                                start, end, render_composition_dialog_t::instance().proxy_level(),
+                                render_composition_dialog_t::instance().resolution(),
+                                render_composition_dialog_t::instance().mblur_extra_samples(),
+                                render_composition_dialog_t::instance().mblur_shutter_factor(),
+                                render_composition_dialog_t::instance().selected_only());
     }
 }
 
@@ -985,28 +850,28 @@ void main_window_t::render_flipbook()
 
     if( result == QDialog::Accepted)
     {
-		if( image_node_t *n = dynamic_cast<image_node_t*>( app().document().composition().selected_node()))
-		{
-			int frame_rate = app().document().composition().frame_rate();
-			std::string display_device = render_flipbook_dialog_t::instance().display_device();
-			std::string display_transform = render_flipbook_dialog_t::instance().display_transform();
-			int start	= render_flipbook_dialog_t::instance().start_frame();
-			int end	= render_flipbook_dialog_t::instance().end_frame();
-			int subsample =  render_flipbook_dialog_t::instance().resolution();
-			int proxy_level = render_flipbook_dialog_t::instance().proxy_level();
-			int mb_extra_samples = render_flipbook_dialog_t::instance().mblur_extra_samples();
-			float mb_shutter_factor = render_flipbook_dialog_t::instance().mblur_shutter_factor();
-	
-			flipbook::flipbook_t *flip = flipbook::factory_t::instance().create( render_flipbook_dialog_t::instance().flipbook(),
-																				   frame_rate, display_device, display_transform);
+        if( image_node_t *n = dynamic_cast<image_node_t*>( app().document().composition().selected_node()))
+        {
+            int frame_rate = app().document().composition().frame_rate();
+            std::string display_device = render_flipbook_dialog_t::instance().display_device();
+            std::string display_transform = render_flipbook_dialog_t::instance().display_transform();
+            int start	= render_flipbook_dialog_t::instance().start_frame();
+            int end	= render_flipbook_dialog_t::instance().end_frame();
+            int subsample =  render_flipbook_dialog_t::instance().resolution();
+            int proxy_level = render_flipbook_dialog_t::instance().proxy_level();
+            int mb_extra_samples = render_flipbook_dialog_t::instance().mblur_extra_samples();
+            float mb_shutter_factor = render_flipbook_dialog_t::instance().mblur_shutter_factor();
 
-			if( flip)
-			{
-				if( flipbook::render_flipbook( flip, n, start, end, proxy_level, subsample, mb_extra_samples, mb_shutter_factor))
-					flip->play();
-			}
-		}
-	}
+            flipbook::flipbook_t *flip = flipbook::factory_t::instance().create( render_flipbook_dialog_t::instance().flipbook(),
+                                                                                   frame_rate, display_device, display_transform);
+
+            if( flip)
+            {
+                if( flipbook::render_flipbook( flip, n, start, end, proxy_level, subsample, mb_extra_samples, mb_shutter_factor))
+                    flip->play();
+            }
+        }
+    }
 }
 
 void main_window_t::show_preferences_dialog()
@@ -1020,54 +885,54 @@ void main_window_t::create_node()
 
     std::string id( create_node_actions_[action]);
     std::auto_ptr<node_t> p( node_factory_t::instance().create_by_id( id, true));
-	
-	if( !p.get())
-	{
-		//app().ui()->error( std::string( "Couldn't create node ") + id);
-		return;
-	}
-	
-	try
-	{
-		p->set_composition( &( app().document().composition()));
-		p->create_params();
-		p->create_manipulators();
-	}
-	catch( std::exception& e)
-	{
-		app().ui()->error( std::string( "Couldn't create node ") + id
-											+ std::string( " ") + e.what());
-		return;
-	}
 
-	// test to see if we can autoconnect
-	node_t *src = app().document().composition().selected_node();
-	
-	if( src && src->has_output_plug() && p->num_inputs() != 0)
-	{
-		if( !app().document().composition().can_connect( src, p.get(), 0))
-			src = 0;
-	}
-	else
-		src = 0;
-	
-	if( src)
-		composition_view().place_node_near_node( p.get(), src);
-	else
-		composition_view().place_node( p.get());
-	
-	node_t *n = p.get(); // save for later use
-	std::auto_ptr<undo::command_t> c( new undo::add_node_command_t( p, src));
-	app().document().composition().deselect_all();
-	n->select( true);
-	c->redo();
-	app().document().undo_stack().push_back( c);
-	app().ui()->update();
+    if( !p.get())
+    {
+        //app().ui()->error( std::string( "Couldn't create node ") + id);
+        return;
+    }
+
+    try
+    {
+        p->set_composition( &( app().document().composition()));
+        p->create_params();
+        p->create_manipulators();
+    }
+    catch( std::exception& e)
+    {
+        app().ui()->error( std::string( "Couldn't create node ") + id
+                                            + std::string( " ") + e.what());
+        return;
+    }
+
+    // test to see if we can autoconnect
+    node_t *src = app().document().composition().selected_node();
+
+    if( src && src->has_output_plug() && p->num_inputs() != 0)
+    {
+        if( !app().document().composition().can_connect( src, p.get(), 0))
+            src = 0;
+    }
+    else
+        src = 0;
+
+    if( src)
+        composition_view().place_node_near_node( p.get(), src);
+    else
+        composition_view().place_node( p.get());
+
+    node_t *n = p.get(); // save for later use
+    std::auto_ptr<undo::command_t> c( new undo::add_node_command_t( p, src));
+    app().document().composition().deselect_all();
+    n->select( true);
+    c->redo();
+    app().document().undo_stack().push_back( c);
+    app().ui()->update();
 }
 
 void main_window_t::show_about_box()
 {
-	about_dialog_t::instance().exec();
+    about_dialog_t::instance().exec();
 }
 
 void main_window_t::go_to_project_website()
@@ -1084,8 +949,8 @@ void main_window_t::update()
 
     update_menus();
     time_slider_->update( app().document().composition().start_frame(),
-			 app().document().composition().frame(),
-			 app().document().composition().end_frame());
+             app().document().composition().frame(),
+             app().document().composition().end_frame());
 
     composition_view().update();
     time_controls_->update();
@@ -1148,28 +1013,28 @@ void main_window_t::update_menus()
     save_->setEnabled( app().document().dirty());
     export_sel_->setEnabled( any_selected);
 
-	if( app().document().undo_stack().undo_empty())
-	{
-		undo_->setText( "Undo");
-	    undo_->setEnabled( false);
-	}
-	else
-	{
-		undo_->setText( QString( "Undo ") + app().document().undo_stack().last_undo_command().name().c_str());
-	    undo_->setEnabled( true);
-	}
+    if( app().document().undo_stack().undo_empty())
+    {
+        undo_->setText( "Undo");
+        undo_->setEnabled( false);
+    }
+    else
+    {
+        undo_->setText( QString( "Undo ") + app().document().undo_stack().last_undo_command().name().c_str());
+        undo_->setEnabled( true);
+    }
 
-	if( app().document().undo_stack().redo_empty())
-	{
-		redo_->setText( "Redo");
-	    redo_->setEnabled( false);
-	}
-	else
-	{
-		redo_->setText( QString( "Redo ") + app().document().undo_stack().last_redo_command().name().c_str());
-	    redo_->setEnabled( true);
-	}
-	
+    if( app().document().undo_stack().redo_empty())
+    {
+        redo_->setText( "Redo");
+        redo_->setEnabled( false);
+    }
+    else
+    {
+        redo_->setText( QString( "Redo ") + app().document().undo_stack().last_redo_command().name().c_str());
+        redo_->setEnabled( true);
+    }
+
     ignore_->setEnabled( any_selected);
     delete_->setEnabled( any_selected);
     duplicate_->setEnabled( any_selected);
@@ -1179,27 +1044,9 @@ void main_window_t::update_menus()
     ungroup_->setEnabled( false);
 
     if( n && dynamic_cast<image_node_t*>( n))
-	{
         comp_flipbook_->setEnabled( true);
-		
-		/*
-		if( dynamic_cast<image::roto_node_t*>( n))
-			export_roto_->setEnabled( true);
-		else
-			export_roto_->setEnabled( false);
-		*/
-		
-		if( dynamic_cast<image::cdl_node_t*>( n))
-			export_cdl_->setEnabled( true);
-		else
-			export_cdl_->setEnabled( false);
-	}
     else
-	{
         comp_flipbook_->setEnabled( false);
-		export_cdl_->setEnabled( false);
-		//export_roto_->setEnabled( false);
-	}
 }
 
 } // namespace

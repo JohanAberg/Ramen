@@ -24,9 +24,9 @@ public:
 
     explicit motion_blur_param_t( const std::string& name);
 
-	bool motion_blur_enabled() const;
+    bool motion_blur_enabled() const;
 
-	motion_blur_info_t::loop_data_t loop_data( float time, int extra_samples, float shutter_factor) const;
+    motion_blur_info_t::loop_data_t loop_data( float time, int extra_samples, float shutter_factor) const;
 
 protected:
 
@@ -43,11 +43,11 @@ private:
 
     virtual param_t *do_clone() const { return new motion_blur_param_t( *this);}
 
-    virtual void do_add_to_hash( util::hash_generator_t& hash_gen) const;
+    virtual void do_add_to_hash( hash::generator_t& hash_gen) const;
 
-	virtual void do_read( const serialization::yaml_node_t& node);
+    virtual void do_read( const serialization::yaml_node_t& node);
     virtual void do_write( serialization::yaml_oarchive_t& out) const;
-	
+
     virtual QWidget *do_create_widgets() RAMEN_WARN_UNUSED_RESULT;
     virtual void do_update_widgets();
     virtual void do_enable_widgets( bool e);

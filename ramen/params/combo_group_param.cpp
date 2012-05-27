@@ -39,17 +39,17 @@ combo_group_param_t::combo_group_param_t( const combo_group_param_t& other) : co
 }
 
 void combo_group_param_t::set_default_value( int x)
-{ 
-	value().assign( x);
+{
+    value().assign( x);
 }
 
 void combo_group_param_t::set_value( int x, change_reason reason)
 {
     if( can_undo())
-		param_set()->add_command( this);
+        param_set()->add_command( this);
 
     value().assign( x);
-	emit_param_changed( reason);
+    emit_param_changed( reason);
 }
 
 std::auto_ptr<undo::command_t> combo_group_param_t::do_create_command()
@@ -57,49 +57,49 @@ std::auto_ptr<undo::command_t> combo_group_param_t::do_create_command()
     return std::auto_ptr<undo::command_t>( new static_param_command_t( *param_set(), id()));
 }
 
-void combo_group_param_t::do_add_to_hash( util::hash_generator_t& hash_gen) const
+void combo_group_param_t::do_add_to_hash( hash::generator_t& hash_gen) const
 {
-	int val = get_value<int>( *this);
-	hash_gen << params()[val].name();
-	params()[val].add_to_hash( hash_gen);
+    int val = get_value<int>( *this);
+    hash_gen << params()[val].name();
+    params()[val].add_to_hash( hash_gen);
 }
 
 boost::python::object combo_group_param_t::to_python( const poly_param_value_t& v) const
 {
-	return boost::python::object( v.cast<int>());
+    return boost::python::object( v.cast<int>());
 }
-	
+
 poly_param_value_t combo_group_param_t::from_python( const boost::python::object& obj) const
 {
-	int i = boost::python::extract<int>( obj);
-	return poly_param_value_t( i);
+    int i = boost::python::extract<int>( obj);
+    return poly_param_value_t( i);
 }
 
 // serialization
 void combo_group_param_t::do_read( const serialization::yaml_node_t& node)
 {
-	serialization::yaml_node_t n = node.get_node( "value");
-	std::string val;
-	n >> val;
-	
-	for( int i = 0; i < params().size(); ++i)
-	{
-		if( params()[i].name() == val)
-		{
-			value().assign( i);
-			return;
-		}
-	}
+    serialization::yaml_node_t n = node.get_node( "value");
+    std::string val;
+    n >> val;
 
-	node.error_stream() << "Unknown string in combo group param\n";
+    for( int i = 0; i < params().size(); ++i)
+    {
+        if( params()[i].name() == val)
+        {
+            value().assign( i);
+            return;
+        }
+    }
+
+    node.error_stream() << "Unknown string in combo group param\n";
 }
 
 void combo_group_param_t::do_write( serialization::yaml_oarchive_t& out) const
 {
-	int v = get_value<int>( *this);
-	out << YAML::Key << "value" << YAML::Value;	
-	out << params()[v].name();
-	out.check_errors();
+    int v = get_value<int>( *this);
+    out << YAML::Key << "value" << YAML::Value;
+    out << params()[v].name();
+    out.check_errors();
 }
 
 void combo_group_param_t::do_update_widgets()

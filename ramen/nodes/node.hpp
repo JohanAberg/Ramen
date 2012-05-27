@@ -51,10 +51,10 @@ public:
         active_bit				= 1 << 3,
         context_bit				= 1 << 4,
         cacheable_bit			= 1 << 5,
-		autolayout_bit			= 1 << 6,
-		notify_dirty_bit		= 1 << 7,
-		ui_invisible_bit		= 1 << 8,
-		interacting_bit			= 1 << 9
+        autolayout_bit			= 1 << 6,
+        notify_dirty_bit		= 1 << 7,
+        ui_invisible_bit		= 1 << 8,
+        interacting_bit			= 1 << 9
     };
 
     virtual const node_metaclass_t *metaclass() const { return 0;}
@@ -78,15 +78,15 @@ public:
 
     template<class T>
     const T *input_as( std::size_t i = 0) const
-	{
-		return dynamic_cast<const T*>( input( i));
-	}
+    {
+        return dynamic_cast<const T*>( input( i));
+    }
 
     template<class T>
     T *input_as( std::size_t i = 0)
-	{
-		return dynamic_cast<T*>( input( i));
-	}
+    {
+        return dynamic_cast<T*>( input( i));
+    }
 
     void add_input_plug( const std::string& id, bool optional,
                          const Imath::Color3c& color, const std::string& tooltip );
@@ -108,7 +108,7 @@ public:
     graph_color_t graph_color() const            { return graph_color_;}
     void set_graph_color( graph_color_t c) const { graph_color_ = c;}
 
-	// composition
+    // composition
     const composition_t *composition() const            { return composition_;}
     composition_t *composition()                        { return composition_;}
     virtual void set_composition( composition_t *comp)  { composition_ = comp;}
@@ -131,7 +131,7 @@ public:
 
     bool autolayout() const;
     void set_autolayout( bool b);
-	
+
     bool cacheable() const;
     void set_cacheable( bool b);
 
@@ -143,9 +143,9 @@ public:
 
     bool is_active() const;
     bool is_context() const;
-	
+
     virtual void add_new_input_plug();
-	
+
     // params
     virtual void param_edit_finished();
 
@@ -154,9 +154,9 @@ public:
 
     void notify();
 
-	// Some parts of Ramen needs access to this, so it's public.
+    // Some parts of Ramen needs access to this, so it's public.
     virtual void do_notify();
-	
+
     // connections
     virtual bool variable_num_inputs() const { return false;}
 
@@ -166,18 +166,18 @@ public:
     // ignore
     bool ignored() const;
     void set_ignored( bool b);
-	
-    // time
-	typedef interval_t<> frame_interval_type;
-	frame_interval_type frame_interval() const;
 
-	void calc_frames_needed( const render::context_t& context);
-	
-	const std::vector<std::pair<int, float> >& frames_needed() const	{ return frames_needed_;}
-	std::vector<std::pair<int, float> >& frames_needed()				{ return frames_needed_;}
-	
-	typedef std::vector<std::pair<int, float> >::const_iterator const_frames_needed_iterator;
-	
+    // time
+    typedef interval_t<> frame_interval_type;
+    frame_interval_type frame_interval() const;
+
+    void calc_frames_needed( const render::context_t& context);
+
+    const std::vector<std::pair<int, float> >& frames_needed() const	{ return frames_needed_;}
+    std::vector<std::pair<int, float> >& frames_needed()				{ return frames_needed_;}
+
+    typedef std::vector<std::pair<int, float> >::const_iterator const_frames_needed_iterator;
+
     // edit
     void begin_active();
     void end_active();
@@ -185,28 +185,28 @@ public:
     void begin_context();
     void end_context();
 
-	bool interacting() const;
-	void begin_interaction();
-	void end_interaction();
+    bool interacting() const;
+    void begin_interaction();
+    void end_interaction();
 
     // valid & identity
     bool is_valid() const;
-	bool is_identity() const;
+    bool is_identity() const;
 
-	// hash
+    // hash
     virtual void clear_hash();
 
-    const util::hash_generator_t& hash_generator() const	{ return hash_gen_;}
-    util::hash_generator_t& hash_generator()				{ return hash_gen_;}
-	
+    const hash::generator_t& hash_generator() const	{ return hash_gen_;}
+    hash::generator_t& hash_generator()				{ return hash_gen_;}
+
     std::string hash_str() const;
 
-    const util::hash_generator_t::digest_type& digest();
-	
+    const hash::generator_t::digest_type& digest();
+
     void calc_hash_str( const render::context_t& context);
-	
-	virtual bool include_input_in_hash( int num) const;
-	
+
+    virtual bool include_input_in_hash( int num) const;
+
     virtual bool is_frame_varying() const;
 
     // user interface
@@ -218,8 +218,8 @@ public:
     virtual void convert_relative_paths( const boost::filesystem::path& old_base,
                                             const boost::filesystem::path& new_base);
 
-	virtual void make_paths_absolute();
-	virtual void make_paths_relative();
+    virtual void make_paths_absolute();
+    virtual void make_paths_relative();
 
     // serialization
     void read( const serialization::yaml_node_t& in, const std::pair<int,int>& version);
@@ -229,10 +229,10 @@ protected:
 
     node_t( const node_t& other);
     void operator=( const node_t& other);
-	
+
     virtual void do_calc_hash_str( const render::context_t& context);
-	void add_needed_frames_to_hash( const render::context_t& context);
-	void add_context_to_hash_string( const render::context_t& context);
+    void add_needed_frames_to_hash( const render::context_t& context);
+    void add_context_to_hash_string( const render::context_t& context);
 
     bool is_valid_, is_identity_;
 
@@ -249,16 +249,16 @@ private:
     virtual void do_begin_context() {}
     virtual void do_end_context() {}
 
-	virtual void do_begin_interaction() {}
-	virtual void do_end_interaction()	{}
+    virtual void do_begin_interaction() {}
+    virtual void do_end_interaction()	{}
 
     virtual bool do_is_valid() const;
-	virtual bool do_is_identity() const;
+    virtual bool do_is_identity() const;
 
-	// time
-	virtual frame_interval_type do_calc_frame_interval() const { return frame_interval_type();}
+    // time
+    virtual frame_interval_type do_calc_frame_interval() const { return frame_interval_type();}
 
-	virtual void do_calc_frames_needed( const render::context_t& context);
+    virtual void do_calc_frames_needed( const render::context_t& context);
 
     /*!
         \brief Customization hook for node_t::read.
@@ -272,8 +272,8 @@ private:
     */
     virtual void do_write( serialization::yaml_oarchive_t& out) const;
 
-	// serialization utils
-	void write_node_info( serialization::yaml_oarchive_t& out) const;
+    // serialization utils
+    void write_node_info( serialization::yaml_oarchive_t& out) const;
 
     // data
 
@@ -282,15 +282,15 @@ private:
 
     mutable graph_color_t graph_color_;
 
-    boost::uint32_t flags_;    
+    boost::uint32_t flags_;
     Imath::V2f loc_;
-	std::vector<std::pair<int, float> > frames_needed_;
+    std::vector<std::pair<int, float> > frames_needed_;
 
-	// composition this node belongs to.	
+    // composition this node belongs to.
     composition_t *composition_;
-	
-	// hash
-    util::hash_generator_t hash_gen_;	
+
+    // hash
+    hash::generator_t hash_gen_;
 };
 
 /// Makes a copy of a node.

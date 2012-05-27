@@ -11,28 +11,29 @@ SET( CMAKE_SKIP_RPATH ON)
 
 #disable in source builds
 IF( ${CMAKE_SOURCE_DIR} STREQUAL ${CMAKE_BINARY_DIR})
-    MESSAGE(FATAL_ERROR "CMake generation for Ramen is not allowed within the source directory!")
+	MESSAGE(FATAL_ERROR "CMake generation for Ramen is not allowed within the source directory!")
 ENDIF()
 
 ####################################################################
 # edit the paths if needed
 
 SET( CMAKE_INCLUDE_PATH ${CMAKE_INCLUDE_PATH}
-                        /usr/include/jpeg
-                        /usr/include/tiff
-                        )
+						/usr/include/jpeg
+						/usr/include/tiff
+						)
 
 SET( CMAKE_LIBRARY_PATH ${CMAKE_LIBRARY_PATH})
 
 ####################################################################
 # options
 
-#OPTION( BUILD_UI "Build user interface" ON)
+OPTION( WITH_NODES "Build nodes" ON)
 
 ####################################################################
 # compiler & linker settings
 
 SET( CMAKE_SKIP_RPATH ON)
+SET( CMAKE_SKIP_INSTALL_RPATH ON)
 
 # Set the default built type
 IF( NOT CMAKE_BUILD_TYPE)
@@ -40,15 +41,15 @@ IF( NOT CMAKE_BUILD_TYPE)
 ENDIF()
 
 IF( CMAKE_BUILD_TYPE MATCHES Release)
-    SET( CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -rdynamic -pipe -fvisibility=hidden -fvisibility-inlines-hidden -msse -msse2 -mfpmath=sse")
-    SET( CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -funroll-loops -fexpensive-optimizations -march=core2")
-    SET( CMAKE_EXE_LINKER_FLAGS_RELEASE "-Wl,--export-dynamic")
+	SET( CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -rdynamic -pipe -fvisibility=hidden -fvisibility-inlines-hidden -msse -msse2 -mfpmath=sse")
+	SET( CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -funroll-loops -fexpensive-optimizations -march=core2")
+	SET( CMAKE_EXE_LINKER_FLAGS_RELEASE "-Wl,--export-dynamic")
 ELSE()
-    IF( CMAKE_BUILD_TYPE MATCHES Debug)
-        SET( CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -rdynamic -pipe -fvisibility=hidden -fvisibility-inlines-hidden -msse -msse2 -mfpmath=sse")
-        SET( CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -fno-inline")
-        SET( CMAKE_EXE_LINKER_FLAGS_DEBUG "-Wl,--export-dynamic")
-    ENDIF()
+	IF( CMAKE_BUILD_TYPE MATCHES Debug)
+		SET( CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -rdynamic -pipe -fvisibility=hidden -fvisibility-inlines-hidden -msse -msse2 -mfpmath=sse")
+		SET( CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -fno-inline")
+		SET( CMAKE_EXE_LINKER_FLAGS_DEBUG "-Wl,--export-dynamic")
+	ENDIF()
 ENDIF()
 
 ADD_DEFINITIONS( -DRAMEN_ENABLE_ASSERT_HANDLER)
@@ -63,14 +64,14 @@ FIND_PACKAGE( GLEW REQUIRED)
 # boost
 SET( Boost_ADDITIONAL_VERSIONS "1.49.0")
 SET( BOOST_NEEDED_LIBS  filesystem
-                        thread
-                        signals
-                        system
-                        regex
-                        date_time
-                        program_options
-                        python
-                        )
+						thread
+						signals
+						system
+						regex
+						date_time
+						program_options
+						python
+						)
 
 IF( CMAKE_BUILD_TYPE MATCHES Debug)
 	SET( BOOST_NEEDED_LIBS ${BOOST_NEEDED_LIBS} unit_test_framework)
@@ -108,7 +109,7 @@ FIND_PACKAGE( OpenColorIO REQUIRED)
 
 #FIND_PACKAGE( OpenCV REQUIRED)
 # override OpenCV_LIBS as we don't want to link everything
-#SET( OpenCV_LIBS	opencv_core 
+#SET( OpenCV_LIBS	opencv_core
 #					opencv_imgproc
 #					opencv_features2d
 #					opencv_calib3d
@@ -138,25 +139,25 @@ FIND_PACKAGE( BREAKPAD REQUIRED)
 INCLUDE_DIRECTORIES(    ${PROJECT_SOURCE_DIR}
 						${PROJECT_SOURCE_DIR}/ramen/
 
-                        ${NEEDED_QT_INCLUDES}
+						${NEEDED_QT_INCLUDES}
 
-                        ${Boost_INCLUDE_DIR}
-                        ${TBB_INCLUDE_DIRS}
-                        ${ASL_INCLUDE_DIRS}
-                        ${YAMLCPP_INCLUDE_DIRS}
+						${Boost_INCLUDE_DIR}
+						${TBB_INCLUDE_DIRS}
+						${ASL_INCLUDE_DIRS}
+						${YAMLCPP_INCLUDE_DIRS}
 
 						${OPENGL_INCLUDE_DIR}
 						${GLEW_INCLUDE_DIRS}
 
-                        ${OPENEXR_INCLUDE_DIR}
-                        ${OPENEXR_INCLUDE_DIR}/OpenEXR/
+						${OPENEXR_INCLUDE_DIR}
+						${OPENEXR_INCLUDE_DIR}/OpenEXR/
 
-                        ${JPEG_INCLUDE_DIR}
-                        ${PNG_INCLUDE_DIR}
-                        ${TIFF_INCLUDE_DIR}
-                        ${OPENIMAGEIO_INCLUDE_DIRS}
+						${JPEG_INCLUDE_DIR}
+						${PNG_INCLUDE_DIR}
+						${TIFF_INCLUDE_DIR}
+						${OPENIMAGEIO_INCLUDE_DIRS}
 
-                        ${OPENCOLORIO_INCLUDE_DIRS}
+						${OPENCOLORIO_INCLUDE_DIRS}
 
 						${CIMG_INCLUDE_DIRS}
 
@@ -168,18 +169,18 @@ INCLUDE_DIRECTORIES(    ${PROJECT_SOURCE_DIR}
 
 						${PYSIDE_INCLUDE_DIRS}
 						${SHIBOKEN_INCLUDE_DIRS}
-                        ${PYTHON_INCLUDE_DIRS}
+						${PYTHON_INCLUDE_DIRS}
 
 						${ZLIB_INCLUDE_DIRS}
-                        ${GLOG_INCLUDE_DIRS}
-                        ${GMOCK_INCLUDE_DIRS}
-                        ${BREAKPAD_INCLUDE_DIRS}
-                        )
+						${GLOG_INCLUDE_DIRS}
+						${GMOCK_INCLUDE_DIRS}
+						${BREAKPAD_INCLUDE_DIRS}
+						)
 
 SET( RAMEN_ALL_LIBS	${NEEDED_QT_LIBS}
-			
+
 					${OPENCOLORIO_LIBRARIES}
-				
+
 					${OPENIMAGEIO_LIBRARIES}
 					${OPENEXR_LIBRARIES}
 					${JPEG_LIBRARIES}
@@ -188,23 +189,23 @@ SET( RAMEN_ALL_LIBS	${NEEDED_QT_LIBS}
 
 					${GLEW_LIBRARIES}
 					${OPENGL_LIBRARIES}
-				
+
 					${ASL_LIBRARIES}
 					${Boost_LIBRARIES}
 					${TBB_LIBRARIES}
 					${YAMLCPP_LIBRARIES}
-				
+
 					${AGG_LIBRARIES}
 					${FREETYPE_LIBRARIES}
-				
+
 					${SEEXPR_LIBRARIES}
 
 					${PYSIDE_LIBRARIES}
 					${SHIBOKEN_LIBRARIES}
 					${PYTHON_LIBRARIES}
-								
+
 					${ZLIB_LIBRARIES}
-                    ${GLOG_LIBRARIES}
+					${GLOG_LIBRARIES}
 					)
 
 ADD_SUBDIRECTORY( ramen)

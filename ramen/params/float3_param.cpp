@@ -38,13 +38,13 @@ float3_param_t::float3_param_t( const float3_param_t& other) : proportional_para
 
 void float3_param_t::private_init()
 {
-	add_expression( "X");
-	add_expression( "Y");
-	add_expression( "Z");
-	
+    add_expression( "X");
+    add_expression( "Y");
+    add_expression( "Z");
+
     add_curve( "X");
-	add_curve( "Y");
-	add_curve( "Z");
+    add_curve( "Y");
+    add_curve( "Z");
     set_default_value( Imath::V3f( 0, 0, 0));
 }
 
@@ -52,15 +52,15 @@ poly_param_value_t float3_param_t::value_at_frame( float frame) const
 {
     Imath::V3f v( get_value<Imath::V3f>( *this));
 
-	if( !eval_expression( 0, frame, v.x, input0_))
-		eval_curve( 0, frame, v.x);
-	
-	if( !eval_expression( 1, frame, v.y, input1_))
-		eval_curve( 1, frame, v.y);
+    if( !eval_expression( 0, frame, v.x, input0_))
+        eval_curve( 0, frame, v.x);
 
-	if( !eval_expression( 2, frame, v.z, input2_))
-		eval_curve( 2, frame, v.z);
-	
+    if( !eval_expression( 1, frame, v.y, input1_))
+        eval_curve( 1, frame, v.y);
+
+    if( !eval_expression( 2, frame, v.z, input2_))
+        eval_curve( 2, frame, v.z);
+
     poly_param_indexable_value_t val( v);
     return adobe::poly_cast<poly_param_value_t&>( val);
 }
@@ -83,9 +83,9 @@ void float3_param_t::set_value( const Imath::V3f& x, change_reason reason)
 
 void float3_param_t::set_value_at_frame( const Imath::V3f& x, float frame, change_reason reason)
 {
-	//RAMEN_ASSERT( expression( 0).empty());
-	//RAMEN_ASSERT( expression( 1).empty());
-	//RAMEN_ASSERT( expression( 2).empty());
+    //RAMEN_ASSERT( expression( 0).empty());
+    //RAMEN_ASSERT( expression( 1).empty());
+    //RAMEN_ASSERT( expression( 2).empty());
 
     if( can_undo())
         param_set()->add_command( this);
@@ -93,8 +93,8 @@ void float3_param_t::set_value_at_frame( const Imath::V3f& x, float frame, chang
     poly_param_indexable_value_t v( x);
     value() = adobe::poly_cast<poly_param_value_t&>( v);
 
-	bool autokey = param_set()->autokey();
-	
+    bool autokey = param_set()->autokey();
+
     if( !is_static() && ( autokey || !curve( 0).empty()))
         curve( 0).insert( frame, x.x);
 
@@ -104,10 +104,10 @@ void float3_param_t::set_value_at_frame( const Imath::V3f& x, float frame, chang
     if( !is_static() && ( autokey || !curve( 2).empty()))
         curve( 2).insert( frame, x.z);
 
-	if( composition_t * c = composition())
-		evaluate( c->frame());
-	
-	emit_param_changed( reason);
+    if( composition_t * c = composition())
+        evaluate( c->frame());
+
+    emit_param_changed( reason);
 }
 
 Imath::V3f float3_param_t::derive( float time) const
@@ -181,75 +181,75 @@ void float3_param_t::calc_proportional_factors()
     if( sender() == input0_)
     {
         if( v.x)
-		{
+        {
             proportional_factor.y = ( v.y / v.x) != 0 ? v.y / v.x : 1;
             proportional_factor.z = ( v.z / v.x) != 0 ? v.z / v.x : 1;
-		}
+        }
     }
     else
     {
-		if( sender() == input1_)
-		{
-	        if( v.y)
-			{
-	            proportional_factor.x = ( v.x / v.y) != 0 ? v.x / v.y : 1;
-	            proportional_factor.z = ( v.z / v.y) != 0 ? v.z / v.y : 1;
-			}
-		}
-		else
-		{
-	        if( v.z)
-			{
-	            proportional_factor.x = ( v.x / v.z) != 0 ? v.x / v.z : 1;
-	            proportional_factor.y = ( v.y / v.z) != 0 ? v.y / v.z : 1;
-			}
-		}
+        if( sender() == input1_)
+        {
+            if( v.y)
+            {
+                proportional_factor.x = ( v.x / v.y) != 0 ? v.x / v.y : 1;
+                proportional_factor.z = ( v.z / v.y) != 0 ? v.z / v.y : 1;
+            }
+        }
+        else
+        {
+            if( v.z)
+            {
+                proportional_factor.x = ( v.x / v.z) != 0 ? v.x / v.z : 1;
+                proportional_factor.y = ( v.y / v.z) != 0 ? v.y / v.z : 1;
+            }
+        }
     }
 }
 
-void float3_param_t::do_add_to_hash( util::hash_generator_t& hash_gen) const
+void float3_param_t::do_add_to_hash( hash::generator_t& hash_gen) const
 {
-	Imath::V3f v( get_value<Imath::V3f>( *this));
-	hash_gen << v.x << "," << v.y << "," << v.z;
+    Imath::V3f v( get_value<Imath::V3f>( *this));
+    hash_gen << v.x << "," << v.y << "," << v.z;
 }
 
 boost::python::object float3_param_t::to_python( const poly_param_value_t& v) const
 {
-	return python::vec_to_list( v.cast<Imath::V3f>());
+    return python::vec_to_list( v.cast<Imath::V3f>());
 }
-	
+
 poly_param_value_t float3_param_t::from_python( const boost::python::object& obj) const
 {
-	boost::python::list t = boost::python::extract<boost::python::list>( obj);
-	Imath::V3f val = python::list_to_vec3<float>( t);
-	poly_param_indexable_value_t v( val);
-	return adobe::poly_cast<poly_param_value_t&>( v);
+    boost::python::list t = boost::python::extract<boost::python::list>( obj);
+    Imath::V3f val = python::list_to_vec3<float>( t);
+    poly_param_indexable_value_t v( val);
+    return adobe::poly_cast<poly_param_value_t&>( v);
 }
 
 void float3_param_t::do_read( const serialization::yaml_node_t& node)
 {
-	read_expressions( node);
-	read_curves( node);
+    read_expressions( node);
+    read_curves( node);
 
-	Imath::V3f val;
-	if( node.get_optional_value( "value", val))
-	{
-		poly_param_indexable_value_t v( val);
-		value().assign( adobe::poly_cast<poly_param_value_t&>( v));
-	}
+    Imath::V3f val;
+    if( node.get_optional_value( "value", val))
+    {
+        poly_param_indexable_value_t v( val);
+        value().assign( adobe::poly_cast<poly_param_value_t&>( v));
+    }
 }
 
 void float3_param_t::do_write( serialization::yaml_oarchive_t& out) const
 {
-	write_expressions( out);
-	write_curves( out);
-	
-	bool one   = curve( 0).empty(); // && expression( 0).empty(); 
-	bool two   = curve( 1).empty(); // && expression( 1).empty();
-	bool three = curve( 2).empty(); // && expression( 2).empty();
-	
-	if( one || two || three)
-		out << YAML::Key << "value" << YAML::Value << get_value<Imath::V3f>( *this);
+    write_expressions( out);
+    write_curves( out);
+
+    bool one   = curve( 0).empty(); // && expression( 0).empty();
+    bool two   = curve( 1).empty(); // && expression( 1).empty();
+    bool three = curve( 2).empty(); // && expression( 2).empty();
+
+    if( one || two || three)
+        out << YAML::Key << "value" << YAML::Value << get_value<Imath::V3f>( *this);
 }
 
 QWidget *float3_param_t::do_create_widgets()
@@ -266,12 +266,12 @@ QWidget *float3_param_t::do_create_widgets()
     label->resize( app().ui()->inspector().left_margin() - 5, s.height());
     label->setAlignment( Qt::AlignRight | Qt::AlignVCenter);
     label->setText( name().c_str());
-	label->setToolTip( id().c_str());
+    label->setToolTip( id().c_str());
     Imath::V3f triple = get_value<Imath::V3f>( *this);
 
-	// make inputs bigger
-	s.setWidth( s.width() + ( s.width() / 4));
-	
+    // make inputs bigger
+    s.setWidth( s.width() + ( s.width() / 4));
+
     int xpos = app().ui()->inspector().left_margin();
 
     input0_->move( xpos, 0);
@@ -280,12 +280,12 @@ QWidget *float3_param_t::do_create_widgets()
     input0_->setSingleStep( step());
     input0_->setValue( triple.x);
     input0_->setEnabled( enabled());
-	if( round_to_int()) input0_->setDecimals( 0);
+    if( round_to_int()) input0_->setDecimals( 0);
     connect( input0_, SIGNAL( valueChanged( double)), this, SLOT( value_changed( double)));
     connect( input0_, SIGNAL( spinBoxPressed()), this, SLOT( spinbox_pressed()));
     connect( input0_, SIGNAL( spinBoxDragged( double)), this, SLOT( spinbox_dragged( double)));
     connect( input0_, SIGNAL( spinBoxReleased()), this, SLOT( spinbox_released()));
-	connect( input0_, SIGNAL( expressionSet()), this, SLOT( expression_set()));
+    connect( input0_, SIGNAL( expressionSet()), this, SLOT( expression_set()));
     xpos += ( s.width() + 5);
 
     input1_->move( xpos, 0);
@@ -294,12 +294,12 @@ QWidget *float3_param_t::do_create_widgets()
     input1_->setSingleStep( step());
     input1_->setValue( triple.y);
     input1_->setEnabled( enabled());
-	if( round_to_int())	input1_->setDecimals( 0);
+    if( round_to_int())	input1_->setDecimals( 0);
     connect( input1_, SIGNAL( valueChanged( double)), this, SLOT( value_changed( double)));
     connect( input1_, SIGNAL( spinBoxPressed()), this, SLOT( spinbox_pressed()));
     connect( input1_, SIGNAL( spinBoxDragged( double)), this, SLOT( spinbox_dragged( double)));
     connect( input1_, SIGNAL( spinBoxReleased()), this, SLOT( spinbox_released()));
-	connect( input1_, SIGNAL( expressionSet()), this, SLOT( expression_set()));
+    connect( input1_, SIGNAL( expressionSet()), this, SLOT( expression_set()));
     xpos += ( s.width() + 5);
 
     input2_->move( xpos, 0);
@@ -308,12 +308,12 @@ QWidget *float3_param_t::do_create_widgets()
     input2_->setSingleStep( step());
     input2_->setValue( triple.z);
     input2_->setEnabled( enabled());
-	if( round_to_int()) input2_->setDecimals( 0);
+    if( round_to_int()) input2_->setDecimals( 0);
     connect( input2_, SIGNAL( valueChanged( double)), this, SLOT( value_changed( double)));
     connect( input2_, SIGNAL( spinBoxPressed()), this, SLOT( spinbox_pressed()));
     connect( input2_, SIGNAL( spinBoxDragged( double)), this, SLOT( spinbox_dragged( double)));
     connect( input2_, SIGNAL( spinBoxReleased()), this, SLOT( spinbox_released()));
-	connect( input2_, SIGNAL( expressionSet()), this, SLOT( expression_set()));
+    connect( input2_, SIGNAL( expressionSet()), this, SLOT( expression_set()));
     xpos += ( s.width() + 2);
 
     if( proportional())
@@ -370,7 +370,7 @@ void float3_param_t::value_changed( double value)
     {
         calc_proportional_factors();
         Imath::V3f v = get_value<Imath::V3f>( *this);
-        
+
         if( sender() == input0_)
         {
             float inc = value - v.x;
@@ -380,20 +380,20 @@ void float3_param_t::value_changed( double value)
         }
         else
         {
-			if( sender() == input1_)
-			{
-	            float inc = value - v.y;
-	            v.x = clamp( v.x + ( inc * proportional_factor.x));
-	            v.y = value;
-				v.z = clamp( v.z + ( inc * proportional_factor.z));
-			}
-			else
-			{
-	            float inc = value - v.z;
-	            v.x = clamp( v.x + ( inc * proportional_factor.x));
-				v.y = clamp( v.y + ( inc * proportional_factor.y));
-	            v.z = value;
-			}
+            if( sender() == input1_)
+            {
+                float inc = value - v.y;
+                v.x = clamp( v.x + ( inc * proportional_factor.x));
+                v.y = value;
+                v.z = clamp( v.z + ( inc * proportional_factor.z));
+            }
+            else
+            {
+                float inc = value - v.z;
+                v.x = clamp( v.x + ( inc * proportional_factor.x));
+                v.y = clamp( v.y + ( inc * proportional_factor.y));
+                v.z = value;
+            }
         }
 
         set_value( round( v));
@@ -431,20 +431,20 @@ void float3_param_t::spinbox_dragged( double value)
         }
         else
         {
-			if( sender() == input1_)
-			{
-	            float inc = value - v.y;
-		        v.x = adobe::clamp( v.x + ( inc * proportional_factor.x), get_min(), get_max());
-		        v.y = value;
-				v.z = adobe::clamp( v.z + ( inc * proportional_factor.z), get_min(), get_max());
-			}
-			else
-			{
-	            float inc = value - v.z;
-		        v.x = adobe::clamp( v.x + ( inc * proportional_factor.x), get_min(), get_max());
-				v.y = adobe::clamp( v.y + ( inc * proportional_factor.y), get_min(), get_max());
-		        v.z = value;
-			}
+            if( sender() == input1_)
+            {
+                float inc = value - v.y;
+                v.x = adobe::clamp( v.x + ( inc * proportional_factor.x), get_min(), get_max());
+                v.y = value;
+                v.z = adobe::clamp( v.z + ( inc * proportional_factor.z), get_min(), get_max());
+            }
+            else
+            {
+                float inc = value - v.z;
+                v.x = adobe::clamp( v.x + ( inc * proportional_factor.x), get_min(), get_max());
+                v.y = adobe::clamp( v.y + ( inc * proportional_factor.y), get_min(), get_max());
+                v.z = value;
+            }
         }
 
         set_value( round ( v));
@@ -455,7 +455,7 @@ void float3_param_t::spinbox_dragged( double value)
 
     if( track_mouse())
         param_set()->notify_parent();
-	else
+    else
         parameterised()->update_overlay();
 
     app().ui()->update_anim_editors();

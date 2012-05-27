@@ -17,7 +17,7 @@
 #include<ramen/params/param_set.hpp>
 
 #include<ramen/anim/track.hpp>
-	
+
 #include<ramen/ui/inspector/inspector.hpp>
 
 namespace ramen
@@ -27,7 +27,7 @@ composite_param_t::composite_param_t() : param_t(), create_track_( true) {}
 composite_param_t::composite_param_t( const std::string& name) : param_t( name), create_track_( true) {}
 composite_param_t::composite_param_t( const composite_param_t& other) : param_t( other), params_( other.params_)
 {
-	create_track_ = other.create_track_;
+    create_track_ = other.create_track_;
 }
 
 void composite_param_t::do_init()
@@ -38,7 +38,9 @@ void composite_param_t::do_init()
 void composite_param_t::do_set_param_set( param_set_t *parent)
 {
     param_t::set_param_set( parent);
-    adobe::for_each( params(), boost::bind( &param_t::set_param_set, _1, parent));
+
+    BOOST_FOREACH( param_t& p, params())
+        p.set_param_set( parent);
 }
 
 void composite_param_t::do_add_param( param_t *p)
@@ -90,21 +92,21 @@ param_t *composite_param_t::find( const std::string& id)
 
 void composite_param_t::do_set_frame( float frame)
 {
-    adobe::for_each( params(), boost::bind( &param_t::set_frame, _1, frame));	
+    adobe::for_each( params(), boost::bind( &param_t::set_frame, _1, frame));
 }
 
 void composite_param_t::do_create_tracks( anim::track_t *parent)
 {
-	if( create_track_)
-	{
-	    std::auto_ptr<anim::track_t> t( new anim::track_t( name()));
-		adobe::for_each( params(), boost::bind( &param_t::create_tracks, _1, t.get()));
+    if( create_track_)
+    {
+        std::auto_ptr<anim::track_t> t( new anim::track_t( name()));
+        adobe::for_each( params(), boost::bind( &param_t::create_tracks, _1, t.get()));
 
-	    if( t->num_children() != 0)
-			parent->add_child( t);
-	}
-	else
-		adobe::for_each( params(), boost::bind( &param_t::create_tracks, _1, parent));
+        if( t->num_children() != 0)
+            parent->add_child( t);
+    }
+    else
+        adobe::for_each( params(), boost::bind( &param_t::create_tracks, _1, parent));
 }
 
 void composite_param_t::do_evaluate( float frame)
@@ -112,10 +114,10 @@ void composite_param_t::do_evaluate( float frame)
     adobe::for_each( params(), boost::bind( &param_t::evaluate, _1, frame));
 }
 
-void composite_param_t::do_add_to_hash( util::hash_generator_t& hash_gen) const
+void composite_param_t::do_add_to_hash( hash::generator_t& hash_gen) const
 {
     BOOST_FOREACH( const param_t& p, params())
-		p.add_to_hash( hash_gen);
+        p.add_to_hash( hash_gen);
 }
 
 void composite_param_t::do_update_widgets()

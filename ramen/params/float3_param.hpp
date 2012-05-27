@@ -17,7 +17,7 @@ namespace ramen
 class RAMEN_API float3_param_t : public proportional_param_t
 {
     Q_OBJECT
-    
+
 public:
 
     explicit float3_param_t( const std::string& name);
@@ -45,15 +45,15 @@ private:
 
     void calc_proportional_factors();
     void set_component_value_from_slot();
-	
-    virtual void do_add_to_hash( util::hash_generator_t& hash_gen) const;
 
-	virtual boost::python::object to_python( const poly_param_value_t& v) const;
-	virtual poly_param_value_t from_python( const boost::python::object& obj) const;
+    virtual void do_add_to_hash( hash::generator_t& hash_gen) const;
 
-	virtual void do_read( const serialization::yaml_node_t& node);
+    virtual boost::python::object to_python( const poly_param_value_t& v) const;
+    virtual poly_param_value_t from_python( const boost::python::object& obj) const;
+
+    virtual void do_read( const serialization::yaml_node_t& node);
     virtual void do_write( serialization::yaml_oarchive_t& out) const;
-	
+
     virtual QWidget *do_create_widgets() RAMEN_WARN_UNUSED_RESULT;
     virtual void do_update_widgets();
     virtual void do_enable_widgets( bool e);
@@ -66,7 +66,7 @@ private Q_SLOTS:
     void spinbox_pressed();
     void spinbox_dragged( double value);
     void spinbox_released();
-	void expression_set();
+    void expression_set();
 };
 
 } // namespace

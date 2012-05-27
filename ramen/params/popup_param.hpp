@@ -20,7 +20,7 @@ namespace ramen
 class RAMEN_API popup_param_t : public static_param_t
 {
     Q_OBJECT
-    
+
 public:
 
     explicit popup_param_t( const std::string& name);
@@ -45,16 +45,16 @@ private:
 
     virtual void do_evaluate( float time) {}
 
-    virtual void do_add_to_hash( util::hash_generator_t& hash_gen) const;
+    virtual void do_add_to_hash( hash::generator_t& hash_gen) const;
 
-	virtual boost::python::object to_python( const poly_param_value_t& v) const;
-	virtual poly_param_value_t from_python( const boost::python::object& obj) const;
-	
-	virtual void do_read( const serialization::yaml_node_t& node);
-	virtual void do_write( serialization::yaml_oarchive_t& out) const;
-	
-	int find_index_for_string( const std::string& s) const;
-	
+    virtual boost::python::object to_python( const poly_param_value_t& v) const;
+    virtual poly_param_value_t from_python( const boost::python::object& obj) const;
+
+    virtual void do_read( const serialization::yaml_node_t& node);
+    virtual void do_write( serialization::yaml_oarchive_t& out) const;
+
+    int find_index_for_string( const std::string& s) const;
+
     std::vector<std::string> menu_items_;
 
     virtual QWidget *do_create_widgets() RAMEN_WARN_UNUSED_RESULT;

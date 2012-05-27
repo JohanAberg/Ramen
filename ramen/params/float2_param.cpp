@@ -163,7 +163,7 @@ void float2_param_t::do_format_changed( const Imath::Box2i& new_domain, float as
     }
 }
 
-void float2_param_t::do_add_to_hash( util::hash_generator_t& hash_gen) const
+void float2_param_t::do_add_to_hash( hash::generator_t& hash_gen) const
 {
     Imath::V2f v( get_value<Imath::V2f>( *this));
     hash_gen << v.x << "," << v.y;

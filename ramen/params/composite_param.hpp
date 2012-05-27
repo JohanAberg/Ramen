@@ -22,11 +22,11 @@ class RAMEN_API composite_param_t : public param_t
 
 public:
 
-	composite_param_t();
+    composite_param_t();
     explicit composite_param_t( const std::string& name);
 
-	void set_create_track( bool b) { create_track_ = b;}
-	
+    void set_create_track( bool b) { create_track_ = b;}
+
     const boost::ptr_vector<param_t>& params() const	{ return params_;}
     boost::ptr_vector<param_t>& params()				{ return params_;}
 
@@ -54,9 +54,9 @@ private:
 
     virtual void do_set_frame( float frame);
     virtual void do_evaluate( float frame);
-	
-    virtual void do_add_to_hash( util::hash_generator_t& hash_gen) const;
-	
+
+    virtual void do_add_to_hash( hash::generator_t& hash_gen) const;
+
     virtual void do_update_widgets();
     virtual void do_enable_widgets( bool e);
 

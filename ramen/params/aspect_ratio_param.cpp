@@ -43,7 +43,7 @@ void aspect_ratio_param_t::set_value( float x, change_reason reason)
     emit_param_changed( reason);
 }
 
-void aspect_ratio_param_t::do_add_to_hash( util::hash_generator_t& hash_gen) const { hash_gen << get_value<float>( *this);}
+void aspect_ratio_param_t::do_add_to_hash( hash::generator_t& hash_gen) const { hash_gen << get_value<float>( *this);}
 
 boost::python::object aspect_ratio_param_t::to_python( const poly_param_value_t& v) const
 {

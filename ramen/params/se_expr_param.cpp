@@ -46,7 +46,7 @@ void se_expr_param_t::set_value( const std::string& x, change_reason reason)
     emit_param_changed( reason);
 }
 
-void se_expr_param_t::do_add_to_hash( util::hash_generator_t& hash_gen) const
+void se_expr_param_t::do_add_to_hash( hash::generator_t& hash_gen) const
 {
     hash_gen << get_value<std::string>( *this);
 }

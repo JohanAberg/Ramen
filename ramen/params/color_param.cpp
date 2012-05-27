@@ -45,26 +45,26 @@ color_param_t::color_param_t( const color_param_t& other) : animated_param_t( ot
 void color_param_t::private_init()
 {
     set_is_rgba( true);
-	
-	add_expression( "R");
-	add_expression( "G");
-	add_expression( "B");
-	add_expression( "A");
-	
+
+    add_expression( "R");
+    add_expression( "G");
+    add_expression( "B");
+    add_expression( "A");
+
     add_curve( "R");
     add_curve( "G");
     add_curve( "B");
     add_curve( "A");
-	
-	set_min( 0);
-	curve( 3).set_range( 0, 1); // <- Alpha channel
-	
+
+    set_min( 0);
+    curve( 3).set_range( 0, 1); // <- Alpha channel
+
     set_default_value( Imath::Color4f( 0, 0, 0, 0));
     set_step( 0.025f);
 }
 
 void color_param_t::set_default_value( const Imath::Color4f& x)
-{ 
+{
     poly_param_indexable_value_t v( x);
     value() = adobe::poly_cast<poly_param_value_t&>( v);
 }
@@ -73,25 +73,25 @@ poly_param_value_t color_param_t::value_at_frame(float frame) const
 {
     Imath::Color4f v( get_value<Imath::Color4f>( *this));
 
-	if( !eval_expression( 0, frame, v.r, input0_))
-		eval_curve( 0, frame, v.r);
+    if( !eval_expression( 0, frame, v.r, input0_))
+        eval_curve( 0, frame, v.r);
 
-	if( !eval_expression( 1, frame, v.g, input1_))
-		eval_curve( 1, frame, v.g);
+    if( !eval_expression( 1, frame, v.g, input1_))
+        eval_curve( 1, frame, v.g);
 
-	if( !eval_expression( 2, frame, v.b, input2_))
-		eval_curve( 2, frame, v.b);
+    if( !eval_expression( 2, frame, v.b, input2_))
+        eval_curve( 2, frame, v.b);
 
-	if( is_rgba())
-	{
-		if( !eval_expression( 3, frame, v.a, input3_))
-			eval_curve( 3, frame, v.a);
-		
-		v.a = adobe::clamp( v.a, 0.0f, 1.0f);
-	}
-	else
-		v.a = 1.0f;
-	
+    if( is_rgba())
+    {
+        if( !eval_expression( 3, frame, v.a, input3_))
+            eval_curve( 3, frame, v.a);
+
+        v.a = adobe::clamp( v.a, 0.0f, 1.0f);
+    }
+    else
+        v.a = 1.0f;
+
     poly_param_indexable_value_t val( v);
     return adobe::poly_cast<poly_param_value_t&>( val);
 }
@@ -113,9 +113,9 @@ void color_param_t::set_value_at_frame( const Imath::Color4f& x, float frame, ch
 
     poly_param_indexable_value_t v( x);
     value() = adobe::poly_cast<poly_param_value_t&>( v);
-	
-	bool autokey = param_set()->autokey();
-	
+
+    bool autokey = param_set()->autokey();
+
     if( !is_static() && ( autokey || !curve( 0).empty()))
         curve( 0).insert( frame, x.r);
 
@@ -128,10 +128,10 @@ void color_param_t::set_value_at_frame( const Imath::Color4f& x, float frame, ch
     if( is_rgba() && !is_static() && ( autokey || !curve( 3).empty()))
         curve( 3).insert( frame, x.a);
 
-	if( composition_t * c = composition())
-		evaluate( c->frame());
+    if( composition_t * c = composition())
+        evaluate( c->frame());
 
-	emit_param_changed( reason);
+    emit_param_changed( reason);
 }
 
 void color_param_t::do_create_tracks( anim::track_t *parent)
@@ -160,53 +160,53 @@ void color_param_t::do_create_tracks( anim::track_t *parent)
     parent->add_child( t);
 }
 
-void color_param_t::do_add_to_hash( util::hash_generator_t& hash_gen) const
-{ 
-	Imath::Color4f c = get_value<Imath::Color4f>( *this);
-	hash_gen << c.r <<"," << c.g << "," << c.b;
+void color_param_t::do_add_to_hash( hash::generator_t& hash_gen) const
+{
+    Imath::Color4f c = get_value<Imath::Color4f>( *this);
+    hash_gen << c.r <<"," << c.g << "," << c.b;
 
-	if( is_rgba())
-		hash_gen << "," << c.a;
+    if( is_rgba())
+        hash_gen << "," << c.a;
 }
 
 boost::python::object color_param_t::to_python( const poly_param_value_t& v) const
 {
-	return python::color_to_list( get_value<Imath::Color4f>( *this));
+    return python::color_to_list( get_value<Imath::Color4f>( *this));
 }
-	
+
 poly_param_value_t color_param_t::from_python( const boost::python::object& obj) const
 {
-	boost::python::list t = boost::python::extract<boost::python::list>( obj);
-	Imath::Color4f val = python::list_to_color4<float>( t);
-	poly_param_indexable_value_t v( val);
-	return adobe::poly_cast<poly_param_value_t&>( v);
+    boost::python::list t = boost::python::extract<boost::python::list>( obj);
+    Imath::Color4f val = python::list_to_color4<float>( t);
+    poly_param_indexable_value_t v( val);
+    return adobe::poly_cast<poly_param_value_t&>( v);
 }
 
 void color_param_t::do_read( const serialization::yaml_node_t& node)
 {
-	read_expressions( node);
-	read_curves( node);
+    read_expressions( node);
+    read_curves( node);
 
-	Imath::Color4f val;
-	if( node.get_optional_value( "value", val))
-	{
-		poly_param_indexable_value_t v( val);
-		value().assign( adobe::poly_cast<poly_param_value_t&>( v));
-	}
+    Imath::Color4f val;
+    if( node.get_optional_value( "value", val))
+    {
+        poly_param_indexable_value_t v( val);
+        value().assign( adobe::poly_cast<poly_param_value_t&>( v));
+    }
 }
 
 void color_param_t::do_write( serialization::yaml_oarchive_t& out) const
 {
-	write_expressions( out);
-	write_curves( out);
-	
-	bool one   = curve( 0).empty(); // && expression( 0).empty()
-	bool two   = curve( 1).empty(); // && expression( 1).empty()
-	bool three = curve( 2).empty(); // && expression( 2).empty()
-	bool four  = curve( 3).empty() && is_rgba();  // && expression( 3).empty()
-	
-	if( one || two || three || four)
-		out << YAML::Key << "value" << YAML::Value << get_value<Imath::Color4f>( *this);
+    write_expressions( out);
+    write_curves( out);
+
+    bool one   = curve( 0).empty(); // && expression( 0).empty()
+    bool two   = curve( 1).empty(); // && expression( 1).empty()
+    bool three = curve( 2).empty(); // && expression( 2).empty()
+    bool four  = curve( 3).empty() && is_rgba();  // && expression( 3).empty()
+
+    if( one || two || three || four)
+        out << YAML::Key << "value" << YAML::Value << get_value<Imath::Color4f>( *this);
 }
 
 void color_param_t::do_update_widgets()

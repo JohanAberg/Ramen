@@ -34,7 +34,7 @@ void ocio_colorspace_param_t::set_value( const std::string& cs, change_reason re
         param_set()->add_command( this);
 
     value().assign( cs);
-	emit_param_changed( reason);
+    emit_param_changed( reason);
 }
 
 QWidget *ocio_colorspace_param_t::do_create_widgets()
@@ -49,8 +49,8 @@ QWidget *ocio_colorspace_param_t::do_create_widgets()
     label->resize( app().ui()->inspector().left_margin() - 5, s.height());
     label->setAlignment( Qt::AlignRight | Qt::AlignVCenter);
     label->setText( name().c_str());
-	label->setToolTip( id().c_str());
-	
+    label->setToolTip( id().c_str());
+
     menu_->move( app().ui()->inspector().left_margin(), 0);
     menu_->resize( s.width(), s.height());
 
@@ -90,31 +90,31 @@ void ocio_colorspace_param_t::colorspace_picked( const std::string& cs)
     param_set()->end_edit();
 }
 
-void ocio_colorspace_param_t::do_add_to_hash( util::hash_generator_t& hash_gen) const
-{ 
-	hash_gen << get_value<std::string>( *this);
+void ocio_colorspace_param_t::do_add_to_hash( hash::generator_t& hash_gen) const
+{
+    hash_gen << get_value<std::string>( *this);
 }
 
 boost::python::object ocio_colorspace_param_t::to_python( const poly_param_value_t& v) const
 {
-	return boost::python::object( v.cast<std::string>());
+    return boost::python::object( v.cast<std::string>());
 }
-	
+
 poly_param_value_t ocio_colorspace_param_t::from_python( const boost::python::object& obj) const
 {
-	std::string str = boost::python::extract<std::string>( obj);
-	return poly_param_value_t( str);
+    std::string str = boost::python::extract<std::string>( obj);
+    return poly_param_value_t( str);
 }
 
 void ocio_colorspace_param_t::do_read( const serialization::yaml_node_t& node)
 {
-	serialization::yaml_node_t n = node.get_node( "value");
-	std::string val;
-	n >> val;
+    serialization::yaml_node_t n = node.get_node( "value");
+    std::string val;
+    n >> val;
 
     OCIO::ConstConfigRcPtr config = app().ocio_manager().config();
     int index = -1;
-	
+
     int num_color_spaces = config->getNumColorSpaces();
 
     for(int i = 0; i < num_color_spaces; i++)
@@ -125,14 +125,14 @@ void ocio_colorspace_param_t::do_read( const serialization::yaml_node_t& node)
             index = i;
     }
 
-	if( index != -1)
-		value().assign( val);
-	else
-	{
-		node.error_stream() << "Node " << parameterised()->name() << ": colorspace " << val << " not found in OCIO config.\n";
-		node.error_stream() << "Replacing by default value.\n";
-		value().assign( default_colorspace());
-	}
+    if( index != -1)
+        value().assign( val);
+    else
+    {
+        node.error_stream() << "Node " << parameterised()->name() << ": colorspace " << val << " not found in OCIO config.\n";
+        node.error_stream() << "Replacing by default value.\n";
+        value().assign( default_colorspace());
+    }
 }
 
 void ocio_colorspace_param_t::do_write( serialization::yaml_oarchive_t& out) const

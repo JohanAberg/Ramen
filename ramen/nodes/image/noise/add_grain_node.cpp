@@ -19,7 +19,7 @@
 #include<ramen/image/processing.hpp>
 #include<ramen/image/color.hpp>
 
-#include<ramen/random/goulburn.hpp>
+#include<ramen/hash/goulburn.hpp>
 #include<ramen/noise/global_noise.hpp>
 
 namespace ramen
@@ -31,7 +31,7 @@ namespace
 
 struct apply_grain_fun
 {
-    apply_grain_fun( const image::const_image_view_t& src_view, const image::image_view_t& dst_view, const noise::simplex_noise_t& ngen, 
+    apply_grain_fun( const image::const_image_view_t& src_view, const image::image_view_t& dst_view, const noise::simplex_noise_t& ngen,
                       const Imath::Box2i& area, const Imath::V3f& freq, float aspect, const Imath::V3f intensity,
                       const Imath::V3f channel_offset, float lo, float mid, float hi, float soft, float sat) : src_view_( src_view), dst_view_( dst_view), ngen_( ngen)
     {
@@ -94,7 +94,7 @@ struct apply_grain_fun
 
                 // clamp negative values and write
                 *dst_it = image::pixel_t( std::max( rr, 0.0f), std::max( rg, 0.0f), std::max( rb, 0.0f),
-										  boost::gil::get_color( *src_it, boost::gil::alpha_t()));
+                                          boost::gil::get_color( *src_it, boost::gil::alpha_t()));
 
                 ++src_it;
                 ++dst_it;
@@ -111,9 +111,9 @@ private:
         if( x < 0)
             xx = -xx;
 
-		if( xx <= softness_)
-		    return 0.0f;
-		else
+        if( xx <= softness_)
+            return 0.0f;
+        else
             xx = ( xx - softness_) / ( 1.0f - softness_);
 
         if( x < 0)
@@ -125,8 +125,8 @@ private:
     const image::const_image_view_t& src_view_;
     const image::image_view_t& dst_view_;
     Imath::Box2i area_;
-	
-	const noise::simplex_noise_t& ngen_;
+
+    const noise::simplex_noise_t& ngen_;
 
     Imath::V3f channel_offset_;
     Imath::V3f freq_, intensity_;
@@ -142,7 +142,7 @@ private:
 
 
 add_grain_node_t::add_grain_node_t() : pointop_node_t()
-{ 
+{
     set_name( "add_grain");
     add_input_plug( "mask", true, ui::palette_t::instance().color( "matte plug"), "Mask");
 }
@@ -189,7 +189,7 @@ void add_grain_node_t::do_create_params()
         p.reset( new float_param_t( "Seed"));
         p->set_id( "seed");
         p->set_default_value( 7137);
-		p->set_round_to_int( true);
+        p->set_round_to_int( true);
         top->add_param( p);
     }
     add_param( top);
@@ -242,12 +242,12 @@ bool add_grain_node_t::do_is_identity() const
 {
     Imath::V3f intensity( get_value<Imath::V3f>( param( "channel_intensity")));
     intensity *= get_value<float>( param( "intensity")) * 0.1f;
-	return intensity == Imath::V3f( 0, 0, 0);
+    return intensity == Imath::V3f( 0, 0, 0);
 }
 
 void add_grain_node_t::do_calc_hash_str( const render::context_t& context)
 {
-	image_node_t::do_calc_hash_str( context);
+    image_node_t::do_calc_hash_str( context);
     hash_generator() << "(" << boost::lexical_cast<std::string>( std::floor( (double) context.frame)) << ")";
 }
 
@@ -259,24 +259,24 @@ void add_grain_node_t::do_process( const image::const_image_view_t& src, const i
 
     if( input( 1))
     {
-		boost::gil::copy_pixels( src, dst);
-		area = Imath::intersect( input_as<image_node_t>( 1)->defined(), defined());
+        boost::gil::copy_pixels( src, dst);
+        area = Imath::intersect( input_as<image_node_t>( 1)->defined(), defined());
 
-		if( area.isEmpty())
-		    return;
+        if( area.isEmpty())
+            return;
 
-		src_view = input_as<image_node_t>( 0)->const_subimage_view( area);
-		dst_view = subimage_view( area);
+        src_view = input_as<image_node_t>( 0)->const_subimage_view( area);
+        dst_view = subimage_view( area);
     }
     else
     {
-		src_view = src;
-		dst_view = dst;
+        src_view = src;
+        dst_view = dst;
         area = defined();
     }
 
-	Imath::V3f ch_offset( channel_offset( context));
-	
+    Imath::V3f ch_offset( channel_offset( context));
+
     Imath::V3f intensity( get_value<Imath::V3f>( param( "channel_intensity")));
     intensity *= get_value<float>( param( "intensity")) * 0.1f;
 
@@ -284,16 +284,16 @@ void add_grain_node_t::do_process( const image::const_image_view_t& src, const i
     grain_size *= get_value<float>( param( "grain_freq")) * 0.1f * context.subsample / proxy_scale().x;
 
     float aspect = get_value<float>( param( "grain_aspect")) / aspect_ratio();
-	
-    apply_grain_fun f( src_view, dst_view, noise::global_noise, 
-					   area, grain_size, aspect, intensity, ch_offset,
+
+    apply_grain_fun f( src_view, dst_view, noise::global_noise,
+                       area, grain_size, aspect, intensity, ch_offset,
                         get_value<float>( param( "shd_intensity")),
                         get_value<float>( param( "mid_intensity")),
                         get_value<float>( param( "hi_intensity")),
                         get_value<float>( param( "soft")),
                         get_value<float>( param( "saturation")));
 
-	tbb::parallel_for( tbb::blocked_range<int>( area.min.y, area.max.y + 1), f, tbb::auto_partitioner());
+    tbb::parallel_for( tbb::blocked_range<int>( area.min.y, area.max.y + 1), f, tbb::auto_partitioner());
 
     if( input( 1))
         image::key_mix( src_view, dst_view, boost::gil::nth_channel_view( input_as<image_node_t>(1)->const_subimage_view( area), 3), dst_view);
@@ -301,13 +301,13 @@ void add_grain_node_t::do_process( const image::const_image_view_t& src, const i
 
 Imath::V3f add_grain_node_t::channel_offset( const render::context_t& context) const
 {
-	random::goulburn_hash_t rng;
-	
-	float seed = get_value<float>( param( "seed"));
-	
-	return Imath::V3f( rng(  0.77f, context.frame, seed) / context.subsample / aspect_ratio() * 10,
-					   rng(  3.77f, context.frame, seed) / context.subsample * 10,
-					   rng( 21.62f, context.frame, seed) / context.subsample) * 10;	
+    hash::goulburn_t rng;
+
+    float seed = get_value<float>( param( "seed"));
+
+    return Imath::V3f( rng(  0.77f, context.frame, seed) / context.subsample / aspect_ratio() * 10,
+                       rng(  3.77f, context.frame, seed) / context.subsample * 10,
+                       rng( 21.62f, context.frame, seed) / context.subsample) * 10;
 }
 
 // factory
@@ -325,7 +325,7 @@ const node_metaclass_t& add_grain_node_t::add_grain_node_metaclass()
         info.id = "image.builtin.add_grain";
         info.major_version = 1;
         info.minor_version = 0;
-		info.menu = "Image";
+        info.menu = "Image";
         info.submenu = "Noise";
         info.menu_item = "Add Grain";
         info.create = &create_add_grain_node;

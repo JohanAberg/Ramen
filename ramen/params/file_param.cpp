@@ -82,7 +82,7 @@ void file_param_t::set_extension( const std::string& ext)
     update_input_text();
 }
 
-void file_param_t::do_add_to_hash( util::hash_generator_t& hash_gen) const
+void file_param_t::do_add_to_hash( hash::generator_t& hash_gen) const
 {
     if( is_input_)
         hash_gen << filesystem::hash_string( get_value<boost::filesystem::path>( *this));
