@@ -15,7 +15,6 @@
 #include<ramen/image/color_bars.hpp>
 
 #include<ramen/app/application.hpp>
-#include<ramen/app/composition.hpp>
 
 #include<ramen/ui/palette.hpp>
 
@@ -38,6 +37,7 @@ void image_node_t::add_output_plug()
 
 void image_node_t::do_notify()
 {
+    /*
     // keep the format up to date
     Imath::Box2i old_format( full_format());
     float old_aspect = aspect_ratio();
@@ -49,7 +49,7 @@ void image_node_t::do_notify()
 
     if( old_format != format() || old_aspect != aspect_ratio() || old_proxy_scale != proxy_scale())
         format_changed();
-
+    */
     node_t::do_notify();
 }
 

@@ -75,28 +75,6 @@ world_node_t *param_t::world()
         return 0;
 }
 
-const composition_t *param_t::composition() const
-{
-    RAMEN_ASSERT( param_set());
-    const parameterised_t *p = parameterised();
-
-    if( p)
-        return p->composition();
-    else
-        return 0;
-}
-
-composition_t *param_t::composition()
-{
-    RAMEN_ASSERT( param_set());
-    parameterised_t *p = parameterised();
-
-    if( p)
-        return p->composition();
-    else
-        return 0;
-}
-
 void param_t::set_id( const std::string& identifier)
 {
     RAMEN_ASSERT( util::is_string_valid_identifier( identifier));

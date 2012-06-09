@@ -1,4 +1,6 @@
 // Copyright (c) 2010 Esteban Tovagliari
+// Licensed under the terms of the CDDL License.
+// See CDDL_LICENSE.txt for a copy of the license.
 
 #include<ramen/params/float_param.hpp>
 
@@ -9,7 +11,6 @@
 #include<QLabel>
 
 #include<ramen/app/application.hpp>
-#include<ramen/app/composition.hpp>
 
 #include<ramen/params/parameterised.hpp>
 
@@ -54,8 +55,8 @@ void float_param_t::set_value( float x, change_reason reason)
 {
     float frame = 1.0;
 
-    if( composition_t * c = composition())
-        frame = c->frame();
+    //if( composition_t * c = composition())
+    //    frame = c->frame();
 
     set_value_at_frame( x, frame, reason);
 }

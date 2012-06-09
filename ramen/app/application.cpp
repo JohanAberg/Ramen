@@ -61,7 +61,6 @@ application_t::application_t( int argc, char **argv) : system_(), preferences_()
     max_threads_ = 0;
     img_cache_size_ = 0;
     command_line_ = false;
-    render_mode_ = false;
     quitting_ = false;
 
     #ifndef NDEBUG
@@ -161,42 +160,7 @@ int application_t::run()
         ui()->show();
         splash_->finish( ui()->main_window());
         splash_.reset();
-        return ui()->run( infile_);
-    }
-    else
-    {
-        if( render_mode_)
-        {
-            try
-            {
-                open_document( infile_);
-            }
-            catch( std::exception& e)
-            {
-                fatal_error( e.what(), true);
-            }
-
-            if( !start_frame_)
-                start_frame_ = document().composition().start_frame();
-
-            if( !end_frame_)
-                end_frame_ = document().composition().end_frame();
-
-            if( !proxy_level_)
-                proxy_level_ = 0;
-
-            if( !subsample_)
-                subsample_ = 1;
-
-            if( !mb_extra_samples_)
-                mb_extra_samples_ = 0;
-
-            if( !mb_shutter_factor_)
-                mb_shutter_factor_ = 1.0f;
-
-            //render::render_sequence( document().composition(), start_frame_.get(), end_frame_.get(),
-              //                       proxy_level_.get(), subsample_.get(), mb_extra_samples_.get(), mb_shutter_factor_.get());
-        }
+        return ui()->run();
     }
 
     #ifndef NDEBUG
@@ -219,90 +183,12 @@ bool application_t::matches_option( char *arg, const char *opt) const
     return false;
 }
 
-boost::optional<int> application_t::parse_int( int num, int argc, char **argv) const
-{
-    RAMEN_ASSERT( num > 0);
-    RAMEN_ASSERT( argc > 0);
-
-    boost::optional<int> result;
-
-    if( num < argc)
-    {
-        try
-        {
-            result = boost::lexical_cast<int>( argv[num]);
-        }
-        catch( std::exception& e) {}
-    }
-
-    return result;
-}
-
-boost::optional<float> application_t::parse_float( int num, int argc, char **argv) const
-{
-    RAMEN_ASSERT( num > 0);
-    RAMEN_ASSERT( argc > 0);
-
-    boost::optional<float> result;
-
-    if( num < argc)
-    {
-        try
-        {
-            result = boost::lexical_cast<float>( argv[num]);
-        }
-        catch( std::exception& e) {}
-    }
-
-    return result;
-}
-
-void application_t::parse_input_file( char *arg)
-{
-    // input file name
-    infile_ = boost::filesystem::path( arg);
-
-    if( infile_.is_relative())
-        infile_ = boost::filesystem::absolute( infile_);
-}
-
-bool application_t::parse_common_option( int argc, char **argv, int& num)
-{
-    if( matches_option( argv[num], "-threads"))
-    {
-        boost::optional<int> op( parse_int( num + 1, argc, argv));
-
-        if( op)
-        {
-            if( op.get() > 0)
-                max_threads_ = op.get();
-            else
-                error( "threads should be equal or greater than 1. Ignoring", true);
-        }
-        else
-        {
-            fatal_error( "no number of threads given.", true);
-            return false;
-        }
-
-        num += 2;
-        return true;
-    }
-    else
-    {
-        if( argv[num][0] == '-')
-            fatal_error( std::string( "unknown option: ") + argv[num], true);
-    }
-
-    return false;
-}
-
 void application_t::parse_command_line( int argc, char **argv)
 {
     if( argc == 1)
         return;
 
-    if( matches_option( argv[1], "-help") || matches_option( argv[1], "-h"))
+    if( matches_option( argv[1], "-help"))
         usage();
 
     if( matches_option( argv[1], "-version"))
@@ -316,65 +202,9 @@ void application_t::parse_command_line( int argc, char **argv)
         {
             run_unit_tests_ = true;
             command_line_ = true;
-            render_mode_ = false;
             return;
         }
     #endif
-
-    int i = 1;
-
-    while (i < argc)
-    {
-        if( matches_option( argv[i], "-render"))
-        {
-            command_line_ = true;
-            render_mode_ = true;
-            ++i;
-            parse_render_command_line( argc, argv, i);
-            return;
-        }
-        else if( parse_common_option( argc, argv, i))
-            ;
-        else
-        {
-            parse_input_file( argv[i]);
-            ++i;
-        }
-    }
-}
-
-void application_t::parse_render_command_line( int argc, char **argv, int num)
-{
-    int i = num;
-    while (i < argc)
-    {
-        if( matches_option( argv[i], "-help") || matches_option( argv[i], "-h"))
-            render_usage();
-        else if( matches_option( argv[i], "-frames"))
-        {
-            start_frame_ = parse_int( i + 1, argc, argv);
-            end_frame_ = parse_int( i + 2, argc, argv);
-
-            if( !start_frame_ || !end_frame_)
-                render_usage();
-
-            i += 3;
-        }
-        // TODO: add more options here...
-        else if( parse_common_option( argc, argv, i))
-        {
-        }
-        else
-        {
-            parse_input_file( argv[i]);
-            ++i;
-        }
-    }
-
-    if( infile_.empty())
-        fatal_error( "No composition file given", true);
-
-    // TODO: check everything needed here!
 }
 
 void application_t::usage()
@@ -391,18 +221,6 @@ void application_t::usage()
                     "-runtests:       Run unit tests and exit.\n"
                     #endif
 
-                    << std::endl;
-    std::exit( 0);
-}
-
-void application_t::render_usage()
-{
-    std::cout <<	RAMEN_NAME_FULL_VERSION_STR << ", " << __DATE__ << "\n" <<
-                    "Usage: ramen -render [options] file...\n\n"
-                    "Options:\n"
-                    "-help, -h:       Print this help message and exit.\n"
-                    "-threads n:      Use n threads.\n\n"
-                    "-frames n m:     Render frames n to m.\n"
                     << std::endl;
     std::exit( 0);
 }
@@ -458,6 +276,7 @@ void application_t::create_new_document()
 void application_t::open_document( const boost::filesystem::path& p)
 {
     create_new_document();
+    /*
     boost::filesystem::ifstream ifs( p, serialization::yaml_iarchive_t::file_open_mode());
 
     if( !ifs.is_open() || !ifs.good())
@@ -479,6 +298,7 @@ void application_t::open_document( const boost::filesystem::path& p)
         // TODO: display errors here
         // multiline_alert_t::Instance().show_alert( "Errors during file open", err);
     }
+    */
 }
 
 void application_t::delete_document()

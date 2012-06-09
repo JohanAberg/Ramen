@@ -9,7 +9,8 @@
 
 #include<boost/ptr_container/ptr_vector.hpp>
 
-#include<ramen/app/document.hpp>
+#include<ramen/nodes/node_fwd.hpp>
+#include<ramen/nodes/edge.hpp>
 
 namespace ramen
 {
@@ -20,22 +21,22 @@ struct extract_command_t : public command_t
 {
 public:
 
-	extract_command_t();
+    extract_command_t();
 
     void add_edge_to_remove( const edge_t& e);
     void add_edge_to_add( const edge_t& e);
 
     void add_dependent_node( node_t *n);
-	
+
     virtual void undo();
     virtual void redo();
 
-	// util
-	static bool edge_less( const edge_t& a, const edge_t& b);
-	static bool edge_compare( const edge_t& a, const edge_t& b);
-	
-	static void add_candidate_edge( const edge_t& e, node_t *src, std::vector<edge_t>& edges);
-	
+    // util
+    static bool edge_less( const edge_t& a, const edge_t& b);
+    static bool edge_compare( const edge_t& a, const edge_t& b);
+
+    static void add_candidate_edge( const edge_t& e, node_t *src, std::vector<edge_t>& edges);
+
 protected:
 
     std::vector<edge_t> edges_to_remove_;
@@ -47,7 +48,7 @@ protected:
 struct delete_command_t : public extract_command_t
 {
     delete_command_t();
-	
+
     void add_node( node_t *n);
 
     virtual void undo();

@@ -9,15 +9,11 @@
 
 #include<ramen/python/python.hpp>
 
+#include<ramen/nodes/world_node.hpp>
+
 #include<memory>
 
-#include<boost/noncopyable.hpp>
-
-#include<ramen/app/composition.hpp>
-
 #include<ramen/undo/stack_fwd.hpp>
-
-#include<ramen/serialization/archive_fwd.hpp>
 
 namespace ramen
 {
@@ -26,7 +22,7 @@ namespace ramen
 \ingroup app
 \brief Document class.
 */
-class document_t : boost::noncopyable
+class document_t : public world_node_t
 {
 public:
 
@@ -44,16 +40,13 @@ public:
     boost::filesystem::path file() const { return file_;}
     void set_file( const boost::filesystem::path& p);
 
-	void load( serialization::yaml_iarchive_t& in);
-	void save( serialization::yaml_oarchive_t& out) const;
-
-    // composition
-    composition_t& composition()                { return comp_;}
-    const composition_t& composition() const	{ return comp_;}
-
 private:
 
-    composition_t comp_;
+    document_t( const document_t& other);
+    void operator=( const document_t& other);
+
+    virtual document_t *do_clone() const;
+
     mutable bool dirty_;
     std::auto_ptr<undo::stack_t> undo_;
     boost::filesystem::path file_;

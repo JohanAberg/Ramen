@@ -8,8 +8,6 @@
 #include<boost/bind.hpp>
 #include<boost/range/algorithm/for_each.hpp>
 
-#include<ramen/app/composition.hpp>
-
 #include<ramen/nodes/world_node.hpp>
 
 #include<ramen/anim/track.hpp>
@@ -113,27 +111,6 @@ world_node_t *parameterised_t::world()
     return 0;
 }
 
-// composition
-const composition_t *parameterised_t::composition() const
-{
-    const node_t *n = node();
-
-    if( n)
-        return n->composition();
-
-    return 0;
-}
-
-composition_t *parameterised_t::composition()
-{
-    node_t *n = node();
-
-    if( n)
-        return n->composition();
-
-    return 0;
-}
-
 void parameterised_t::set_name( const std::string& n)
 {
     RAMEN_ASSERT( util::is_string_valid_identifier( n));
@@ -146,8 +123,8 @@ void parameterised_t::set_name( const std::string& n)
 
 bool parameterised_t::autokey() const
 {
-    if( const composition_t *c = composition())
-        return c->autokey();
+    //if( const composition_t *c = composition())
+    //    return c->autokey();
 
     return false;
 }

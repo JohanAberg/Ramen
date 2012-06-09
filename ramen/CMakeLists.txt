@@ -97,7 +97,6 @@ SET( RAMEN_SOURCES  empty.cpp
 					anim/util.cpp
 
 					app/application.cpp
-					app/composition.cpp
 					app/document.cpp
 					app/plugin_manager.cpp
 					app/preferences.cpp
@@ -451,8 +450,6 @@ SET( RAMEN_UNUSED_SOURCES	app/export_selected_nodes.cpp
 							rdk/rdk.cpp
 
 							SeExpr/OcioSeExprFuncs.cpp
-
-							ui/render_composition.cpp
 
 							ui/dialogs/render_composition_dialog.cpp
 							ui/dialogs/render_flipbook_dialog.cpp

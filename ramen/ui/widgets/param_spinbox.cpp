@@ -208,7 +208,8 @@ void param_spinbox_t::contextMenuEvent( QContextMenuEvent *event)
 
         if( has_anim)
         {
-            float frame = app().document().composition().frame();
+            //float frame = app().document().composition().frame();
+            float frame = 1.0f;
             has_key = aparam_->curve( comp_index_).has_keyframe_at( frame);
         }
 
@@ -326,7 +327,8 @@ void param_spinbox_t::delete_key()
 {
     RAMEN_ASSERT( aparam_);
 
-    aparam_->delete_key( comp_index_, app().document().composition().frame());
+    //aparam_->delete_key( comp_index_, app().document().composition().frame());
+    aparam_->delete_key( comp_index_, 1);
 }
 
 void param_spinbox_t::delete_anim()

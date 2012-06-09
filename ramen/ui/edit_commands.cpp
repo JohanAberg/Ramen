@@ -53,19 +53,23 @@ void extract_command_t::add_candidate_edge( const edge_t& e, node_t *src, std::v
 
 void extract_command_t::undo()
 {
+    /*
     composition_t *comp = &app().document().composition();
     boost::range::for_each( edges_to_add_, boost::bind( &composition_t::remove_edge, comp, _1, true));
     boost::range::for_each( edges_to_remove_, boost::bind( &composition_t::add_edge, comp, _1, true));
     breadth_first_multiple_outputs_search( dependents_, boost::bind( &node_t::notify, _1));
+    */
     command_t::undo();
 }
 
 void extract_command_t::redo()
 {
+    /*
     composition_t *comp = &app().document().composition();
     boost::range::for_each( edges_to_remove_, boost::bind( &composition_t::remove_edge, comp, _1, true));
     boost::range::for_each( edges_to_add_, boost::bind( &composition_t::add_edge, comp, _1, true));
     breadth_first_multiple_outputs_search( dependents_, boost::bind( &node_t::notify, _1));
+    */
     command_t::redo();
 }
 
@@ -78,6 +82,7 @@ void delete_command_t::add_node( node_t *n)
 
 void delete_command_t::undo()
 {
+    /*
     composition_t *comp = &app().document().composition();
 
     boost::range::for_each( edges_to_add_, boost::bind( &composition_t::remove_edge, comp, _1, true));
@@ -90,11 +95,13 @@ void delete_command_t::undo()
 
     boost::range::for_each( edges_to_remove_, boost::bind( &composition_t::add_edge, comp, _1, true));
     breadth_first_multiple_outputs_search( dependents_, boost::bind( &node_t::notify, _1));
+    */
     command_t::undo();
 }
 
 void delete_command_t::redo()
 {
+    /*
     for( std::vector<node_t*>::const_iterator it( nodes_.begin()); it != nodes_.end(); ++it)
     {
         std::auto_ptr<node_t> ptr( app().document().composition().release_node( *it));
@@ -106,6 +113,7 @@ void delete_command_t::redo()
     boost::range::for_each( edges_to_add_, boost::bind( &composition_t::add_edge, comp, _1, true));
 
     breadth_first_multiple_outputs_search( dependents_, boost::bind( &node_t::notify, _1));
+    */
     command_t::redo();
 }
 
@@ -121,6 +129,7 @@ void duplicate_command_t::add_edge( const edge_t& e) { edges_.push_back( e);}
 
 void duplicate_command_t::undo()
 {
+    /*
     for( std::vector<node_t*>::const_iterator it( nodes_.begin()); it != nodes_.end(); ++it)
     {
         std::auto_ptr<node_t> ptr( app().document().composition().release_node( *it));
@@ -129,11 +138,13 @@ void duplicate_command_t::undo()
 
     composition_t *comp = &app().document().composition();
     boost::range::for_each( edges_, boost::bind( &composition_t::remove_edge, comp, _1, true));
+    */
     command_t::undo();
 }
 
 void duplicate_command_t::redo()
 {
+    /*
     while( !node_storage_.empty())
     {
         std::auto_ptr<node_t> ptr( node_storage_.pop_back().release());
@@ -142,6 +153,7 @@ void duplicate_command_t::redo()
 
     composition_t *comp = &app().document().composition();
     boost::range::for_each( edges_, boost::bind( &composition_t::add_edge, comp, _1, true));
+    */
     command_t::redo();
 }
 
@@ -151,19 +163,23 @@ void ignore_nodes_command_t::add_node( node_t *n) { nodes_.push_back( n);}
 
 void ignore_nodes_command_t::undo()
 {
+    /*
     for( std::vector<node_t*>::const_iterator it( nodes_.begin()); it != nodes_.end(); ++it)
         (*it)->set_ignored( !(*it)->ignored());
 
     breadth_first_multiple_outputs_search( nodes_, boost::bind( &node_t::notify, _1));
+    */
     command_t::undo();
 }
 
 void ignore_nodes_command_t::redo()
 {
+    /*
     for( std::vector<node_t*>::const_iterator it( nodes_.begin()); it != nodes_.end(); ++it)
         (*it)->set_ignored( !(*it)->ignored());
 
     breadth_first_multiple_outputs_search( nodes_, boost::bind( &node_t::notify, _1));
+    */
     command_t::redo();
 }
 

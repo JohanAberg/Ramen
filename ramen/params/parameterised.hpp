@@ -20,8 +20,6 @@
 
 #include<ramen/nodes/node_fwd.hpp>
 
-#include<ramen/app/composition_fwd.hpp>
-
 #include<ramen/anim/track_fwd.hpp>
 
 namespace ramen
@@ -70,12 +68,6 @@ public:
 
     /// Sets the parameterised parent.
     void set_parent( parameterised_t *parent);
-
-    /// Returns the composition this parameterised belongs to.
-    const composition_t *composition() const;
-
-    /// Returns the composition this parameterised belongs to.
-    composition_t *composition();
 
     /// Returns the node this parameterised belongs to.
     const node_t *node() const;

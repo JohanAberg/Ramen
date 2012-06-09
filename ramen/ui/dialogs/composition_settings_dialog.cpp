@@ -32,6 +32,7 @@ composition_settings_dialog_t::composition_settings_dialog_t() : QDialog( app().
 void composition_settings_dialog_t::exec_dialog()
 {
     // update widgets here...
+    /*
     ui_.format_->set_value( app().document().composition().default_format());
     ui_.rate_->setValue( app().document().composition().frame_rate());
     ui_.ocio_key1_->setText(   QString::fromStdString( app().document().composition().ocio_context_pairs()[0].first));
@@ -42,13 +43,14 @@ void composition_settings_dialog_t::exec_dialog()
     ui_.ocio_value3_->setText( QString::fromStdString( app().document().composition().ocio_context_pairs()[2].second));
     ui_.ocio_key4_->setText(   QString::fromStdString( app().document().composition().ocio_context_pairs()[3].first));
     ui_.ocio_value4_->setText( QString::fromStdString( app().document().composition().ocio_context_pairs()[3].second));
+    */
 
     int result = exec();
 
     if( result == QDialog::Accepted)
     {
-        app().document().composition().set_default_format( ui_.format_->value());
-        app().document().composition().set_frame_rate( ui_.rate_->value());
+        //app().document().composition().set_default_format( ui_.format_->value());
+        //app().document().composition().set_frame_rate( ui_.rate_->value());
 
         /*
         if( app().document().composition().set_ocio_context_key_value( 0, ui_.ocio_key1_->text().toStdString(),

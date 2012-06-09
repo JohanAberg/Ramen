@@ -4,8 +4,6 @@
 
 #include<ramen/nodes/image_node.hpp>
 
-#include<ramen/app/composition.hpp>
-
 namespace ramen
 {
 
@@ -78,7 +76,7 @@ Imath::Box2i numeric_param_t::frame_area() const
         ++area.max.y;
     }
     else
-        area = composition()->default_format().area();
+        area = image::format_t().area(); //composition()->default_format().area();
 
     return area;
 }

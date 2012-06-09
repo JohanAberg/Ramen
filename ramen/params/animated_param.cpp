@@ -15,9 +15,10 @@
 #include<ramen/anim/clipboard.hpp>
 
 #include<ramen/app/application.hpp>
-#include<ramen/app/composition.hpp>
 
 #include<ramen/ui/user_interface.hpp>
+
+#include<ramen/params/param_set.hpp>
 
 #include<ramen/serialization/yaml_oarchive.hpp>
 
@@ -102,8 +103,8 @@ void animated_param_t::set_component_value( int index, float comp_value, change_
 {
     float frame = 1.0f;
 
-    if( composition())
-        frame = composition()->frame();
+    //if( composition())
+    //    frame = composition()->frame();
 
     set_component_value_at_frame( index, comp_value, frame, reason);
 }
@@ -148,9 +149,11 @@ void animated_param_t::anim_curve_changed( anim::any_curve_ptr_t& c) { do_anim_c
 
 void animated_param_t::do_anim_curve_changed( anim::any_curve_ptr_t& c)
 {
-    RAMEN_ASSERT( composition());
+    float frame = 1.0f;
 
-    evaluate( composition()->frame());
+     //RAMEN_ASSERT( composition());
+   // frame = composition()->frame();
+    evaluate( frame);
     update_widgets();
     emit_param_changed( user_edited);
 }
@@ -163,6 +166,8 @@ std::auto_ptr<undo::command_t> animated_param_t::do_create_command()
 // spinboxes
 void animated_param_t::set_key( int curve_index)
 {
+    float frame = 1.0f;
+
     param_set()->begin_edit();
 
     if( can_undo())
@@ -173,17 +178,17 @@ void animated_param_t::set_key( int curve_index)
         poly_param_indexable_value_t *val =  poly_cast<poly_param_indexable_value_t*>( &value());
 
         if( val)
-            curve( curve_index).insert( composition()->frame(), val->get_component( curve_index));
+            curve( curve_index).insert( frame, val->get_component( curve_index));
         else
         {
             RAMEN_ASSERT( curve_index == 0);
 
             float v = value().cast<float>();
-            curve( 0).insert( composition()->frame(), v);
+            curve( 0).insert( frame, v);
         }
     }
     else
-        curve( curve_index).insert( composition()->frame());
+        curve( curve_index).insert( frame);
 
     param_set()->end_edit( true);
     app().ui()->update_anim_editors();
@@ -218,6 +223,8 @@ void animated_param_t::delete_all_keys( int curve_index)
 
 void animated_param_t::paste( int curve_index)
 {
+    float frame = 1.0;
+
     param_set()->begin_edit();
 
     if( can_undo())
@@ -227,7 +234,7 @@ void animated_param_t::paste( int curve_index)
     anim::clipboard_t::instance().paste( curve( curve_index));
     param_set()->end_edit( true);
 
-    evaluate( composition()->frame());
+    evaluate( frame);
     update_widgets();
     app().ui()->update_anim_editors();
 }

@@ -1,4 +1,6 @@
 // Copyright (c) 2010 Esteban Tovagliari
+// Licensed under the terms of the CDDL License.
+// See CDDL_LICENSE.txt for a copy of the license.
 
 #include<ramen/params/image_format_param.hpp>
 
@@ -6,7 +8,8 @@
 #include<QComboBox>
 
 #include<ramen/app/application.hpp>
-#include<ramen/app/composition.hpp>
+
+#include<ramen/params/param_set.hpp>
 
 #include<ramen/ui/user_interface.hpp>
 #include<ramen/ui/inspector/inspector.hpp>
@@ -39,9 +42,9 @@ param_t *image_format_param_t::do_clone() const { return new image_format_param_
 
 void image_format_param_t::do_init()
 {
-    if( composition())
-        value().assign( composition()->default_format());
-    else
+    //if( composition())
+    //    value().assign( composition()->default_format());
+    //else
         value().assign( image::format_t());
 }
 

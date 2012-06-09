@@ -10,7 +10,7 @@
 #include<memory>
 #include<set>
 
-#include<ramen/nodes/node.hpp>
+#include<ramen/nodes/node_fwd.hpp>
 
 namespace ramen
 {
@@ -23,7 +23,7 @@ public:
 
     add_node_command_t( std::auto_ptr<node_t> n, node_t *src = 0);
     virtual ~add_node_command_t();
-  
+
     virtual void undo();
     virtual void redo();
 

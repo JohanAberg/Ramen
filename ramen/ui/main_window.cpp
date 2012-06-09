@@ -621,6 +621,7 @@ void main_window_t::redo()
 
 void main_window_t::ignore_nodes()
 {
+    /*
     std::auto_ptr<undo::ignore_nodes_command_t> c( new undo::ignore_nodes_command_t());
 
     BOOST_FOREACH( node_t& n, app().document().composition().nodes())
@@ -632,10 +633,12 @@ void main_window_t::ignore_nodes()
     c->redo();
     app().document().undo_stack().push_back( c);
     app().ui()->update();
+    */
 }
 
 void main_window_t::delete_nodes()
 {
+    /*
     bool autoconnect = true;
 
     if( !app().document().composition().any_selected())
@@ -702,10 +705,12 @@ void main_window_t::delete_nodes()
     c->redo();
     app().document().undo_stack().push_back( c);
     app().ui()->update();
+    */
 }
 
 void main_window_t::duplicate_nodes()
 {
+    /*
     std::map<node_t*, node_t*> relation;
     std::auto_ptr<undo::duplicate_command_t> c( new undo::duplicate_command_t());
 
@@ -730,10 +735,12 @@ void main_window_t::duplicate_nodes()
     c->redo();
     app().document().undo_stack().push_back( c);
     app().ui()->update();
+    */
 }
 
 void main_window_t::extract_nodes()
 {
+    /*
     bool autoconnect = true;
 
     if( !app().document().composition().any_selected())
@@ -791,6 +798,7 @@ void main_window_t::extract_nodes()
     c->redo();
     app().document().undo_stack().push_back( c);
     app().ui()->update();
+    */
 }
 
 void main_window_t::clear_cache()
@@ -803,72 +811,8 @@ void main_window_t::show_composition_settings_dialog()
     composition_settings_dialog_t::instance().exec_dialog();
 }
 
-void main_window_t::render_composition()
-{
-    /*
-    bool any_output = ( render::count_output_nodes( app().document().composition()) != 0);
-
-    if( !any_output)
-    {
-        QMessageBox::warning( this, "Ramen", "No output nodes in composition");
-        return;
-    }
-
-    bool any_output_selected = ( render::count_output_nodes( app().document().composition(), true) != 0);
-
-    render_composition_dialog_t::instance().set_any_output_selected( any_output_selected);
-
-    int result = render_composition_dialog_t::instance().exec();
-
-    if( result == QDialog::Accepted)
-    {
-        int start = render_composition_dialog_t::instance().start_frame();
-        int end = render_composition_dialog_t::instance().end_frame();
-
-        if( end < start)
-            return;
-
-        ui::render_composition( app().document().composition(),
-                                start, end, render_composition_dialog_t::instance().proxy_level(),
-                                render_composition_dialog_t::instance().resolution(),
-                                render_composition_dialog_t::instance().mblur_extra_samples(),
-                                render_composition_dialog_t::instance().mblur_shutter_factor(),
-                                render_composition_dialog_t::instance().selected_only());
-    }
-    */
-}
-
-void main_window_t::render_flipbook()
-{
-    /*
-    int result = render_flipbook_dialog_t::instance().exec();
-
-    if( result == QDialog::Accepted)
-    {
-        if( image_node_t *n = dynamic_cast<image_node_t*>( app().document().composition().selected_node()))
-        {
-            int frame_rate = app().document().composition().frame_rate();
-            std::string display_device = render_flipbook_dialog_t::instance().display_device();
-            std::string display_transform = render_flipbook_dialog_t::instance().display_transform();
-            int start	= render_flipbook_dialog_t::instance().start_frame();
-            int end	= render_flipbook_dialog_t::instance().end_frame();
-            int subsample =  render_flipbook_dialog_t::instance().resolution();
-            int proxy_level = render_flipbook_dialog_t::instance().proxy_level();
-            int mb_extra_samples = render_flipbook_dialog_t::instance().mblur_extra_samples();
-            float mb_shutter_factor = render_flipbook_dialog_t::instance().mblur_shutter_factor();
-
-            flipbook::flipbook_t *flip = flipbook::factory_t::instance().create( render_flipbook_dialog_t::instance().flipbook(),
-                                                                                   frame_rate, display_device, display_transform);
-
-            if( flip)
-            {
-                if( flipbook::render_flipbook( flip, n, start, end, proxy_level, subsample, mb_extra_samples, mb_shutter_factor))
-                    flip->play();
-            }
-        }
-    }
-    */
-}
+void main_window_t::render_composition() {}
+void main_window_t::render_flipbook() {}
 
 void main_window_t::show_preferences_dialog()
 {
@@ -877,6 +821,7 @@ void main_window_t::show_preferences_dialog()
 
 void main_window_t::create_node()
 {
+    /*
     QAction *action = dynamic_cast<QAction*>( sender());
 
     std::string id( create_node_actions_[action]);
@@ -924,6 +869,7 @@ void main_window_t::create_node()
     c->redo();
     app().document().undo_stack().push_back( c);
     app().ui()->update();
+    */
 }
 
 void main_window_t::show_about_box()
@@ -944,9 +890,9 @@ void main_window_t::update()
         setWindowTitle( "Ramen");
 
     update_menus();
-    time_slider_->update( app().document().composition().start_frame(),
-             app().document().composition().frame(),
-             app().document().composition().end_frame());
+    //time_slider_->update( app().document().composition().start_frame(),
+    //         app().document().composition().frame(),
+    //         app().document().composition().end_frame());
 
     composition_view().update();
     time_controls_->update();
@@ -1003,6 +949,7 @@ void main_window_t::init_recent_files_menu()
 
 void main_window_t::update_menus()
 {
+    /*
     bool any_selected = app().document().composition().any_selected();
     node_t *n = app().document().composition().selected_node();
 
@@ -1043,6 +990,7 @@ void main_window_t::update_menus()
         comp_flipbook_->setEnabled( true);
     else
         comp_flipbook_->setEnabled( false);
+    */
 }
 
 } // namespace

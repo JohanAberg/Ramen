@@ -94,16 +94,8 @@ private:
 
     // command line
     bool matches_option( char *arg, const char *opt) const;
-    boost::optional<int> parse_int( int num, int argc, char **argv) const;
-    boost::optional<float> parse_float( int num, int argc, char **argv) const;
-    void parse_input_file( char *arg);
-    bool parse_common_option( int argc, char **argv, int& num);
-
     void parse_command_line( int argc, char **argv);
-    void parse_render_command_line( int argc, char **argv, int num);
-
     void usage();
-    void render_usage();
 
     void print_app_info();
 
@@ -116,8 +108,6 @@ private:
     boost::uint64_t img_cache_size_;
     int max_threads_;
     bool command_line_;
-    boost::filesystem::path infile_;
-    bool render_mode_;
 
     tbb::task_scheduler_init task_scheduler_;
     system::system_t system_;
@@ -127,11 +117,6 @@ private:
     std::auto_ptr<ui::user_interface_t> ui_;
 
     std::auto_ptr<document_t> document_;
-
-    boost::optional<int> start_frame_, end_frame_, proxy_level_,
-                        subsample_, mb_extra_samples_;
-
-    boost::optional<float> mb_shutter_factor_;
 
     std::auto_ptr<ui::splash_screen_t> splash_;
 

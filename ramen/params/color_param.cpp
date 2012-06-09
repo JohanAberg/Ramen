@@ -100,8 +100,8 @@ void color_param_t::set_value( const Imath::Color4f& x, change_reason reason)
 {
     float frame = 1.0f;
 
-    if( composition())
-        frame = composition()->frame();
+    //if( composition())
+    //    frame = composition()->frame();
 
     set_value_at_frame( x, frame, reason);
 }

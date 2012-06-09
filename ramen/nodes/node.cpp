@@ -12,8 +12,6 @@
 
 #include<ramen/nodes/graph_algorithm.hpp>
 
-#include<ramen/app/composition.hpp>
-
 #include<ramen/serialization/yaml_iarchive.hpp>
 #include<ramen/serialization/yaml_oarchive.hpp>
 
@@ -41,14 +39,13 @@ struct frames_needed_less
 
 } // unnamed
 
-node_t::node_t() : composite_parameterised_t(), flags_( 0), composition_( 0) {}
+node_t::node_t() : composite_parameterised_t(), flags_( 0) {}
 
 node_t::node_t( const node_t& other) : composite_parameterised_t( other), outputs_( other.outputs_)
 {
     boost::range::for_each( outputs_, boost::bind( &node_output_plug_t::set_parent_node, _1, this));
     flags_ = other.flags_;
     loc_ = other.loc_;
-    composition_ = other.composition_;
 }
 
 node_t::~node_t() {}
@@ -201,6 +198,7 @@ void node_t::add_new_input_plug()
 
 void node_t::reconnect_node()
 {
+    /*
     composition_t *comp = composition();
 
     if( comp)
@@ -211,6 +209,7 @@ void node_t::reconnect_node()
                 input_plugs()[ e.port].set_input( e.src, name_t( "unused"));
         }
     }
+    */
 }
 
 // params
@@ -223,7 +222,7 @@ void node_t::notify()
 
 void node_t::do_notify()
 {
-    RAMEN_ASSERT( composition());
+    //RAMEN_ASSERT( composition());
 
     changed( this);
     set_notify_dirty( false);

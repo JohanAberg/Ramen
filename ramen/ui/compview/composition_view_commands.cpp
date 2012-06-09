@@ -25,19 +25,23 @@ connect_command_t::connect_command_t( node_t *src, node_t *dest, int port) : com
 
 void connect_command_t::undo()
 {
+    /*
     app().document().composition().disconnect( src_, dest_, port_);
 
     if( prev_src_)
-		app().document().composition().connect( prev_src_, dest_, port_);
+        app().document().composition().connect( prev_src_, dest_, port_);
 
-	dest_->notify();
+    dest_->notify();
+    */
     command_t::undo();
 }
-	
+
 void connect_command_t::redo()
 {
+    /*
     app().document().composition().connect( src_, dest_, port_);
-	dest_->notify();
+    dest_->notify();
+    */
     command_t::redo();
 }
 
@@ -45,15 +49,15 @@ disconnect_command_t::disconnect_command_t( node_t *src, node_t *dest, int port)
 
 void disconnect_command_t::undo()
 {
-    app().document().composition().connect( src_, dest_, port_);
-	dest_->notify();
+    //app().document().composition().connect( src_, dest_, port_);
+    //dest_->notify();
     command_t::undo();
 }
 
 void disconnect_command_t::redo()
 {
-    app().document().composition().disconnect( src_, dest_, port_);
-	dest_->notify();
+    //app().document().composition().disconnect( src_, dest_, port_);
+    //dest_->notify();
     command_t::redo();
 }
 

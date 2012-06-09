@@ -11,7 +11,6 @@
 
 #include<boost/function.hpp>
 
-#include<ramen/app/composition_fwd.hpp>
 #include<ramen/nodes/node_fwd.hpp>
 
 #include<ramen/util/error_log.hpp>
@@ -26,18 +25,16 @@ enum render_mode
     interface_render = 1,
     flipbook_render,
     process_render,
-	analisys_render
+    analisys_render
 };
 
 struct RAMEN_API context_t
 {
     context_t();
 
-	bool render_cancelled() const;
-	
-	// data
-	
-    composition_t *composition;
+    bool render_cancelled() const;
+
+    // data
 
     render_mode mode;
 
@@ -48,17 +45,17 @@ struct RAMEN_API context_t
 
     image::format_t default_format;
 
-	int proxy_level;
-	
+    int proxy_level;
+
     int motion_blur_extra_samples;
     float motion_blur_shutter_factor;
 
     boost::function<bool ()> cancel;
     util::error_log_t *error_log;
-	
+
 private:
 
-	static bool default_cancel();	
+    static bool default_cancel();
 };
 
 } // namespace

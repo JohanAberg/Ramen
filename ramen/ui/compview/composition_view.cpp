@@ -23,7 +23,6 @@
 #include<QMenu>
 
 #include<ramen/app/application.hpp>
-#include<ramen/app/document.hpp>
 
 #include<ramen/undo/stack.hpp>
 
@@ -35,8 +34,10 @@
 #include<ramen/ui/palette.hpp>
 #include<ramen/ui/main_window.hpp>
 
-#include<ramen/ui/compview/composition_view_commands.hpp>
 #include<ramen/ui/compview/draw_pick_visitors.hpp>
+
+//#include<ramen/app/document.hpp>
+//#include<ramen/ui/compview/composition_view_commands.hpp>
 
 namespace ramen
 {
@@ -192,6 +193,7 @@ void composition_view_t::mouseDoubleClickEvent( QMouseEvent *event)
     Imath::V2f wpos = screen_to_world( Imath::V2i( event->x(), event->y()));
     layout_.set_interest_point( wpos);
 
+    /*
     if( last_pick_.component == pick_result_t::body_picked)
     {
         if( event->modifiers() & Qt::ControlModifier)
@@ -201,6 +203,7 @@ void composition_view_t::mouseDoubleClickEvent( QMouseEvent *event)
 
         app().ui()->update();
     }
+    */
 
     event->accept();
 }
@@ -254,10 +257,10 @@ void composition_view_t::mousePressEvent( QMouseEvent *event)
         if( pick_edge( wpos, src, dst, port))
         {
             // TODO: if either src or dest are groups, resolve the real nodes.
-            std::auto_ptr<undo::command_t> c( new undo::disconnect_command_t( src, dst, port));
-            c->redo();
-            app().document().undo_stack().push_back( c);
-            app().ui()->update();
+            //std::auto_ptr<undo::command_t> c( new undo::disconnect_command_t( src, dst, port));
+            //c->redo();
+            //app().document().undo_stack().push_back( c);
+            //app().ui()->update();
             return;
         }
     }
@@ -272,7 +275,7 @@ void composition_view_t::mousePressEvent( QMouseEvent *event)
     // single push
     if( last_pick_.component == pick_result_t::no_pick && !( event->modifiers() & Qt::ShiftModifier))
     {
-        app().document().composition().deselect_all();
+        //app().document().composition().deselect_all();
         box_pick_mode_ = true;
         drag_handler_	 = boost::bind( &composition_view_t::box_pick_drag_handler, this, _1);
         release_handler_ = boost::bind( &composition_view_t::box_pick_release_handler, this, _1);
@@ -284,7 +287,7 @@ void composition_view_t::mousePressEvent( QMouseEvent *event)
             if( !last_pick_.node->selected())
             {
                 if( !( event->modifiers() & Qt::ShiftModifier))
-                    app().document().composition().deselect_all();
+                    ; //app().document().composition().deselect_all();
 
                 last_pick_.node->toggle_selection();
                 drag_handler_ = boost::bind( &composition_view_t::move_nodes_drag_handler, this, _1);
@@ -352,6 +355,7 @@ void composition_view_t::scroll_zoom_release_handler( QMouseEvent *event)
 
 void composition_view_t::move_nodes_drag_handler( QMouseEvent *event)
 {
+    /*
     float xoffset = ( event->x() - last_x_) / ( width()  / viewport().world().size().x);
     float yoffset = ( event->y() - last_y_) / ( height() / viewport().world().size().y);
     Imath::V2f offset( xoffset, yoffset);
@@ -362,6 +366,7 @@ void composition_view_t::move_nodes_drag_handler( QMouseEvent *event)
         if( it->selected())
             it->offset_location( offset);
     }
+    */
 
     update();
 }
@@ -413,6 +418,7 @@ void composition_view_t::connect_release_handler( QMouseEvent *event)
     }
 
     // TODO: if either source or dest are groups, resolve the real nodes here.
+    /*
     if( app().document().composition().can_connect( src, dst, port))
     {
         std::auto_ptr<undo::command_t> c( new undo::connect_command_t( src, dst, port));
@@ -420,7 +426,7 @@ void composition_view_t::connect_release_handler( QMouseEvent *event)
         app().document().undo_stack().push_back( c);
         app().ui()->update();
     }
-    else
+    else */
         update();
 }
 
@@ -428,6 +434,7 @@ void composition_view_t::box_pick_drag_handler( QMouseEvent *event) { update();}
 
 void composition_view_t::box_pick_release_handler( QMouseEvent *event)
 {
+    /*
     Imath::Box2f b( screen_to_world( Imath::V2i( push_x_, push_y_)));
     b.extendBy( screen_to_world( Imath::V2i( last_x_, last_y_)));
 
@@ -438,6 +445,7 @@ void composition_view_t::box_pick_release_handler( QMouseEvent *event)
     }
 
     box_pick_mode_ = false;
+    */
     app().ui()->update();
 }
 
@@ -517,18 +525,22 @@ void composition_view_t::paintEvent ( QPaintEvent *event)
 
 void composition_view_t::draw_edges( QPainter& p)
 {
+    /*
     draw_edges_visitor visitor( *this, p);
 
     BOOST_FOREACH( node_t& n, app().document().composition().nodes())
         n.accept( visitor);
+    */
 }
 
 void composition_view_t::draw_nodes( QPainter& p)
 {
+    /*
     draw_node_visitor visitor( p);
 
     BOOST_FOREACH( node_t& n, app().document().composition().nodes())
         n.accept( visitor);
+    */
 }
 
 void composition_view_t::draw_bezier_edge( QPainter& painter, const Imath::V2f& p0, const Imath::V2f& p1) const
@@ -549,7 +561,8 @@ void composition_view_t::pick_node( const Imath::V2f& p, pick_result_t& result) 
     result.component = pick_result_t::no_pick;
     result.plug_num = -1;
 
-    pick_node_visitor visitor( *this, p, result);
+    /*
+     pick_node_visitor visitor( *this, p, result);
 
     composition_t::reverse_node_iterator it( app().document().composition().nodes().rbegin());
     composition_t::reverse_node_iterator last( app().document().composition().nodes().rend());
@@ -561,6 +574,7 @@ void composition_view_t::pick_node( const Imath::V2f& p, pick_result_t& result) 
         if( result.component != pick_result_t::no_pick)
             break;
     }
+    */
 }
 
 bool composition_view_t::box_pick_node( node_t *n, const Imath::Box2f& b) const
@@ -574,6 +588,7 @@ bool composition_view_t::pick_edge( const Imath::V2f& p, node_t *&src, node_t *&
 {
     pick_edge_visitor visitor( *this, p);
 
+    /*
     BOOST_FOREACH( node_t& n, app().document().composition().nodes())
     {
         n.accept( visitor);
@@ -586,7 +601,7 @@ bool composition_view_t::pick_edge( const Imath::V2f& p, node_t *&src, node_t *&
             return true;
         }
     }
-
+    */
     return false;
 }
 

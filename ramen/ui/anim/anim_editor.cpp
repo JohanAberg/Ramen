@@ -635,7 +635,8 @@ void anim_editor_t::paste()
 
     create_command();
 
-    float frame = app().document().composition().frame();
+    //float frame = app().document().composition().frame();
+    float frame = 1.0f;
 
     BOOST_FOREACH( anim::track_t *t, active_tracks())
     {

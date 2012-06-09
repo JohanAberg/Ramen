@@ -128,12 +128,17 @@ void user_interface_t::restore_window_state()
 
 void user_interface_t::show() { window_->show();}
 
+int user_interface_t::run()
+{
+    return qApp->exec();
+}
+
 int user_interface_t::run( const boost::filesystem::path& p)
 {
     if( !p.empty())
         open_document( p);
 
-    return qApp->exec();
+    run();
 }
 
 void user_interface_t::quit()
@@ -160,8 +165,8 @@ void user_interface_t::create_new_document()
 
     app().create_new_document();
 
-    app().document().composition().attach_add_observer( boost::bind( &user_interface_t::node_added, this, _1));
-    app().document().composition().attach_release_observer( boost::bind( &user_interface_t::node_released, this, _1));
+    //app().document().composition().attach_add_observer( boost::bind( &user_interface_t::node_added, this, _1));
+    //app().document().composition().attach_release_observer( boost::bind( &user_interface_t::node_released, this, _1));
 
     update();
 }
@@ -169,6 +174,7 @@ void user_interface_t::create_new_document()
 void user_interface_t::open_document( const boost::filesystem::path& p)
 {
     create_new_document();
+    /*
     boost::filesystem::ifstream ifs( p, serialization::yaml_iarchive_t::file_open_mode());
 
     if( !ifs.is_open() || !ifs.good())
@@ -213,10 +219,12 @@ void user_interface_t::open_document( const boost::filesystem::path& p)
 
     if( !err.empty())
         multiline_alert_t::instance().show_alert( "Errors during file open", err);
+    */
 }
 
 bool user_interface_t::save_document()
 {
+    /*
     RAMEN_ASSERT( app().document().has_file());
 
     try
@@ -236,6 +244,8 @@ bool user_interface_t::save_document()
     }
 
     return true;
+    */
+    return false;
 }
 
 void user_interface_t::set_active_node( node_t *n)
@@ -307,53 +317,61 @@ void user_interface_t::update()
 
 void user_interface_t::begin_interaction()
 {
-    app().document().composition().begin_interaction();
+    //app().document().composition().begin_interaction();
     //viewer().begin_interaction();
     interacting_ = true;
-    app().memory_manager().begin_interaction();
+    //app().memory_manager().begin_interaction();
 }
 
 void user_interface_t::end_interaction()
 {
     interacting_ = false;
-    app().memory_manager().end_interaction();
+    //app().memory_manager().end_interaction();
     //viewer().end_interaction();
-    app().document().composition().end_interaction();
+    //app().document().composition().end_interaction();
 }
 
 int user_interface_t::start_frame() const
 {
-    return app().document().composition().start_frame();
+    return 1;
+    //return app().document().composition().start_frame();
 }
 
 int user_interface_t::end_frame() const
 {
-    return app().document().composition().end_frame();
+    return 100;
+    //return app().document().composition().end_frame();
 }
 
 float user_interface_t::frame() const
 {
-    return app().document().composition().frame();
+    return 1;
+    //return app().document().composition().frame();
 }
 
 void user_interface_t::set_start_frame( int t)
 {
+/*
     app().document().composition().set_start_frame( t);
     main_window()->time_slider().update( app().document().composition().start_frame(),
                                          app().document().composition().frame(),
                                          app().document().composition().end_frame());
+*/
 }
 
 void user_interface_t::set_end_frame( int t)
 {
+/*
     app().document().composition().set_end_frame( t);
     main_window()->time_slider().update( app().document().composition().start_frame(),
                                          app().document().composition().frame(),
                                          app().document().composition().end_frame());
+*/
 }
 
 void user_interface_t::set_frame( int t)
 {
+/*
     app().document().composition().set_frame( t);
     main_window()->time_slider().update( app().document().composition().start_frame(),
                                          app().document().composition().frame(),
@@ -362,6 +380,7 @@ void user_interface_t::set_frame( int t)
     inspector().update();
     update_anim_editors();
     //viewer().frame_changed();
+*/
 }
 
 void user_interface_t::update_anim_editors()
@@ -426,7 +445,7 @@ bool user_interface_t::image_sequence_file_selector( const std::string& title, c
 
     if( app().document().has_file())
     {
-        RAMEN_ASSERT( !app().document().composition().composition_dir().empty());
+        //RAMEN_ASSERT( !app().document().composition().composition_dir().empty());
         relative_check->setChecked( was_relative);
     }
     else
@@ -469,19 +488,6 @@ bool user_interface_t::image_sequence_file_selector( const std::string& title, c
     }
 
     return false;
-}
-
-// serialization
-void read_ui_state( const serialization::yaml_iarchive_t& in)
-{
-    // TODO: implement this
-}
-
-void user_interface_t::write_ui_state( serialization::yaml_oarchive_t& out) const
-{
-    // out << YAML::BeginMap;
-    // save state( out)
-    // out << YAML::EndMap;
 }
 
 // event filter

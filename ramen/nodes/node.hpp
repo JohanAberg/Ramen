@@ -19,8 +19,6 @@
 
 #include<ramen/params/composite_parameterised.hpp>
 
-#include<ramen/app/composition_fwd.hpp>
-
 #include<ramen/nodes/graph_color.hpp>
 #include<ramen/nodes/node_plug.hpp>
 #include<ramen/nodes/node_factory.hpp>
@@ -107,11 +105,6 @@ public:
 
     graph_color_t graph_color() const            { return graph_color_;}
     void set_graph_color( graph_color_t c) const { graph_color_ = c;}
-
-    // composition
-    const composition_t *composition() const            { return composition_;}
-    composition_t *composition()                        { return composition_;}
-    virtual void set_composition( composition_t *comp)  { composition_ = comp;}
 
     // visitor
     virtual void accept( node_visitor& v);
@@ -285,9 +278,6 @@ private:
     boost::uint32_t flags_;
     Imath::V2f loc_;
     std::vector<std::pair<int, float> > frames_needed_;
-
-    // composition this node belongs to.
-    composition_t *composition_;
 
     // hash
     hash::generator_t hash_gen_;

@@ -28,8 +28,6 @@
 
 #include<ramen/assert.hpp>
 
-#include<ramen/app/composition_fwd.hpp>
-
 #include<ramen/params/poly_param_value.hpp>
 #include<ramen/params/parameterised_fwd.hpp>
 #include<ramen/params/param_set_fwd.hpp>
@@ -138,12 +136,6 @@ public:
 
     /// Returns the world node this param belongs to.
     world_node_t *world();
-
-    /// Returns a const pointer to the composition this param belongs to.
-    const composition_t *composition() const;
-
-    /// Returns a const pointer to the composition this param belongs to.
-    composition_t *composition();
 
     // flags
     bool enabled() const;
