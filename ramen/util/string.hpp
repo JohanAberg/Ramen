@@ -16,6 +16,8 @@ bool is_string_valid_identifier( const std::string& str);
 
 void increment_string_number( std::string& str);
 
+std::string make_string( const char *s0, const char *s1, const char *s2 = 0, const char *s3 = 0);
+
 } // util
 } // ramen
 

@@ -2,8 +2,10 @@
 // Licensed under the terms of the CDDL License.
 // See CDDL_LICENSE.txt for a copy of the license.
 
-#ifndef BASE_NAME_HPP
-#define BASE_NAME_HPP
+#ifndef RAMEN_NAME_HPP
+#define RAMEN_NAME_HPP
+
+#include<ramen/config.hpp>
 
 #include<string>
 #include<algorithm>
@@ -16,7 +18,7 @@
 namespace ramen
 {
 
-class name_t
+class RAMEN_API name_t
 {
 public:
 
@@ -52,9 +54,9 @@ namespace boost
 {
 
 template<> struct has_nothrow_constructor<ramen::name_t> : public true_type {};
-template<> struct has_nothrow_copy<ramen::name_t>		: public true_type {};
-template<> struct has_nothrow_assign<ramen::name_t>		: public true_type {};
-template<> struct has_nothrow_destructor<ramen::name_t>	: public true_type {};
+template<> struct has_nothrow_copy<ramen::name_t>		 : public true_type {};
+template<> struct has_nothrow_assign<ramen::name_t>		 : public true_type {};
+template<> struct has_nothrow_destructor<ramen::name_t>	 : public true_type {};
 
 } // boost
 

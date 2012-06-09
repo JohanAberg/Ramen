@@ -12,7 +12,7 @@
 namespace ramen
 {
 
-std::ostream& operator << ( std::ostream& stream, const empty_t&)
+std::ostream& operator <<( std::ostream& stream, const empty_t&)
 {
     stream << "empty"; // REVISIT (sparent) : Go through formatter.
     return stream;

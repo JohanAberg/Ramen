@@ -8,8 +8,6 @@
 #ifndef RAMEN_POLY_HPP
 #define RAMEN_POLY_HPP
 
-#include<typeinfo>
-
 #include<boost/type_traits/is_base_of.hpp>
 #include<boost/type_traits/remove_reference.hpp>
 #include<boost/type_traits/remove_pointer.hpp>
@@ -18,9 +16,10 @@
 #include<boost/mpl/if.hpp>
 #include<boost/mpl/bool.hpp>
 #include<boost/type_traits/has_nothrow_constructor.hpp>
-
 #include<boost/move/move.hpp>
 #include<boost/swap.hpp>
+
+#include<ramen/typeinfo.hpp>
 
 namespace ramen
 {
@@ -279,18 +278,18 @@ public:
     const T& cast() const
     {
         if (type_info() != typeid(T))
-            throw std::bad_cast();
+            throw bad_cast();
 
-        return *static_cast<const T*>(interface_ref().cast());
+        return *static_cast<const T*>( interface_ref().cast());
     }
 
     template <typename T>
     T& cast()
     {
         if (type_info() != typeid(T))
-            throw std::bad_cast();
+            throw bad_cast();
 
-        return *static_cast<T*>(interface_ref().cast());
+        return *static_cast<T*>( interface_ref().cast());
     }
 
     template <typename T>
@@ -386,7 +385,7 @@ T poly_cast(poly<U>& x)
     typedef typename target_type::interface_type target_interface_type;
 
     if( !x.template is_dynamic_convertible_to<target_interface_type>())
-        throw std::bad_cast();
+        throw bad_cast();
 
     return reinterpret_cast<T>( x);
 }
@@ -398,7 +397,7 @@ T poly_cast(const poly<U>& x)
     typedef typename target_type::interface_type target_interface_type;
 
     if( !x.template is_dynamic_convertible_to<target_interface_type>())
-        throw std::bad_cast();
+        throw bad_cast();
 
     return reinterpret_cast<T>( x);
 }

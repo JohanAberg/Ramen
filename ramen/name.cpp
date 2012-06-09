@@ -6,7 +6,6 @@
 
 #include<algorithm>
 
-#include<boost/swap.hpp>
 #include<boost/thread/once.hpp>
 
 #include<tbb/concurrent_unordered_set.h>
@@ -70,7 +69,7 @@ void name_t::init( const std::string& str)
 name_t& name_t::operator=( const name_t& other)
 {
     name_t tmp( other);
-    boost::swap( *this, tmp);
+    swap( *this, tmp);
     return *this;
 }
 

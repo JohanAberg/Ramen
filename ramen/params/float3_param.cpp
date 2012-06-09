@@ -61,13 +61,13 @@ poly_param_value_t float3_param_t::value_at_frame( float frame) const
         eval_curve( 2, frame, v.z);
 
     poly_param_indexable_value_t val( v);
-    return adobe::poly_cast<poly_param_value_t&>( val);
+    return poly_cast<poly_param_value_t&>( val);
 }
 
 void float3_param_t::set_default_value( const Imath::V3f& x)
 {
     poly_param_indexable_value_t v( x);
-    value() = adobe::poly_cast<poly_param_value_t&>( v);
+    value() = poly_cast<poly_param_value_t&>( v);
 }
 
 void float3_param_t::set_value( const Imath::V3f& x, change_reason reason)
@@ -90,7 +90,7 @@ void float3_param_t::set_value_at_frame( const Imath::V3f& x, float frame, chang
         param_set()->add_command( this);
 
     poly_param_indexable_value_t v( x);
-    value() = adobe::poly_cast<poly_param_value_t&>( v);
+    value() = poly_cast<poly_param_value_t&>( v);
 
     bool autokey = param_set()->autokey();
 
@@ -222,7 +222,7 @@ poly_param_value_t float3_param_t::from_python( const boost::python::object& obj
     boost::python::list t = boost::python::extract<boost::python::list>( obj);
     Imath::V3f val = python::list_to_vec3<float>( t);
     poly_param_indexable_value_t v( val);
-    return adobe::poly_cast<poly_param_value_t&>( v);
+    return poly_cast<poly_param_value_t&>( v);
 }
 
 void float3_param_t::do_read( const serialization::yaml_node_t& node)
@@ -234,7 +234,7 @@ void float3_param_t::do_read( const serialization::yaml_node_t& node)
     if( node.get_optional_value( "value", val))
     {
         poly_param_indexable_value_t v( val);
-        value().assign( adobe::poly_cast<poly_param_value_t&>( v));
+        value().assign( poly_cast<poly_param_value_t&>( v));
     }
 }
 

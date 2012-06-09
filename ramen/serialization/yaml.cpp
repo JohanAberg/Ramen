@@ -5,7 +5,7 @@
 #include<ramen/assert.hpp>
 
 #ifndef NDEBUG
-	#include<iostream>
+    #include<iostream>
 #endif
 
 namespace ramen
@@ -13,41 +13,41 @@ namespace ramen
 
 void check_yaml_errors( const YAML::Emitter& out)
 {
-	#ifndef NDEBUG
-		if( !out.good())
-		{
-			std::cout << "YAML error " << out.GetLastError() << "\n";
-			RAMEN_ASSERT( 0);
-		}
-	#endif
+    #ifndef NDEBUG
+        if( !out.good())
+        {
+            std::cout << "YAML error " << out.GetLastError() << "\n";
+            RAMEN_ASSERT( 0);
+        }
+    #endif
 }
 
 const YAML::Node& get_node( const YAML::Node& node, const std::string& key)
 {
-	return node[key];
+    return node[key];
 }
 
 const YAML::Node *get_optional_node( const YAML::Node& node, const std::string& key)
 {
-	return node.FindValue( key);
+    return node.FindValue( key);
 }
 
-void operator>>( const YAML::Node& in, adobe::empty_t& x)
+void operator>>( const YAML::Node& in, empty_t& x)
 {
-    RAMEN_ASSERT( 0 && "Trying to read an adobe::empty_t from a YAML::Node");
+    RAMEN_ASSERT( 0 && "Trying to read an empty_t from a YAML::Node");
 }
 
-YAML::Emitter& operator<<( YAML::Emitter& out, const adobe::empty_t& x)
+YAML::Emitter& operator<<( YAML::Emitter& out, const empty_t& x)
 {
-    RAMEN_ASSERT( 0 && "Trying to write an adobe::empty_t to a YAML::Emitter");
+    RAMEN_ASSERT( 0 && "Trying to write an empty_t to a YAML::Emitter");
     return out;
 }
 
 void operator>>( const YAML::Node& in, boost::filesystem::path& p)
 {
-	std::string tmp;
-	in >> tmp;
-	p = boost::filesystem::path( tmp);
+    std::string tmp;
+    in >> tmp;
+    p = boost::filesystem::path( tmp);
 }
 
 YAML::Emitter& operator<<( YAML::Emitter& out, const boost::filesystem::path& p)

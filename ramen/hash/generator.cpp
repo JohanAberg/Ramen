@@ -28,7 +28,7 @@ const generator_t::digest_type& generator_t::digest() const
 {
     if( !digest_)
     {
-        adobe::md5_t md5;
+        md5_t md5;
         md5.update( reinterpret_cast<void*>( const_cast<char*>( ss_.str().c_str())), ss_.str().size());
         digest_ = md5.final();
     }
@@ -41,7 +41,7 @@ std::string generator_t::digest_as_string() const
     std::stringstream s;
 
     for( int i = 0; i < sizeof( digest_type); ++i)
-        s << std::setfill( '0') << std::setw( 2) << std::hex << (int) digest()[i];
+        s << std::setfill( '0') << std::setw( 2) << std::hex << ( int) digest()[i];
 
     return s.str();
 }

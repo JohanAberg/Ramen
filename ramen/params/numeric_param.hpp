@@ -24,17 +24,17 @@ public:
 
     enum numeric_type_t
     {
-		absolute = 0,
-		relative_x,
-		relative_y,
-		relative_xy,
-		relative_size_x,
-		relative_size_y,
-		relative_size_xy
+        absolute = 0,
+        relative_x,
+        relative_y,
+        relative_xy,
+        relative_size_x,
+        relative_size_y,
+        relative_size_xy
     };
 
     explicit numeric_param_t( const std::string& name);
-	
+
     bool round_to_int() const { return flags() & round_to_int_bit;}
     void set_round_to_int( bool r);
 
@@ -61,15 +61,15 @@ protected:
     Imath::V2f round( const Imath::V2f& x) const;
     Imath::V3f round( const Imath::V3f& x) const;
 
-	void get_scale_and_offset( float& scale, float& offset) const;
-	void get_scale_and_offset( Imath::V2f& scale, Imath::V2f& offset) const;
-	
+    void get_scale_and_offset( float& scale, float& offset) const;
+    void get_scale_and_offset( Imath::V2f& scale, Imath::V2f& offset) const;
+
 private:
 
-	// python interop
-	friend class python::access;
+    // python interop
+    friend class python::access;
 
-	poly_param_value_t relative_to_absolute( const poly_param_value_t& val) const;
+    poly_param_value_t relative_to_absolute( const poly_param_value_t& val) const;
     poly_param_value_t absolute_to_relative( const poly_param_value_t& val) const;
 
     Imath::Box2i frame_area() const;
@@ -86,20 +86,20 @@ S get_absolute_value( const param_t& p)
 
     const poly_param_value_t& any( p.value());
 
-	#ifdef NDEBUG
-	    S v = any.cast<S>();
-		return q->relative_to_absolute( v);
-	#else
-		try
-		{
-			S v = any.cast<S>();
-			return q->relative_to_absolute( v);
-		}
-		catch( adobe::bad_cast& e)
-		{
-			RAMEN_ASSERT( 0 && "Bad cast exception in get_value");
-		}
-	#endif
+    #ifdef NDEBUG
+        S v = any.cast<S>();
+        return q->relative_to_absolute( v);
+    #else
+        try
+        {
+            S v = any.cast<S>();
+            return q->relative_to_absolute( v);
+        }
+        catch( bad_cast& e)
+        {
+            RAMEN_ASSERT( 0 && "Bad cast exception in get_value");
+        }
+    #endif
 }
 
 template<class S>
@@ -110,20 +110,20 @@ S get_absolute_value_at_frame( const param_t& p, float frame)
 
     const poly_param_value_t& any( p.value_at_frame( frame));
 
-	#ifdef NDEBUG
-		S v = any.cast<S>();
-		return q->relative_to_absolute( v);
-	#else
-		try
-		{
-			S v = any.cast<S>();
-			return q->relative_to_absolute( v);
-		}
-		catch( adobe::bad_cast& e)
-		{
-			RAMEN_ASSERT( 0 && "Bad cast exception in get_value");
-		}
-	#endif
+    #ifdef NDEBUG
+        S v = any.cast<S>();
+        return q->relative_to_absolute( v);
+    #else
+        try
+        {
+            S v = any.cast<S>();
+            return q->relative_to_absolute( v);
+        }
+        catch( bad_cast& e)
+        {
+            RAMEN_ASSERT( 0 && "Bad cast exception in get_value");
+        }
+    #endif
 }
 
 } // namespace

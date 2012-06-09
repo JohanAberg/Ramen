@@ -83,6 +83,7 @@ SET( RAMEN_MOC_CLASSES  params/animated_param.hpp
 SET( RAMEN_SOURCES  empty.cpp
 					name.cpp
 					ref_counted.cpp
+					typeinfo.cpp
 
 					anim/any_curve.cpp
 					anim/clipboard.cpp
@@ -129,6 +130,7 @@ SET( RAMEN_SOURCES  empty.cpp
 					half/halfExpLogTable.cpp
 
 					hash/generator.cpp
+					hash/md5.cpp
 
 					image/buffer.cpp
 					image/color_bars.cpp
@@ -673,9 +675,11 @@ SET( RAMEN_PYTHON_SOURCES	python/access.cpp
 # tests
 IF( CMAKE_BUILD_TYPE MATCHES Debug)
 	SET( RAMEN_TEST_SOURCES	test/test.cpp
+							test/array.cpp
 							test/composite_nodes.cpp
 							test/container.cpp
 							test/depgraph.cpp
+							test/dictionary.cpp
 							test/expressions.cpp
 							test/math.cpp
 							test/name.cpp

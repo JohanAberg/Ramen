@@ -7,9 +7,9 @@
 
 #include<boost/any.hpp>
 
-#include<adobe/empty.hpp>
-
 #include<ramen/concepts/RegularConcept.hpp>
+
+#include<ramen/empty.hpp>
 
 namespace ramen
 {
@@ -30,8 +30,8 @@ private:
 
 public:
 
-	BOOST_CONCEPT_USAGE( ParamValueConcept)
-	{
+    BOOST_CONCEPT_USAGE( ParamValueConcept)
+    {
     }
 };
 
@@ -51,10 +51,10 @@ private:
 
 public:
 
-	BOOST_CONCEPT_USAGE( IndexableParamValueConcept)
-	{
+    BOOST_CONCEPT_USAGE( IndexableParamValueConcept)
+    {
         checkIndexOperator( t);
-	}
+    }
 
     T t;
 
@@ -66,7 +66,7 @@ private:
         boost::any anything( x[0]);
     }
 
-    static void checkIndexOperator( const adobe::empty_t& x) {}
+    static void checkIndexOperator( const empty_t& x) {}
 };
 
 } // ramen

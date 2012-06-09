@@ -5,6 +5,8 @@
 #ifndef RAMEN_REF_COUNTED_HPP
 #define RAMEN_REF_COUNTED_HPP
 
+#include<ramen/config.hpp>
+
 #include<boost/noncopyable.hpp>
 #include<tbb/atomic.h>
 
@@ -17,7 +19,7 @@ namespace ramen
 \ingroup utils
 \brief base class for reference counted objects
 */
-class ref_counted_t : private boost::noncopyable
+class RAMEN_API ref_counted_t : private boost::noncopyable
 {
 public:
 

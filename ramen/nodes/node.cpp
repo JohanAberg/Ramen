@@ -107,7 +107,7 @@ bool node_t::is_context() const    { return util::test_flag( flags_, context_bit
 
 // inputs
 
-int node_t::find_input( const adobe::name_t& id) const
+int node_t::find_input( const name_t& id) const
 {
     int index = 0;
     BOOST_FOREACH( const node_input_plug_t& i, input_plugs())
@@ -208,7 +208,7 @@ void node_t::reconnect_node()
         BOOST_FOREACH( edge_t& e, comp->edges())
         {
             if( e.dst == this)
-                input_plugs()[ e.port].set_input( e.src, adobe::name_t( "unused"));
+                input_plugs()[ e.port].set_input( e.src, name_t( "unused"));
         }
     }
 }

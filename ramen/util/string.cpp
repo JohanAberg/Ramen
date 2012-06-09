@@ -43,12 +43,12 @@ std::string get_number( const std::string& str)
 
 bool is_string_valid_identifier( const std::string& str)
 {
-	// TODO: write this!
-	
-	if( str.empty())
-		return false;
+    // TODO: write this!
 
-	return true;
+    if( str.empty())
+        return false;
+
+    return true;
 }
 
 void increment_string_number( std::string& str)
@@ -64,6 +64,22 @@ void increment_string_number( std::string& str)
         num_str = boost::lexical_cast<std::string>( ++num);
         str = base + num_str;
     }
+}
+
+std::string make_string( const char *s0, const char *s1, const char *s2, const char *s3)
+{
+    std::string result( s0);
+    result += s1;
+
+    if( s2)
+    {
+        result += s2;
+
+        if( s3)
+            result += s3;
+    }
+
+    return result;
 }
 
 } // util
