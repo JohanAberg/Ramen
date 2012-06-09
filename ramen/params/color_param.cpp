@@ -7,7 +7,7 @@
 
 #include<boost/bind.hpp>
 
-#include<adobe/algorithm/clamp.hpp>
+#include<OpenEXR/ImathFun.h>
 
 #include<QLabel>
 
@@ -87,7 +87,7 @@ poly_param_value_t color_param_t::value_at_frame(float frame) const
         if( !eval_expression( 3, frame, v.a, input3_))
             eval_curve( 3, frame, v.a);
 
-        v.a = adobe::clamp( v.a, 0.0f, 1.0f);
+        v.a = Imath::clamp( v.a, 0.0f, 1.0f);
     }
     else
         v.a = 1.0f;

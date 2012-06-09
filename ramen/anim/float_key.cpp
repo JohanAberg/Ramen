@@ -4,7 +4,7 @@
 
 #include<ramen/anim/float_key.hpp>
 
-#include<adobe/algorithm/clamp.hpp>
+#include<OpenEXR/ImathFun.h>
 
 #include<ramen/serialization/yaml_node.hpp>
 #include<ramen/serialization/yaml_oarchive.hpp>
@@ -28,26 +28,26 @@ float_key_t::float_key_t( time_type time, value_type value) : keyframe_t( time),
 
 void float_key_t::swap( float_key_t& other)
 {
-	keyframe_t::swap( other);
-	std::swap( value_, other.value_);
-	std::swap( v0_, other.v0_);
-	std::swap( v1_, other.v1_);
-	std::swap( tangent_cont_, other.tangent_cont_);
-	
-	for( int i = 0; i < 4; ++i)
-		std::swap( coeffs_[i], other.coeffs_[i]);
+    keyframe_t::swap( other);
+    std::swap( value_, other.value_);
+    std::swap( v0_, other.v0_);
+    std::swap( v1_, other.v1_);
+    std::swap( tangent_cont_, other.tangent_cont_);
+
+    for( int i = 0; i < 4; ++i)
+        std::swap( coeffs_[i], other.coeffs_[i]);
 }
 
 void float_key_t::swap_value( float_key_t& other)
 {
-	keyframe_t::swap_value( other);
-	std::swap( value_, other.value_);
-	std::swap( v0_, other.v0_);
-	std::swap( v1_, other.v1_);
-	std::swap( tangent_cont_, other.tangent_cont_);
-	
-	for( int i = 0; i < 4; ++i)
-		std::swap( coeffs_[i], other.coeffs_[i]);
+    keyframe_t::swap_value( other);
+    std::swap( value_, other.value_);
+    std::swap( v0_, other.v0_);
+    std::swap( v1_, other.v1_);
+    std::swap( tangent_cont_, other.tangent_cont_);
+
+    for( int i = 0; i < 4; ++i)
+        std::swap( coeffs_[i], other.coeffs_[i]);
 }
 
 void float_key_t::set_v0_auto_tangent( auto_tangent_method m)
@@ -78,24 +78,24 @@ void float_key_t::set_v1_auto_tangent( float_key_t::auto_tangent_method m)
 
 void float_key_t::set_v0_tangent( value_type slope)
 {
-    v0_ = adobe::clamp( slope, min_slope(), max_slope());
+    v0_ = Imath::clamp( slope, min_slope(), max_slope());
     set_v0_auto_tangent( tangent_fixed);
 
     if( tangent_cont_)
     {
-        v1_ = adobe::clamp( slope, min_slope(), max_slope());
+        v1_ = Imath::clamp( slope, min_slope(), max_slope());
         set_v1_auto_tangent( tangent_fixed);
     }
 }
 
 void float_key_t::set_v1_tangent( value_type slope)
 {
-    v1_ = adobe::clamp( slope, min_slope(), max_slope());
+    v1_ = Imath::clamp( slope, min_slope(), max_slope());
     set_v1_auto_tangent( tangent_fixed);
 
     if( tangent_cont_)
     {
-        v0_ = adobe::clamp( slope, min_slope(), max_slope());
+        v0_ = Imath::clamp( slope, min_slope(), max_slope());
         set_v0_auto_tangent( tangent_fixed);
     }
 }
@@ -164,7 +164,7 @@ void float_key_t::calc_cubic_coefficients( const float_key_t& next)
 }
 
 float_key_t::value_type float_key_t::evaluate_cubic( time_type t) const
-{    
+{
     return (((( coeffs_[0] * t) + coeffs_[1]) * t + coeffs_[2]) * t) + coeffs_[3];
 }
 
@@ -178,44 +178,44 @@ float_key_t::value_type float_key_t::min_slope() { return -max_slope();}
 
 void float_key_t::str( std::stringstream& s) const
 {
-	s << time() << "," << value() << "," << v0() << "," << v1()
-		<< "," << v0_auto_tangent() << "," << v1_auto_tangent();
+    s << time() << "," << value() << "," << v0() << "," << v1()
+        << "," << v0_auto_tangent() << "," << v1_auto_tangent();
 }
 
 void float_key_t::read( const serialization::yaml_node_t& in)
 {
-	set_v0_auto_tangent( tangent_linear);
-	set_v1_auto_tangent( tangent_linear);
-	tangent_cont_ = false;
-	
-	in[0] >> time_;
-	in[1] >> value_;
-		
-	if( in.size() > 2)
-	{
-		in[2] >> v0_;
-		in[3] >> v1_;
+    set_v0_auto_tangent( tangent_linear);
+    set_v1_auto_tangent( tangent_linear);
+    tangent_cont_ = false;
 
-		set_v0_auto_tangent( tangent_fixed);
-		set_v1_auto_tangent( tangent_fixed);
-		tangent_cont_ = ( v0_ == v1_);
+    in[0] >> time_;
+    in[1] >> value_;
 
-		if( in.size() > 4)
-		{
-			std::string s;
-			in[4] >> s;
-			set_v0_auto_tangent( string_to_auto_tangent( s));
+    if( in.size() > 2)
+    {
+        in[2] >> v0_;
+        in[3] >> v1_;
 
-			in[5] >> s;
-			set_v1_auto_tangent( string_to_auto_tangent( s));
-		}
-	}
+        set_v0_auto_tangent( tangent_fixed);
+        set_v1_auto_tangent( tangent_fixed);
+        tangent_cont_ = ( v0_ == v1_);
+
+        if( in.size() > 4)
+        {
+            std::string s;
+            in[4] >> s;
+            set_v0_auto_tangent( string_to_auto_tangent( s));
+
+            in[5] >> s;
+            set_v1_auto_tangent( string_to_auto_tangent( s));
+        }
+    }
 }
 
 void float_key_t::write( serialization::yaml_oarchive_t& out) const
 {
     out.flow();
-	out.begin_seq();
+    out.begin_seq();
         out << time() << value() << v0() << v1();
         out << auto_tangent_to_string( v0_auto_tangent());
         out << auto_tangent_to_string( v1_auto_tangent());

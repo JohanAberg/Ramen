@@ -8,7 +8,7 @@
 
 #include<algorithm>
 
-#include<adobe/algorithm/clamp.hpp>
+#include<OpenEXR/ImathFun.h>
 
 #include<ramen/assert.hpp>
 
@@ -29,10 +29,10 @@ color_t::color_t( double r, double g, double b, double a)
 
 color_t::operator QColor()
 {
-    return QColor( adobe::clamp( red_	, 0.0, 1.0) * 255,
-		   adobe::clamp( green_	, 0.0, 1.0) * 255,
-		   adobe::clamp( blue_	, 0.0, 1.0) * 255,
-		   adobe::clamp( alpha_	, 0.0, 1.0) * 255);
+    return QColor( Imath::clamp( red_	, 0.0, 1.0) * 255,
+           Imath::clamp( green_	, 0.0, 1.0) * 255,
+           Imath::clamp( blue_	, 0.0, 1.0) * 255,
+           Imath::clamp( alpha_	, 0.0, 1.0) * 255);
 }
 
 color_t& color_t::operator*=( double s)
@@ -72,7 +72,7 @@ void color_t::to_hsv(double& h, double& s, double& v) const
     double scale = std::max( r, std::max( g, b));
 
     if( scale < 1.0)
-	scale = 1.0;
+    scale = 1.0;
 
     r /= scale;
     g /= scale;
@@ -108,7 +108,7 @@ color_t color_t::from_hsv( double h, double s, double v)
     double r = 0, g = 0, b = 0;
 
     if( h == 0 && s == 0)
-	r = g = b = v;
+    r = g = b = v;
     else
     {
         h *= 6.0;

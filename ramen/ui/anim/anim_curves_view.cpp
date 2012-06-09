@@ -12,7 +12,7 @@
 #include<boost/foreach.hpp>
 #include<boost/bind.hpp>
 
-#include<adobe/algorithm/clamp.hpp>
+#include<OpenEXR/ImathFun.h>
 
 #include<QTreeView>
 #include<QKeyEvent>
@@ -50,32 +50,32 @@ anim_curves_view_t::anim_curves_view_t( QWidget *parent) : QWidget( parent), fir
     setFocusPolicy( Qt::ClickFocus);
     viewport_.set_y_down( true);
     scroll_mode_ = false;
-	handle_mouse_event_ = false;
-	snap_ = false;
-	show_tangents_ = true;
-	
-	frame_selected_ = new QAction( "Frame Selected", this);
-	connect( frame_selected_, SIGNAL( triggered()), this, SLOT( frame_selection()));
-	
-	frame_all_ = new QAction( "Frame All", this);
-	connect( frame_all_, SIGNAL( triggered()), this, SLOT( frame_all()));
-	
-	snap_frames_ = new QAction( "Snap Frames", this);
-	snap_frames_->setCheckable( true);
-	snap_frames_->setChecked( false);
-	connect( snap_frames_, SIGNAL( triggered( bool)), this, SLOT( set_snap_frames( bool)));
+    handle_mouse_event_ = false;
+    snap_ = false;
+    show_tangents_ = true;
 
-	show_tans_ = new QAction( "Show Tangents", this);
-	show_tans_->setCheckable( true);
-	show_tans_->setChecked( true);
-	connect( show_tans_, SIGNAL( triggered( bool)), this, SLOT( set_show_tangents( bool)));
+    frame_selected_ = new QAction( "Frame Selected", this);
+    connect( frame_selected_, SIGNAL( triggered()), this, SLOT( frame_selection()));
+
+    frame_all_ = new QAction( "Frame All", this);
+    connect( frame_all_, SIGNAL( triggered()), this, SLOT( frame_all()));
+
+    snap_frames_ = new QAction( "Snap Frames", this);
+    snap_frames_->setCheckable( true);
+    snap_frames_->setChecked( false);
+    connect( snap_frames_, SIGNAL( triggered( bool)), this, SLOT( set_snap_frames( bool)));
+
+    show_tans_ = new QAction( "Show Tangents", this);
+    show_tans_->setCheckable( true);
+    show_tans_->setChecked( true);
+    connect( show_tans_, SIGNAL( triggered( bool)), this, SLOT( set_show_tangents( bool)));
 }
 
 float anim_curves_view_t::time_scale() const	{ return viewport_.zoom_x();}
 float anim_curves_view_t::value_scale() const	{ return viewport_.zoom_y();}
 
 Imath::V2i anim_curves_view_t::world_to_screen( const Imath::V2f& p) const
-{ 
+{
     return viewport_.world_to_screen( p);
 }
 
@@ -114,10 +114,10 @@ void anim_curves_view_t::keyPressEvent( QKeyEvent *event)
 
     case Qt::Key_Backspace:
     case Qt::Key_Delete:
-		app().ui()->anim_editor().delete_selected_keyframes();
-		event->accept();
+        app().ui()->anim_editor().delete_selected_keyframes();
+        event->accept();
     break;
-	
+
     default:
         app().ui()->anim_editor().toolbar().tool()->key_press_event( *this, event);
     break;
@@ -125,7 +125,7 @@ void anim_curves_view_t::keyPressEvent( QKeyEvent *event)
 }
 
 void anim_curves_view_t::keyReleaseEvent( QKeyEvent *event)
-{ 
+{
     switch( event->key())
     {
     case Qt::Key_Home:
@@ -144,14 +144,14 @@ void anim_curves_view_t::keyReleaseEvent( QKeyEvent *event)
 
 void anim_curves_view_t::mousePressEvent( QMouseEvent *event)
 {
-	if( event->button() != Qt::LeftButton)
-	{
-		handle_mouse_event_ = false;
-		QWidget::mousePressEvent( event);
-		return;
-	}
+    if( event->button() != Qt::LeftButton)
+    {
+        handle_mouse_event_ = false;
+        QWidget::mousePressEvent( event);
+        return;
+    }
 
-	handle_mouse_event_ = true;
+    handle_mouse_event_ = true;
     push_x_ = event->x();
     push_y_ = event->y();
     last_x_ = event->x();
@@ -173,32 +173,32 @@ void anim_curves_view_t::mousePressEvent( QMouseEvent *event)
             scroll_mode_ = true;
 
         event->accept();
-		return;
+        return;
     }
 
-	float time = app().document().composition().frame();
-	Imath::V2i q( world_to_screen( Imath::V2f( time, 0)));
+    float time = app().document().composition().frame();
+    Imath::V2i q( world_to_screen( Imath::V2f( time, 0)));
 
-	if( abs( q.x - push_x_) <= 4)
-	{
-		move_time_mode_ = true;
+    if( abs( q.x - push_x_) <= 4)
+    {
+        move_time_mode_ = true;
         event->accept();
-	}
-	else
-	{
-		app().ui()->begin_interaction();
-		app().ui()->anim_editor().toolbar().tool()->mouse_press_event( *this, event);
+    }
+    else
+    {
+        app().ui()->begin_interaction();
+        app().ui()->anim_editor().toolbar().tool()->mouse_press_event( *this, event);
     }
 }
 
 void anim_curves_view_t::mouseMoveEvent( QMouseEvent *event)
 {
-	if( !handle_mouse_event_)
-	{
-		QWidget::mouseMoveEvent( event);
-		return;
-	}
-	
+    if( !handle_mouse_event_)
+    {
+        QWidget::mouseMoveEvent( event);
+        return;
+    }
+
     if( ( event->x() != last_x_) || ( event->y() != last_y_))
     {
         if( scroll_mode_)
@@ -247,12 +247,12 @@ void anim_curves_view_t::mouseMoveEvent( QMouseEvent *event)
 
 void anim_curves_view_t::mouseReleaseEvent( QMouseEvent *event)
 {
-	if( !handle_mouse_event_)
-	{
-		QWidget::mouseReleaseEvent( event);
-		return;
-	}
-	
+    if( !handle_mouse_event_)
+    {
+        QWidget::mouseReleaseEvent( event);
+        return;
+    }
+
     if( !scroll_mode_ && !zoom_mode_ && !move_time_mode_)
     {
         app().ui()->anim_editor().toolbar().tool()->mouse_release_event( *this, event);
@@ -302,13 +302,13 @@ void anim_curves_view_t::paintEvent( QPaintEvent *event)
     // draw in screen space
     painter.setWorldTransform( QTransform());
 
-	pen.setColor( palette_t::instance().qcolor( "text"));
+    pen.setColor( palette_t::instance().qcolor( "text"));
     painter.setPen( pen);
 
     draw_keyframes_visitor v2( *this, show_tangents());
     BOOST_FOREACH( const anim::track_t *t, app().ui()->anim_editor().active_tracks())
         boost::apply_visitor( v2, t->curve().get());
-    
+
     draw_axes();
     draw_time_bar();
 
@@ -333,17 +333,17 @@ void anim_curves_view_t::resizeEvent( QResizeEvent *event)
 
 void anim_curves_view_t::contextMenuEvent( QContextMenuEvent *event)
 {
-	QMenu menu( this);
-	menu.addAction( frame_selected_);
-	menu.addAction( frame_all_);
-	menu.addSeparator();
-	
-	snap_frames_->setChecked( snap_);
-	menu.addAction( snap_frames_);
-	menu.addAction( show_tans_);
+    QMenu menu( this);
+    menu.addAction( frame_selected_);
+    menu.addAction( frame_all_);
+    menu.addSeparator();
 
-	menu.exec(event->globalPos());
-	event->accept();
+    snap_frames_->setChecked( snap_);
+    menu.addAction( snap_frames_);
+    menu.addAction( show_tans_);
+
+    menu.exec(event->globalPos());
+    event->accept();
 }
 
 void anim_curves_view_t::reset_view()
@@ -466,41 +466,41 @@ double anim_curves_view_t::nice_num( double x, bool round) const
 
     if (round)
     if (f<1.5) nf = 1.;
-	else if (f<3.) nf = 2.;
-	else if (f<7.) nf = 5.;
-	else nf = 10.;
+    else if (f<3.) nf = 2.;
+    else if (f<7.) nf = 5.;
+    else nf = 10.;
     else
-	if (f<=1.) nf = 1.;
-	else if (f<=2.) nf = 2.;
-	else if (f<=5.) nf = 5.;
-	else nf = 10.;
+    if (f<=1.) nf = 1.;
+    else if (f<=2.) nf = 2.;
+    else if (f<=5.) nf = 5.;
+    else nf = 10.;
     return nf * std::pow(10.0, expv);
 }
 
 void anim_curves_view_t::frame_area( const Imath::Box2f& area)
 {
-	if( area.isEmpty())
-		return;
-	
+    if( area.isEmpty())
+        return;
+
     Imath::Box2f new_area( area);
     new_area.min.x -= area.size().x / 10;
     new_area.max.x += area.size().x / 10;
     new_area.min.y -= area.size().y / 10;
     new_area.max.y += area.size().y / 10;
 
-	if( new_area.size().x == 0)
-	{
-		float half_size = viewport_.world().size().x / 2;
-		new_area.min.x -= half_size;
-	    new_area.max.x += half_size;
-	}
+    if( new_area.size().x == 0)
+    {
+        float half_size = viewport_.world().size().x / 2;
+        new_area.min.x -= half_size;
+        new_area.max.x += half_size;
+    }
 
-	if( new_area.size().y == 0)
-	{
-		float half_size = viewport_.world().size().y / 2;
-		new_area.min.y -= half_size;
-	    new_area.max.y += half_size;
-	}
+    if( new_area.size().y == 0)
+    {
+        float half_size = viewport_.world().size().y / 2;
+        new_area.min.y -= half_size;
+        new_area.max.y += half_size;
+    }
 
     viewport_.reset( viewport_.device(), new_area);
 }
@@ -510,7 +510,7 @@ void anim_curves_view_t::frame_area( const Imath::Box2f& area)
 int anim_curves_view_t::span_num_steps( float t0, float t1) const
 {
     float pixel_len = ( t1 - t0) * time_scale();
-    return adobe::clamp( (int) pixel_len / 5, 5, 50);
+    return Imath::clamp( (int) pixel_len / 5, 5, 50);
 }
 
 void anim_curves_view_t::draw_small_box( const Imath::V2f& p) const
@@ -528,28 +528,28 @@ float anim_curves_view_t::tangent_length() const { return 20.0f;}
 Imath::V2f anim_curves_view_t::left_tangent_dir( float tangent, float yscale) const
 {
     Imath::V2f tv( -time_scale(), tangent * value_scale() * yscale);
-	tv.normalize();
-	return tv;
+    tv.normalize();
+    return tv;
 }
 
 Imath::V2f anim_curves_view_t::right_tangent_dir( float tangent, float yscale) const
 {
-	Imath::V2f tv( time_scale(), -tangent * value_scale() * yscale);
-	tv.normalize();
-	return tv;
+    Imath::V2f tv( time_scale(), -tangent * value_scale() * yscale);
+    tv.normalize();
+    return tv;
 }
 
 Imath::V2i anim_curves_view_t::left_tangent_pos( const Imath::V2i& p, float tangent, float yscale) const
 {
     Imath::V2f tv( left_tangent_dir( tangent, yscale));
-	tv *= tangent_length();
+    tv *= tangent_length();
     return Imath::V2i( p.x + tv.x, p.y + tv.y);
 }
 
 Imath::V2i anim_curves_view_t::right_tangent_pos( const Imath::V2i& p, float tangent, float yscale) const
 {
     Imath::V2f tv( right_tangent_dir( tangent, yscale));
-	tv *= tangent_length();
+    tv *= tangent_length();
     return Imath::V2i( p.x + tv.x, p.y + tv.y);
 }
 
@@ -558,9 +558,9 @@ int anim_curves_view_t::pick_distance2() const	{ return pick_distance() * pick_d
 
 bool anim_curves_view_t::inside_pick_distance( const Imath::V2i& p, const Imath::V2i& q) const
 {
-	int l = ( p - q).length2();
-	int m = pick_distance2();
-	return l < m;
+    int l = ( p - q).length2();
+    int m = pick_distance2();
+    return l < m;
 }
 
 // slots
@@ -571,7 +571,7 @@ void anim_curves_view_t::frame_all()
     BOOST_FOREACH( const anim::track_t *t, app().ui()->anim_editor().active_tracks())
         boost::apply_visitor( v, t->curve().get());
 
-	frame_area( v.bbox);
+    frame_area( v.bbox);
 }
 
 void anim_curves_view_t::frame_selection()
@@ -581,15 +581,15 @@ void anim_curves_view_t::frame_selection()
     BOOST_FOREACH( const anim::track_t *t, app().ui()->anim_editor().active_tracks())
         boost::apply_visitor( v, t->curve().get());
 
-	frame_area( v.bbox);
+    frame_area( v.bbox);
 }
 
 void anim_curves_view_t::set_snap_frames( bool b)	{ snap_ = b;}
 
 void anim_curves_view_t::set_show_tangents( bool b)
-{ 
-	show_tangents_ = b;
-	update();
+{
+    show_tangents_ = b;
+    update();
 }
 
 } // namespace
