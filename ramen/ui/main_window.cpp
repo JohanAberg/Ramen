@@ -405,7 +405,7 @@ void main_window_t::create_node_actions()
     node_factory_t::instance().sort_by_menu_item();
 
     // add our builtin nodes first
-    BOOST_FOREACH( const node_metaclass_t& mclass, node_factory_t::instance().registered_nodes())
+    BOOST_FOREACH( const node_class_metadata_t& mclass, node_factory_t::instance().registered_nodes())
     {
         if( mclass.ui_visible && node_factory_t::instance().is_latest_version( mclass.id))
         {

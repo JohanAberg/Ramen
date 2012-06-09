@@ -478,8 +478,8 @@ bool node_t::is_frame_varying() const { return false;}
 // ui
 const char *node_t::help_string() const
 {
-    RAMEN_ASSERT( metaclass());
-    return metaclass()->help;
+    RAMEN_ASSERT( class_metadata());
+    return class_metadata()->help;
 }
 
 void node_t::convert_relative_paths( const boost::filesystem::path& old_base, const boost::filesystem::path& new_base)
@@ -537,7 +537,7 @@ void node_t::do_read( const serialization::yaml_node_t& in, const std::pair<int,
 
 void node_t::write( serialization::yaml_oarchive_t& out) const
 {
-    RAMEN_ASSERT( metaclass() && "Trying to serialize an abstract node");
+    RAMEN_ASSERT( class_metadata() && "Trying to serialize an abstract node");
     out.begin_map();
         write_node_info( out);
         param_set().write( out);
@@ -552,8 +552,8 @@ void node_t::write_node_info( serialization::yaml_oarchive_t& out) const
     out << YAML::Key << "class" << YAML::Value;
     out.flow();
         out.begin_seq();
-        out << metaclass()->id
-            << metaclass()->major_version << metaclass()->minor_version;
+        out << class_metadata()->id
+            << class_metadata()->major_version << class_metadata()->minor_version;
         out.end_seq();
 
     out << YAML::Key << "name"  << YAML::DoubleQuoted << YAML::Value << name();

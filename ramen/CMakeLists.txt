@@ -80,7 +80,9 @@ SET( RAMEN_MOC_CLASSES  params/animated_param.hpp
 						ui/widgets/time_slider.hpp
 						)
 
-SET( RAMEN_SOURCES  ref_counted.cpp
+SET( RAMEN_SOURCES  empty.cpp
+					name.cpp
+					ref_counted.cpp
 
 					anim/any_curve.cpp
 					anim/clipboard.cpp
@@ -151,10 +153,10 @@ SET( RAMEN_SOURCES  ref_counted.cpp
 					nodes/graph_algorithm.cpp
 					nodes/image_node.cpp
 					nodes/node.cpp
+					nodes/node_class_metadata.cpp
 					nodes/node_factory.cpp
 					nodes/node_graph.cpp
 					nodes/node_graph_modifier.cpp
-					nodes/node_metaclass.cpp
 					nodes/node_plug.cpp
 					nodes/node_output_interface.cpp
 					nodes/node_visitor.cpp
@@ -676,6 +678,7 @@ IF( CMAKE_BUILD_TYPE MATCHES Debug)
 							test/depgraph.cpp
 							test/expressions.cpp
 							test/math.cpp
+							test/name.cpp
 							test/memory.cpp
 							test/filesystem.cpp
 							test/ImathExt.cpp
@@ -683,6 +686,7 @@ IF( CMAKE_BUILD_TYPE MATCHES Debug)
 							test/params.cpp
 							test/param_set.cpp
 							test/string.cpp
+							test/poly.cpp
 							#test/python.cpp
 							test/undo.cpp
 							)

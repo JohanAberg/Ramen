@@ -12,7 +12,7 @@
 
 #include<boost/noncopyable.hpp>
 
-#include<ramen/nodes/node_metaclass.hpp>
+#include<ramen/nodes/node_class_metadata.hpp>
 
 namespace ramen
 {
@@ -27,18 +27,18 @@ public:
 
     static node_factory_t& instance();
 
-    bool register_node( const node_metaclass_t& m);
+    bool register_node( const node_class_metadata_t& m);
 
-	void sort_by_menu_item();
+    void sort_by_menu_item();
 
     // all metaclasses
-    const std::vector<node_metaclass_t>& registered_nodes() const   { return metaclasses_;}
-    std::vector<node_metaclass_t>& registered_nodes()               { return metaclasses_;}
+    const std::vector<node_class_metadata_t>& registered_nodes() const   { return metaclasses_;}
+    std::vector<node_class_metadata_t>& registered_nodes()               { return metaclasses_;}
 
     // latest versions
-    typedef std::map<std::string, node_metaclass_t>::const_iterator const_iterator;
-    typedef std::map<std::string, node_metaclass_t>::iterator       iterator;
-	
+    typedef std::map<std::string, node_class_metadata_t>::const_iterator const_iterator;
+    typedef std::map<std::string, node_class_metadata_t>::iterator       iterator;
+
     const_iterator latest_versions_begin() const    { return newest_node_infos_.begin();}
     const_iterator latest_versions_end() const	    { return newest_node_infos_.end();}
 
@@ -56,8 +56,8 @@ private:
     node_factory_t();
     ~node_factory_t();
 
-    std::vector<node_metaclass_t> metaclasses_;
-    std::map<std::string, node_metaclass_t> newest_node_infos_;
+    std::vector<node_class_metadata_t> metaclasses_;
+    std::map<std::string, node_class_metadata_t> newest_node_infos_;
 };
 
 }
