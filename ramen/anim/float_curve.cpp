@@ -11,6 +11,8 @@
 #include<sstream>
 #include<cmath>
 
+#include<boost/range/algorithm/for_each.hpp>
+
 #include<OpenEXR/ImathFun.h>
 
 #include<ramen/anim/util.hpp>
@@ -28,8 +30,8 @@ float_curve_t::float_curve_t() : curve_t<float_key_t>()
     default_auto_tan_ = float_key_t::tangent_smooth;
     min_ = -std::numeric_limits<float>::max();
     max_ =  std::numeric_limits<float>::max();
-	scale_ = 1.0f;
-	offset_ = 0.0f;
+    scale_ = 1.0f;
+    offset_ = 0.0f;
 }
 
 void float_curve_t::copy( const float_curve_t& other, time_type offset)
@@ -70,14 +72,14 @@ void float_curve_t::swap( float_curve_t& other)
     std::swap( min_, other.min_);
     std::swap( max_, other.max_);
     std::swap( default_auto_tan_, other.default_auto_tan_);
-	// we don't swap scale and offset.
+    // we don't swap scale and offset.
 }
 
 float_curve_t::iterator float_curve_t::insert( time_type time, value_type value, bool recalc)
 {
     float_key_t k( time, value);
     iterator it( superclass::insert( k));
-	
+
     if( it != begin())
     {
         it->set_v0_auto_tangent( (it - 1)->v1_auto_tangent());
@@ -91,14 +93,14 @@ float_curve_t::iterator float_curve_t::insert( time_type time, value_type value,
 
     if( recalc)
         recalc_tangents_and_coefficients( it);
-	
-	return it;
+
+    return it;
 }
 
 float_curve_t::iterator float_curve_t::insert( const float_key_t& k, bool recalc)
 {
     iterator it( superclass::insert( k));
-	
+
     if( recalc)
         recalc_tangents_and_coefficients( it);
 
@@ -116,7 +118,7 @@ float_curve_t::value_type float_curve_t::evaluate( time_type time) const { retur
 float_curve_t::value_type float_curve_t::do_evaluate( time_type time) const
 {
     if( empty())
-		return 0;
+        return 0;
 
     if( time < start_time())
     {
@@ -194,7 +196,7 @@ float_curve_t::value_type float_curve_t::integrate( time_type time1, time_type t
     value_type sum = 0.0f;
 
     for( time_type t = time1; t < time2; t += 1.0f)
-		sum += evaluate( t);
+        sum += evaluate( t);
 
     return sum;
 }
@@ -233,7 +235,7 @@ void float_curve_t::recalc_tangents_and_coefficients( iterator it)
 
 void float_curve_t::recalc_tangents_and_coefficients()
 {
-    adobe::for_each_position( keys(), boost::bind( &float_curve_t::recalc_tangents_and_coefficients, this, _1));
+    boost::range::for_each_position( keys(), boost::bind( &float_curve_t::recalc_tangents_and_coefficients, this, _1));
 }
 
 Imath::Box2f float_curve_t::bounds() const
@@ -263,42 +265,42 @@ std::string float_curve_t::str() const
 {
     std::stringstream s;
     s << extrapolation();
-	adobe::for_each( keys(), boost::bind( &float_key_t::str, _1, boost::ref( s)));
+    boost::range::for_each( keys(), boost::bind( &float_key_t::str, _1, boost::ref( s)));
     return s.str();
 }
 
 // serialization
 void float_curve_t::read( const serialization::yaml_node_t& in)
 {
-	std::string s;
-	if( in.get_optional_value( "extrapolation", s))
-		set_extrapolation( string_to_extrapolation_method( s));
-		
-	serialization::yaml_node_t keyframes( in.get_node( "keys"));
-	
-	for( int i = 0; i < keyframes.size(); ++i)
-	{
-		float_key_t k;
-		k.read( keyframes[i]);
-		
-		// insert directly, bypassing all tangents adjustment code.
-		keys().insert( k);
-	}
+    std::string s;
+    if( in.get_optional_value( "extrapolation", s))
+        set_extrapolation( string_to_extrapolation_method( s));
 
-	recalc_tangents_and_coefficients();
+    serialization::yaml_node_t keyframes( in.get_node( "keys"));
+
+    for( int i = 0; i < keyframes.size(); ++i)
+    {
+        float_key_t k;
+        k.read( keyframes[i]);
+
+        // insert directly, bypassing all tangents adjustment code.
+        keys().insert( k);
+    }
+
+    recalc_tangents_and_coefficients();
 }
 
 void float_curve_t::write( serialization::yaml_oarchive_t& out) const
 {
-	out.begin_map();
-	out << YAML::Key << "extrapolation" << YAML::Value << extrapolation_method_to_string( extrapolation());
+    out.begin_map();
+    out << YAML::Key << "extrapolation" << YAML::Value << extrapolation_method_to_string( extrapolation());
 
-	out << YAML::Key << "keys" << YAML::Value;
-	    out.begin_seq();
-	        adobe::for_each( keys(), boost::bind( &float_key_t::write, _1, boost::ref( out)));
-	    out.end_seq();
+    out << YAML::Key << "keys" << YAML::Value;
+        out.begin_seq();
+            boost::range::for_each( keys(), boost::bind( &float_key_t::write, _1, boost::ref( out)));
+        out.end_seq();
 
-	out.end_map();
+    out.end_map();
 }
 
 } // namespace

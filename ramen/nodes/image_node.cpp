@@ -6,8 +6,7 @@
 
 #include<boost/foreach.hpp>
 #include<boost/bind.hpp>
-
-#include<adobe/algorithm/for_each.hpp>
+#include<boost/range/algorithm/for_each.hpp>
 
 #include<ramen/memory/manager.hpp>
 
@@ -41,8 +40,8 @@ void image_node_t::do_notify()
 {
     // keep the format up to date
     Imath::Box2i old_format( full_format());
-	float old_aspect = aspect_ratio();
-	Imath::V2f old_proxy_scale = proxy_scale();
+    float old_aspect = aspect_ratio();
+    Imath::V2f old_proxy_scale = proxy_scale();
 
     render::context_t context = composition()->current_context();
     context.subsample = 1;
@@ -62,7 +61,7 @@ bool image_node_t::accept_connection( node_t *src, int port) const
 
 void image_node_t::format_changed()
 {
-    adobe::for_each( param_set(), boost::bind( &param_t::format_changed, _1, format(), aspect_ratio(), proxy_scale()));
+    boost::range::for_each( param_set(), boost::bind( &param_t::format_changed, _1, format(), aspect_ratio(), proxy_scale()));
 }
 
 void image_node_t::set_format( const Imath::Box2i& d) { format_ = d;}
@@ -70,27 +69,27 @@ void image_node_t::set_format( const Imath::Box2i& d) { format_ = d;}
 void image_node_t::calc_format( const render::context_t& context)
 {
     is_valid_ = is_valid();
-	is_identity_ = false;
+    is_identity_ = false;
 
-	if( is_valid_)
-		is_identity_ = is_identity();
+    if( is_valid_)
+        is_identity_ = is_identity();
 
-	// init with invalid values, to catch the case 
-	// when we forget to set them.
-	aspect_ = 0.0f;
-	proxy_scale_ =  Imath::V2f( 0, 0);
+    // init with invalid values, to catch the case
+    // when we forget to set them.
+    aspect_ = 0.0f;
+    proxy_scale_ =  Imath::V2f( 0, 0);
 
-	if( is_valid_ && !is_identity_)
-		do_calc_format( context);
-	else
-		image_node_t::do_calc_format( context);
-	
-	// save the full resolution format.
-	full_format_ = format_;
-	
-	// make sure the values have been initialized
-	RAMEN_ASSERT( aspect_ratio() != 0.0f);
-	RAMEN_ASSERT( proxy_scale().x != 0.0f && proxy_scale().y != 0.0f);
+    if( is_valid_ && !is_identity_)
+        do_calc_format( context);
+    else
+        image_node_t::do_calc_format( context);
+
+    // save the full resolution format.
+    full_format_ = format_;
+
+    // make sure the values have been initialized
+    RAMEN_ASSERT( aspect_ratio() != 0.0f);
+    RAMEN_ASSERT( proxy_scale().x != 0.0f && proxy_scale().y != 0.0f);
 }
 
 void image_node_t::do_calc_format( const render::context_t& context)
@@ -99,47 +98,47 @@ void image_node_t::do_calc_format( const render::context_t& context)
     {
         image_node_t *in = input_as<image_node_t>();
         set_format( in->format());
-		set_aspect_ratio( in->aspect_ratio());
-		set_proxy_scale( in->proxy_scale());
+        set_aspect_ratio( in->aspect_ratio());
+        set_proxy_scale( in->proxy_scale());
     }
-	else
-	{
-		// init with default values
-		set_format( Imath::Box2i( Imath::V2i( 0, 0), Imath::V2i( context.default_format.area().max.x - 1, 
-																 context.default_format.area().max.y - 1)));
-		set_aspect_ratio( context.default_format.aspect);
-		set_proxy_scale( Imath::V2f( 1.0f, 1.0f));
-	}
+    else
+    {
+        // init with default values
+        set_format( Imath::Box2i( Imath::V2i( 0, 0), Imath::V2i( context.default_format.area().max.x - 1,
+                                                                 context.default_format.area().max.y - 1)));
+        set_aspect_ratio( context.default_format.aspect);
+        set_proxy_scale( Imath::V2f( 1.0f, 1.0f));
+    }
 }
 
 void image_node_t::set_aspect_ratio( float a)
-{ 
-	RAMEN_ASSERT( a > 0);
-	aspect_ = a;
+{
+    RAMEN_ASSERT( a > 0);
+    aspect_ = a;
 }
 
 void image_node_t::set_proxy_scale( const Imath::V2f& s)
 {
-	RAMEN_ASSERT( s.x > 0 && s.y > 0);
-	proxy_scale_ = s;
+    RAMEN_ASSERT( s.x > 0 && s.y > 0);
+    proxy_scale_ = s;
 }
 
 void image_node_t::set_bounds( const Imath::Box2i& bounds) { bounds_ = bounds;}
 
 void image_node_t::calc_bounds( const render::context_t& context)
 {
-	if( is_valid_ && !is_identity_)
-		do_calc_bounds( context);
-	else
-		image_node_t::do_calc_bounds( context);
+    if( is_valid_ && !is_identity_)
+        do_calc_bounds( context);
+    else
+        image_node_t::do_calc_bounds( context);
 }
 
 void image_node_t::do_calc_bounds( const render::context_t& context)
 {
     if( ( num_inputs() != 0) && input_as<image_node_t>())
         set_bounds( input_as<image_node_t>()->bounds());
-	else
-		set_bounds( format());
+    else
+        set_bounds( format());
 }
 
 void image_node_t::clear_interest() { interest_ = Imath::Box2i();}
@@ -149,13 +148,13 @@ void image_node_t::add_interest( const Imath::Box2i& roi) { interest_.extendBy( 
 
 void image_node_t::calc_inputs_interest( const render::context_t& context)
 {
-	if( !is_valid_)
-		return;
+    if( !is_valid_)
+        return;
 
-	if( !is_identity_)
-		do_calc_inputs_interest( context);
-	else
-		image_node_t::do_calc_inputs_interest( context);
+    if( !is_identity_)
+        do_calc_inputs_interest( context);
+    else
+        image_node_t::do_calc_inputs_interest( context);
 }
 
 void image_node_t::do_calc_inputs_interest( const render::context_t& context)
@@ -175,30 +174,30 @@ void image_node_t::set_defined( const Imath::Box2i& b) { defined_ = b;}
 
 void image_node_t::calc_defined( const render::context_t& context)
 {
-	if( !is_valid_)
-		defined_ = Imath::intersect( format_, interest_);
-	else
-	{
-	    if( is_identity_)
-	    {
-	        if( num_inputs() != 0 && input_as<image_node_t>())
-	            set_defined( input_as<image_node_t>()->defined());
-			else
-			{
-				// this should never happen.
-				RAMEN_ASSERT( 0 && "calc_defined: is_identity == true but first input is 0");
-			}
-	    }
-		else
-			do_calc_defined( context);
-	}
+    if( !is_valid_)
+        defined_ = Imath::intersect( format_, interest_);
+    else
+    {
+        if( is_identity_)
+        {
+            if( num_inputs() != 0 && input_as<image_node_t>())
+                set_defined( input_as<image_node_t>()->defined());
+            else
+            {
+                // this should never happen.
+                RAMEN_ASSERT( 0 && "calc_defined: is_identity == true but first input is 0");
+            }
+        }
+        else
+            do_calc_defined( context);
+    }
 
-	// limit the image size
-	if( defined_.size().x > app().preferences().max_image_width())
-		defined_.max.x = defined_.min.x + app().preferences().max_image_width();
+    // limit the image size
+    if( defined_.size().x > app().preferences().max_image_width())
+        defined_.max.x = defined_.min.x + app().preferences().max_image_width();
 
-	if( defined_.size().y > app().preferences().max_image_height())
-		defined_.max.y = defined_.min.y + app().preferences().max_image_height();
+    if( defined_.size().y > app().preferences().max_image_height())
+        defined_.max.y = defined_.min.y + app().preferences().max_image_height();
 }
 
 void image_node_t::do_calc_defined( const render::context_t& context)
@@ -227,13 +226,13 @@ bool image_node_t::use_cache( const render::context_t& context) const { return t
 bool image_node_t::read_image_from_cache( const render::context_t& context)
 {
     if( !cacheable() || !use_cache( context))
-	{
-		#ifndef NDEBUG
-			std::cout << "cache miss, node " << name() << " not cacheable\n" << std::endl;
-		#endif
+    {
+        #ifndef NDEBUG
+            std::cout << "cache miss, node " << name() << " not cacheable\n" << std::endl;
+        #endif
 
-		return false;
-	}
+        return false;
+    }
 
     boost::optional<image::buffer_t> cached( app().memory_manager().find_in_cache( digest(), defined()));
 
@@ -243,10 +242,10 @@ bool image_node_t::read_image_from_cache( const render::context_t& context)
         return true;
     }
 
-	#ifndef NDEBUG
-		std::cout << "cache miss: " << name() << ", " << hash_generator().digest_as_string()
-				  << "\n" << std::endl;
-	#endif
+    #ifndef NDEBUG
+        std::cout << "cache miss: " << name() << ", " << hash_generator().digest_as_string()
+                  << "\n" << std::endl;
+    #endif
 
     return false;
 }
@@ -297,10 +296,10 @@ image::const_image_view_t image_node_t::const_subimage_view( const Imath::Box2i&
 
 void image_node_t::recursive_process( const render::context_t& context)
 {
-	if( interacting())
-	{
-		RAMEN_ASSERT( context.mode == render::interface_render);
-	}
+    if( interacting())
+    {
+        RAMEN_ASSERT( context.mode == render::interface_render);
+    }
 
     if( !is_valid())
     {
@@ -311,24 +310,24 @@ void image_node_t::recursive_process( const render::context_t& context)
 
     if( is_identity())
     {
-		// TODO: Not sure if this is correct, check it.
+        // TODO: Not sure if this is correct, check it.
         if( image_node_t *in = input_as<image_node_t>())
         {
             in->recursive_process( context);
             image_ = in->image_;
             in->release_image();
         }
-		
+
         return;
     }
 
     if( read_image_from_cache( context))
-		return;
+        return;
 
     do_recursive_process( context);
-	
-	if( !context.render_cancelled())
-	    write_image_to_cache( context);
+
+    if( !context.render_cancelled())
+        write_image_to_cache( context);
 
     BOOST_FOREACH( node_input_plug_t& i, input_plugs())
     {
@@ -342,29 +341,29 @@ void image_node_t::recursive_process( const render::context_t& context)
 
 void image_node_t::do_recursive_process( const render::context_t& context)
 {
-	// in this case, you have to manually process the inputs.
-	if( !frames_needed().empty())
-	{
-		if( !context.render_cancelled())
-		{
-			alloc_image();
-			process( context);
-		}
-		
-		return;
-	}
+    // in this case, you have to manually process the inputs.
+    if( !frames_needed().empty())
+    {
+        if( !context.render_cancelled())
+        {
+            alloc_image();
+            process( context);
+        }
 
-	// normal case
-	
+        return;
+    }
+
+    // normal case
+
     // pixels are shared between image buffers.
     // as long as we keep a copy, the pixels won't be deleted
     std::vector<image::buffer_t> buffers;
 
     BOOST_FOREACH( node_input_plug_t& i, input_plugs())
     {
-		if( context.render_cancelled())
-			return;
-		
+        if( context.render_cancelled())
+            return;
+
         if( i.connected())
         {
             if( image_node_t *in = dynamic_cast<image_node_t*>( i.input_node()))
@@ -377,32 +376,32 @@ void image_node_t::do_recursive_process( const render::context_t& context)
         }
     }
 
-	int j = 0;
-	BOOST_FOREACH( node_input_plug_t& i, input_plugs())
-	{
-		if( i.connected())
-		{
-			if( image_node_t *in = dynamic_cast<image_node_t*>( i.input_node()))
-			{
-				if( in->image_empty())
-					in->set_image( buffers[j]);
-	
-				++j;
-			}
-		}
-	}
+    int j = 0;
+    BOOST_FOREACH( node_input_plug_t& i, input_plugs())
+    {
+        if( i.connected())
+        {
+            if( image_node_t *in = dynamic_cast<image_node_t*>( i.input_node()))
+            {
+                if( in->image_empty())
+                    in->set_image( buffers[j]);
 
-	if( !context.render_cancelled())
-	{
-	    alloc_image();
-	    process( context);
-	}
+                ++j;
+            }
+        }
+    }
+
+    if( !context.render_cancelled())
+    {
+        alloc_image();
+        process( context);
+    }
 }
 
 void image_node_t::process( const render::context_t& context)
 {
-	if( context.render_cancelled())
-		return;
+    if( context.render_cancelled())
+        return;
 
     if( !defined().isEmpty())
         do_process( context);
