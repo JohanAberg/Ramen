@@ -24,7 +24,7 @@ namespace ramen
 namespace undo
 {
 
-anim_editor_command_t::anim_editor_command_t( node_t *node, const boost::shared_ptr<ui::track_model_t>& model) : command_t( "Edit Curves")
+anim_editor_command_t::anim_editor_command_t( nodes::node_t *node, const boost::shared_ptr<ui::track_model_t>& model) : command_t( "Edit Curves")
 {
     RAMEN_ASSERT( model.get());
     RAMEN_ASSERT( node);
@@ -70,7 +70,7 @@ void anim_editor_command_t::notify_nodes()
         return; // nothing to do.
 
     // This is the right way to do it, but for now, we only have 1 active node.
-    //breadth_first_multiple_outputs_search( nodes_, boost::bind( &node_t::do_notify, _1), true);
+    //breadth_first_multiple_outputs_search( nodes_, boost::bind( &nodes::node_t::do_notify, _1), true);
     (*nodes_.begin())->notify();
 }
 

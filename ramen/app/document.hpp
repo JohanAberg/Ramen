@@ -2,8 +2,8 @@
 // Licensed under the terms of the CDDL License.
 // See CDDL_LICENSE.txt for a copy of the license.
 
-#ifndef RAMEN_DOCUMENT_HPP
-#define RAMEN_DOCUMENT_HPP
+#ifndef RAMEN_APP_DOCUMENT_HPP
+#define RAMEN_APP_DOCUMENT_HPP
 
 #include<ramen/app/document_fwd.hpp>
 
@@ -22,7 +22,7 @@ namespace ramen
 \ingroup app
 \brief Document class.
 */
-class document_t : public world_node_t
+class document_t : public nodes::world_node_t
 {
 public:
 

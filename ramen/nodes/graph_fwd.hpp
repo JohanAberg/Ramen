@@ -7,9 +7,12 @@
 
 namespace ramen
 {
+namespace nodes
+{
 
-class node_graph_t;
+class graph_t;
 
+} // namespace
 } // namespace
 
 #endif

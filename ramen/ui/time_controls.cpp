@@ -16,8 +16,6 @@
 #include<ramen/app/application.hpp>
 #include<ramen/app/document.hpp>
 
-#include<ramen/nodes/image_node.hpp>
-
 #include<ramen/ui/user_interface.hpp>
 #include<ramen/ui/inspector/inspector.hpp>
 

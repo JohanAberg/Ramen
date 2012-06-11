@@ -42,7 +42,7 @@ void manager_t::clear_caches()
     image_cache().clear();
 }
 
-void manager_t::insert_in_cache( node_t *n, const digest_type& key, image::buffer_t& img)
+void manager_t::insert_in_cache( nodes::node_t *n, const digest_type& key, image::buffer_t& img)
 {
     image_cache().insert( n, key, img);
 }

@@ -43,7 +43,7 @@ class rename_node_command_t : public undo::command_t
 {
 public:
 
-    rename_node_command_t( node_t *n, const std::string& new_name, ui::line_edit_t *name_edit) : undo::command_t( "Rename Node")
+    rename_node_command_t( nodes::node_t *n, const std::string& new_name, ui::line_edit_t *name_edit) : undo::command_t( "Rename Node")
     {
         n_ = n;
         old_name_ = n_->name();
@@ -83,7 +83,7 @@ private:
         */
     }
 
-    node_t *n_;
+    nodes::node_t *n_;
     std::string new_name_;
     std::string old_name_;
 
@@ -202,7 +202,7 @@ void inspector_t::create_header()
     header_->setSizePolicy( QSizePolicy::Fixed, QSizePolicy::Fixed);
 }
 
-void inspector_t::edit_node( node_t *n)
+void inspector_t::edit_node( nodes::node_t *n)
 {
     if( app().quitting())
         return;
@@ -228,7 +228,7 @@ void inspector_t::update()
         current_->second->update();
 }
 
-void inspector_t::recreate_panel( node_t *n)
+void inspector_t::recreate_panel( nodes::node_t *n)
 {
     edit_node( 0);
     factory_.delete_panel( n);
@@ -239,7 +239,7 @@ void inspector_t::update_header_widgets()
 {
     name_edit_->blockSignals( true);
 
-    node_t *n = app().ui()->active_node();
+    nodes::node_t *n = app().ui()->active_node();
 
     if( n)
     {
@@ -261,7 +261,7 @@ void inspector_t::rename_node()
 {
     if( name_edit_->isModified())
     {
-        node_t *n = app().ui()->active_node();
+        nodes::node_t *n = app().ui()->active_node();
         RAMEN_ASSERT( n);
 
         std::string new_name = name_edit_->text().toStdString();
@@ -284,7 +284,7 @@ void inspector_t::rename_node()
 
 void inspector_t::show_help()
 {
-    node_t *n = app().ui()->active_node();
+    nodes::node_t *n = app().ui()->active_node();
 
     RAMEN_ASSERT( n);
     RAMEN_ASSERT( n->help_string());

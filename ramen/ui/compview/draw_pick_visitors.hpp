@@ -5,7 +5,7 @@
 #ifndef RAMEN_UI_COMP_VIEW_DRAW_PICK_VISITORS_HPP
 #define RAMEN_UI_COMP_VIEW_DRAW_PICK_VISITORS_HPP
 
-#include<ramen/nodes/node_visitor.hpp>
+#include<ramen/nodes/visitor.hpp>
 
 #include<OpenEXR/ImathBox.h>
 
@@ -20,46 +20,46 @@ namespace ui
 
 class composition_view_t;
 
-struct input_location_node_visitor : public generic_node_visitor
+struct input_location_node_visitor : public nodes::generic_visitor_t
 {
     input_location_node_visitor( int i = 0);
-    virtual void visit( node_t *n);
+    virtual void visit( nodes::node_t *n);
 
     int index;
     Imath::V2f loc;
 };
 
-struct output_location_node_visitor : public generic_node_visitor
+struct output_location_node_visitor : public nodes::generic_visitor_t
 {
     output_location_node_visitor( int i = 0);
-    virtual void visit( node_t *n);
+    virtual void visit( nodes::node_t *n);
 
     int index;
     Imath::V2f loc;
 };
 
-struct size_node_visitor : public generic_node_visitor
+struct size_node_visitor : public nodes::generic_visitor_t
 {
-	size_node_visitor();
-    virtual void visit( node_t *n);
+    size_node_visitor();
+    virtual void visit( nodes::node_t *n);
 
-	Imath::V2i size;
+    Imath::V2i size;
 };
 
-struct draw_node_visitor : public generic_node_visitor
+struct draw_node_visitor : public nodes::generic_visitor_t
 {
     draw_node_visitor( QPainter& painter);
-    virtual void visit( node_t *n);
+    virtual void visit( nodes::node_t *n);
 
 private:
 
     QPainter& painter_;
 };
 
-struct draw_edges_visitor : public generic_node_visitor
+struct draw_edges_visitor : public nodes::generic_visitor_t
 {
     draw_edges_visitor( const composition_view_t& view, QPainter& painter);
-    virtual void visit( node_t *n);
+    virtual void visit( nodes::node_t *n);
 
 private:
 
@@ -67,10 +67,10 @@ private:
     QPainter& painter_;
 };
 
-struct pick_node_visitor : public generic_node_visitor
+struct pick_node_visitor : public nodes::generic_visitor_t
 {
     pick_node_visitor( const composition_view_t& view, const Imath::V2f& p, pick_result_t& result);
-    virtual void visit( node_t *n);
+    virtual void visit( nodes::node_t *n);
 
 private:
 
@@ -79,10 +79,10 @@ private:
     pick_result_t& result_;
 };
 
-struct box_pick_node_visitor : public generic_node_visitor
+struct box_pick_node_visitor : public nodes::generic_visitor_t
 {
     box_pick_node_visitor( const Imath::Box2f& box);
-    virtual void visit( node_t *n);
+    virtual void visit( nodes::node_t *n);
 
     bool result;
 
@@ -91,12 +91,12 @@ private:
     Imath::Box2f box_;
 };
 
-struct pick_edge_visitor : public generic_node_visitor
+struct pick_edge_visitor : public nodes::generic_visitor_t
 {
     pick_edge_visitor( const composition_view_t& view, const Imath::V2f& p);
-    virtual void visit( node_t *n);
+    virtual void visit( nodes::node_t *n);
 
-    node_t *src, *dst;
+    nodes::node_t *src, *dst;
     int port;
 
 private:

@@ -29,28 +29,28 @@ class RAMEN_API node_t : boost::noncopyable
 {
 public:
 
-	node_t();
-	virtual ~node_t();
+    node_t();
+    virtual ~node_t();
 
-	/// Returns true if this node is dirty.
-	bool dirty() const;
+    /// Returns true if this node is dirty.
+    bool dirty() const;
 
 protected:
 
-	node_t( const node_t& other);
-	void operator=( const node_t& other);
+    node_t( const node_t& other);
+    void operator=( const node_t& other);
 
-	/// Sets this node dirty flag.
-	void set_dirty( bool d);
+    /// Sets this node dirty flag.
+    void set_dirty( bool d);
 
 private:
 
-	/// Notify observers that this node changed.
-	virtual void notify();
+    /// Notify observers that this node changed.
+    virtual void notify();
 
-	friend class graph_t;
+    friend class graph_t;
 
-	bool dirty_;
+    bool dirty_;
 };
 
 /**************************************************/
@@ -63,19 +63,19 @@ class RAMEN_API output_node_t : public node_t
 {
 public:
 
-	output_node_t();
+    output_node_t();
 
-	/// Signal emitted when this dependency node has changed.
+    /// Signal emitted when this dependency node has changed.
     boost::signals2::signal<void()> changed;
 
 protected:
 
-	output_node_t( const output_node_t& other);
+    output_node_t( const output_node_t& other);
 
 private:
 
-	/// Notify observers that this node changed. Emits the changed signal.
-	virtual void notify();
+    /// Notify observers that this node changed. Emits the changed signal.
+    virtual void notify();
 };
 
 } // namespace

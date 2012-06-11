@@ -37,18 +37,18 @@ class composition_view_t : public QWidget
 public:
 
     composition_view_t( QWidget *parent = 0);
-	~composition_view_t();
+    ~composition_view_t();
 
-	composition_view_toolbar_t *create_toolbar();
+    composition_view_toolbar_t *create_toolbar();
 
     Imath::V2f screen_to_world( const Imath::V2i& p) const;
     Imath::V2i world_to_screen( const Imath::V2f& p) const;
 
     const viewport_t& viewport() const;
-	viewport_t& viewport();
+    viewport_t& viewport();
 
-    void place_node( node_t *n) const;
-    void place_node_near_node( node_t *n, node_t *other) const;
+    void place_node( nodes::node_t *n) const;
+    void place_node_near_node( nodes::node_t *n, nodes::node_t *other) const;
 
     // bezier edges
     bool pick_bezier_edge( const Imath::V2f& p0, const Imath::V2f& p1, const Imath::V2f& q) const;
@@ -65,13 +65,13 @@ protected:
     virtual void mouseReleaseEvent( QMouseEvent *event);
     virtual void paintEvent ( QPaintEvent *event);
     virtual void resizeEvent( QResizeEvent *event);
-	virtual void contextMenuEvent( QContextMenuEvent *event);
+    virtual void contextMenuEvent( QContextMenuEvent *event);
 
 private:
 
     void scroll_drag_handler( QMouseEvent *event);
     void zoom_drag_handler( QMouseEvent *event);
-	void scroll_zoom_release_handler( QMouseEvent *event);
+    void scroll_zoom_release_handler( QMouseEvent *event);
 
     void move_nodes_drag_handler( QMouseEvent *event);
 
@@ -87,15 +87,15 @@ private:
 
     // pick
     void pick_node( const Imath::V2f& p, pick_result_t& result) const;
-    bool box_pick_node( node_t *n, const Imath::Box2f& b) const;
-    bool pick_edge( const Imath::V2f& p, node_t *&src, node_t *&dst, int& port) const;
+    bool box_pick_node( nodes::node_t *n, const Imath::Box2f& b) const;
+    bool pick_edge( const Imath::V2f& p, nodes::node_t *&src, nodes::node_t *&dst, int& port) const;
 
     // util
     void bezier_edge( const Imath::V2f& p0, const Imath::V2f& p1, bezier::curve_t<Imath::V2f>& c) const;
 
-	void delete_selected_nodes();
-	
-	composition_view_toolbar_t *toolbar_;
+    void delete_selected_nodes();
+
+    composition_view_toolbar_t *toolbar_;
 
     bool first_resize_;
     viewport_t viewport_;
@@ -114,7 +114,7 @@ private:
     pick_result_t last_pick_;
     boost::function<void ( QMouseEvent *)> drag_handler_, release_handler_;
 
-	composition_view_layout_t layout_;
+    composition_view_layout_t layout_;
 };
 
 } // namespace

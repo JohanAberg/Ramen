@@ -1,8 +1,10 @@
 // Copyright (c) 2010 Esteban Tovagliari
+// Licensed under the terms of the CDDL License.
+// See CDDL_LICENSE.txt for a copy of the license.
 
 #include<ramen/params/numeric_param.hpp>
 
-#include<ramen/nodes/image_node.hpp>
+#include<ramen/nodes/node.hpp>
 
 namespace ramen
 {
@@ -56,6 +58,7 @@ Imath::Box2i numeric_param_t::frame_area() const
 {
     Imath::Box2i area;
 
+    /*
     const image_node_t *n = dynamic_cast<const image_node_t*>( parameterised());
     RAMEN_ASSERT( n && "numeric relative params can only be used inside image nodes");
 
@@ -77,6 +80,7 @@ Imath::Box2i numeric_param_t::frame_area() const
     }
     else
         area = image::format_t().area(); //composition()->default_format().area();
+    */
 
     return area;
 }

@@ -35,10 +35,21 @@ parameterised_t::parameterised_t( const parameterised_t& other) : params_( other
 
 parameterised_t::~parameterised_t() { deleted( this);}
 
+void parameterised_t::init()
+{
+    create_params();
+    create_manipulators();
+    do_init();
+}
+
+void parameterised_t::do_init() {}
+
 parameterised_t *parameterised_t::clone() const { return do_clone();}
 
 void parameterised_t::create_params()
 {
+    RAMEN_ASSERT( world());
+
     do_create_params();
     boost::range::for_each( param_set(), boost::bind( &param_t::init, _1));
 }
@@ -51,13 +62,13 @@ void parameterised_t::set_parent( parameterised_t *parent)
 
 void parameterised_t::do_set_parent( parameterised_t *parent) {}
 
-const node_t *parameterised_t::node() const
+const nodes::node_t *parameterised_t::node() const
 {
     const parameterised_t *p = this;
 
     while( p != 0)
     {
-        if( const node_t *node = dynamic_cast<const node_t*>( p))
+        if( const nodes::node_t *node = dynamic_cast<const nodes::node_t*>( p))
             return node;
 
         p = p->parent();
@@ -66,13 +77,13 @@ const node_t *parameterised_t::node() const
     return 0;
 }
 
-node_t *parameterised_t::node()
+nodes::node_t *parameterised_t::node()
 {
     parameterised_t *p = this;
 
     while( p != 0)
     {
-        if( node_t *node = dynamic_cast<node_t*>( p))
+        if( nodes::node_t *node = dynamic_cast<nodes::node_t*>( p))
             return node;
 
         p = p->parent();
@@ -81,13 +92,13 @@ node_t *parameterised_t::node()
     return 0;
 }
 
-const world_node_t *parameterised_t::world() const
+const nodes::world_node_t *parameterised_t::world() const
 {
     const parameterised_t *p = this;
 
     while( p != 0)
     {
-        if( const world_node_t *world = dynamic_cast<const world_node_t*>( p))
+        if( const nodes::world_node_t *world = dynamic_cast<const nodes::world_node_t*>( p))
             return world;
 
         p = p->parent();
@@ -96,13 +107,13 @@ const world_node_t *parameterised_t::world() const
     return 0;
 }
 
-world_node_t *parameterised_t::world()
+nodes::world_node_t *parameterised_t::world()
 {
     parameterised_t *p = this;
 
     while( p != 0)
     {
-        if( world_node_t *world = dynamic_cast<world_node_t*>( p))
+        if( nodes::world_node_t *world = dynamic_cast<nodes::world_node_t*>( p))
             return world;
 
         p = p->parent();

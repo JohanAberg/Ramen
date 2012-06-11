@@ -11,6 +11,8 @@
 
 #include<ramen/python/python.hpp>
 
+#include<ramen/dependency/node.hpp>
+
 #include<memory>
 #include<sstream>
 #include<string>
@@ -58,7 +60,7 @@ namespace ramen
 \ingroup params
 \brief param class
 */
-class RAMEN_API param_t : public QObject
+class RAMEN_API param_t : public QObject, public dependency::node_t
 {
     Q_OBJECT
 
@@ -132,10 +134,10 @@ public:
     parameterised_t *parameterised();
 
     /// Returns the world node this param belongs to.
-    const world_node_t *world() const;
+    const nodes::world_node_t *world() const;
 
     /// Returns the world node this param belongs to.
-    world_node_t *world();
+    nodes::world_node_t *world();
 
     // flags
     bool enabled() const;

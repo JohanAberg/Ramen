@@ -41,7 +41,7 @@ public:
     void begin_interaction();
     void end_interaction();
 
-    void insert( node_t *n, const digest_type& key, image::buffer_t& img);
+    void insert( nodes::node_t *n, const digest_type& key, image::buffer_t& img);
     boost::optional<image::buffer_t> find( const digest_type& key, const Imath::Box2i& area);
 
     virtual void erase_lru();
@@ -71,7 +71,7 @@ private:
 
     // interactions
     bool interacting_;
-    std::map<node_t*, map_iterator> added_while_interacting_;
+    std::map<nodes::node_t*, map_iterator> added_while_interacting_;
 
     image_disk_cache_t *disk_cache_;
 };

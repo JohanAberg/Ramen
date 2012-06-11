@@ -6,6 +6,8 @@
 
 namespace ramen
 {
+namespace nodes
+{
 
 group_node_t::group_node_t() : composite_node_t() {}
 
@@ -13,6 +15,7 @@ group_node_t::group_node_t( const group_node_t& other) : composite_node_t( other
 
 group_node_t::~group_node_t() {}
 
-void group_node_t::accept( node_visitor& v) { v.visit( this);}
+//void group_node_t::accept( node_visitor& v) { v.visit( this);}
 
+} // namespace
 } // namespace

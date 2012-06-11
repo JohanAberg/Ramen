@@ -4,18 +4,21 @@
 
 #include<ramen/python/python.hpp>
 
-#include<ramen/nodes/node_class_metadata.hpp>
+#include<ramen/nodes/class_metadata.hpp>
 
 #include<ramen/nodes/node.hpp>
 
 namespace ramen
 {
+namespace nodes
+{
 
-node_class_metadata_t::node_class_metadata_t()
+class_metadata_t::class_metadata_t()
 {
     ui_visible = true;
     help = 0;
     first_time_ = true;
 }
 
+} // namespace
 } // namespace

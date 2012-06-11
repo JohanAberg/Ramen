@@ -28,8 +28,8 @@ class manager_t : boost::noncopyable
 {
 public:
 
-	typedef pool_allocator_t<pool_t>	image_allocator_type;
-	typedef image_cache_t::digest_type	digest_type;
+    typedef pool_allocator_t<pool_t>	image_allocator_type;
+    typedef image_cache_t::digest_type	digest_type;
 
     ~manager_t();
 
@@ -39,12 +39,12 @@ public:
 
     void clear_caches();
 
-    void insert_in_cache( node_t *n, const digest_type& key, image::buffer_t& img);
+    void insert_in_cache( nodes::node_t *n, const digest_type& key, image::buffer_t& img);
     boost::optional<image::buffer_t> find_in_cache( const digest_type& key, const Imath::Box2i& area);
 
     // CPU
     image_allocator_type& image_allocator() { return *img_alloc_;}
-	image_disk_cache_t& image_disk_cache()	{ return *img_disk_cache_;}
+    image_disk_cache_t& image_disk_cache()	{ return *img_disk_cache_;}
 
 private:
 
@@ -53,11 +53,11 @@ private:
     explicit manager_t( boost::uint64_t img_cache_size);
 
     image_cache_t& image_cache() { return *img_cache_;}
-	
-	// cpu
+
+    // cpu
     std::auto_ptr<image_allocator_type> img_alloc_;
     std::auto_ptr<image_cache_t> img_cache_;
-	std::auto_ptr<image_disk_cache_t> img_disk_cache_;
+    std::auto_ptr<image_disk_cache_t> img_disk_cache_;
 };
 
 } // namespace

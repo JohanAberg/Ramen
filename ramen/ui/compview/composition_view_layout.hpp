@@ -23,24 +23,24 @@ public:
 
     composition_view_layout_t();
 
-	void set_world( const Imath::Box2f& w);
+    void set_world( const Imath::Box2f& w);
 
     void set_interest_point( const Imath::V2f& p);
 
-    void place_node( node_t *n) const;
-    void place_node_near_node( node_t *n, node_t *other) const;
+    void place_node( nodes::node_t *n) const;
+    void place_node_near_node( nodes::node_t *n, nodes::node_t *other) const;
 
 private:
 
-	Imath::Box2f get_node_bbox( node_t *n) const;
-	bool box_intersects_any_node( const Imath::Box2f& box) const;
-	
-	void do_place_node( node_t *n, const Imath::V2f& p) const;
-	
-	Imath::Box2f world_;
-	boost::optional<Imath::V2f> interest_point_;
+    Imath::Box2f get_node_bbox( nodes::node_t *n) const;
+    bool box_intersects_any_node( const Imath::Box2f& box) const;
 
-	mutable Imath::Rand48 rng_;
+    void do_place_node( nodes::node_t *n, const Imath::V2f& p) const;
+
+    Imath::Box2f world_;
+    boost::optional<Imath::V2f> interest_point_;
+
+    mutable Imath::Rand48 rng_;
 };
 
 } // namespace

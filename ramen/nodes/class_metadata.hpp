@@ -11,20 +11,20 @@
 
 #include<string>
 
-#include<boost/function.hpp>
-
 namespace ramen
+{
+namespace nodes
 {
 
 /*!
 \ingroup nodes
 \brief This class contains information about a node class like ids, menus, etc.
 */
-class RAMEN_API node_class_metadata_t
+class RAMEN_API class_metadata_t
 {
 public:
 
-    node_class_metadata_t();
+    class_metadata_t();
 
     /// Unique id for this node
     std::string id;
@@ -89,6 +89,7 @@ public:
     bool first_time_;
 };
 
+} // namespace
 } // namespace
 
 #endif

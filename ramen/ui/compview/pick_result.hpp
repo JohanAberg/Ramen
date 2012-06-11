@@ -22,7 +22,7 @@ struct pick_result_t
 
     pick_result_t() : node( 0), component( no_pick), plug_num( -1) {}
 
-    node_t *node;
+    nodes::node_t *node;
     component_t component;
     int plug_num;
 };

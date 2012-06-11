@@ -9,6 +9,8 @@
 
 namespace ramen
 {
+namespace nodes
+{
 
 /**
 \ingroup nodes
@@ -22,17 +24,18 @@ public:
     group_node_t();
 
     /// Destructor.
-	virtual ~group_node_t();
+    virtual ~group_node_t();
 
-	/// Dispatch function for visitor pattern.
-	//virtual void accept( node_visitor& v);
+    /// Dispatch function for visitor pattern.
+    //virtual void accept( node_visitor& v);
 
 protected:
 
-	group_node_t( const group_node_t& other);
-	void operator=( const group_node_t&);
+    group_node_t( const group_node_t& other);
+    void operator=( const group_node_t&);
 };
 
+} // namespace
 } // namespace
 
 #endif

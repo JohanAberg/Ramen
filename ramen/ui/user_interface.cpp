@@ -248,7 +248,7 @@ bool user_interface_t::save_document()
     return false;
 }
 
-void user_interface_t::set_active_node( node_t *n)
+void user_interface_t::set_active_node( nodes::node_t *n)
 {
     if( active_ != n)
     {
@@ -266,7 +266,7 @@ void user_interface_t::set_active_node( node_t *n)
     }
 }
 
-void user_interface_t::set_context_node( node_t *n)
+void user_interface_t::set_context_node( nodes::node_t *n)
 {
     if( context_ != n)
     {
@@ -282,12 +282,12 @@ void user_interface_t::set_context_node( node_t *n)
     }
 }
 
-void user_interface_t::node_added( node_t *n)
+void user_interface_t::node_added( nodes::node_t *n)
 {
     //viewer().node_added( n);
 }
 
-void user_interface_t::node_released( node_t *n)
+void user_interface_t::node_released( nodes::node_t *n)
 {
     if( n == active_)
     {

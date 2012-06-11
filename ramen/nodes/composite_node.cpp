@@ -11,11 +11,13 @@
 #include<ramen/assert.hpp>
 
 #include<ramen/nodes/world_node.hpp>
-#include<ramen/nodes/node_factory.hpp>
+#include<ramen/nodes/factory.hpp>
 
 #include<ramen/ui/graph_layout.hpp>
 
 namespace ramen
+{
+namespace nodes
 {
 
 composite_node_t::composite_node_t() : node_t()
@@ -35,7 +37,7 @@ void composite_node_t::cloned()
     boost::range::for_each( graph().nodes(), boost::bind( &node_t::cloned, _1));
 }
 
-void composite_node_t::accept( node_visitor& v) { v.visit( this);}
+void composite_node_t::accept( visitor_t& v) { v.visit( this);}
 
 node_t *composite_node_t::create_node_by_id( const std::string& id, bool ui)
 {
@@ -43,14 +45,17 @@ node_t *composite_node_t::create_node_by_id( const std::string& id, bool ui)
     node_t *nn = n.get();
 
     if( nn)
+    {
         add_node( n);
+        nn->init();
+    }
 
     return nn;
 }
 
 std::auto_ptr<node_t> composite_node_t::do_create_node_by_id( const std::string& id, bool ui) const
 {
-    return node_factory_t::instance().create_by_id( id, ui);
+    return factory_t::instance().create_by_id( id, ui);
 }
 
 node_t *composite_node_t::create_node_by_id_with_version( const std::string& id, const std::pair<int, int>& version)
@@ -59,14 +64,17 @@ node_t *composite_node_t::create_node_by_id_with_version( const std::string& id,
     node_t *nn = n.get();
 
     if( nn)
+    {
         add_node( n);
+        nn->init();
+    }
 
     return nn;
 }
 
 std::auto_ptr<node_t> composite_node_t::do_create_node_by_id_with_version( const std::string& id, const std::pair<int, int>& version) const
 {
-    return node_factory_t::instance().create_by_id_with_version( id, version);
+    return factory_t::instance().create_by_id_with_version( id, version);
 }
 
 std::auto_ptr<node_t> composite_node_t::create_unknown_node( const std::string& id, const std::pair<int, int>& version) const
@@ -78,13 +86,15 @@ std::auto_ptr<node_t> composite_node_t::create_unknown_node( const std::string& 
 
 void composite_node_t::add_node( std::auto_ptr<node_t> n)
 {
+    RAMEN_ASSERT( n.get());
+    RAMEN_ASSERT( world());
+
     RAMEN_ASSERT( false);
 
     /*
-    RAMEN_ASSERT( n.get());
-
     node_t *nn = n.get();
     g_.add_node( n);
+
     nn->set_parent( this);
     // rename node here, if needed, more stuff, ...
 
@@ -228,4 +238,5 @@ void composite_node_t::write_edge( serialization::yaml_oarchive_t& out, const ed
     out.end_seq();
 }
 
+} // namespace
 } // namespace

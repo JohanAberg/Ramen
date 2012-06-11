@@ -6,13 +6,15 @@
 
 namespace ramen
 {
+namespace nodes
+{
 namespace detail
 {
 
 void set_inputs_color( node_t& n, graph_color_t c)
 {
     n.set_graph_color( c);
-	
+
     for( unsigned int i=0;i<n.num_inputs();++i)
     {
         if( n.input(i) != 0)
@@ -58,4 +60,5 @@ bool node_depends_on_node( node_t& node, node_t& other)
     return fun.found;
 }
 
+} // namespace
 } // namespace

@@ -20,6 +20,9 @@
 
 namespace ramen
 {
+namespace nodes
+{
+
 namespace
 {
 
@@ -43,12 +46,22 @@ node_t::node_t() : composite_parameterised_t(), flags_( 0) {}
 
 node_t::node_t( const node_t& other) : composite_parameterised_t( other), outputs_( other.outputs_)
 {
-    boost::range::for_each( outputs_, boost::bind( &node_output_plug_t::set_parent_node, _1, this));
+    boost::range::for_each( outputs_, boost::bind( &output_plug_t::set_parent_node, _1, this));
     flags_ = other.flags_;
     loc_ = other.loc_;
 }
 
 node_t::~node_t() {}
+
+void node_t::init()
+{
+    create_plugs();
+    create_params();
+    create_manipulators();
+    do_init();
+}
+
+void node_t::do_init() {}
 
 void node_t::cloned()
 {
@@ -58,8 +71,18 @@ void node_t::cloned()
     create_manipulators();
 }
 
+// plugs
+void node_t::create_plugs()
+{
+    RAMEN_ASSERT( world());
+
+    do_create_plugs();
+}
+
+void node_t::do_create_plugs() {}
+
 // visitor
-void node_t::accept( node_visitor& v) { v.visit( this);}
+void node_t::accept( visitor_t& v) { v.visit( this);}
 
 bool node_t::selected() const { return flags_ & selected_bit;}
 
@@ -107,7 +130,7 @@ bool node_t::is_context() const    { return util::test_flag( flags_, context_bit
 int node_t::find_input( const name_t& id) const
 {
     int index = 0;
-    BOOST_FOREACH( const node_input_plug_t& i, input_plugs())
+    BOOST_FOREACH( const input_plug_t& i, input_plugs())
     {
         if( i.id().c_str() == id.c_str() )
             return index;
@@ -132,7 +155,7 @@ node_t *node_t::input( std::size_t i)
 
 void node_t::add_input_plug( const std::string &id, bool optional, const Imath::Color3c &color, const std::string &tooltip)
 {
-    inputs_.push_back( node_input_plug_t( id, optional, color, tooltip ));
+    inputs_.push_back( new input_plug_t( id, optional, color, tooltip ));
 }
 
 std::size_t node_t::num_outputs() const
@@ -143,13 +166,13 @@ std::size_t node_t::num_outputs() const
     return outputs_[0].connections().size();
 }
 
-const node_output_plug_t& node_t::output_plug() const
+const output_plug_t& node_t::output_plug() const
 {
     RAMEN_ASSERT( has_output_plug());
     return outputs_[0];
 }
 
-node_output_plug_t& node_t::output_plug()
+output_plug_t& node_t::output_plug()
 {
     RAMEN_ASSERT( has_output_plug());
     return outputs_[0];
@@ -172,7 +195,7 @@ node_t *node_t::output( std::size_t i)
 void node_t::add_output_plug( const std::string &id, const Imath::Color3c& color, const std::string& tooltip )
 {
     RAMEN_ASSERT( !has_output_plug());
-    outputs_.push_back( new node_output_plug_t( this, id, color, tooltip ));
+    outputs_.push_back( new output_plug_t( this, id, color, tooltip ));
 }
 
 bool node_t::accept_connection( node_t *src, int port) const { return true;}
@@ -283,7 +306,7 @@ void node_t::end_interaction()
 
 bool node_t::is_valid() const
 {
-    BOOST_FOREACH( const node_input_plug_t& i, input_plugs())
+    BOOST_FOREACH( const input_plug_t& i, input_plugs())
     {
         if( !i.connected() && !i.optional())
             return false;
@@ -298,7 +321,7 @@ bool node_t::is_valid() const
         bool all_optional = true;
         bool all_disconnected = true;
 
-        BOOST_FOREACH( const node_input_plug_t& i, input_plugs())
+        BOOST_FOREACH( const input_plug_t& i, input_plugs())
         {
             if( i.connected())
                 all_disconnected = false;
@@ -341,7 +364,7 @@ void node_t::clear_hash()
 
     if( cacheable())
     {
-        BOOST_FOREACH( node_input_plug_t& i, input_plugs())
+        BOOST_FOREACH( input_plug_t& i, input_plugs())
         {
             if( i.connected())
             {
@@ -569,4 +592,5 @@ node_t *new_clone( const node_t& other)
     return dynamic_cast<node_t*>( new_clone( dynamic_cast<const parameterised_t&>( other)));
 }
 
+} // namespace
 } // namespace

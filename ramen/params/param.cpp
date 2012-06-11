@@ -53,7 +53,7 @@ parameterised_t *param_t::parameterised()
     return param_set()->parent();
 }
 
-const world_node_t *param_t::world() const
+const nodes::world_node_t *param_t::world() const
 {
     RAMEN_ASSERT( param_set());
     const parameterised_t *p = parameterised();
@@ -64,7 +64,7 @@ const world_node_t *param_t::world() const
         return 0;
 }
 
-world_node_t *param_t::world()
+nodes::world_node_t *param_t::world()
 {
     RAMEN_ASSERT( param_set());
     parameterised_t *p = parameterised();

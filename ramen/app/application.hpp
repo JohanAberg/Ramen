@@ -17,6 +17,7 @@
 #include<boost/noncopyable.hpp>
 #include<boost/cstdint.hpp>
 #include<boost/optional.hpp>
+#include<boost/program_options.hpp>
 
 #include<tbb/task_scheduler_init.h>
 
@@ -29,8 +30,6 @@
 #include<ramen/ocio/manager_fwd.hpp>
 
 #include<ramen/filesystem/path.hpp>
-
-#include<ramen/util/command_line_parser_fwd.hpp>
 
 #include<ramen/ui/user_interface_fwd.hpp>
 #include<ramen/ui/dialogs/splash_screen_fwd.hpp>
@@ -49,9 +48,9 @@ public:
     application_t( int argc, char **argv);
     ~application_t();
 
-    int run();
+    bool run_command_line() const;
 
-    bool command_line() const { return command_line_;}
+    int run();
 
     int max_threads() const { return max_threads_;}
 
@@ -93,9 +92,10 @@ private:
     void create_dirs();
 
     // command line
-    bool matches_option( char *arg, const char *opt) const;
-    void parse_command_line( int argc, char **argv);
-    void usage();
+    void copy_command_line_args( int argc, char **argv);
+    void delete_command_line_args();
+
+    void parse_command_line();
 
     void print_app_info();
 
@@ -103,28 +103,26 @@ private:
     void init_ocio();
     bool init_ocio_config_from_file( const boost::filesystem::path& p);
 
-    // data
-    std::auto_ptr<util::command_line_parser_t> cmd_parser_;
+    // command line
+    int argc_;
+    char **argv_;
+    boost::program_options::options_description args_desc_;
+    boost::program_options::variables_map args_map_;
+
+    // threads
     boost::uint64_t img_cache_size_;
     int max_threads_;
-    bool command_line_;
 
+    std::auto_ptr<ui::splash_screen_t> splash_;
     tbb::task_scheduler_init task_scheduler_;
     system::system_t system_;
     std::auto_ptr<preferences_t> preferences_;
     std::auto_ptr<memory::manager_t> mem_manager_;
     std::auto_ptr<ocio::manager_t> ocio_manager_;
+    std::auto_ptr<document_t> document_;
     std::auto_ptr<ui::user_interface_t> ui_;
 
-    std::auto_ptr<document_t> document_;
-
-    std::auto_ptr<ui::splash_screen_t> splash_;
-
     bool quitting_;
-
-    #ifndef NDEBUG
-        bool run_unit_tests_;
-    #endif
 };
 
 RAMEN_API application_t& app();

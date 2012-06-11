@@ -31,7 +31,7 @@ void composition_view_layout_t::set_world( const Imath::Box2f& w)
 
 void composition_view_layout_t::set_interest_point( const Imath::V2f& p) { interest_point_ = p;}
 
-void composition_view_layout_t::place_node( node_t *n) const
+void composition_view_layout_t::place_node( nodes::node_t *n) const
 {
     if( world_.isEmpty())
     {
@@ -63,7 +63,7 @@ void composition_view_layout_t::place_node( node_t *n) const
     do_place_node( n, p);
 }
 
-void composition_view_layout_t::place_node_near_node( node_t *n, node_t *other) const
+void composition_view_layout_t::place_node_near_node( nodes::node_t *n, nodes::node_t *other) const
 {
     // TODO: this could be much better
     Imath::V2f p( other->location());
@@ -72,7 +72,7 @@ void composition_view_layout_t::place_node_near_node( node_t *n, node_t *other) 
     do_place_node( n, p);
 }
 
-Imath::Box2f composition_view_layout_t::get_node_bbox( node_t *n) const
+Imath::Box2f composition_view_layout_t::get_node_bbox( nodes::node_t *n) const
 {
     Imath::Box2f box( n->location());
     size_node_visitor v;
@@ -85,7 +85,7 @@ Imath::Box2f composition_view_layout_t::get_node_bbox( node_t *n) const
 bool composition_view_layout_t::box_intersects_any_node( const Imath::Box2f& box) const
 {
     /*
-    BOOST_FOREACH( node_t& n, app().document().composition().nodes())
+    BOOST_FOREACH( nodes::node_t& n, app().document().composition().nodes())
     {
         box_pick_node_visitor visitor( box);
         n.accept( visitor);
@@ -98,7 +98,7 @@ bool composition_view_layout_t::box_intersects_any_node( const Imath::Box2f& box
     return false;
 }
 
-void composition_view_layout_t::do_place_node( node_t *n, const Imath::V2f& p) const
+void composition_view_layout_t::do_place_node( nodes::node_t *n, const Imath::V2f& p) const
 {
     Imath::V2f q( p);
 

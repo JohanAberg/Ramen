@@ -8,9 +8,12 @@
 
 namespace ramen
 {
+namespace nodes
+{
 
 world_node_t::world_node_t() : composite_node_t() {}
 
 world_node_t::~world_node_t() {}
 
+} // namespace
 } // namespace

@@ -73,18 +73,18 @@ public:
     bool save_document();
 
     // nodes
-    void node_added( node_t *n);
-    void node_released( node_t *n);
+    void node_added( nodes::node_t *n);
+    void node_released( nodes::node_t *n);
 
     void begin_interaction();
     void end_interaction();
     bool interacting() const { return interacting_;}
 
-    node_t *active_node() const { return active_;}
-    void set_active_node( node_t *n);
+    nodes::node_t *active_node() const { return active_;}
+    void set_active_node( nodes::node_t *n);
 
-    node_t *context_node() const { return context_;}
-    void set_context_node( node_t *n);
+    nodes::node_t *context_node() const { return context_;}
+    void set_context_node( nodes::node_t *n);
 
     void update();
 
@@ -136,7 +136,7 @@ private:
     inspector_t *inspector_;
     anim_editor_t *anim_editor_;
 
-    node_t *active_, *context_;
+    nodes::node_t *active_, *context_;
 
     bool rendering_;
     bool interacting_;

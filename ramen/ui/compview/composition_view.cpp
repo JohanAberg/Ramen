@@ -28,16 +28,13 @@
 
 #include<ramen/bezier/algorithm.hpp>
 
-#include<ramen/nodes/image_node.hpp>
+#include<ramen/nodes/node.hpp>
 
 #include<ramen/ui/user_interface.hpp>
 #include<ramen/ui/palette.hpp>
 #include<ramen/ui/main_window.hpp>
 
 #include<ramen/ui/compview/draw_pick_visitors.hpp>
-
-//#include<ramen/app/document.hpp>
-//#include<ramen/ui/compview/composition_view_commands.hpp>
 
 namespace ramen
 {
@@ -79,9 +76,9 @@ Imath::V2i composition_view_t::world_to_screen( const Imath::V2f& p) const
     return viewport().world_to_screen( p);
 }
 
-void composition_view_t::place_node( node_t *n) const { layout_.place_node( n);}
+void composition_view_t::place_node( nodes::node_t *n) const { layout_.place_node( n);}
 
-void composition_view_t::place_node_near_node( node_t *n, node_t *other) const
+void composition_view_t::place_node_near_node( nodes::node_t *n, nodes::node_t *other) const
 {
     layout_.place_node_near_node( n, other);
 }
@@ -103,13 +100,13 @@ bool composition_view_t::event( QEvent *event)
 
         case pick_result_t::body_picked:
         {
-            node_t *node = picked.node;
+            nodes::node_t *node = picked.node;
 
             std::stringstream s;
             s << node->name();
 
-            if( image_node_t *n = dynamic_cast<image_node_t*>( node))
-                s << " [ " << n->full_format().size().x + 1 << ", " << n->full_format().size().y + 1 << "]";
+            //if( image_node_t *n = dynamic_cast<image_node_t*>( node))
+            //    s << " [ " << n->full_format().size().x + 1 << ", " << n->full_format().size().y + 1 << "]";
 
             QToolTip::showText( help_event->globalPos(), QString::fromStdString( s.str()));
         }
@@ -250,8 +247,8 @@ void composition_view_t::mousePressEvent( QMouseEvent *event)
 
     if( event->modifiers() & Qt::ControlModifier)
     {
-        node_t *src = 0;
-        node_t *dst = 0;
+        nodes::node_t *src = 0;
+        nodes::node_t *dst = 0;
         int port = -1;
 
         if( pick_edge( wpos, src, dst, port))
@@ -388,8 +385,8 @@ void composition_view_t::connect_release_handler( QMouseEvent *event)
         return;
     }
 
-    node_t *src = 0;
-    node_t *dst = 0;
+    nodes::node_t *src = 0;
+    nodes::node_t *dst = 0;
     int port = -1;
 
     if( last_pick_.component == pick_result_t::output_picked)
@@ -438,7 +435,7 @@ void composition_view_t::box_pick_release_handler( QMouseEvent *event)
     Imath::Box2f b( screen_to_world( Imath::V2i( push_x_, push_y_)));
     b.extendBy( screen_to_world( Imath::V2i( last_x_, last_y_)));
 
-    BOOST_FOREACH( node_t& n, app().document().composition().nodes())
+    BOOST_FOREACH( nodes::node_t& n, app().document().composition().nodes())
     {
         if( box_pick_node( &n, b))
             n.toggle_selection();
@@ -528,7 +525,7 @@ void composition_view_t::draw_edges( QPainter& p)
     /*
     draw_edges_visitor visitor( *this, p);
 
-    BOOST_FOREACH( node_t& n, app().document().composition().nodes())
+    BOOST_FOREACH( nodes::node_t& n, app().document().composition().nodes())
         n.accept( visitor);
     */
 }
@@ -538,7 +535,7 @@ void composition_view_t::draw_nodes( QPainter& p)
     /*
     draw_node_visitor visitor( p);
 
-    BOOST_FOREACH( node_t& n, app().document().composition().nodes())
+    BOOST_FOREACH( nodes::node_t& n, app().document().composition().nodes())
         n.accept( visitor);
     */
 }
@@ -577,19 +574,19 @@ void composition_view_t::pick_node( const Imath::V2f& p, pick_result_t& result) 
     */
 }
 
-bool composition_view_t::box_pick_node( node_t *n, const Imath::Box2f& b) const
+bool composition_view_t::box_pick_node( nodes::node_t *n, const Imath::Box2f& b) const
 {
     box_pick_node_visitor visitor( b);
     n->accept( visitor);
     return visitor.result;
 }
 
-bool composition_view_t::pick_edge( const Imath::V2f& p, node_t *&src, node_t *&dst, int& port) const
+bool composition_view_t::pick_edge( const Imath::V2f& p, nodes::node_t *&src, nodes::node_t *&dst, int& port) const
 {
     pick_edge_visitor visitor( *this, p);
 
     /*
-    BOOST_FOREACH( node_t& n, app().document().composition().nodes())
+    BOOST_FOREACH( nodes::node_t& n, app().document().composition().nodes())
     {
         n.accept( visitor);
 

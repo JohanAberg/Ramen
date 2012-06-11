@@ -29,29 +29,29 @@ class anim_editor_command_t : public command_t
 {
 public:
 
-    anim_editor_command_t( node_t *node, const boost::shared_ptr<ui::track_model_t>& model);
-	
+    anim_editor_command_t( nodes::node_t *node, const boost::shared_ptr<ui::track_model_t>& model);
+
     bool empty() const;
 
-	void add_track( anim::track_t *t);
-	void call_notify_for_tracks();
+    void add_track( anim::track_t *t);
+    void call_notify_for_tracks();
 
-	void add_node( node_t *n);
-	void notify_nodes();
+    void add_node( nodes::node_t *n);
+    void notify_nodes();
 
     virtual void undo();
     virtual void redo();
-	
+
 protected:
 
     void swap_curves();
 
-	typedef std::map<anim::track_t*, anim::any_curve_t> map_type;
-	typedef map_type::iterator iterator;
-	
-    boost::shared_ptr<ui::track_model_t> model_;	
-	std::set<node_t*> nodes_;
-	map_type curves_;
+    typedef std::map<anim::track_t*, anim::any_curve_t> map_type;
+    typedef map_type::iterator iterator;
+
+    boost::shared_ptr<ui::track_model_t> model_;
+    std::set<nodes::node_t*> nodes_;
+    map_type curves_;
 };
 
 } // namespace

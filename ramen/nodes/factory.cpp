@@ -4,7 +4,7 @@
 
 #include<ramen/python/python.hpp>
 
-#include<ramen/nodes/node_factory.hpp>
+#include<ramen/nodes/factory.hpp>
 
 #include<boost/foreach.hpp>
 #include<boost/algorithm/string/predicate.hpp>
@@ -17,36 +17,28 @@
 
 namespace ramen
 {
+namespace nodes
+{
 namespace
 {
 
 struct compare_menu_items
 {
-    bool operator()( const node_class_metadata_t& a, const node_class_metadata_t& b) const
+    bool operator()( const class_metadata_t& a, const class_metadata_t& b) const
     {
         return a.menu_item < b.menu_item;
     }
 };
 
-bool check_node_class( const std::string& c)
-{
-    if( boost::starts_with( c, "image."))
-        return true;
-
-    return false;
-}
-
 } // unnamed
 
-node_factory_t& node_factory_t::instance()
+factory_t& factory_t::instance()
 {
-    static node_factory_t f;
+    static factory_t f;
     return f;
 }
 
-node_factory_t::node_factory_t() {}
-
-node_factory_t::~node_factory_t()
+factory_t::~factory_t()
 {
     for( int i = 0; i < metaclasses_.size(); ++i)
     {
@@ -55,16 +47,8 @@ node_factory_t::~node_factory_t()
     }
 }
 
-bool node_factory_t::register_node( const node_class_metadata_t& m)
+bool factory_t::register_node( const class_metadata_t& m)
 {
-    #ifndef NDEBUG
-        if( !check_node_class( m.id))
-        {
-            std::cout << "Registered node class with unknown prefix " << m.id << "\n";
-            RAMEN_ASSERT( 0);
-        }
-    #endif
-
     RAMEN_ASSERT( m.major_version >= 0);
     RAMEN_ASSERT( m.minor_version >= 0);
     RAMEN_ASSERT( m.create);
@@ -72,7 +56,7 @@ bool node_factory_t::register_node( const node_class_metadata_t& m)
     RAMEN_ASSERT( !m.submenu.empty());
     RAMEN_ASSERT( !m.menu_item.empty());
 
-    BOOST_FOREACH( const node_class_metadata_t& metaclass, metaclasses_)
+    BOOST_FOREACH( const class_metadata_t& metaclass, metaclasses_)
     {
         if( metaclass.id == m.id && metaclass.major_version == m.major_version && metaclass.minor_version == m.minor_version)
         {
@@ -84,7 +68,7 @@ bool node_factory_t::register_node( const node_class_metadata_t& m)
     metaclasses_.push_back( m);
 
     // if this version of the node is newer that the one we have...
-    std::map<std::string, node_class_metadata_t>::iterator it( newest_node_infos_.find( m.id));
+    std::map<std::string, class_metadata_t>::iterator it( newest_node_infos_.find( m.id));
 
     if( it != latest_versions_end())
     {
@@ -105,14 +89,14 @@ bool node_factory_t::register_node( const node_class_metadata_t& m)
     return true;
 }
 
-void node_factory_t::sort_by_menu_item()
+void factory_t::sort_by_menu_item()
 {
     std::sort( metaclasses_.begin(), metaclasses_.end(), compare_menu_items());
 }
 
-std::auto_ptr<node_t> node_factory_t::create_by_id( const std::string& id, bool ui)
+std::auto_ptr<node_t> factory_t::create_by_id( const std::string& id, bool ui)
 {
-    std::map<std::string, node_class_metadata_t>::iterator it( newest_node_infos_.find( id));
+    std::map<std::string, class_metadata_t>::iterator it( newest_node_infos_.find( id));
     std::auto_ptr<node_t> n;
 
     if( it != newest_node_infos_.end())
@@ -140,10 +124,10 @@ std::auto_ptr<node_t> node_factory_t::create_by_id( const std::string& id, bool 
     return n;
 }
 
-std::auto_ptr<node_t> node_factory_t::create_by_id_with_version( const std::string& id, const std::pair<int, int>& version)
+std::auto_ptr<node_t> factory_t::create_by_id_with_version( const std::string& id, const std::pair<int, int>& version)
 {
-    std::vector<node_class_metadata_t>::iterator best( metaclasses_.end());
-    std::vector<node_class_metadata_t>::iterator it( metaclasses_.begin());
+    std::vector<class_metadata_t>::iterator best( metaclasses_.end());
+    std::vector<class_metadata_t>::iterator it( metaclasses_.begin());
     int best_minor = -1;
 
     for( ; it != metaclasses_.end(); ++it)
@@ -188,10 +172,11 @@ std::auto_ptr<node_t> node_factory_t::create_by_id_with_version( const std::stri
     return n;
 }
 
-bool node_factory_t::is_latest_version( const std::string& id) const
+bool factory_t::is_latest_version( const std::string& id) const
 {
     const_iterator it( newest_node_infos_.find( id));
     return it != latest_versions_end();
 }
 
+} // namespace
 } // namespace

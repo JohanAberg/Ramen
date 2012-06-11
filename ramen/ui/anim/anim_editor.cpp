@@ -133,7 +133,7 @@ anim_editor_t::anim_editor_t() : window_( 0)
     connect( import_, SIGNAL( triggered()), this, SLOT( export_curves()));
 }
 
-void anim_editor_t::set_active_node( node_t *n)
+void anim_editor_t::set_active_node( nodes::node_t *n)
 {
     boost::shared_ptr<track_model_t> old = current_;
     QItemSelectionModel *sel_model = tree_->selectionModel();
@@ -171,7 +171,7 @@ void anim_editor_t::set_active_node( node_t *n)
     }
 }
 
-void anim_editor_t::node_renamed( node_t *n)
+void anim_editor_t::node_renamed( nodes::node_t *n)
 {
     current_->node_track()->set_name( n->name());
     update();
@@ -181,7 +181,7 @@ void anim_editor_t::clear_all()
 {
 }
 
-void anim_editor_t::recreate_tracks( node_t *n)
+void anim_editor_t::recreate_tracks( nodes::node_t *n)
 {
     if( n == app().ui()->active_node())
     {
@@ -344,7 +344,7 @@ void anim_editor_t::get_selected_keyframe( anim::track_t*& track, int& key_index
 // undo
 void anim_editor_t::create_command()
 {
-    node_t *n = app().ui()->active_node();
+    nodes::node_t *n = app().ui()->active_node();
     RAMEN_ASSERT( n);
 
     command_.reset( new undo::anim_editor_command_t( n, current_));

@@ -14,7 +14,7 @@ node_t::node_t( const node_t& other) : dirty_( false) {}
 
 node_t::~node_t() {}
 
-bool node_t::dirty() const			{ return dirty_;}
+bool node_t::dirty() const      { return dirty_;}
 void node_t::set_dirty( bool d)	{ dirty_ = d;}
 
 void node_t::notify() {}

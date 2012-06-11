@@ -30,25 +30,25 @@ const int radius = 4;
 
 } // unnamed
 
-Imath::V2f generic_input_location( const node_t *n, std::size_t i)
+Imath::V2f generic_input_location( const nodes::node_t *n, std::size_t i)
 {
     float off = generic_node_width( n) / ( n->num_inputs() + 1);
     return Imath::V2f( n->location().x + (i+1)*off, n->location().y - 1);
 }
 
-Imath::V2f generic_output_location( const node_t *n)
+Imath::V2f generic_output_location( const nodes::node_t *n)
 {
     return Imath::V2f( n->location().x + generic_node_width( n) / 2, n->location().y + generic_node_height() + 2);
 }
 
-int generic_node_width( const node_t *n)
+int generic_node_width( const nodes::node_t *n)
 {
     return node_min_width + node_extra_width * std::max( (int) n->num_inputs() - 3, 0);
 }
 
 int generic_node_height() { return 20;}
 
-void draw_generic_node( QPainter& painter, const node_t *n)
+void draw_generic_node( QPainter& painter, const nodes::node_t *n)
 {
     Imath::V2f p = n->location();
 
@@ -80,13 +80,13 @@ void draw_generic_node( QPainter& painter, const node_t *n)
     }
 
     if( n->selected())
-		brush.setColor( palette_t::instance().qcolor( "node_picked_bg"));
+        brush.setColor( palette_t::instance().qcolor( "node_picked_bg"));
     else
     {
         if( n->plugin_error())
-			brush.setColor( palette_t::instance().qcolor( "node_error_bg"));
+            brush.setColor( palette_t::instance().qcolor( "node_error_bg"));
         else
-			brush.setColor( palette_t::instance().qcolor( "node_bg"));
+            brush.setColor( palette_t::instance().qcolor( "node_bg"));
     }
 
     painter.setBrush( brush);
@@ -95,13 +95,13 @@ void draw_generic_node( QPainter& painter, const node_t *n)
     painter.setBrush( Qt::NoBrush);
 
     if( app().ui()->active_node() == n)
-		pen.setColor( palette_t::instance().qcolor( "node_active_out"));
+        pen.setColor( palette_t::instance().qcolor( "node_active_out"));
     else
     {
         if( app().ui()->context_node() == n)
-			pen.setColor( palette_t::instance().qcolor( "node_context_out"));
+            pen.setColor( palette_t::instance().qcolor( "node_context_out"));
         else
-			pen.setColor( palette_t::instance().qcolor( "text"));
+            pen.setColor( palette_t::instance().qcolor( "text"));
     }
 
     painter.setPen( pen);
@@ -113,14 +113,14 @@ void draw_generic_node( QPainter& painter, const node_t *n)
 
     if( n->ignored())
     {
-		pen.setColor( palette_t::instance().qcolor( "box_pick"));
+        pen.setColor( palette_t::instance().qcolor( "box_pick"));
         pen.setWidth(2);
         painter.setPen( pen);
         painter.drawLine( QPointF( p.x - 3, p.y - 2), QPointF( p.x + generic_node_width( n) + 3, p.y + generic_node_height() + 2));
     }
 }
 
-bool box_pick_generic_node( const node_t *n, const Imath::Box2f& b)
+bool box_pick_generic_node( const nodes::node_t *n, const Imath::Box2f& b)
 {
     if( n->location().x + generic_node_width( n) < b.min.x)
         return false;
@@ -137,7 +137,7 @@ bool box_pick_generic_node( const node_t *n, const Imath::Box2f& b)
     return true;
 }
 
-void pick_generic_node( node_t *n, const Imath::V2f& p, const composition_view_t& view, pick_result_t& result)
+void pick_generic_node( nodes::node_t *n, const Imath::V2f& p, const composition_view_t& view, pick_result_t& result)
 {
     result.node = 0;
     result.component = pick_result_t::no_pick;

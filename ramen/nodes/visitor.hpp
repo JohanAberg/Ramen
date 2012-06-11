@@ -2,8 +2,8 @@
 // Licensed under the terms of the CDDL License.
 // See CDDL_LICENSE.txt for a copy of the license.
 
-#ifndef RAMEN_NODE_VISITOR_HPP
-#define	RAMEN_NODE_VISITOR_HPP
+#ifndef RAMEN_NODES_VISITOR_HPP
+#define	RAMEN_NODES_VISITOR_HPP
 
 #include<ramen/config.hpp>
 
@@ -11,29 +11,30 @@
 
 namespace ramen
 {
+namespace nodes
+{
 
-class node_visitor
+class visitor_t
 {
 public:
 
-    virtual ~node_visitor();
+    virtual ~visitor_t();
 
     virtual void visit( node_t *n) = 0;
     virtual void visit( composite_node_t *n) = 0;
-    virtual void visit( image_node_t *n) = 0;
 };
 
-class generic_node_visitor : public node_visitor
+class generic_visitor_t : public visitor_t
 {
 public:
 
-    virtual ~generic_node_visitor();
+    virtual ~generic_visitor_t();
 
     virtual void visit( node_t *n) = 0;
     virtual void visit( composite_node_t *n);
-    virtual void visit( image_node_t *n);
 };
 
+} // namespace
 } // namespace
 
 #endif

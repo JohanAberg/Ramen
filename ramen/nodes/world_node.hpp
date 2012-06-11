@@ -15,6 +15,8 @@
 
 namespace ramen
 {
+namespace nodes
+{
 
 /**
 \ingroup nodes
@@ -57,6 +59,7 @@ private:
     image::format_t default_img_format_;
 };
 
+} // namespace
 } // namespace
 
 #endif

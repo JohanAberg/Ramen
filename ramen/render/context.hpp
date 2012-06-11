@@ -38,7 +38,7 @@ struct RAMEN_API context_t
 
     render_mode mode;
 
-    node_t *result_node;
+    nodes::node_t *result_node;
 
     double frame;
     int subsample;

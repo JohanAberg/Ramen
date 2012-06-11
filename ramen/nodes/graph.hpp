@@ -2,10 +2,10 @@
 // Licensed under the terms of the CDDL License.
 // See CDDL_LICENSE.txt for a copy of the license.
 
-#ifndef RAMEN_NODES_NODE_GRAPH_HPP
-#define RAMEN_NODES_NODE_GRAPH_HPP
+#ifndef RAMEN_NODES_GRAPH_HPP
+#define RAMEN_NODES_GRAPH_HPP
 
-#include<ramen/nodes/node_graph_fwd.hpp>
+#include<ramen/nodes/graph_fwd.hpp>
 
 #include<algorithm>
 #include<memory>
@@ -20,12 +20,14 @@
 
 namespace ramen
 {
+namespace nodes
+{
 
 /**
 \ingroup nodes
 \brief A collection of nodes and connections between them.
 */
-class node_graph_t
+class graph_t
 {
 public:
 
@@ -49,8 +51,8 @@ public:
     typedef std::vector<edge_t>			edge_range_type;
     typedef const std::vector<edge_t>	const_edge_range_type;
 
-    node_graph_t();
-    node_graph_t( const node_graph_t& other);
+    graph_t();
+    graph_t( const graph_t& other);
 
     void add_node( std::auto_ptr<node_t> n);
     std::auto_ptr<node_t> release_node( node_t *n);
@@ -83,12 +85,13 @@ public:
 
 private:
 
-    void operator=( const node_graph_t& other);
+    void operator=( const graph_t& other);
 
     node_container_type nodes_;
     std::vector<edge_t> edges_;
 };
 
+} // namespace
 } // namespace
 
 #endif

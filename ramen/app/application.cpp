@@ -31,13 +31,11 @@
 
 #include<ramen/memory/manager.hpp>
 
-#include<ramen/nodes/node_factory.hpp>
+#include<ramen/nodes/factory.hpp>
 
 #include<ramen/ocio/manager.hpp>
 
 #include<ramen/undo/stack.hpp>
-
-#include<ramen/util/command_line_parser.hpp>
 
 #include<ramen/ui/user_interface.hpp>
 #include<ramen/ui/main_window.hpp>
@@ -53,32 +51,29 @@ namespace ramen
 
 application_t *g_app = 0;
 
-application_t::application_t( int argc, char **argv) : system_(), preferences_()
+application_t::application_t( int argc, char **argv)
 {
     RAMEN_ASSERT( g_app == 0 );
     g_app = this;
 
+    argc_ = 0;
+    argv_ = 0;
     max_threads_ = 0;
     img_cache_size_ = 0;
-    command_line_ = false;
     quitting_ = false;
 
-    #ifndef NDEBUG
-        run_unit_tests_ = false;
-    #endif
+    copy_command_line_args( argc, argv);
 
-    cmd_parser_.reset( new util::command_line_parser_t( argc, argv));
-
-    google::InitGoogleLogging( cmd_parser_->argv[0]);
+    google::InitGoogleLogging( argv_[0]);
     //google::SetLogDestination( google::INFO, "filename.log");
 
     // Create QApplication
-    QApplication *q_app = new QApplication( cmd_parser_->argc, cmd_parser_->argv);
+    QApplication *q_app = new QApplication( argc_, argv_);
     boost::filesystem::path bundle_path( system().app_bundle_path());
     bundle_path /= "lib/Qt_plugins";
     qApp->setLibraryPaths( QStringList( QString( ramen::filesystem::file_cstring( bundle_path))));
 
-    parse_command_line( cmd_parser_->argc, cmd_parser_->argv);
+    parse_command_line();
 
     if( !system().simd_type() & system::simd_sse2)
         fatal_error( "No SSE2 instruction set, exiting", true);
@@ -94,7 +89,7 @@ application_t::application_t( int argc, char **argv) : system_(), preferences_()
     task_scheduler_.initialize( max_threads_);
     Imf::setGlobalThreadCount( max_threads_);
 
-    if( !command_line_)
+    if( !run_command_line())
     {
         splash_.reset( new ui::splash_screen_t());
         splash_->show();
@@ -111,19 +106,19 @@ application_t::application_t( int argc, char **argv) : system_(), preferences_()
 
     mem_manager_.reset( new memory::manager_t( img_cache_size_));
 
-    if( !command_line_)
+    if( !run_command_line())
         splash_->show_message( "Initializing builtin nodes");
-    node_factory_t::instance();
+    nodes::factory_t::instance();
 
-    if( !command_line_)
+    if( !run_command_line())
         splash_->show_message( "Loading plugins...");
     plugin_manager_t::instance();
 
-    if( !command_line_)
+    if( !run_command_line())
         splash_->show_message( "Initializing OpenColorIO");
     ocio_manager_.reset( new ocio::manager_t());
 
-    if( !command_line_)
+    if( !run_command_line())
     {
         splash_->show_message( "Initializing user interface");
         ui_.reset( new ui::user_interface_t());
@@ -134,6 +129,8 @@ application_t::application_t( int argc, char **argv) : system_(), preferences_()
 
 application_t::~application_t()
 {
+    delete_command_line_args();
+
     //	TODO: implement this.
     //delete_tmp_files();
 
@@ -153,76 +150,71 @@ void application_t::create_dirs()
     boost::filesystem::create_directories( preferences().tmp_dir());
 }
 
+bool application_t::run_command_line() const { return true;}
+
 int application_t::run()
 {
-    if( !command_line_)
+    #ifndef NDEBUG
+        run_ramen_unit_tests( argc_, argv_);
+        create_new_document();
+    #endif
+
+    // We have nothing interesting to run yet.
+    std::exit( 0);
+
+    /*
+    if( !run_command_line())
     {
         ui()->show();
         splash_->finish( ui()->main_window());
         splash_.reset();
         return ui()->run();
     }
-
-    #ifndef NDEBUG
-        if( run_unit_tests_)
-        {
-            int result = run_ramen_unit_tests( cmd_parser_->argc, cmd_parser_->argv);
-            std::exit( result);
-        }
-    #endif
+    */
 
     return 0;
 }
 
-// command line things
-bool application_t::matches_option( char *arg, const char *opt) const
+// command line
+void application_t::copy_command_line_args( int argc, char **argv)
 {
-    if( !strcmp( arg, opt))
-        return true;
+    RAMEN_ASSERT( argc >= 1);
 
-    return false;
+    argc_ = argc;
+    argv_ = reinterpret_cast<char**>( malloc( argc * sizeof( char*)));
+
+    for( int i = 0; i < argc ; ++i)
+        argv_[i] = strdup( argv[i]);
 }
 
-void application_t::parse_command_line( int argc, char **argv)
+void application_t::delete_command_line_args()
 {
-    if( argc == 1)
-        return;
-
-    if( matches_option( argv[1], "-help"))
-        usage();
-
-    if( matches_option( argv[1], "-version"))
+    if( argv_)
     {
-        std::cout << RAMEN_NAME_FULL_VERSION_STR << ", " << __DATE__ << std::endl;
+        for( int i = 0; i < argc_ ; ++i)
+            free( reinterpret_cast<void*>( argv_[i]));
+
+        free( reinterpret_cast<void*>( argv_));
+    }
+}
+
+void application_t::parse_command_line()
+{
+    args_desc_.add_options()( "help", "prints help message")
+                            ( "runtests", "run tests")
+                            ( "log-level-all", "test log level")
+                            ;
+
+    /*
+    boost::program_options::store( boost::program_options::parse_command_line( argc_, argv_, args_desc_), args_map_);
+    boost::program_options::notify( args_map_);
+
+    if( args_map_.count( "help"))
+    {
+        std::cout << args_desc_ << std::endl;
         std::exit( 0);
     }
-
-    #ifndef NDEBUG
-        if( matches_option( argv[1], "-runtests"))
-        {
-            run_unit_tests_ = true;
-            command_line_ = true;
-            return;
-        }
-    #endif
-}
-
-void application_t::usage()
-{
-    std::cout <<	RAMEN_NAME_FULL_VERSION_STR << ", " << __DATE__ << "\n" <<
-                    "Usage: ramen [options] file...\n\n"
-                    "Options:\n"
-                    "-help, -h:       Print help message and exit.\n"
-                    "-version:        Print version number and exit.\n"
-                    "-threads n:      Use n threads.\n\n"
-                    "-render:         Render composition. Run ramen -render -help for more information.\n"
-
-                    #ifndef NDEBUG
-                    "-runtests:       Run unit tests and exit.\n"
-                    #endif
-
-                    << std::endl;
-    std::exit( 0);
+    */
 }
 
 void application_t::print_app_info()
@@ -310,7 +302,7 @@ void application_t::delete_document()
 // messages
 void application_t::fatal_error( const std::string& message, bool no_gui) const
 {
-    if( !command_line_ && ui() && !ui()->rendering() && !no_gui)
+    if( !run_command_line() && ui() && !ui()->rendering() && !no_gui)
         ui()->fatal_error( message);
     else
     {
@@ -322,7 +314,7 @@ void application_t::fatal_error( const std::string& message, bool no_gui) const
 
 void application_t::error( const std::string& message, bool no_gui) const
 {
-    if( !command_line_ && ui() && !ui()->rendering() && !no_gui)
+    if( !run_command_line() && ui() && !ui()->rendering() && !no_gui)
         ui()->error( message);
     else
     {
@@ -333,7 +325,7 @@ void application_t::error( const std::string& message, bool no_gui) const
 
 void application_t::inform( const std::string& message, bool no_gui) const
 {
-    if( !command_line_ && ui() && !ui()->rendering() && !no_gui)
+    if( !run_command_line() && ui() && !ui()->rendering() && !no_gui)
         ui()->inform( message);
     else
     {
@@ -344,7 +336,7 @@ void application_t::inform( const std::string& message, bool no_gui) const
 
 bool application_t::question( const std::string& what, bool default_answer) const
 {
-    if( !command_line_ && ui() && !ui()->rendering())
+    if( !run_command_line() && ui() && !ui()->rendering())
         return ui()->question( what, default_answer);
     else
     {

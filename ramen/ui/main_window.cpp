@@ -41,9 +41,7 @@
 #include<ramen/memory/manager.hpp>
 
 #include<ramen/nodes/graph_algorithm.hpp>
-#include<ramen/nodes/node_factory.hpp>
-#include<ramen/nodes/node_output_interface.hpp>
-#include<ramen/nodes/image_node.hpp>
+#include<ramen/nodes/factory.hpp>
 
 #include<ramen/undo/stack.hpp>
 
@@ -52,8 +50,6 @@
 #include<ramen/ui/compview/composition_view.hpp>
 #include<ramen/ui/anim/anim_editor.hpp>
 
-#include<ramen/ui/add_node_command.hpp>
-#include<ramen/ui/edit_commands.hpp>
 #include<ramen/ui/time_controls.hpp>
 #include<ramen/ui/widgets/time_slider.hpp>
 
@@ -402,12 +398,12 @@ void main_window_t::create_node_actions()
         m->add_submenu( "Output");
 
     // sort the list of registered nodes
-    node_factory_t::instance().sort_by_menu_item();
+    nodes::factory_t::instance().sort_by_menu_item();
 
     // add our builtin nodes first
-    BOOST_FOREACH( const node_class_metadata_t& mclass, node_factory_t::instance().registered_nodes())
+    BOOST_FOREACH( const nodes::class_metadata_t& mclass, nodes::factory_t::instance().registered_nodes())
     {
-        if( mclass.ui_visible && node_factory_t::instance().is_latest_version( mclass.id))
+        if( mclass.ui_visible && nodes::factory_t::instance().is_latest_version( mclass.id))
         {
             node_menu_t *menu = find_node_menu( mclass.menu);
             QAction *act = new QAction( QString( mclass.menu_item.c_str()), this);
@@ -825,7 +821,7 @@ void main_window_t::create_node()
     QAction *action = dynamic_cast<QAction*>( sender());
 
     std::string id( create_node_actions_[action]);
-    std::auto_ptr<node_t> p( node_factory_t::instance().create_by_id( id, true));
+    std::auto_ptr<node_t> p( nodes::factory_t::instance().create_by_id( id, true));
 
     if( !p.get())
     {

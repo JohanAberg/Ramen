@@ -36,6 +36,9 @@ public:
     /// Constructor.
     parameterised_t();
 
+    /// Post constructor initialization.
+    void init();
+
     /// Makes a copy of the parameterised.
     parameterised_t *clone() const;
 
@@ -70,16 +73,16 @@ public:
     void set_parent( parameterised_t *parent);
 
     /// Returns the node this parameterised belongs to.
-    const node_t *node() const;
+    const nodes::node_t *node() const;
 
     /// Returns the node this parameterised belongs to.
-    node_t *node();
+    nodes::node_t *node();
 
     /// Returns the world node this parameterised belongs to.
-    const world_node_t *world() const;
+    const nodes::world_node_t *world() const;
 
     /// Returns the world node this parameterised belongs to.
-    world_node_t *world();
+    nodes::world_node_t *world();
 
     /// Creates the params for this parameterised.
     void create_params();
@@ -124,6 +127,12 @@ protected:
     void evaluate_params( float frame);
 
 private:
+
+    /*!
+        \brief Customization hook for parameterised_t::init.
+        For subclasses to implement.
+    */
+    virtual void do_init();
 
     /*!
         \brief Customization hook for parameterised_t::clone.

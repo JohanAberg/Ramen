@@ -29,8 +29,8 @@ void image_cache_t::clear()
 
 void image_cache_t::begin_interaction()
 {
-	if( interacting_)
-		end_interaction();
+    if( interacting_)
+        end_interaction();
 
     interacting_ = true;
 }
@@ -41,7 +41,7 @@ void image_cache_t::end_interaction()
     interacting_ = false;
 }
 
-void image_cache_t::insert( node_t *n, const digest_type& key, image::buffer_t& img)
+void image_cache_t::insert( nodes::node_t *n, const digest_type& key, image::buffer_t& img)
 {
     if( items_.find( key) != items_.end())
     {
@@ -52,10 +52,10 @@ void image_cache_t::insert( node_t *n, const digest_type& key, image::buffer_t& 
         {
             if( Imath::isInside( it->second.buffer.bounds(), img.bounds()))
             {
-				// in this case, just move the buffer to the front
-				// of the use list
-				touch( it);
-				return;
+                // in this case, just move the buffer to the front
+                // of the use list
+                touch( it);
+                return;
             }
         }
     }
@@ -63,7 +63,7 @@ void image_cache_t::insert( node_t *n, const digest_type& key, image::buffer_t& 
     // insert the image buffer in the cache
     if( interacting_)
     {
-        std::map<node_t*, map_iterator>::iterator it = added_while_interacting_.find( n);
+        std::map<nodes::node_t*, map_iterator>::iterator it = added_while_interacting_.find( n);
 
         if( it != added_while_interacting_.end())
             erase( it->second);
@@ -74,7 +74,7 @@ void image_cache_t::insert( node_t *n, const digest_type& key, image::buffer_t& 
     use_list_.push_front( result);
 
     if( interacting_)
-        added_while_interacting_.insert( std::pair<node_t*, map_iterator>( n, result));
+        added_while_interacting_.insert( std::pair<nodes::node_t*, map_iterator>( n, result));
 
     // remove image buffers included inside this one
     std::pair<map_iterator, map_iterator> range = items_.equal_range( key);
@@ -92,7 +92,7 @@ boost::optional<image::buffer_t> image_cache_t::find( const digest_type& key, co
     if( items_.find( key) != items_.end())
     {
         std::pair<map_iterator, map_iterator> range = items_.equal_range( key);
-		
+
         for( map_iterator it( range.first); it != range.second; ++it)
         {
             if( Imath::isInside( it->second.buffer.bounds(), area))
@@ -101,8 +101,8 @@ boost::optional<image::buffer_t> image_cache_t::find( const digest_type& key, co
                 return it->second.buffer;
             }
         }
-	}
-	
+    }
+
     return boost::optional<image::buffer_t>();
 }
 
@@ -117,38 +117,38 @@ void image_cache_t::erase_lru()
 
 boost::posix_time::ptime image_cache_t::lru_time() const
 {
-	RAMEN_ASSERT( !empty());
-	map_iterator it( use_list_.back());
-	return it->second.touch_time;
+    RAMEN_ASSERT( !empty());
+    map_iterator it( use_list_.back());
+    return it->second.touch_time;
 }
 
 void image_cache_t::touch( map_iterator it)
 {
     use_list_.remove( it);
-	it->second.touch_time = boost::posix_time::microsec_clock::universal_time();
-	use_list_.push_front( it);
+    it->second.touch_time = boost::posix_time::microsec_clock::universal_time();
+    use_list_.push_front( it);
 }
 
 void image_cache_t::erase( map_iterator it)
 {
-	if( interacting_)
-	{
-		// remove the item from the added_while_interacting_ map
-		for( std::map<node_t*, map_iterator>::iterator it2( added_while_interacting_.begin()); it2 != added_while_interacting_.end(); ++it2)
-		{
-			if( it == it2->second)
-			{
-				added_while_interacting_.erase( it2);
-				break;
-			}
-		}
-	}
+    if( interacting_)
+    {
+        // remove the item from the added_while_interacting_ map
+        for( std::map<nodes::node_t*, map_iterator>::iterator it2( added_while_interacting_.begin()); it2 != added_while_interacting_.end(); ++it2)
+        {
+            if( it == it2->second)
+            {
+                added_while_interacting_.erase( it2);
+                break;
+            }
+        }
+    }
 
-	if( disk_cache_ && it->second.buffer.use_disk_cache())
-		disk_cache_->insert( it->first, it->second.buffer);
+    if( disk_cache_ && it->second.buffer.use_disk_cache())
+        disk_cache_->insert( it->first, it->second.buffer);
 
-	use_list_.remove( it);
-	items_.erase( it);
+    use_list_.remove( it);
+    items_.erase( it);
 }
 
 } // namespace

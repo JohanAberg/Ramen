@@ -327,7 +327,7 @@ void anim_editor_select_tool_t::create_drag_command()
 {
     RAMEN_ASSERT( drag_command_ == 0);
 
-    node_t *n = app().ui()->active_node();
+    nodes::node_t *n = app().ui()->active_node();
     RAMEN_ASSERT( n);
 
     drag_command_ = new undo::drag_keys_command_t( n, app().ui()->anim_editor().track_model());

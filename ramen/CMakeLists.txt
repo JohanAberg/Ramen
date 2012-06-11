@@ -152,15 +152,13 @@ SET( RAMEN_SOURCES  empty.cpp
 					nodes/composite_node.cpp
 					nodes/edge.cpp
 					nodes/graph_algorithm.cpp
-					nodes/image_node.cpp
 					nodes/node.cpp
-					nodes/node_class_metadata.cpp
-					nodes/node_factory.cpp
-					nodes/node_graph.cpp
-					nodes/node_graph_modifier.cpp
-					nodes/node_plug.cpp
-					nodes/node_output_interface.cpp
-					nodes/node_visitor.cpp
+					nodes/class_metadata.cpp
+					nodes/factory.cpp
+					nodes/graph.cpp
+					nodes/graph_modifier.cpp
+					nodes/plug.cpp
+					nodes/visitor.cpp
 					nodes/world_node.cpp
 
 					ocio/context.cpp
@@ -210,8 +208,6 @@ SET( RAMEN_SOURCES  empty.cpp
 					serialization/yaml_node.cpp
 					serialization/yaml_oarchive.cpp
 
-					ui/add_node_command.cpp
-					ui/edit_commands.cpp
 					ui/events.cpp
 					ui/events_util.cpp
 					ui/graph_layout.cpp
@@ -238,7 +234,6 @@ SET( RAMEN_SOURCES  empty.cpp
 					ui/anim/track_model.cpp
 
 					ui/compview/composition_view.cpp
-					ui/compview/composition_view_commands.cpp
 					ui/compview/composition_view_layout.cpp
 					ui/compview/composition_view_toolbar.cpp
 					ui/compview/draw_pick_visitors.cpp
@@ -285,7 +280,6 @@ SET( RAMEN_SOURCES  empty.cpp
 					undo/stack.cpp
 
 					util/calculator.cpp
-					util/command_line_parser.cpp
 					util/edit_distance.cpp
 					util/error_log.cpp
 					util/string.cpp
@@ -686,13 +680,14 @@ IF( CMAKE_BUILD_TYPE MATCHES Debug)
 							test/nodes.cpp
 							test/params.cpp
 							test/param_set.cpp
-							test/string.cpp
 							test/poly.cpp
-							#test/python.cpp
+							test/python.cpp
+							test/string.cpp
+							test/test_node.cpp
 							test/undo.cpp
 							)
 
-	SET( RAMEN_TEST_LIBRARIES ${GMOCK_LIBRARIES})
+	SET( RAMEN_TEST_LIBRARIES)
 ENDIF()
 
 # platform sources

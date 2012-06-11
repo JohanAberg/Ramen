@@ -20,9 +20,9 @@
 #include<ramen/params/composite_parameterised.hpp>
 
 #include<ramen/nodes/graph_color.hpp>
-#include<ramen/nodes/node_plug.hpp>
-#include<ramen/nodes/node_factory.hpp>
-#include<ramen/nodes/node_visitor.hpp>
+#include<ramen/nodes/plug.hpp>
+#include<ramen/nodes/factory.hpp>
+#include<ramen/nodes/visitor.hpp>
 
 #include<ramen/interval.hpp>
 
@@ -31,6 +31,8 @@
 #include<ramen/undo/command.hpp>
 
 namespace ramen
+{
+namespace nodes
 {
 
 /*!
@@ -41,34 +43,30 @@ class RAMEN_API node_t : public composite_parameterised_t
 {
 public:
 
-    enum flag_bits
-    {
-        selected_bit			= 1 << 0,
-        ignored_bit				= 1 << 1,
-        plugin_error_bit		= 1 << 2,
-        active_bit				= 1 << 3,
-        context_bit				= 1 << 4,
-        cacheable_bit			= 1 << 5,
-        autolayout_bit			= 1 << 6,
-        notify_dirty_bit		= 1 << 7,
-        ui_invisible_bit		= 1 << 8,
-        interacting_bit			= 1 << 9
-    };
+    virtual const class_metadata_t *class_metadata() const { return 0;}
 
-    virtual const node_class_metadata_t *class_metadata() const { return 0;}
-
+    /// Constructor.
     node_t();
+
+    /// Destructor.
     virtual ~node_t();
+
+    /// Post constructor initialization.
+    void init();
 
     /// Called for the new node, after being copied.
     virtual void cloned();
 
-    // inputs
+    /// Creates this node plugs.
+    void create_plugs();
+
+    /// Returns the number of input plugs.
     std::size_t num_inputs() const { return inputs_.size();}
 
-    const std::vector<node_input_plug_t>& input_plugs() const { return inputs_;}
-    std::vector<node_input_plug_t>& input_plugs()             { return inputs_;}
+    const boost::ptr_vector<input_plug_t>& input_plugs() const { return inputs_;}
+    boost::ptr_vector<input_plug_t>& input_plugs()             { return inputs_;}
 
+    /// Finds an input plug with the given id.
     int find_input( const name_t& id) const;
 
     const node_t *input( std::size_t i = 0) const;
@@ -86,28 +84,23 @@ public:
         return dynamic_cast<T*>( input( i));
     }
 
-    void add_input_plug( const std::string& id, bool optional,
-                         const Imath::Color3c& color, const std::string& tooltip );
-
     // outputs
 
     bool has_output_plug() const { return !outputs_.empty();}
 
     std::size_t num_outputs() const;
 
-    const node_output_plug_t& output_plug() const;
-    node_output_plug_t& output_plug();
+    const output_plug_t& output_plug() const;
+    output_plug_t& output_plug();
 
     const node_t *output( std::size_t i) const;
     node_t *output( std::size_t i);
-
-    void add_output_plug( const std::string& id, const Imath::Color3c& color, const std::string& tooltip );
 
     graph_color_t graph_color() const            { return graph_color_;}
     void set_graph_color( graph_color_t c) const { graph_color_ = c;}
 
     // visitor
-    virtual void accept( node_visitor& v);
+    virtual void accept( visitor_t& v);
 
     // ui
     const Imath::V2f& location() const		{ return loc_;}
@@ -223,6 +216,11 @@ protected:
     node_t( const node_t& other);
     void operator=( const node_t& other);
 
+    void add_input_plug( const std::string& id, bool optional,
+                         const Imath::Color3c& color, const std::string& tooltip );
+
+    void add_output_plug( const std::string& id, const Imath::Color3c& color, const std::string& tooltip );
+
     virtual void do_calc_hash_str( const render::context_t& context);
     void add_needed_frames_to_hash( const render::context_t& context);
     void add_context_to_hash_string( const render::context_t& context);
@@ -231,7 +229,36 @@ protected:
 
 private:
 
-    // connections
+    enum flag_bits
+    {
+        selected_bit			= 1 << 0,
+        ignored_bit				= 1 << 1,
+        plugin_error_bit		= 1 << 2,
+        active_bit				= 1 << 3,
+        context_bit				= 1 << 4,
+        cacheable_bit			= 1 << 5,
+        autolayout_bit			= 1 << 6,
+        notify_dirty_bit		= 1 << 7,
+        ui_invisible_bit		= 1 << 8,
+        interacting_bit			= 1 << 9
+    };
+
+    /*!
+        \brief Customization hook for node_t::init.
+        For subclasses to implement.
+    */
+    virtual void do_init();
+
+    /*!
+        \brief Customization hook for node_t::create_plugs.
+        For subclasses to implement.
+    */
+    virtual void do_create_plugs();
+
+    /*!
+        \brief Customization hook for node_t::connected.
+        For subclasses to implement.
+    */
     virtual void do_connected( node_t *src, int port);
 
     void reconnect_node();
@@ -270,8 +297,8 @@ private:
 
     // data
 
-    std::vector<node_input_plug_t> inputs_;
-    boost::ptr_vector<node_output_plug_t> outputs_;
+    boost::ptr_vector<input_plug_t> inputs_;
+    boost::ptr_vector<output_plug_t> outputs_;
 
     mutable graph_color_t graph_color_;
 
@@ -286,6 +313,7 @@ private:
 /// Makes a copy of a node.
 RAMEN_API node_t *new_clone( const node_t& other);
 
+} // namespace
 } // namespace
 
 #endif

@@ -6,8 +6,6 @@
 
 #include<map>
 
-#include<gmock/gmock.h>
-
 #include<ramen/assert.hpp>
 
 namespace
@@ -46,19 +44,6 @@ private:
     map_type tests_;
 };
 
-// gmock interop
-struct init_gmock
-{
-    init_gmock()
-    {
-        ::testing::GTEST_FLAG(throw_on_failure) = true;
-        ::testing::InitGoogleMock( &boost::unit_test::framework::master_test_suite().argc,
-                                   boost::unit_test::framework::master_test_suite().argv);
-    }
-
-    ~init_gmock() {}
-};
-
 } // unnamed
 
 // for internal use
@@ -66,9 +51,6 @@ bool do_register_ramen_test( const char *name, const boost::function<void()>& fu
 {
     return test_registry_t::instance().register_test( name, fun);
 }
-
-// gmock interop
-BOOST_GLOBAL_FIXTURE( init_gmock);
 
 bool init_tests()
 {

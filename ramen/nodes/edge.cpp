@@ -8,6 +8,8 @@
 
 namespace ramen
 {
+namespace nodes
+{
 
 edge_t::edge_t() : src( 0), dst( 0), port( -1) {}
 
@@ -30,4 +32,4 @@ bool edge_t::operator==( const edge_t& other) const
 
 
 } // namespace
-
+} // namespace

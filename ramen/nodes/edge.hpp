@@ -12,6 +12,8 @@
 
 namespace ramen
 {
+namespace nodes
+{
 
 struct edge_t
 {
@@ -37,6 +39,7 @@ struct edge_t
     mutable graph_color_t graph_color_;
 };
 
+} // namespace
 } // namespace
 
 #endif
