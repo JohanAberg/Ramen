@@ -1,4 +1,6 @@
 // Copyright (c) 2010 Esteban Tovagliari
+// Licensed under the terms of the CDDL License.
+// See CDDL_LICENSE.txt for a copy of the license.
 
 #include<ramen/params/composite_param.hpp>
 
@@ -9,17 +11,13 @@
 #include<boost/foreach.hpp>
 #include<boost/range/algorithm/for_each.hpp>
 
-#include<QWidget>
-#include<QVBoxLayout>
-#include<QFrame>
-
 #include<ramen/params/param_set.hpp>
 
 #include<ramen/anim/track.hpp>
 
-#include<ramen/ui/inspector/inspector.hpp>
-
 namespace ramen
+{
+namespace params
 {
 
 composite_param_t::composite_param_t() : param_t(), create_track_( true) {}
@@ -64,13 +62,19 @@ void composite_param_t::do_add_param( param_t *p)
     params().push_back( p);
 }
 
-const param_t *composite_param_t::find( const std::string& id) const
+void composite_param_t::add_to_dependency_graph( dependency::graph_t& dg)
+{
+    BOOST_FOREACH( param_t& p, params())
+        p.add_to_dependency_graph( dg);
+}
+
+const param_t *composite_param_t::find( const name_t& id) const
 {
     composite_param_t& self = const_cast<composite_param_t&>( *this);
     return self.find( id);
 }
 
-param_t *composite_param_t::find( const std::string& id)
+param_t *composite_param_t::find( const name_t& id)
 {
     BOOST_FOREACH( param_t& p, params())
     {
@@ -119,21 +123,6 @@ void composite_param_t::do_add_to_hash( hash::generator_t& hash_gen) const
         p.add_to_hash( hash_gen);
 }
 
-void composite_param_t::do_update_widgets()
-{
-    boost::range::for_each( params_, boost::bind( &param_t::update_widgets, _1));
-}
-
-void composite_param_t::do_enable_widgets( bool e)
-{
-    boost::range::for_each( params_, boost::bind( &param_t::enable_widgets, _1, e));
-}
-
-void composite_param_t::do_format_changed( const Imath::Box2i& new_format, float aspect, const Imath::V2f& proxy_scale)
-{
-    boost::range::for_each( params_, boost::bind( &param_t::format_changed, _1, new_format, aspect, proxy_scale));
-}
-
 void composite_param_t::do_convert_relative_paths( const boost::filesystem::path& old_base, const boost::filesystem::path& new_base)
 {
     boost::range::for_each( params_, boost::bind( &param_t::convert_relative_paths, _1, old_base, new_base));
@@ -173,33 +162,5 @@ void composite_param_t::do_write( serialization::yaml_oarchive_t& out) const
         out.end_seq();
 }
 
-QWidget *composite_param_t::do_create_widgets()
-{
-    QWidget *widget = new QWidget();
-    create_widgets_inside_widget( widget);
-    return widget;
-}
-
-void composite_param_t::create_widgets_inside_widget( QWidget *parent)
-{
-    QVBoxLayout *layout = new QVBoxLayout();
-    layout->setContentsMargins( 0, 0, 0, 0);
-    layout->setSpacing( 5);
-    layout->setSizeConstraint( QLayout::SetFixedSize);
-
-    BOOST_FOREACH( param_t& p, params())
-    {
-        if( !p.secret())
-        {
-            QWidget *w = p.create_widgets();
-
-            if( w)
-                layout->addWidget( w);
-        }
-    }
-
-    layout->addStretch();
-    parent->setLayout( layout);
-}
-
+} // namespace
 } // namespace

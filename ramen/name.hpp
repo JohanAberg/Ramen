@@ -32,6 +32,8 @@ public:
 
     const char *c_str() const { return data_->c_str();}
 
+    const std::string& string() const { return *data_;}
+
     bool operator==( const name_t& other) const { return data_ == other.data_;}
     bool operator!=( const name_t& other) const { return data_ != other.data_;}
     bool operator<( const name_t& other) const	{ return data_ < other.data_;}
@@ -47,6 +49,8 @@ private:
 
     const std::string *data_;
 };
+
+std::ostream& operator<<( std::ostream& os, const name_t& n);
 
 } // ramen
 

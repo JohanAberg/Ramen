@@ -12,17 +12,13 @@ namespace nodes
 
 class node_t;
 class composite_node_t;
-class group_node_t;
 class world_node_t;
 
 } // nodes
 
-/*
 using nodes::node_t;
 using nodes::composite_node_t;
-using nodes::group_node_t;
 using nodes::world_node_t;
-*/
 
 } // ramen
 

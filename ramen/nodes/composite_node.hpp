@@ -40,6 +40,9 @@ public:
     /// Called for the new node, after being copied.
     virtual void cloned();
 
+    /// Adds this node to the dependency graph.
+    virtual void add_to_dependency_graph();
+
     /// Dispatch function for visitor pattern.
     virtual void accept( visitor_t& v);
 
@@ -72,10 +75,10 @@ public:
     node_t *create_node_by_id_with_version( const std::string& id, const std::pair<int, int>& version);
 
     /// Adds a node as a child of this node.
-    virtual void add_node( std::auto_ptr<node_t> n);
+    void add_node( std::auto_ptr<node_t> n);
 
     /// Removes a child node from this node.
-    virtual std::auto_ptr<node_t> remove_node( node_t *n);
+    std::auto_ptr<node_t> release_node( node_t *n);
 
     /// Finds the children node with the given name.
     const node_t *find_node( const std::string& name) const;
@@ -118,11 +121,6 @@ private:
     virtual void do_write( serialization::yaml_oarchive_t& out) const;
 
     std::auto_ptr<node_t> create_unknown_node( const std::string& id, const std::pair<int, int>& version) const;
-
-    void read_node( const serialization::yaml_node_t& in);
-
-    void read_edge( const serialization::yaml_node_t& in);
-    void write_edge( serialization::yaml_oarchive_t& out, const edge_t& e) const;
 
     graph_t g_;
     std::auto_ptr<ui::graph_layout_t> layout_;

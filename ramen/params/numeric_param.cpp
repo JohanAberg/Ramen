@@ -8,6 +8,8 @@
 
 namespace ramen
 {
+namespace params
+{
 
 numeric_param_t::numeric_param_t( const std::string& name) : animated_param_t( name), type_( absolute) {}
 
@@ -362,4 +364,5 @@ poly_param_value_t numeric_param_t::absolute_to_relative( const poly_param_value
     RAMEN_ASSERT( 0);
 }
 
+} // namespace
 } // namespace

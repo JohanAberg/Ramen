@@ -7,17 +7,13 @@
 
 #include<ramen/params/numeric_param.hpp>
 
-#include<QPointer>
-
-#include<ramen/ui/widgets/param_spinbox_fwd.hpp>
-
 namespace ramen
+{
+namespace params
 {
 
 class RAMEN_API float_param_t : public numeric_param_t
 {
-    Q_OBJECT
-
 public:
 
     explicit float_param_t( const std::string& name);
@@ -50,28 +46,9 @@ private:
 
     virtual boost::python::object to_python( const poly_param_value_t& v) const;
     virtual poly_param_value_t from_python( const boost::python::object& obj) const;
-
-    virtual void do_read( const serialization::yaml_node_t& node);
-    virtual void do_write( serialization::yaml_oarchive_t& out) const;
-
-    virtual void do_format_changed( const Imath::Box2i& new_domain, float aspect, const Imath::V2f& proxy_scale);
-
-    virtual void do_update_widgets();
-    virtual void do_enable_widgets( bool e);
-
-    virtual QWidget *do_create_widgets() RAMEN_WARN_UNUSED_RESULT;
-
-    QPointer<ui::param_spinbox_t> input_;
-
-private Q_SLOTS:
-
-    void value_changed( double value);
-    void spinbox_pressed();
-    void spinbox_dragged( double value);
-    void spinbox_released();
-    void expression_set();
 };
 
+} // namespace
 } // namespace
 
 #endif

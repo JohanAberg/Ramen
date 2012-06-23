@@ -10,7 +10,7 @@
 #include<boost/foreach.hpp>
 #include<boost/range/algorithm/for_each.hpp>
 
-#include<ramen/nodes/graph_algorithm.hpp>
+#include<ramen/nodes/world_node.hpp>
 
 #include<ramen/serialization/yaml_iarchive.hpp>
 #include<ramen/serialization/yaml_oarchive.hpp>
@@ -22,25 +22,6 @@ namespace ramen
 {
 namespace nodes
 {
-
-namespace
-{
-
-struct frames_needed_less
-{
-    bool operator()( const std::pair<int, int>& a, const std::pair<int, int>& b) const
-    {
-        if( a.first < b.first)
-            return true;
-
-        if( a.first == b.first)
-            return a.second < b.second;
-
-        return false;
-    }
-};
-
-} // unnamed
 
 node_t::node_t() : composite_parameterised_t(), flags_( 0) {}
 
@@ -65,10 +46,20 @@ void node_t::do_init() {}
 
 void node_t::cloned()
 {
-    for( int i = 0; i < num_inputs(); ++i)
-        connected( 0, i);
+    //for( int i = 0; i < num_inputs(); ++i)
+    //    connected( 0, i);
 
     create_manipulators();
+}
+
+const composite_node_t *node_t::parent_node() const
+{
+    return dynamic_cast<const composite_node_t*>( parent());
+}
+
+composite_node_t *node_t::parent_node()
+{
+    return dynamic_cast<composite_node_t*>( parent());
 }
 
 // plugs
@@ -122,10 +113,15 @@ void node_t::set_notify_dirty( bool b)  { util::set_flag( flags_, notify_dirty_b
 bool node_t::ui_invisible() const       { return flags_ & ui_invisible_bit;}
 void node_t::set_ui_invisible( bool b)  { util::set_flag( flags_, ui_invisible_bit, b );}
 
-bool node_t::is_active() const     { return util::test_flag( flags_, active_bit);}
-bool node_t::is_context() const    { return util::test_flag( flags_, context_bit);}
-
 // inputs
+
+void node_t::add_input_plug( const name_t& id, bool optional, const Imath::Color3c &color, const std::string &tooltip)
+{
+    if( find_input( id) == -1)
+        throw std::runtime_error( util::concat_strings( "Duplicated input plud id: ", id.c_str()));
+
+    inputs_.push_back( new input_plug_t( id, optional, color, tooltip ));
+}
 
 int node_t::find_input( const name_t& id) const
 {
@@ -141,74 +137,124 @@ int node_t::find_input( const name_t& id) const
     return -1;
 }
 
-const node_t *node_t::input( std::size_t i) const
+const input_plug_t& node_t::input_plug( const name_t& id) const
 {
-    RAMEN_ASSERT( i < inputs_.size());
-    return inputs_[i].input_node();
+    int index = find_input( id);
+
+    if( index < 0)
+        throw std::runtime_error( util::concat_strings( "Couldn't find input plug id: ", id.c_str()));
+
+    return inputs_[index];
 }
 
-node_t *node_t::input( std::size_t i)
+input_plug_t& node_t::input_plug( const name_t& id)
 {
-    RAMEN_ASSERT( i < inputs_.size());
-    return inputs_[i].input_node();
+    int index = find_input( id);
+
+    if( index < 0)
+        throw std::runtime_error( util::concat_strings( "Couldn't find input plug id: ", id.c_str()));
+
+    return inputs_[index];
 }
 
-void node_t::add_input_plug( const std::string &id, bool optional, const Imath::Color3c &color, const std::string &tooltip)
+const node_t *node_t::input( const name_t& id) const
 {
-    inputs_.push_back( new input_plug_t( id, optional, color, tooltip ));
+    int index = find_input( id);
+
+    if( index < 0)
+        throw std::runtime_error( util::concat_strings( "Couldn't find input plug id: ", id.c_str()));
+
+    return inputs_[index].input_node();
 }
 
-std::size_t node_t::num_outputs() const
+node_t *node_t::input( const name_t& id)
 {
-    if( !has_output_plug())
-        return 0;
+    int index = find_input( id);
 
-    return outputs_[0].connections().size();
+    if( index < 0)
+        throw std::runtime_error( util::concat_strings( "Couldn't find input plug id: ", id.c_str()));
+
+    return inputs_[index].input_node();
 }
 
-const output_plug_t& node_t::output_plug() const
+// outputs
+int node_t::find_output( const name_t& id) const
 {
-    RAMEN_ASSERT( has_output_plug());
-    return outputs_[0];
+    int index = 0;
+    BOOST_FOREACH( const output_plug_t& i, output_plugs())
+    {
+        if( i.id().c_str() == id.c_str() )
+            return index;
+
+        ++index;
+    }
+
+    return -1;
 }
 
-output_plug_t& node_t::output_plug()
+const output_plug_t& node_t::output_plug( const name_t& id) const
 {
-    RAMEN_ASSERT( has_output_plug());
-    return outputs_[0];
+    int index = find_output( id);
+
+    if( index < 0)
+        throw std::runtime_error( util::concat_strings( "Couldn't find output plug id: ", id.c_str()));
+
+    return outputs_[index];
 }
 
-const node_t *node_t::output( std::size_t i) const
+output_plug_t& node_t::output_plug( const name_t& id)
 {
-    RAMEN_ASSERT( has_output_plug());
-    RAMEN_ASSERT( i < num_outputs());
-    return boost::get<0>( outputs_[0].connections()[i] );
+    int index = find_output( id);
+
+    if( index < 0)
+        throw std::runtime_error( util::concat_strings( "Couldn't find output plug id: ", id.c_str()));
+
+    return outputs_[index];
 }
 
-node_t *node_t::output( std::size_t i)
+void node_t::add_output_plug(const name_t& id, const Imath::Color3c& color, const std::string& tooltip )
 {
-    RAMEN_ASSERT( has_output_plug());
-    RAMEN_ASSERT( i < num_outputs());
-    return boost::get<0>( outputs_[0].connections()[i] );
-}
+    if( find_output( id) == -1)
+        throw std::runtime_error( util::concat_strings( "Duplicated output plug id: ", id.c_str()));
 
-void node_t::add_output_plug( const std::string &id, const Imath::Color3c& color, const std::string& tooltip )
-{
-    RAMEN_ASSERT( !has_output_plug());
     outputs_.push_back( new output_plug_t( this, id, color, tooltip ));
 }
 
-bool node_t::accept_connection( node_t *src, int port) const { return true;}
-
-void node_t::connected( node_t *src, int port)
+void node_t::add_to_dependency_graph()
 {
-    if( variable_num_inputs() && src != 0 && port == num_inputs()-1)
-        add_new_input_plug();
+    world_node_t *w = world();
+    RAMEN_ASSERT( w);
 
-    do_connected( src, port);
+    BOOST_FOREACH( input_plug_t& in, input_plugs())
+        w->dependency_graph().add_node( dynamic_cast<dependency::node_t*>( &in));
+
+    BOOST_FOREACH( output_plug_t& out, output_plugs())
+        w->dependency_graph().add_node( dynamic_cast<dependency::node_t*>( &out));
+
+    param_set().add_params_to_dependency_graph( w->dependency_graph());
+    do_add_to_dependency_graph();
 }
 
-void node_t::do_connected( node_t *src, int port) {}
+void node_t::do_add_to_dependency_graph() {}
+
+bool node_t::accept_connection( node_t *src, const name_t& src_port, const name_t& dst_port) const
+{
+    return do_accept_connection( src, src_port, dst_port);
+}
+
+bool node_t::do_accept_connection( node_t *src, const name_t& src_port, const name_t& dst_port) const { return true;}
+
+void node_t::connected(node_t *src, const name_t& src_port, const name_t& dst_port)
+{
+    /*
+    if( variable_num_inputs() && src != 0 && port == num_inputs()-1)
+        add_new_input_plug();
+    */
+
+    do_connected( src, src_port, dst_port);
+}
+
+void node_t::do_connected( node_t *src, const name_t& src_port, const name_t& dst_port) {}
 
 void node_t::add_new_input_plug()
 {
@@ -219,89 +265,12 @@ void node_t::add_new_input_plug()
     */
 }
 
-void node_t::reconnect_node()
-{
-    /*
-    composition_t *comp = composition();
-
-    if( comp)
-    {
-        BOOST_FOREACH( edge_t& e, comp->edges())
-        {
-            if( e.dst == this)
-                input_plugs()[ e.port].set_input( e.src, name_t( "unused"));
-        }
-    }
-    */
-}
-
 // params
 void node_t::param_edit_finished() { notify();}
 
 void node_t::notify()
 {
-    breadth_first_outputs_search( *this, boost::bind( &node_t::do_notify, _1));
-}
-
-void node_t::do_notify()
-{
-    //RAMEN_ASSERT( composition());
-
-    changed( this);
-    set_notify_dirty( false);
-}
-
-node_t::frame_interval_type node_t::frame_interval() const { return do_calc_frame_interval();}
-
-void node_t::calc_frames_needed( const render::context_t& context)
-{
-    do_calc_frames_needed( context);
-
-    if( !frames_needed().empty())
-        std::sort( frames_needed().begin(), frames_needed().end(), frames_needed_less());
-}
-
-void node_t::do_calc_frames_needed( const render::context_t& context) {}
-
-void node_t::begin_active()
-{
-    flags_ |= active_bit;
-    do_begin_active();
-}
-
-void node_t::end_active()
-{
-    do_end_active();
-    flags_ &= ~active_bit;
-}
-
-void node_t::begin_context()
-{
-    flags_ |= context_bit;
-    do_begin_context();
-}
-
-void node_t::end_context()
-{
-    do_end_context();
-    flags_ &= ~context_bit;
-}
-
-bool node_t::interacting() const
-{
-    return flags_ & interacting_bit;
-}
-
-void node_t::begin_interaction()
-{
-    do_begin_interaction();
-    flags_ |= interacting_bit;
-}
-
-void node_t::end_interaction()
-{
-    do_end_interaction();
-    flags_ &= ~interacting_bit;
+    // use the dependency graph here.
 }
 
 bool node_t::is_valid() const
@@ -338,163 +307,6 @@ bool node_t::is_valid() const
 }
 
 bool node_t::do_is_valid() const { return true;}
-
-bool node_t::is_identity() const
-{
-    RAMEN_ASSERT( is_valid());
-
-    if( ignored())
-        return true;
-
-    // generators can never be identity
-    if( num_inputs() == 0)
-        return false;
-
-    return do_is_identity();
-}
-
-bool node_t::do_is_identity() const { return false;}
-
-// hash
-void node_t::clear_hash()
-{
-    hash_generator().reset();
-
-    set_cacheable( !is_frame_varying());
-
-    if( cacheable())
-    {
-        BOOST_FOREACH( input_plug_t& i, input_plugs())
-        {
-            if( i.connected())
-            {
-                if( !i.input_node()->cacheable())
-                {
-                    set_cacheable( false);
-                    return;
-                }
-            }
-        }
-    }
-
-    frames_needed().clear();
-}
-
-void node_t::calc_hash_str( const render::context_t& context)
-{
-    RAMEN_ASSERT( hash_generator().empty());
-
-    if( !cacheable())
-        return;
-
-    bool valid = is_valid();
-
-    if( valid && is_identity())
-    {
-        if( num_inputs() > 0 && input())
-            hash_generator() << input()->hash_str();
-
-        return;
-    }
-
-    hash_generator() << typeid( *this).name();
-
-    if( !valid)
-    {
-        add_context_to_hash_string( context);
-        return;
-    }
-
-    // handle the case when all inputs are optional and disconnected.
-    if( num_inputs() != 0)
-    {
-        bool all_optional = true;
-        bool not_connected = true;
-
-        for( int i = 0; i < num_inputs(); ++i)
-        {
-            if( !input_plugs()[i].optional())
-                all_optional = false;
-
-            if( input(i))
-                not_connected = false;
-        }
-
-        if( all_optional && not_connected)
-            add_context_to_hash_string( context);
-    }
-
-    // for each needed input frame...
-    calc_frames_needed( context);
-
-    if( !frames_needed_.empty() && !ignored())
-        add_needed_frames_to_hash( context);
-    else
-    {
-        for( int i = 0; i < num_inputs(); ++i)
-            if( input( i) && include_input_in_hash( i))
-                hash_generator() << i << input( i)->hash_str();
-    }
-
-    do_calc_hash_str( context);
-}
-
-void node_t::do_calc_hash_str( const render::context_t& context)
-{
-    param_set().add_to_hash( hash_generator());
-}
-
-std::string node_t::hash_str() const { return hash_generator().str();}
-
-const hash::generator_t::digest_type& node_t::digest() { return hash_generator().digest();}
-
-void node_t::add_context_to_hash_string( const render::context_t& context)
-{
-    hash_generator() << context.subsample;
-    hash_generator() << context.motion_blur_extra_samples;
-    hash_generator() << context.motion_blur_shutter_factor;
-}
-
-bool node_t::include_input_in_hash( int num) const { return true;}
-
-void node_t::add_needed_frames_to_hash( const render::context_t& context)
-{
-    const_frames_needed_iterator it( frames_needed().begin()), end( frames_needed().end());
-
-    while( it != end)
-    {
-        float cur_frame = it->first;
-        render::context_t new_context( context);
-        new_context.frame = cur_frame;
-
-        while( 1)
-        {
-            node_t *n = input( it->second);
-            depth_first_inputs_search( *n, boost::bind( &node_t::set_frame, _1, cur_frame));
-            depth_first_inputs_search( *n, boost::bind( &node_t::clear_hash, _1));
-            depth_first_inputs_search( *n, boost::bind( &node_t::calc_hash_str, _1, new_context));
-            hash_generator() << it->second << n->hash_str();
-            ++it;
-
-            if( it == end || it->first != cur_frame)
-                break;
-        }
-    }
-
-    // restore original time here
-    for( int i = 0; i < num_inputs(); ++i)
-    {
-        if( node_t *n = input( i))
-        {
-            depth_first_inputs_search( *n, boost::bind( &node_t::set_frame, _1, context.frame));
-            depth_first_inputs_search( *n, boost::bind( &node_t::clear_hash, _1));
-            depth_first_inputs_search( *n, boost::bind( &node_t::calc_hash_str, _1, context));
-        }
-    }
-}
-
-// cache
-bool node_t::is_frame_varying() const { return false;}
 
 // ui
 const char *node_t::help_string() const

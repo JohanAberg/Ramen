@@ -8,10 +8,9 @@
 
 #include<ramen/nodes/node.hpp>
 
-#include<ramen/ui/user_interface.hpp>
-#include<ramen/ui/inspector/inspector.hpp>
-
 namespace ramen
+{
+namespace params
 {
 
 bool_param_t::bool_param_t( const std::string& name) : static_param_t( name)
@@ -21,7 +20,6 @@ bool_param_t::bool_param_t( const std::string& name) : static_param_t( name)
 
 bool_param_t::bool_param_t( const bool_param_t& other) : static_param_t( other)
 {
-    button_ = 0;
 }
 
 void bool_param_t::set_default_value( bool x) { value().assign( x);}
@@ -63,49 +61,5 @@ void bool_param_t::do_write( serialization::yaml_oarchive_t& out) const
         << YAML::Value << get_value<bool>( *this);
 }
 
-void bool_param_t::do_update_widgets()
-{
-    if( button_)
-    {
-        button_->blockSignals( true);
-        button_->setChecked( get_value<bool>( *this));
-        button_->blockSignals( false);
-    }
-}
-
-void bool_param_t::do_enable_widgets( bool e)
-{
-    if( button_)
-        button_->setEnabled( e);
-}
-
-QWidget *bool_param_t::do_create_widgets()
-{
-    QWidget *w = new QWidget();
-
-    button_ = new QCheckBox( w);
-    button_->setFocusPolicy( Qt::NoFocus);
-    button_->setText( name().c_str());
-    QSize s = button_->sizeHint();
-
-    w->setMinimumSize( app().ui()->inspector().width(), s.height());
-    w->setMaximumSize( app().ui()->inspector().width(), s.height());
-
-    button_->move( app().ui()->inspector().left_margin(), 0);
-    button_->resize( s.width(), s.height());
-    button_->setChecked( get_value<bool>( *this));
-    button_->setEnabled( enabled());
-    button_->setToolTip( id().c_str());
-
-    connect( button_, SIGNAL( stateChanged( int)), this, SLOT( button_checked( int)));
-    return w;
-}
-
-void bool_param_t::button_checked( int state)
-{
-    param_set()->begin_edit();
-    set_value( state);
-    param_set()->end_edit();
-}
-
+} // namespace
 } // namespace

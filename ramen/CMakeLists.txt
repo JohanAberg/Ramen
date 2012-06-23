@@ -5,33 +5,7 @@ CONFIGURE_FILE( ${PROJECT_SOURCE_DIR}/ramen/version.hpp.in ${PROJECT_SOURCE_DIR}
 
 INCLUDE_DIRECTORIES( ${CMAKE_CURRENT_BINARY_DIR})
 
-SET( RAMEN_MOC_CLASSES  params/animated_param.hpp
-						params/aspect_ratio_param.hpp
-						params/bool_param.hpp
-						params/button_param.hpp
-						params/color_param.hpp
-						params/combo_group_param.hpp
-						params/composite_param.hpp
-						params/curve_param.hpp
-						params/file_param.hpp
-						params/float_param.hpp
-						params/float2_param.hpp
-						params/float3_param.hpp
-						params/group_param.hpp
-						params/image_format_param.hpp
-						params/inspector_param.hpp
-						params/motion_blur_param.hpp
-						params/numeric_param.hpp
-						params/ocio_colorspace_param.hpp
-						params/param.hpp
-						params/popup_param.hpp
-						params/proportional_param.hpp
-						params/separator_param.hpp
-						params/static_param.hpp
-						params/string_param.hpp
-						params/tab_group_param.hpp
-
-						ui/anim/anim_curves_view.hpp
+SET( RAMEN_MOC_CLASSES  ui/anim/anim_curves_view.hpp
 						ui/anim/anim_editor.hpp
 						ui/anim/track_model.hpp
 
@@ -150,8 +124,6 @@ SET( RAMEN_SOURCES  empty.cpp
 					memory/pool.cpp
 
 					nodes/composite_node.cpp
-					nodes/edge.cpp
-					nodes/graph_algorithm.cpp
 					nodes/node.cpp
 					nodes/class_metadata.cpp
 					nodes/factory.cpp
@@ -667,7 +639,6 @@ SET( RAMEN_PYTHON_SOURCES	python/access.cpp
 IF( CMAKE_BUILD_TYPE MATCHES Debug)
 	SET( RAMEN_TEST_SOURCES	test/test.cpp
 							test/array.cpp
-							test/composite_nodes.cpp
 							test/container.cpp
 							test/depgraph.cpp
 							test/dictionary.cpp

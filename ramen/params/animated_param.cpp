@@ -24,8 +24,10 @@
 
 namespace ramen
 {
+namespace params
+{
 
-animated_param_t::animated_param_t( const std::string& name) : param_t(name), step_( 1.0f)
+animated_param_t::animated_param_t( const std::string& name) : param_t( name), step_( 1.0f)
 {
     //set_can_have_expressions( true);
 }
@@ -37,7 +39,7 @@ animated_param_t::animated_param_t( const animated_param_t& other) : param_t( ot
 
 int animated_param_t::num_curves() const { return curves_.size();}
 
-const std::string& animated_param_t::curve_name( int indx) const
+const name_t& animated_param_t::curve_name( int indx) const
 {
     RAMEN_ASSERT( indx >= 0 && indx < num_curves());
     return boost::get<0>( curves_[indx]);
@@ -55,9 +57,9 @@ anim::float_curve_t& animated_param_t::curve( int indx)
     return boost::get<1>( curves_[indx]);
 }
 
-void animated_param_t::add_curve( const std::string& name)
+void animated_param_t::add_curve(const name_t& name)
 {
-    curves_.push_back( curve_entry_type( boost::flyweight<std::string>( name), anim::float_curve_t()));
+    curves_.push_back( curve_entry_type( name, anim::float_curve_t()));
 }
 
 void animated_param_t::eval_curve( int index, float frame, float& v) const
@@ -154,7 +156,6 @@ void animated_param_t::do_anim_curve_changed( anim::any_curve_ptr_t& c)
      //RAMEN_ASSERT( composition());
    // frame = composition()->frame();
     evaluate( frame);
-    update_widgets();
     emit_param_changed( user_edited);
 }
 
@@ -235,7 +236,6 @@ void animated_param_t::paste( int curve_index)
     param_set()->end_edit( true);
 
     evaluate( frame);
-    update_widgets();
     app().ui()->update_anim_editors();
 }
 
@@ -274,50 +274,7 @@ void animated_param_t::do_create_tracks( anim::track_t *parent)
     parent->add_child( t);
 }
 
-// serialization
-void animated_param_t::read_curves( const serialization::yaml_node_t& node)
-{
-    serialization::optional_yaml_node_t curves( node.get_optional_node( "curves"));
-
-    if( curves)
-    {
-        for( serialization::yaml_node_t::const_iterator it( curves.get().begin()); it != curves.get().end(); ++it)
-        {
-            std::string key;
-            it.first() >> key;
-
-            if( anim::float_curve_t *c = find_curve( key))
-            {
-                serialization::yaml_node_t crv_node( node, &( it.second()));
-                c->read( crv_node);
-            }
-            else
-                node.error_stream() << "Unknown curve " << key << " found in param.";
-        }
-    }
-}
-
-void animated_param_t::write_curves( serialization::yaml_oarchive_t& out) const
-{
-    if( !all_curves_empty())
-    {
-        out << YAML::Key << "curves" << YAML::Value;
-        out.begin_map();
-
-        for( int i = 0; i < num_curves(); ++i)
-        {
-            if( !curve( i).empty())
-            {
-                out << YAML::Key << curve_name( i) << YAML::Value;
-                curve( i).write( out);
-            }
-        }
-
-        out.end_map();
-    }
-}
-
-anim::float_curve_t *animated_param_t::find_curve( const std::string& name)
+anim::float_curve_t *animated_param_t::find_curve(const name_t& name)
 {
     for( int i = 0; i < num_curves(); ++i)
     {
@@ -328,4 +285,5 @@ anim::float_curve_t *animated_param_t::find_curve( const std::string& name)
     return 0;
 }
 
+} // namespace
 } // namespace

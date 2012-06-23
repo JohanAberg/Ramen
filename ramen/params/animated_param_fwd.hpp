@@ -7,9 +7,15 @@
 
 namespace ramen
 {
+namespace params
+{
 
 class animated_param_t;
 
-} // namespace
+} // params
+
+using params::animated_param_t;
+
+} // ramen
 
 #endif

@@ -20,8 +20,10 @@
 
 namespace ramen
 {
+namespace params
+{
 
-animated_param_command_t::animated_param_command_t( param_set_t& pset, const std::string& id) : undo::command_t( "Param Changed"), pset_( pset)
+animated_param_command_t::animated_param_command_t( param_set_t& pset, const name_t& id) : undo::command_t( "Param Changed"), pset_( pset)
 {
     id_ = id;
     set_done( true);
@@ -50,7 +52,7 @@ void animated_param_command_t::undo()
     p.value() =  previous_value_;
     //p.evaluate( app().document().composition().frame());
     p.evaluate( 1.0f);
-    p.update_widgets();
+    //p.update_widgets();
     p.emit_param_changed( param_t::user_edited);
     undo::command_t::undo();
 }
@@ -64,9 +66,10 @@ void animated_param_command_t::redo()
     swap_curves();
     //p.evaluate( app().document().composition().frame());
     p.evaluate( 1.0f);
-    p.update_widgets();
+    //p.update_widgets();
     p.emit_param_changed( param_t::user_edited);
     undo::command_t::redo();
 }
 
+} // namespace
 } // namespace

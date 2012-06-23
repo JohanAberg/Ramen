@@ -1,4 +1,6 @@
 // Copyright (c) 2010 Esteban Tovagliari
+// Licensed under the terms of the CDDL License.
+// See CDDL_LICENSE.txt for a copy of the license.
 
 #ifndef RAMEN_CURVE_PARAM_HPP
 #define	RAMEN_CURVE_PARAM_HPP
@@ -9,11 +11,11 @@
 
 namespace ramen
 {
+namespace params
+{
 
 class RAMEN_API curve_param_t : public animated_param_t
 {
-    Q_OBJECT
-
 public:
 
     explicit curve_param_t( const std::string& name);
@@ -42,6 +44,7 @@ private:
     Imath::Color3c color_;
 };
 
+} // namespace
 } // namespace
 
 #endif

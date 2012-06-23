@@ -1,4 +1,6 @@
 // Copyright (c) 2010 Esteban Tovagliari
+// Licensed under the terms of the CDDL License.
+// See CDDL_LICENSE.txt for a copy of the license.
 
 #ifndef RAMEN_SEPARATOR_PARAM_HPP
 #define	RAMEN_SEPARATOR_PARAM_HPP
@@ -7,11 +9,11 @@
 
 namespace ramen
 {
+namespace params
+{
 
 class RAMEN_API separator_param_t : public param_t
 {
-    Q_OBJECT
-    
 public:
 
     separator_param_t();
@@ -25,10 +27,9 @@ protected:
 private:
 
     virtual param_t *do_clone() const { return new separator_param_t( *this);}
-
-    virtual QWidget *do_create_widgets() RAMEN_WARN_UNUSED_RESULT;
 };
 
+} // namespace
 } // namespace
 
 #endif

@@ -9,19 +9,13 @@
 
 #include<ramen/image/format.hpp>
 
-#include<QPointer>
-
-#include<ramen/ui/widgets/double_spinbox_fwd.hpp>
-
-class QComboBox;
-
 namespace ramen
+{
+namespace params
 {
 
 class RAMEN_API image_format_param_t : public static_param_t
 {
-    Q_OBJECT
-
 public:
 
     explicit image_format_param_t( const std::string& name);
@@ -42,20 +36,9 @@ private:
 
     virtual void do_read( const serialization::yaml_node_t& node);
     virtual void do_write( serialization::yaml_oarchive_t& out) const;
-
-    virtual QWidget *do_create_widgets() RAMEN_WARN_UNUSED_RESULT;
-    virtual void do_update_widgets();
-    virtual void do_enable_widgets( bool e);
-
-    QPointer<ui::double_spinbox_t> width_input_, height_input_, aspect_input_;
-    QPointer<QComboBox> menu_;
-
-private Q_SLOTS:
-
-    void preset_picked( int v);
-    void set_new_format( double unused = 0);
 };
 
+} // namespace
 } // namespace
 
 #endif

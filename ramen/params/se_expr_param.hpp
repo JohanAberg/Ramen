@@ -1,4 +1,6 @@
 // Copyright (c) 2011 Esteban Tovagliari
+// Licensed under the terms of the CDDL License.
+// See CDDL_LICENSE.txt for a copy of the license.
 
 #ifndef RAMEN_SE_EXPR_PARAM_HPP
 #define	RAMEN_SE_EXPR_PARAM_HPP
@@ -7,22 +9,15 @@
 
 #include<boost/function.hpp>
 
-#include<QPoint>
-#include<QPointer>
-
 #include<ramen/expressions/se_expression.hpp>
-
-#include<ramen/ui/widgets/text_edit_fwd.hpp>
-
-class QWidget;
 
 namespace ramen
 {
-
-class se_expr_param_t : public static_param_t
+namespace params
 {
-    Q_OBJECT
 
+class RAMEN_API se_expr_param_t : public static_param_t
+{
 public:
 
     typedef boost::function<expressions::se_expression_t*()> create_expr_fun_type;
@@ -53,23 +48,11 @@ private:
     virtual void do_read( const serialization::yaml_node_t& node);
     virtual void do_write( serialization::yaml_oarchive_t& out) const;
 
-    virtual QWidget *do_create_widgets() RAMEN_WARN_UNUSED_RESULT;
-
-    virtual void do_update_widgets();
-    virtual void do_enable_widgets( bool e);
-
-    QPointer<QWidget> top_widget_;
-    QPointer<ui::text_edit_t> multi_input_;
     create_expr_fun_type create_expr_fun_;
     std::string saved_expression_;
-
-private Q_SLOTS:
-
-    void text_changed();
-    void show_context_menu( const QPoint& p);
-    void show_expression_editor();
 };
 
+} // namespace
 } // namespace
 
 #endif

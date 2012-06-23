@@ -24,12 +24,6 @@
 #include<ramen/nodes/factory.hpp>
 #include<ramen/nodes/visitor.hpp>
 
-#include<ramen/interval.hpp>
-
-#include<ramen/render/context.hpp>
-
-#include<ramen/undo/command.hpp>
-
 namespace ramen
 {
 namespace nodes
@@ -57,6 +51,12 @@ public:
     /// Called for the new node, after being copied.
     virtual void cloned();
 
+    /// Returns the composite node parent of this node.
+    const composite_node_t *parent_node() const;
+
+    /// Returns the composite node parent of this node.
+    composite_node_t *parent_node();
+
     /// Creates this node plugs.
     void create_plugs();
 
@@ -66,40 +66,58 @@ public:
     const boost::ptr_vector<input_plug_t>& input_plugs() const { return inputs_;}
     boost::ptr_vector<input_plug_t>& input_plugs()             { return inputs_;}
 
-    /// Finds an input plug with the given id.
+    /// Returns the index of the input plug with the given id.
     int find_input( const name_t& id) const;
 
-    const node_t *input( std::size_t i = 0) const;
-    node_t *input( std::size_t i = 0);
+    /// Returns the input plug with the given id.
+    const input_plug_t& input_plug( const name_t& id) const;
 
+    /// Returns the input plug with the given id.
+    input_plug_t& input_plug( const name_t& id);
+
+    /// Returns a const pointer to the node connected to the input plug with the given id.
+    const node_t *input( const name_t& id) const;
+
+    /// Returns a pointer to the node connected to the input plug with the given id.
+    node_t *input( const name_t& id);
+
+    /// Returns a const pointer to the node connected to the input plug with the given id.
     template<class T>
-    const T *input_as( std::size_t i = 0) const
+    const T *input_as( const name_t& id) const
     {
-        return dynamic_cast<const T*>( input( i));
+        return dynamic_cast<const T*>( input( id));
     }
 
+    /// Returns a pointer to the node connected to the input plug with the given id.
     template<class T>
-    T *input_as( std::size_t i = 0)
+    T *input_as( const name_t& id)
     {
-        return dynamic_cast<T*>( input( i));
+        return dynamic_cast<T*>( input( id));
     }
 
-    // outputs
+    /// Returns the number of input plugs.
+    std::size_t num_outputs() const { return outputs_.size();}
 
-    bool has_output_plug() const { return !outputs_.empty();}
+    const boost::ptr_vector<output_plug_t>& output_plugs() const { return outputs_;}
+    boost::ptr_vector<output_plug_t>& output_plugs()             { return outputs_;}
 
-    std::size_t num_outputs() const;
+    /// Returns the index of the output plug with the given id.
+    int find_output( const name_t& id) const;
 
-    const output_plug_t& output_plug() const;
-    output_plug_t& output_plug();
+    /// Returns the output plug with the given id.
+    const output_plug_t& output_plug( const name_t& id) const;
 
-    const node_t *output( std::size_t i) const;
-    node_t *output( std::size_t i);
+    /// Returns the output plug with the given id.
+    output_plug_t& output_plug( const name_t& id);
 
+    /// Adds this node components ( plugs & params) to the dg.
+    virtual void add_to_dependency_graph();
+
+    // graph
     graph_color_t graph_color() const            { return graph_color_;}
     void set_graph_color( graph_color_t c) const { graph_color_ = c;}
 
-    // visitor
+    /// visitor.
     virtual void accept( visitor_t& v);
 
     // ui
@@ -127,9 +145,6 @@ public:
     bool ui_invisible() const;
     void set_ui_invisible( bool b);
 
-    bool is_active() const;
-    bool is_context() const;
-
     virtual void add_new_input_plug();
 
     // params
@@ -140,60 +155,18 @@ public:
 
     void notify();
 
-    // Some parts of Ramen needs access to this, so it's public.
-    virtual void do_notify();
-
     // connections
     virtual bool variable_num_inputs() const { return false;}
 
-    virtual bool accept_connection( node_t *src, int port) const;
-    void connected( node_t *src, int port);
+    bool accept_connection( node_t *src, const name_t& src_port, const name_t& dst_port) const;
+    void connected( node_t *src, const name_t& src_port, const name_t& dst_port);
 
     // ignore
     bool ignored() const;
     void set_ignored( bool b);
 
-    // time
-    typedef interval_t<> frame_interval_type;
-    frame_interval_type frame_interval() const;
-
-    void calc_frames_needed( const render::context_t& context);
-
-    const std::vector<std::pair<int, float> >& frames_needed() const	{ return frames_needed_;}
-    std::vector<std::pair<int, float> >& frames_needed()				{ return frames_needed_;}
-
-    typedef std::vector<std::pair<int, float> >::const_iterator const_frames_needed_iterator;
-
-    // edit
-    void begin_active();
-    void end_active();
-
-    void begin_context();
-    void end_context();
-
-    bool interacting() const;
-    void begin_interaction();
-    void end_interaction();
-
-    // valid & identity
+    // valid
     bool is_valid() const;
-    bool is_identity() const;
-
-    // hash
-    virtual void clear_hash();
-
-    const hash::generator_t& hash_generator() const	{ return hash_gen_;}
-    hash::generator_t& hash_generator()				{ return hash_gen_;}
-
-    std::string hash_str() const;
-
-    const hash::generator_t::digest_type& digest();
-
-    void calc_hash_str( const render::context_t& context);
-
-    virtual bool include_input_in_hash( int num) const;
-
-    virtual bool is_frame_varying() const;
 
     // user interface
     virtual const char *help_string() const;
@@ -216,16 +189,12 @@ protected:
     node_t( const node_t& other);
     void operator=( const node_t& other);
 
-    void add_input_plug( const std::string& id, bool optional,
+    void add_input_plug( const name_t& id, bool optional,
                          const Imath::Color3c& color, const std::string& tooltip );
 
-    void add_output_plug( const std::string& id, const Imath::Color3c& color, const std::string& tooltip );
+    void add_output_plug( const name_t& id, const Imath::Color3c& color, const std::string& tooltip );
 
-    virtual void do_calc_hash_str( const render::context_t& context);
-    void add_needed_frames_to_hash( const render::context_t& context);
-    void add_context_to_hash_string( const render::context_t& context);
-
-    bool is_valid_, is_identity_;
+    bool is_valid_;
 
 private:
 
@@ -234,13 +203,11 @@ private:
         selected_bit			= 1 << 0,
         ignored_bit				= 1 << 1,
         plugin_error_bit		= 1 << 2,
-        active_bit				= 1 << 3,
-        context_bit				= 1 << 4,
-        cacheable_bit			= 1 << 5,
-        autolayout_bit			= 1 << 6,
-        notify_dirty_bit		= 1 << 7,
-        ui_invisible_bit		= 1 << 8,
-        interacting_bit			= 1 << 9
+        cacheable_bit			= 1 << 3,
+        autolayout_bit			= 1 << 4,
+        notify_dirty_bit		= 1 << 5,
+        ui_invisible_bit		= 1 << 6,
+        interacting_bit			= 1 << 7
     };
 
     /*!
@@ -256,29 +223,28 @@ private:
     virtual void do_create_plugs();
 
     /*!
+        \brief Customization hook for node_t::add_to_dependency_graph.
+        For subclasses to implement.
+    */
+    virtual void do_add_to_dependency_graph();
+
+    /*!
+        \brief Customization hook for node_t::accept_connection.
+        For subclasses to implement.
+    */
+    virtual bool do_accept_connection( node_t *src, const name_t& src_port, const name_t& dst_port) const;
+
+    /*!
         \brief Customization hook for node_t::connected.
         For subclasses to implement.
     */
-    virtual void do_connected( node_t *src, int port);
+    virtual void do_connected( node_t *src, const name_t& src_port, const name_t& dst_port);
 
-    void reconnect_node();
-
-    virtual void do_begin_active() {}
-    virtual void do_end_active() {}
-
-    virtual void do_begin_context() {}
-    virtual void do_end_context() {}
-
-    virtual void do_begin_interaction() {}
-    virtual void do_end_interaction()	{}
-
+    /*!
+        \brief Customization hook for node_t::is_valid.
+        For subclasses to implement.
+    */
     virtual bool do_is_valid() const;
-    virtual bool do_is_identity() const;
-
-    // time
-    virtual frame_interval_type do_calc_frame_interval() const { return frame_interval_type();}
-
-    virtual void do_calc_frames_needed( const render::context_t& context);
 
     /*!
         \brief Customization hook for node_t::read.
@@ -304,10 +270,6 @@ private:
 
     boost::uint32_t flags_;
     Imath::V2f loc_;
-    std::vector<std::pair<int, float> > frames_needed_;
-
-    // hash
-    hash::generator_t hash_gen_;
 };
 
 /// Makes a copy of a node.

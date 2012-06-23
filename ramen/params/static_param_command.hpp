@@ -1,9 +1,13 @@
 // Copyright (c) 2010 Esteban Tovagliari
+// Licensed under the terms of the CDDL License.
+// See CDDL_LICENSE.txt for a copy of the license.
 
 #ifndef RAMEN_STATIC_PARAM_COMMAND_HPP
 #define RAMEN_STATIC_PARAM_COMMAND_HPP
 
 #include<string>
+
+#include<ramen/name.hpp>
 
 #include<ramen/undo/command.hpp>
 
@@ -14,12 +18,14 @@
 
 namespace ramen
 {
+namespace params
+{
 
-class static_param_command_t : public undo::command_t
+class RAMEN_API static_param_command_t : public undo::command_t
 {
 public:
 
-    static_param_command_t( param_set_t& pset, const std::string& id);
+    static_param_command_t(param_set_t& pset, const ramen::name_t& id);
 
     virtual void undo();
     virtual void redo();
@@ -27,10 +33,11 @@ public:
 protected:
 
     param_set_t& pset_;
-    std::string id_;
+    name_t id_;
     poly_param_value_t old_value_, new_value_;
 };
 
+} // namespace
 } // namespace
 
 #endif

@@ -19,22 +19,23 @@
 #include<vector>
 #include<utility>
 
-#include<boost/flyweight.hpp>
 #include<boost/filesystem/fstream.hpp>
 #include<boost/python/object.hpp>
 #include<boost/python/extract.hpp>
 
 #include<OpenEXR/ImathBox.h>
 
-#include<QObject>
-
 #include<ramen/assert.hpp>
+
+#include<ramen/name.hpp>
 
 #include<ramen/params/poly_param_value.hpp>
 #include<ramen/params/parameterised_fwd.hpp>
 #include<ramen/params/param_set_fwd.hpp>
 #include<ramen/params/static_param_command_fwd.hpp>
 #include<ramen/params/animated_param_command_fwd.hpp>
+
+#include<ramen/dependency/graph_fwd.hpp>
 
 #include<ramen/anim/track_fwd.hpp>
 
@@ -49,21 +50,17 @@
 
 #include<ramen/python/access_fwd.hpp>
 
-#include<ramen/ui/widgets/param_spinbox_fwd.hpp>
-
-class QWidget;
-
 namespace ramen
+{
+namespace params
 {
 
 /**
 \ingroup params
 \brief param class
 */
-class RAMEN_API param_t : public QObject, public dependency::node_t
+class RAMEN_API param_t : public dependency::node_t
 {
-    Q_OBJECT
-
 protected:
 
     enum flag_bits
@@ -107,16 +104,16 @@ public:
     param_t *clone() const { return do_clone();}
 
     /// Returns the param name.
-    const std::string& name() const         { return name_;}
+    const name_t& name() const { return name_;}
 
     /// Sets the param name.
-    void set_name( const std::string& name) { name_ = name;}
+    void set_name( const name_t& name) { name_ = name;}
 
     /// Returns the param id.
-    const std::string& id() const { return id_;}
+    const name_t& id() const { return id_;}
 
     /// Sets the param id.
-    void set_id( const std::string& identifier);
+    void set_id( const name_t& identifier);
 
     /// Returns a const pointer to the param set this param belongs to.
     const param_set_t *param_set() const    { return param_set_;}
@@ -138,6 +135,9 @@ public:
 
     /// Returns the world node this param belongs to.
     nodes::world_node_t *world();
+
+    /// Add this param to the dependency graph
+    virtual void add_to_dependency_graph( dependency::graph_t& dg);
 
     // flags
     bool enabled() const;
@@ -171,9 +171,6 @@ public:
     // notifications
     void emit_param_changed( change_reason reason);
 
-    // format
-    void format_changed( const Imath::Box2i& new_format, float aspect, const Imath::V2f& proxy_scale);
-
     // animation
     void create_tracks( anim::track_t *parent);
     void set_frame( float frame);
@@ -201,11 +198,6 @@ public:
     // util
     void apply_function( const boost::function<void ( param_t*)>& f);
 
-    // widgets
-    QWidget *create_widgets();
-    void update_widgets();
-    void enable_widgets( bool e);
-
 protected:
 
     param_t( const param_t& other);
@@ -220,10 +212,8 @@ protected:
     virtual poly_param_value_t value_at_frame( float frame) const { return value();}
 
     // expressions
-    void add_expression( const std::string& name);
-    bool eval_expression( int index, float frame, float& v, ui::param_spinbox_t *widget) const;
-    void read_expressions( const serialization::yaml_node_t& node);
-    void write_expressions( serialization::yaml_oarchive_t& out) const;
+    void add_expression( const name_t& name);
+    bool eval_expression( int index, float frame, float& v) const;
 
 private:
 
@@ -237,15 +227,15 @@ private:
 
     virtual void do_init();
 
-    virtual void do_format_changed( const Imath::Box2i& new_format, float aspect, const Imath::V2f& proxy_scale);
-
     virtual void do_set_param_set( param_set_t *parent);
 
     // time and anim
     virtual void do_create_tracks( anim::track_t *parent);
     virtual void do_set_frame( float frame);
     virtual void do_evaluate( float frame);
-    expressions::expression_t *find_expression( const std::string& name);
+
+    // expressions
+    expressions::expression_t *find_expression( const name_t& name);
 
     // undo
     virtual std::auto_ptr<undo::command_t> do_create_command();
@@ -271,11 +261,6 @@ private:
     // util
     virtual void do_apply_function( const boost::function<void ( param_t*)>& f);
 
-    // widgets
-    virtual QWidget *do_create_widgets();
-    virtual void do_update_widgets();
-    virtual void do_enable_widgets( bool e);
-
     template<class S> friend S get_value( const param_t& p);
     template<class S> friend S get_value_at_frame( const param_t& p, float frame);
 
@@ -284,14 +269,14 @@ private:
 
     param_set_t *param_set_;
 
-    boost::flyweight<std::string> name_;
-    boost::flyweight<std::string> id_;
-    boost::flyweight<std::string> tooltip_;
+    name_t name_;
+    name_t id_;
+    std::string tooltip_;
 
     boost::uint32_t flags_;
     poly_param_value_t value_;
 
-    std::vector<std::pair<boost::flyweight<std::string>, expressions::expression_t> > expressions_;
+    std::vector<std::pair<name_t, expressions::expression_t> > expressions_;
 };
 
 template<class S>
@@ -334,6 +319,7 @@ S get_value_at_frame( const param_t& p, float frame)
 
 RAMEN_API param_t *new_clone( const param_t& other);
 
+} // namespace
 } // namespace
 
 #endif

@@ -1,12 +1,17 @@
 // Copyright (c) 2010 Esteban Tovagliari
+// Licensed under the terms of the CDDL License.
+// See CDDL_LICENSE.txt for a copy of the license.
 
 #ifndef RAMEN_PARAMS_PARAM_FWD_HPP
 #define RAMEN_PARAMS_PARAM_FWD_HPP
 
 namespace ramen
 {
+namespace params
+{
 
 class param_t;
+class composite_param_t;
 
 class aspect_ratio_param_t;
 class bool_param_t;
@@ -23,6 +28,11 @@ class color_param_t;
 
 class combo_group_param_t;
 
-} // namespace
+} // params
+
+using params::param_t;
+using params::composite_param_t;
+
+} // ramen
 
 #endif

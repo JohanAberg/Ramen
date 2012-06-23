@@ -82,5 +82,13 @@ std::string make_string( const char *s0, const char *s1, const char *s2, const c
     return result;
 }
 
+std::string concat_strings( const std::string& a, const std::string& b, const std::string& c)
+{
+    std::string result( a);
+    result += b;
+    result += c;
+    return result;
+}
+
 } // util
 } // ramen

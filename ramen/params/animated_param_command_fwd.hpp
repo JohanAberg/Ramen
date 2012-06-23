@@ -7,10 +7,13 @@
 
 namespace ramen
 {
+namespace params
+{
 
 class animated_param_command_t;
 class animated_param_reset_command_t;
 
+} // namespace
 } // namespace
 
 #endif

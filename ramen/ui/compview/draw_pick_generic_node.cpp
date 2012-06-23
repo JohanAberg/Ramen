@@ -70,6 +70,7 @@ void draw_generic_node( QPainter& painter, const nodes::node_t *n)
         painter.drawRect( q.x - 3, q.y - 3, 6, 6);
     }
 
+    /*
     if( n->has_output_plug())
     {
         // TODO: use the output plug's color here.
@@ -78,6 +79,7 @@ void draw_generic_node( QPainter& painter, const nodes::node_t *n)
         Imath::V2f q = generic_output_location( n);
         painter.drawRect( q.x - 3, q.y - 3, 6, 6);
     }
+    */
 
     if( n->selected())
         brush.setColor( palette_t::instance().qcolor( "node_picked_bg"));

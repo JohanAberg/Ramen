@@ -24,6 +24,7 @@ panel_t::panel_t( parameterised_t *p) : p_( p), panel_( 0)
 {
     panel_ = new QWidget();
 
+    /*
     QVBoxLayout *layout = new QVBoxLayout();
     layout->setContentsMargins( 0, 0, 0, 0);
     layout->setSizeConstraint( QLayout::SetFixedSize);
@@ -38,20 +39,24 @@ panel_t::panel_t( parameterised_t *p) : p_( p), panel_( 0)
 
     layout->addStretch();
     panel_->setLayout( layout);
+    */
 }
 
 panel_t::~panel_t()
 {
-	connection_.disconnect();
-	panel_->deleteLater();
+    connection_.disconnect();
+    panel_->deleteLater();
 }
 
 void panel_t::set_connection( const boost::signals2::connection c)
 {
-	connection_ = c;
+    connection_ = c;
 }
 
-void panel_t::update() { p_->update_widgets();}
+void panel_t::update()
+{
+    //p_->update_widgets();
+}
 
 } // namespace
 } // namespace

@@ -10,71 +10,51 @@
 #include<ramen/app/document.hpp>
 
 #include<ramen/test/test_node.hpp>
+using namespace ramen;
 
-/*
-namespace ramen
-{
-namespace nodes
-{
+// test signals
+int node_added_calls = 0;
+int node_released_calls = 0;
 
-class mock_node_t : public node_t
-{
-public:
-
-    static const class_metadata_t& mock_node_class_metadata();
-    virtual const class_metadata_t *class_metadata() const;
-
-    mock_node_t() {}
-    mock_node_t( const mock_node_t& other) : node_t( other) {}
-
-    virtual node_t *do_clone() const
-    {
-        return new mock_node_t( *this);
-    }
-
-    MOCK_METHOD0( do_create_plugs, void());
-    MOCK_METHOD0( do_create_params, void());
-    MOCK_METHOD0( do_create_manipulators, void());
-};
-
-// factory
-node_t *create_mock_node() { return new mock_node_t();}
-
-const class_metadata_t *mock_node_t::class_metadata() const { return &mock_node_class_metadata();}
-
-const class_metadata_t& mock_node_t::mock_node_class_metadata()
-{
-    static bool inited( false);
-    static class_metadata_t info;
-
-    if( !inited)
-    {
-        info.id = "builtin.mock";
-        info.major_version = 1;
-        info.minor_version = 0;
-        info.menu = "Image";
-        info.submenu = "Test";
-        info.menu_item = "Mock";
-        info.create = &create_mock_node;
-        inited = true;
-    }
-
-    return info;
-}
-
-} // nodes
-} // ramen
-*/
-
-void test_mock_node() {}
-
-static bool registered1 = RAMEN_REGISTER_TEST_CASE( test_mock_node);
+void node_added( node_t*)       { node_added_calls++;}
+void node_released( node_t*)    { node_released_calls++;}
 
 void test_nodes()
 {
-    ramen::nodes::factory_t::instance().register_node( ramen::nodes::test_node_t::test_node_class_metadata());
+    nodes::factory_t::instance().register_node( ramen::nodes::test_node_t::test_node_class_metadata());
 
-    // TODO: write this.
+    // start from new.
+    app().create_new_document();
+
+    app().document().node_added.connect( node_added);
+    app().document().node_released.connect( node_released);
+
+    // check that world does not have a parent node.
+    BOOST_CHECK( !app().document().parent_node());
+
+    // try to create a non-existant node.
+    ramen::nodes::node_t *null_node = app().document().create_node_by_id( "builtin.no_node");
+    BOOST_CHECK( null_node == 0);
+
+    // create a node, check that it's correctly inserted as a child of world.
+    ramen::nodes::node_t *node = app().document().create_node_by_id( "builtin.test");
+    BOOST_CHECK( node);
+    BOOST_CHECK( app().document().graph().nodes().size() == 1);
+    BOOST_CHECK( node->parent_node() == &app().document());
+
+    // create a second node.
+    ramen::nodes::node_t *node2 = app().document().create_node_by_id( "builtin.test");
+    BOOST_CHECK( node2);
+
+    // check that node2 has been renamed.
+    BOOST_CHECK( node->name() != node2->name());
+
+    // delete all nodes.
+    app().create_new_document();
+
+    // check that
+    BOOST_CHECK( node_added_calls == 2);
+    BOOST_CHECK( node_added_calls == node_released_calls);
 }
 
 static bool registered2 = RAMEN_REGISTER_TEST_CASE( test_nodes);

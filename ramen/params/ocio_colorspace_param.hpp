@@ -1,4 +1,6 @@
 // Copyright (c) 2010 Esteban Tovagliari
+// Licensed under the terms of the CDDL License.
+// See CDDL_LICENSE.txt for a copy of the license.
 
 #ifndef RAMEN_OCIO_COLORSPACE_PARAM_HPP
 #define	RAMEN_OCIO_COLORSPACE_PARAM_HPP
@@ -8,19 +10,13 @@
 #include<string>
 #include<vector>
 
-#include<adobe/string.hpp>
-
-#include<QPointer>
-
-#include<ramen/ui/widgets/ocio_colorspace_combo_fwd.hpp>
-
 namespace ramen
+{
+namespace params
 {
 
 class RAMEN_API ocio_colorspace_param_t : public static_param_t
 {
-    Q_OBJECT
-
 public:
 
     explicit ocio_colorspace_param_t( const std::string& name);
@@ -45,19 +41,10 @@ private:
     virtual void do_read( const serialization::yaml_node_t& node);
     virtual void do_write( serialization::yaml_oarchive_t& out) const;
 
-    virtual QWidget *do_create_widgets() RAMEN_WARN_UNUSED_RESULT;
-    virtual void do_update_widgets();
-    virtual void do_enable_widgets( bool e);
-
     std::string default_colorspace() const;
-
-    QPointer<ui::ocio_colorspace_combo_t> menu_;
-
-private Q_SLOTS:
-
-    void colorspace_picked( const std::string& cs);
 };
 
+} // namespace
 } // namespace
 
 #endif

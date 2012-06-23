@@ -1,4 +1,6 @@
 // Copyright (c) 2010 Esteban Tovagliari
+// Licensed under the terms of the CDDL License.
+// See CDDL_LICENSE.txt for a copy of the license.
 
 #include<ramen/params/motion_blur_info.hpp>
 
@@ -8,7 +10,9 @@
 
 namespace ramen
 {
-	
+namespace params
+{
+
 bool motion_blur_info_t::operator==( const motion_blur_info_t& other) const
 {
     return samples == other.samples &&
@@ -66,56 +70,57 @@ float motion_blur_info_t::loop_data_t::weight_for_time( float t) const
 
 std::string motion_blur_info_t::filter_to_string( motion_blur_info_t::filter_type f) const
 {
-	switch( f)
-	{
-	case box_filter:
-		return "box_filter";
-		
-	case triangle_filter:
-		return "triangle_filter";
-	
-	case cubic_filter:
-		return "cubic_filter";
-	}
+    switch( f)
+    {
+    case box_filter:
+        return "box_filter";
+
+    case triangle_filter:
+        return "triangle_filter";
+
+    case cubic_filter:
+        return "cubic_filter";
+    }
 }
 
 motion_blur_info_t::filter_type motion_blur_info_t::string_to_filter( const std::string& s) const
 {
-	if( s == "box_filter")
-		return box_filter;
+    if( s == "box_filter")
+        return box_filter;
 
-	if( s == "triangle_filter")
-		return triangle_filter;
+    if( s == "triangle_filter")
+        return triangle_filter;
 
-	if( s == "cubic_filter")
-		return cubic_filter;
-	
-	RAMEN_ASSERT( 0 && "Unknown filter in motion_blur_info_t");
+    if( s == "cubic_filter")
+        return cubic_filter;
+
+    RAMEN_ASSERT( 0 && "Unknown filter in motion_blur_info_t");
 }
 
 void operator>>( const YAML::Node& in, motion_blur_info_t& mb)
 {
-	int version;
+    int version;
     in[0] >> version;
     in[1] >> mb.samples;
-	in[2] >> mb.shutter;
-	in[3] >> mb.shutter_offset;
-	
-	std::string s;
-	in[4] >> s;
-	mb.filter = mb.string_to_filter( s);
+    in[2] >> mb.shutter;
+    in[3] >> mb.shutter_offset;
+
+    std::string s;
+    in[4] >> s;
+    mb.filter = mb.string_to_filter( s);
 }
 
 YAML::Emitter& operator<<( YAML::Emitter& out, const motion_blur_info_t& mb)
 {
     out << YAML::Flow << YAML::BeginSeq
-		<< 1 // version
-		<< mb.samples
-		<< mb.shutter
-		<< mb.shutter_offset
-		<< mb.filter_to_string( mb.filter);
-	out << YAML::EndSeq;
+        << 1 // version
+        << mb.samples
+        << mb.shutter
+        << mb.shutter_offset
+        << mb.filter_to_string( mb.filter);
+    out << YAML::EndSeq;
     return out;
 }
 
+} // namespace
 } // namespace

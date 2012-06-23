@@ -1,22 +1,19 @@
 // Copyright (c) 2010 Esteban Tovagliari
+// Licensed under the terms of the CDDL License.
+// See CDDL_LICENSE.txt for a copy of the license.
 
 #ifndef RAMEN_STRING_PARAM_HPP
 #define	RAMEN_STRING_PARAM_HPP
 
 #include<ramen/params/static_param.hpp>
 
-#include<QPointer>
-
-#include<ramen/ui/widgets/line_edit_fwd.hpp>
-#include<ramen/ui/widgets/text_edit_fwd.hpp>
-
 namespace ramen
 {
-
-class string_param_t : public static_param_t
+namespace params
 {
-    Q_OBJECT
 
+class RAMEN_API string_param_t : public static_param_t
+{
 public:
 
     explicit string_param_t( const std::string& name);
@@ -48,20 +45,11 @@ private:
     virtual void do_read( const serialization::yaml_node_t& node);
     virtual void do_write( serialization::yaml_oarchive_t& out) const;
 
-    virtual QWidget *do_create_widgets() RAMEN_WARN_UNUSED_RESULT;
-    virtual void do_update_widgets();
-    virtual void do_enable_widgets( bool e);
-
-    QPointer<ui::line_edit_t> input_;
-    QPointer<ui::text_edit_t> multi_input_;
     bool read_only_;
     bool multiline_;
-
-private Q_SLOTS:
-
-    void text_changed();
 };
 
+} // namespace
 } // namespace
 
 #endif

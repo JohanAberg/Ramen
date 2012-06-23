@@ -156,7 +156,6 @@ int application_t::run()
 {
     #ifndef NDEBUG
         run_ramen_unit_tests( argc_, argv_);
-        create_new_document();
     #endif
 
     // We have nothing interesting to run yet.
@@ -256,6 +255,18 @@ void application_t::print_app_info()
     std::cout << "Using " << max_threads_ << " threads\n";
     std::cout << "Ram Size = " << system().ram_size() / 1024 / 1024 << " Mb\n";
     std::cout << "Image Cache Memory = " << mem_manager_->image_allocator().max_size() / 1024 / 1024 << " Mb\n";
+}
+
+const document_t& application_t::document() const
+{
+    RAMEN_ASSERT( document_.get());
+    return *document_;
+}
+
+document_t& application_t::document()
+{
+    RAMEN_ASSERT( document_.get());
+    return *document_;
 }
 
 // document handling

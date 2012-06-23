@@ -7,16 +7,13 @@
 
 #include<ramen/params/static_param.hpp>
 
-#include<QPointer>
-#include<QCheckBox>
-
 namespace ramen
+{
+namespace params
 {
 
 class RAMEN_API bool_param_t : public static_param_t
 {
-    Q_OBJECT
-
 public:
 
     explicit bool_param_t( const std::string& name);
@@ -41,19 +38,9 @@ private:
 
     virtual void do_read( const serialization::yaml_node_t& node);
     virtual void do_write( serialization::yaml_oarchive_t& out) const;
-
-    virtual void do_update_widgets();
-    virtual void do_enable_widgets( bool e);
-
-    virtual QWidget *do_create_widgets() RAMEN_WARN_UNUSED_RESULT;
-
-    QPointer<QCheckBox> button_;
-
-private Q_SLOTS:
-
-        void button_checked( int state);
 };
 
+} // namespace
 } // namespace
 
 #endif

@@ -16,7 +16,6 @@
 #include<boost/ptr_container/ptr_vector.hpp>
 
 #include<ramen/nodes/node.hpp>
-#include<ramen/nodes/edge.hpp>
 
 namespace ramen
 {
@@ -31,6 +30,27 @@ class graph_t
 {
 public:
 
+    struct connection_type
+    {
+        connection_type();
+        connection_type( node_t *s, const name_t& splug, node_t *d, const name_t& dplug);
+
+        bool operator==( const connection_type& other) const;
+        bool operator!=( const connection_type& other) const { return !(*this == other);}
+
+        node_t *src;
+        name_t src_plug;
+
+        node_t *dst;
+        name_t dst_plug;
+
+        // for graph algorithms
+        graph_color_t graph_color() const            { return graph_color_;}
+        void set_graph_color( graph_color_t c) const { graph_color_ = c;}
+
+        mutable graph_color_t graph_color_;
+    };
+
     typedef boost::ptr_vector<node_t> node_container_type;
 
     typedef node_container_type::iterator       node_iterator;
@@ -42,14 +62,16 @@ public:
     typedef node_container_type         node_range_type;
     typedef const node_container_type	const_node_range_type;
 
-    typedef std::vector<edge_t>::iterator       edge_iterator;
-    typedef std::vector<edge_t>::const_iterator const_edge_iterator;
+    typedef std::vector<connection_type>::iterator       connection_iterator;
+    typedef std::vector<connection_type>::const_iterator const_connection_iterator;
 
-    typedef std::vector<edge_t>::reverse_iterator       reverse_edge_iterator;
-    typedef std::vector<edge_t>::const_reverse_iterator const_reverse_edge_iterator;
+    typedef std::vector<connection_type>::reverse_iterator       reverse_connection_iterator;
+    typedef std::vector<connection_type>::const_reverse_iterator const_reverse_connection_iterator;
 
-    typedef std::vector<edge_t>			edge_range_type;
-    typedef const std::vector<edge_t>	const_edge_range_type;
+    typedef std::vector<connection_type>       connection_range_type;
+    typedef const std::vector<connection_type>	const_connection_range_type;
+
+protected:
 
     graph_t();
     graph_t( const graph_t& other);
@@ -57,8 +79,10 @@ public:
     void add_node( std::auto_ptr<node_t> n);
     std::auto_ptr<node_t> release_node( node_t *n);
 
-    void add_edge( const edge_t& e);
-    void remove_edge( const edge_t& e);
+    void add_connection( const connection_type& e);
+    void remove_connection( const connection_type& e);
+
+public:
 
     // iterators & ranges
     node_iterator nodes_begin() { return nodes_.begin();}
@@ -70,25 +94,23 @@ public:
     node_range_type& nodes()                { return nodes_;}
     const_node_range_type& nodes() const    { return nodes_;}
 
-    edge_iterator edges_begin() { return edges_.begin();}
-    edge_iterator edges_end()   { return edges_.end();}
+    connection_iterator connections_begin() { return connections_.begin();}
+    connection_iterator connections_end()   { return connections_.end();}
 
-    const_edge_iterator edges_begin() const { return edges_.begin();}
-    const_edge_iterator edges_end() const   { return edges_.end();}
+    const_connection_iterator connections_begin() const { return connections_.begin();}
+    const_connection_iterator connections_end() const   { return connections_.end();}
 
-    const_edge_range_type& edges() const    { return edges_;}
-    edge_range_type& edges()                { return edges_;}
-
-    // connections
-    void connect( node_t *src, node_t *dst, int port);
-    void disconnect( node_t *src, node_t *dst, int port);
+    const_connection_range_type& connections() const    { return connections_;}
+    connection_range_type& connections()                { return connections_;}
 
 private:
+
+    friend class composite_node_t;
 
     void operator=( const graph_t& other);
 
     node_container_type nodes_;
-    std::vector<edge_t> edges_;
+    std::vector<connection_type> connections_;
 };
 
 } // namespace

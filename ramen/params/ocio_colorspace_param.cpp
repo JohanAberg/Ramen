@@ -1,9 +1,8 @@
 // Copyright (c) 2010 Esteban Tovagliari
+// Licensed under the terms of the CDDL License.
+// See CDDL_LICENSE.txt for a copy of the license.
 
 #include<ramen/params/ocio_colorspace_param.hpp>
-
-#include<QComboBox>
-#include<QLabel>
 
 #include<ramen/params/param_set.hpp>
 #include<ramen/nodes/node.hpp>
@@ -12,11 +11,9 @@
 
 #include<ramen/ocio/manager.hpp>
 
-#include<ramen/ui/user_interface.hpp>
-#include<ramen/ui/inspector/inspector.hpp>
-#include<ramen/ui/widgets/ocio_colorspace_combo.hpp>
-
 namespace ramen
+{
+namespace params
 {
 
 ocio_colorspace_param_t::ocio_colorspace_param_t( const std::string& name) : static_param_t( name)
@@ -24,7 +21,7 @@ ocio_colorspace_param_t::ocio_colorspace_param_t( const std::string& name) : sta
     set_default_value( default_colorspace());
 }
 
-ocio_colorspace_param_t::ocio_colorspace_param_t( const ocio_colorspace_param_t& other) : static_param_t( other), menu_( 0) {}
+ocio_colorspace_param_t::ocio_colorspace_param_t( const ocio_colorspace_param_t& other) : static_param_t( other) {}
 
 void ocio_colorspace_param_t::set_default_value( const std::string& cs) { value().assign( cs);}
 
@@ -35,59 +32,6 @@ void ocio_colorspace_param_t::set_value( const std::string& cs, change_reason re
 
     value().assign( cs);
     emit_param_changed( reason);
-}
-
-QWidget *ocio_colorspace_param_t::do_create_widgets()
-{
-    QWidget *top = new QWidget();
-    QLabel *label = new QLabel( top);
-    menu_ = new ui::ocio_colorspace_combo_t( top);
-    menu_->setFocusPolicy( Qt::NoFocus);
-
-    QSize s = menu_->sizeHint();
-    label->move( 0, 0);
-    label->resize( app().ui()->inspector().left_margin() - 5, s.height());
-    label->setAlignment( Qt::AlignRight | Qt::AlignVCenter);
-    label->setText( name().c_str());
-    label->setToolTip( id().c_str());
-
-    menu_->move( app().ui()->inspector().left_margin(), 0);
-    menu_->resize( s.width(), s.height());
-
-    std::string current_colorspace = get_value<std::string>( *this);
-    menu_->set_colorspace_or_default( current_colorspace);
-    menu_->setEnabled( enabled());
-    connect( menu_, SIGNAL( colorspace_changed( const std::string&)), this, SLOT( colorspace_picked( const std::string&)));
-
-    top->setMinimumSize( app().ui()->inspector().width(), s.height());
-    top->setMaximumSize( app().ui()->inspector().width(), s.height());
-    top->setSizePolicy( QSizePolicy::Fixed, QSizePolicy::Fixed);
-    return top;
-}
-
-void ocio_colorspace_param_t::do_update_widgets()
-{
-    if( menu_)
-    {
-        menu_->blockSignals( true);
-
-        std::string csname = get_value<std::string>( *this);
-        menu_->set_colorspace( csname);
-        menu_->blockSignals( false);
-    }
-}
-
-void ocio_colorspace_param_t::do_enable_widgets( bool e)
-{
-    if( menu_)
-        menu_->setEnabled( e);
-}
-
-void ocio_colorspace_param_t::colorspace_picked( const std::string& cs)
-{
-    param_set()->begin_edit();
-    set_value( menu_->get_current_colorspace());
-    param_set()->end_edit();
 }
 
 void ocio_colorspace_param_t::do_add_to_hash( hash::generator_t& hash_gen) const
@@ -146,4 +90,5 @@ std::string ocio_colorspace_param_t::default_colorspace() const
     return config->getColorSpace( OCIO::ROLE_SCENE_LINEAR)->getName();
 }
 
+} // namespace
 } // namespace

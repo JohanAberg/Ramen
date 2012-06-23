@@ -9,7 +9,10 @@ namespace ramen
 namespace nodes
 {
 
-test_node_t::test_node_t() {}
+test_node_t::test_node_t()
+{
+    set_name( "test");
+}
 
 test_node_t::test_node_t( const test_node_t& other) : node_t( other) {}
 

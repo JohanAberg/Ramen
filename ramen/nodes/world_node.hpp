@@ -36,7 +36,7 @@ public:
     dependency::graph_t& dependency_graph() { return dep_graph_;}
 
     boost::signals2::signal<void ( node_t*)> node_added;
-    boost::signals2::signal<void ( node_t*)> node_removed;
+    boost::signals2::signal<void ( node_t*)> node_released;
 
     // OpenColorIO
     const ocio::context_t& ocio_context() const { return ocio_context_;}
@@ -52,6 +52,8 @@ protected:
     void operator=( const world_node_t&);
 
 private:
+
+    void emit_node_release_signal( node_t& n);
 
     dependency::graph_t dep_graph_;
 

@@ -17,11 +17,11 @@
 
 namespace ramen
 {
+namespace params
+{
 
 class RAMEN_API numeric_param_t : public animated_param_t
 {
-    Q_OBJECT
-
 public:
 
     enum numeric_type_t
@@ -128,6 +128,7 @@ S get_absolute_value_at_frame( const param_t& p, float frame)
     #endif
 }
 
+} // namespace
 } // namespace
 
 #endif

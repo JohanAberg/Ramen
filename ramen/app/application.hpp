@@ -77,12 +77,11 @@ public:
     ui::user_interface_t *ui()              { return ui_.get();}
 
     // document handling
-    const document_t& document() const  { return *document_;}
-    document_t& document()              { return *document_;}
+    const document_t& document() const;
+    document_t& document();
 
     void create_new_document();
     void open_document( const boost::filesystem::path& p);
-    void delete_document();
 
     bool quitting() const       { return quitting_;}
     void set_quitting( bool b)  { quitting_ = b;}
@@ -102,6 +101,9 @@ private:
     // opencolorio
     void init_ocio();
     bool init_ocio_config_from_file( const boost::filesystem::path& p);
+
+    // document handling
+    void delete_document();
 
     // command line
     int argc_;

@@ -49,6 +49,7 @@ void draw_edges_visitor::visit( nodes::node_t *n)
     Imath::V2f p0( generic_output_location( n));
     input_location_node_visitor visitor;
 
+    /*
     for( int i = 0; i < n->num_outputs(); ++i)
     {
         nodes::node_t *dst = boost::get<0>( n->output_plug().connections()[i]);
@@ -56,6 +57,7 @@ void draw_edges_visitor::visit( nodes::node_t *n)
         dst->accept( visitor);
         view_.draw_bezier_edge( painter_, p0, visitor.loc);
     }
+    */
 }
 
 pick_node_visitor::pick_node_visitor( const composition_view_t& view, const Imath::V2f& p,
@@ -81,6 +83,7 @@ void pick_edge_visitor::visit( nodes::node_t *n)
     Imath::V2f p0( generic_output_location( n));
     input_location_node_visitor visitor;
 
+    /*
     for( int i = 0; i < n->num_outputs(); ++i)
     {
         nodes::node_t *target = boost::get<0>( n->output_plug().connections()[i]);
@@ -95,6 +98,7 @@ void pick_edge_visitor::visit( nodes::node_t *n)
             return;
         }
     }
+    */
 }
 
 } // ui

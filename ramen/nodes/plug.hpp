@@ -35,9 +35,9 @@ class plug_t
 protected:
 
     /// Constructor.
-    plug_t( const std::string& id, const Imath::Color3c& color, const std::string& tooltip)
+    plug_t( const name_t& id, const Imath::Color3c& color, const std::string& tooltip)
     {
-        id_ = name_t( id.c_str());
+        id_ =  id;
         color_ = color;
         tooltip_ = name_t( tooltip.c_str());
     }
@@ -78,11 +78,12 @@ class input_plug_t : public plug_t, public dependency::node_t
 {
 public:
 
-    typedef std::pair<ramen::nodes::node_t*,name_t> connection_t;
+    typedef std::pair<ramen::nodes::node_t*,name_t> connection_type;
 
     /// Constructor.
-    input_plug_t( const std::string& id, bool optional,
-                       const Imath::Color3c& color, const std::string& tooltip) : plug_t( id, color, tooltip)
+    input_plug_t( const name_t& id, bool optional,
+                       const Imath::Color3c& color,
+                       const std::string& tooltip) : plug_t( id, color, tooltip)
     {
         input_.first = 0;
         optional_ = optional;
@@ -111,13 +112,6 @@ public:
     const name_t& input_node_out_plug() const { return input_.second;}
 
     /// Sets the node and plug this plug is connected to.
-    void set_input( ramen::nodes::node_t *n)
-    {
-        input_.first = n;
-        input_.second = name_t( "unused");
-    }
-
-    /// Sets the node and plug this plug is connected to.
     void set_input( ramen::nodes::node_t *n, const name_t& plug)
     {
         input_.first = n;
@@ -133,7 +127,7 @@ protected:
 
 private:
 
-    connection_t input_;
+    connection_type input_;
     bool optional_;
 };
 
@@ -147,10 +141,10 @@ class output_plug_t : public plug_t, public dependency::output_node_t
 {
 public:
 
-    typedef boost::tuples::tuple<ramen::nodes::node_t*,name_t, int> connection_t;
+    typedef boost::tuples::tuple<ramen::nodes::node_t*,name_t, int> connection_type;
 
     /// Constructor.
-    output_plug_t( ramen::nodes::node_t *parent, const std::string& id,
+    output_plug_t( ramen::nodes::node_t *parent, const name_t& id,
                     const Imath::Color3c& color, const std::string& tooltip);
 
     virtual ~output_plug_t();
@@ -170,23 +164,17 @@ public:
     /// Adds a connection to this plug.
     void add_output( ramen::nodes::node_t *n, const name_t& plug);
 
-    /// Adds a connection to this plug.
-    void add_output( ramen::nodes::node_t *n, int port);
-
     /// Removes a connection to this plug.
     void remove_output( ramen::nodes::node_t *n, const name_t& plug);
 
-    /// Removes a connection to this plug.
-    void remove_output( ramen::nodes::node_t *n, int port);
-
-    typedef std::vector<connection_t >::const_iterator  const_iterator;
-    typedef std::vector<connection_t >::iterator        iterator;
+    typedef std::vector<connection_type>::const_iterator  const_iterator;
+    typedef std::vector<connection_type>::iterator        iterator;
 
     /// Returns a vector of connections from this plug.
-    const std::vector<connection_t >& connections() const { return connections_;}
+    const std::vector<connection_type>& connections() const { return connections_;}
 
     /// Returns a vector of connections from this plug.
-    std::vector<connection_t >& connections() { return connections_;}
+    std::vector<connection_type>& connections() { return connections_;}
 
 protected:
 
@@ -198,7 +186,7 @@ private:
     output_plug_t *do_clone() const;
 
     ramen::nodes::node_t *parent_;
-    std::vector<connection_t > connections_;
+    std::vector<connection_type > connections_;
 };
 
 RAMEN_API output_plug_t *new_clone( const output_plug_t& other);

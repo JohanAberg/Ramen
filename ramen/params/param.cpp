@@ -1,10 +1,14 @@
 // Copyright (c) 2010 Esteban Tovagliari
+// Licensed under the terms of the CDDL License.
+// See CDDL_LICENSE.txt for a copy of the license.
 
 #include<ramen/params/param.hpp>
 
 #include<stdexcept>
 
 #include<ramen/params/parameterised.hpp>
+
+#include<ramen/dependency/graph.hpp>
 
 #include<ramen/serialization/yaml_oarchive.hpp>
 
@@ -13,25 +17,38 @@
 
 namespace ramen
 {
+namespace params
+{
 
-param_t::param_t() : QObject(), param_set_(0)
+param_t::param_t() : param_set_( 0)
 {
     flags_ = persist_bit | can_undo_bit | enabled_bit | include_in_hash_bit;
 }
 
-param_t::param_t( const std::string& name) : QObject(), param_set_(0), name_(name)
+param_t::param_t( const std::string& name) : param_set_( 0), name_( name)
 {
     flags_ = persist_bit | can_undo_bit | enabled_bit | include_in_hash_bit;
 }
 
-param_t::param_t( const param_t& other) : QObject(), param_set_(0), id_( other.id_), name_( other.name_),
+param_t::param_t( const param_t& other) : param_set_(0), id_( other.id_), name_( other.name_),
                                             value_( other.value_), flags_( other.flags_), expressions_( other.expressions_)
 {
     //RAMEN_ASSERT( 0 && "warning: implement expressions copy!");
 }
 
-void param_t::init()    { do_init();}
+void param_t::init() { do_init();}
+
 void param_t::do_init() {}
+
+void param_t::set_id( const name_t& identifier)
+{
+    RAMEN_ASSERT( util::is_string_valid_identifier( identifier.string()));
+
+    if( !util::is_string_valid_identifier( identifier.string()))
+        throw std::runtime_error( "Invalid id for param_t");
+
+    id_ = identifier;
+}
 
 void param_t::set_param_set( param_set_t *parent)
 {
@@ -75,14 +92,10 @@ nodes::world_node_t *param_t::world()
         return 0;
 }
 
-void param_t::set_id( const std::string& identifier)
+void param_t::add_to_dependency_graph( dependency::graph_t& dg)
 {
-    RAMEN_ASSERT( util::is_string_valid_identifier( identifier));
-
-    if( !util::is_string_valid_identifier( identifier))
-        throw std::runtime_error( "Invalid id for param_t");
-
-    id_ = identifier;
+    if( id() != name_t())
+        dg.add_node( dynamic_cast<dependency::node_t*>( this));
 }
 
 bool param_t::enabled() const { return util::test_flag( flags_, enabled_bit);}
@@ -90,7 +103,6 @@ bool param_t::enabled() const { return util::test_flag( flags_, enabled_bit);}
 void param_t::set_enabled( bool e)
 {
     util::set_flag( flags_, enabled_bit, e);
-    enable_widgets( enabled());
 }
 
 bool param_t::is_static() const      { return util::test_flag( flags_, static_bit);}
@@ -160,13 +172,6 @@ void param_t::emit_param_changed( change_reason reason)
     }
 }
 
-void param_t::format_changed( const Imath::Box2i& new_format, float aspect, const Imath::V2f& proxy_scale)
-{
-    do_format_changed( new_format, aspect, proxy_scale);
-}
-
-void param_t::do_format_changed( const Imath::Box2i& new_format, float aspect, const Imath::V2f& proxy_scale) {}
-
 void param_t::add_to_hash( hash::generator_t& hash_gen) const
 {
     do_add_to_hash( hash_gen);
@@ -208,96 +213,18 @@ expressions::expression_t& param_t::expression( int indx)
     return expressions_[indx].second;
 }
 
-void param_t::add_expression( const std::string& name)
+void param_t::add_expression(const name_t& name)
 {
-    expressions_.push_back( std::make_pair( boost::flyweight<std::string>( name), expressions::expression_t()));
+    expressions_.push_back( std::make_pair( name, expressions::expression_t()));
 }
 
-bool param_t::eval_expression( int index, float frame, float& v, ui::param_spinbox_t *widget) const
+bool param_t::eval_expression( int index, float frame, float& v) const
 {
     RAMEN_ASSERT( index < num_expressions());
-
-    //if( expression( index).empty())
-    //	return false;
-
-    /*
-    try
-    {
-        expressions::context_t context;
-        context.current = 0; // <-- TODO: do something with this.
-        context.frame = frame;
-
-        expressions::expression_t::result_type r( expression( index).eval( context));
-        v = boost::get<float>( r);
-        return true;
-    }
-    catch( std::exception& e)
-    {
-    }
-    */
-
     return false;
 }
 
-void param_t::read_expressions( const serialization::yaml_node_t& node)
-{
-    /*
-    serialization::optional_yaml_node_t expr( node.get_optional_node( "expressions"));
-
-    if( expr)
-    {
-        for( serialization::yaml_node_t::const_iterator it( expr.get().begin()); it != expr.get().end(); ++it)
-        {
-            std::string key;
-            it.first() >> key;
-
-            if( expressions::expression_t *e = find_expression( key))
-            {
-                std::string str;
-                it.second() >> str;
-                //e->set_string( str);
-            }
-            else
-                node.error_stream() << "Unknown expression " << key << " found in param.";
-        }
-    }
-    */
-}
-
-void param_t::write_expressions( serialization::yaml_oarchive_t& out) const
-{
-    /*
-    bool all_empty = true;
-
-    for( int i = 0; i < num_expressions(); ++i)
-    {
-        if( !expression( i).empty())
-        {
-            all_empty = false;
-            break;
-        }
-    }
-
-    if( all_empty)
-        return;
-
-    out << YAML::Key << "expessions" << YAML::Value;
-    out.begin_map();
-
-    for( int i = 0; i < num_expressions(); ++i)
-    {
-        if( !expressions_[i].second.empty())
-        {
-            out << YAML::Key << expressions_[i].first
-                    << YAML::Value << YAML::DoubleQuoted << expressions_[i].second.string();
-        }
-    }
-
-    out.end_map();
-    */
-}
-
-expressions::expression_t *param_t::find_expression( const std::string& name)
+expressions::expression_t *param_t::find_expression( const name_t& name)
 {
     for( int i = 0; i < num_expressions(); ++i)
     {
@@ -377,22 +304,7 @@ void param_t::do_write( serialization::yaml_oarchive_t& out) const
     RAMEN_ASSERT( 0 && "We should never get here");
 }
 
-// widgets
-QWidget *param_t::create_widgets()
-{
-    if( !secret())
-        return do_create_widgets();
-
-    return 0;
-}
-QWidget *param_t::do_create_widgets() { return 0;}
-
-void param_t::update_widgets()      { do_update_widgets();}
-void param_t::do_update_widgets()   {}
-
-void param_t::enable_widgets( bool e)       { do_enable_widgets( e);}
-void param_t::do_enable_widgets( bool e)    {}
-
 param_t *new_clone( const param_t& other) { return other.clone();}
 
+} // namespace
 } // namespace

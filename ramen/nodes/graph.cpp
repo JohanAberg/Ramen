@@ -15,6 +15,24 @@ namespace ramen
 namespace nodes
 {
 
+graph_t::connection_type::connection_type() : src( 0), dst( 0) {}
+
+graph_t::connection_type::connection_type( node_t *s, const name_t& splug, node_t *d, const name_t& dplug) : src( s),
+                                                                                                        src_plug( splug),
+                                                                                                        dst( d),
+                                                                                                        dst_plug( dplug)
+{
+    RAMEN_ASSERT( s);
+    RAMEN_ASSERT( d);
+}
+
+bool graph_t::connection_type::operator==( const connection_type& other) const
+{
+    return src == other.src && dst == other.dst &&
+            src_plug == other.src_plug &&
+            dst_plug == other.dst_plug;
+}
+
 graph_t::graph_t() {}
 
 graph_t::graph_t( const graph_t& other)
@@ -30,28 +48,30 @@ std::auto_ptr<node_t> graph_t::release_node( node_t *n)
     return container::release_ptr( n, nodes_);
 }
 
-void graph_t::add_edge( const edge_t& e)
+void graph_t::add_connection( const connection_type& e)
 {
+    // TODO: implement this.
+    /*
     node_t *src = e.dst->input_plugs()[e.port].input_node();
 
     if( src)
-        remove_edge( edge_t( src, e.dst, e.port));
+        remove_connection( connection_type( src, e.dst, e.port));
 
     e.dst->input_plugs()[e.port].set_input( e.src);
     e.src->output_plug().add_output( e.dst, e.port);
-    edges_.push_back( e);
+    connections_.push_back( e);
+    */
 }
 
-void graph_t::remove_edge( const edge_t& e)
+void graph_t::remove_connection( const connection_type& e)
 {
+    // TODO: implement this.
+    /*
     e.src->output_plug().remove_output( e.dst, e.port);
     e.dst->input_plugs()[e.port].clear_input();
-    edges_.erase( std::find( edges_.begin(), edges_.end(), e));
+    connections_.erase( std::find( connections_.begin(), connections_.end(), e));
+    */
 }
-
-// connections
-void graph_t::connect( node_t *src, node_t *dst, int port)        { add_edge( edge_t( src, dst, port));}
-void graph_t::disconnect( node_t *src, node_t *dst, int port)     { remove_edge( edge_t( src, dst, port));}
 
 } // namespace
 } // namespace

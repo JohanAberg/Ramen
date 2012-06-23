@@ -27,6 +27,8 @@
 #include<ramen/params/param.hpp>
 #include<ramen/params/composite_param.hpp>
 
+#include<ramen/dependency/graph.hpp>
+
 #include<ramen/undo/stack.hpp>
 
 #include<ramen/ui/user_interface.hpp>
@@ -38,6 +40,8 @@
 #include<iostream>
 
 namespace ramen
+{
+namespace params
 {
 
 class param_set_command_t : public undo::command_t
@@ -125,15 +129,15 @@ void param_set_t::do_add_param( param_t *p)
     params_.push_back( p);
 }
 
-const param_t& param_set_t::find( const std::string& id) const
+const param_t& param_set_t::find( const name_t& id) const
 {
     param_set_t& self = const_cast<param_set_t&>( *this);
     return self.find( id);
 }
 
-param_t& param_set_t::find( const std::string& id)
+param_t& param_set_t::find( const name_t& id)
 {
-    RAMEN_ASSERT( !id.empty());
+    RAMEN_ASSERT( id != name_t());
 
     BOOST_FOREACH( param_t& p, params())
     {
@@ -150,6 +154,12 @@ param_t& param_set_t::find( const std::string& id)
     }
 
     throw std::runtime_error( std::string( "Param not found: ").append( id));
+}
+
+void param_set_t::add_params_to_dependency_graph( dependency::graph_t& dg)
+{
+    BOOST_FOREACH( param_t& p, params())
+        p.add_to_dependency_graph( dg);
 }
 
 void param_set_t::notify_parent()
@@ -236,6 +246,7 @@ void param_set_t::read( const serialization::yaml_node_t& node)
 
 void param_set_t::read_param( const serialization::yaml_node_t& node)
 {
+    /*
     std::string id;
     node.get_value( "id", id);
 
@@ -252,6 +263,7 @@ void param_set_t::read_param( const serialization::yaml_node_t& node)
     {
         node.error_stream() << "Unknown param " << id << " in node " << parent()->name() << "\n";
     }
+    */
 }
 
 void param_set_t::write( serialization::yaml_oarchive_t& out) const
@@ -262,4 +274,5 @@ void param_set_t::write( serialization::yaml_oarchive_t& out) const
         out.end_seq();
 }
 
+} // namespace
 } // namespace

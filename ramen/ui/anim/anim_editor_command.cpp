@@ -11,7 +11,6 @@
 #include<ramen/app/application.hpp>
 
 #include<ramen/nodes/node.hpp>
-#include<ramen/nodes/graph_algorithm.hpp>
 
 #include<ramen/anim/track.hpp>
 
@@ -69,8 +68,6 @@ void anim_editor_command_t::notify_nodes()
     if( empty())
         return; // nothing to do.
 
-    // This is the right way to do it, but for now, we only have 1 active node.
-    //breadth_first_multiple_outputs_search( nodes_, boost::bind( &nodes::node_t::do_notify, _1), true);
     (*nodes_.begin())->notify();
 }
 

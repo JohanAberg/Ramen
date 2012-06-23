@@ -7,9 +7,15 @@
 
 namespace ramen
 {
+namespace params
+{
 
 class param_set_t;
 
-} // namespace
+} // params
+
+using params::param_set_t;
+
+} // ramen
 
 #endif

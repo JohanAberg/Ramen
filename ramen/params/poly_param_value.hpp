@@ -8,7 +8,7 @@
 #include<boost/static_assert.hpp>
 #include<boost/type_traits/is_same.hpp>
 
-#include<ramen/params/concepts/ParamValueConcept.hpp>
+#include<ramen/concepts/ParamValueConcept.hpp>
 
 #include<ramen/poly_regular.hpp>
 #include<ramen/empty.hpp>

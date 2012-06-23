@@ -73,4 +73,9 @@ name_t& name_t::operator=( const name_t& other)
     return *this;
 }
 
+std::ostream& operator<<( std::ostream& os, const name_t& n)
+{
+    return os << n.c_str();
+}
+
 } // ramen

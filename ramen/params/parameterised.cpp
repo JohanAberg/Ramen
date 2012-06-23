@@ -18,6 +18,8 @@
 
 namespace ramen
 {
+namespace params
+{
 
 parameterised_t::parameterised_t() : dont_persist_params_( false)
 {
@@ -142,12 +144,12 @@ bool parameterised_t::autokey() const
 
 bool parameterised_t::track_mouse() const { return true;}
 
-const param_t& parameterised_t::param( const std::string& identifier) const
+const param_t& parameterised_t::param( const name_t& identifier) const
 {
     return param_set().find( identifier);
 }
 
-param_t& parameterised_t::param( const std::string& identifier)
+param_t& parameterised_t::param( const name_t& identifier)
 {
     return param_set().find( identifier);
 }
@@ -182,12 +184,7 @@ void parameterised_t::evaluate_params( float frame)
     boost::range::for_each( param_set(), boost::bind( &param_t::evaluate, _1, frame));
 }
 
-void parameterised_t::update_widgets()
-{
-    boost::range::for_each( param_set(), boost::bind( &param_t::update_widgets, _1));
-    do_update_widgets();
-}
-
 parameterised_t *new_clone( const parameterised_t& other) { return other.clone();}
 
+} // namespace
 } // namespace

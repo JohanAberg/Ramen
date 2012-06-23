@@ -18,6 +18,8 @@ void increment_string_number( std::string& str);
 
 std::string make_string( const char *s0, const char *s1, const char *s2 = 0, const char *s3 = 0);
 
+std::string concat_strings( const std::string& a, const std::string& b, const std::string& c = std::string());
+
 } // util
 } // ramen
 

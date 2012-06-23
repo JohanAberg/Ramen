@@ -1,4 +1,6 @@
 // Copyright (c) 2010 Esteban Tovagliari
+// Licensed under the terms of the CDDL License.
+// See CDDL_LICENSE.txt for a copy of the license.
 
 #ifndef RAMEN_FLOAT3_PARAM_HPP
 #define	RAMEN_FLOAT3_PARAM_HPP
@@ -7,17 +9,13 @@
 
 #include<OpenEXR/ImathVec.h>
 
-#include<QPointer>
-
-#include<ramen/ui/widgets/param_spinbox_fwd.hpp>
-
 namespace ramen
+{
+namespace params
 {
 
 class RAMEN_API float3_param_t : public proportional_param_t
 {
-    Q_OBJECT
-
 public:
 
     explicit float3_param_t( const std::string& name);
@@ -43,32 +41,13 @@ private:
 
     virtual param_t *do_clone() const { return new float3_param_t( *this);}
 
-    void calc_proportional_factors();
-    void set_component_value_from_slot();
-
     virtual void do_add_to_hash( hash::generator_t& hash_gen) const;
 
     virtual boost::python::object to_python( const poly_param_value_t& v) const;
     virtual poly_param_value_t from_python( const boost::python::object& obj) const;
-
-    virtual void do_read( const serialization::yaml_node_t& node);
-    virtual void do_write( serialization::yaml_oarchive_t& out) const;
-
-    virtual QWidget *do_create_widgets() RAMEN_WARN_UNUSED_RESULT;
-    virtual void do_update_widgets();
-    virtual void do_enable_widgets( bool e);
-
-    QPointer<ui::param_spinbox_t> input0_, input1_, input2_;
-
-private Q_SLOTS:
-
-    void value_changed( double value);
-    void spinbox_pressed();
-    void spinbox_dragged( double value);
-    void spinbox_released();
-    void expression_set();
 };
 
+} // namespace
 } // namespace
 
 #endif

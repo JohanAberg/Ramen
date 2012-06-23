@@ -11,6 +11,8 @@
 
 namespace ramen
 {
+namespace params
+{
 
 composite_parameterised_t::composite_parameterised_t() : parameterised_t() {}
 
@@ -37,4 +39,5 @@ std::auto_ptr<parameterised_t> composite_parameterised_t::remove_parameterised( 
     return container::release_ptr( p, children_);
 }
 
+} // namespace
 } // namespace

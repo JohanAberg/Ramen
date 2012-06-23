@@ -13,6 +13,8 @@
 #include<ramen/nodes/world_node.hpp>
 #include<ramen/nodes/factory.hpp>
 
+#include<ramen/util/string.hpp>
+
 #include<ramen/ui/graph_layout.hpp>
 
 namespace ramen
@@ -35,6 +37,12 @@ composite_node_t::~composite_node_t() {}
 void composite_node_t::cloned()
 {
     boost::range::for_each( graph().nodes(), boost::bind( &node_t::cloned, _1));
+}
+
+void composite_node_t::add_to_dependency_graph()
+{
+    node_t::add_to_dependency_graph();
+    boost::range::for_each( graph().nodes(), boost::bind( &node_t::add_to_dependency_graph, _1));
 }
 
 void composite_node_t::accept( visitor_t& v) { v.visit( this);}
@@ -87,35 +95,42 @@ std::auto_ptr<node_t> composite_node_t::create_unknown_node( const std::string& 
 void composite_node_t::add_node( std::auto_ptr<node_t> n)
 {
     RAMEN_ASSERT( n.get());
-    RAMEN_ASSERT( world());
 
-    RAMEN_ASSERT( false);
+    world_node_t *w = world();
+    RAMEN_ASSERT( w);
 
-    /*
+    // rename the node, if needed
+    std::string new_name( n->name());
+    RAMEN_ASSERT( util::is_string_valid_identifier( new_name));
+
+    while( true)
+    {
+        if( w->find_node( new_name))
+            util::increment_string_number( new_name);
+        else
+            break;
+    }
+
+    n->set_name( new_name);
+    n->set_parent( this);
+
+    // save a pointer to the node.
     node_t *nn = n.get();
     g_.add_node( n);
-
-    nn->set_parent( this);
-    // rename node here, if needed, more stuff, ...
-
-    if( world_node_t *w = world())
-        w->node_added( nn);
-    */
+    nn->add_to_dependency_graph();
+    w->node_added( nn);
 }
 
-std::auto_ptr<node_t> composite_node_t::remove_node( node_t *n)
+std::auto_ptr<node_t> composite_node_t::release_node( node_t *n)
 {
-    // TODO: implement this.
-    RAMEN_ASSERT( false);
+    RAMEN_ASSERT( n);
 
-    /*
+    world_node_t *w = world();
+    RAMEN_ASSERT( w);
+
     n->set_parent( 0);
-
-    if( world_node_t *w = world())
-        w->node_removed( n);
-
-    return g_.remove_node( n);
-    */
+    w->node_released( n);
+    return g_.release_node( n);
 }
 
 const node_t *composite_node_t::find_node( const std::string& name) const
@@ -158,84 +173,12 @@ void composite_node_t::set_layout( std::auto_ptr<ui::graph_layout_t> layout) { l
 
 void composite_node_t::do_read(const serialization::yaml_node_t& in, const std::pair<int,int>& version)
 {
-    serialization::yaml_node_t nodes = in.get_node( "children").get_node( "nodes");
-
-    for( int i = 0; i < nodes.size(); ++i)
-        read_node( nodes[i]);
-
-    serialization::yaml_node_t edges = in.get_node( "children").get_node( "edges");
-
-    for( int i = 0; i < edges.size(); ++i)
-        read_edge( edges[i]);
+    // TODO: implement this.
 }
 
 void composite_node_t::do_write( serialization::yaml_oarchive_t& out) const
 {
-    out << YAML::Key << "children" << YAML::Value;
-        out.begin_map();
-            out << YAML::Key << "nodes" << YAML::Value;
-            out.begin_seq();
-                boost::range::for_each( graph().nodes(), boost::bind( &node_t::write, _1, boost::ref( out)));
-            out.end_seq();
-
-        out << YAML::Key << "edges" << YAML::Value;
-            out.begin_seq();
-                boost::range::for_each( graph().edges(), boost::bind( &composite_node_t::write_edge, this, boost::ref( out), _1));
-            out.end_seq();
-        out.end_map();
-}
-
-void composite_node_t::read_node(const serialization::yaml_node_t& in)
-{
-    // TODO: implent this.
-    serialization::yaml_node_t class_node( in.get_node( "class"));
-
-    std::string id;
-    class_node[0] >> id;
-
-    std::pair<int,int> version;
-    class_node[1] >> version.first;
-    class_node[2] >> version.second;
-
-    std::auto_ptr<node_t> p( create_node_by_id_with_version( id, version));
-
-    if( !p.get())
-    {
-        in.error_stream() << "Error creating node: " << id << "\n";
-        return;
-    }
-
-    //p->set_composition( this); // some nodes needs this set early...
-    p->read( in, version);
-    //p->set_frame( frame_);
-
-    /*
-    if( image_node_t *img_node = dynamic_cast<image_node_t*>( p.get()))
-    {
-        render::context_t context = current_context();
-        img_node->calc_format( context);
-        img_node->format_changed();
-    }
-    */
-
-    //node_map_.insert( p.get());
-    //g_.add_node( p);
-
-    RAMEN_ASSERT( false);
-}
-
-void composite_node_t::read_edge(const serialization::yaml_node_t& in)
-{
-    // TODO: implent this.
-    RAMEN_ASSERT( false);
-}
-
-void composite_node_t::write_edge( serialization::yaml_oarchive_t& out, const edge_t& e) const
-{
-    out.flow();
-    out.begin_seq();
-        out << e.src->name() << e.dst->name() << e.port;
-    out.end_seq();
+    // TODO: implement this.
 }
 
 } // namespace

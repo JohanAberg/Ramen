@@ -40,7 +40,6 @@
 
 #include<ramen/memory/manager.hpp>
 
-#include<ramen/nodes/graph_algorithm.hpp>
 #include<ramen/nodes/factory.hpp>
 
 #include<ramen/undo/stack.hpp>

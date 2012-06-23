@@ -250,6 +250,7 @@ bool user_interface_t::save_document()
 
 void user_interface_t::set_active_node( nodes::node_t *n)
 {
+    /*
     if( active_ != n)
     {
         if( active_)
@@ -264,10 +265,12 @@ void user_interface_t::set_active_node( nodes::node_t *n)
         //viewer().set_active_node( n);
         anim_editor().set_active_node( n);
     }
+    */
 }
 
 void user_interface_t::set_context_node( nodes::node_t *n)
 {
+    /*
     if( context_ != n)
     {
         if( context_)
@@ -280,6 +283,7 @@ void user_interface_t::set_context_node( nodes::node_t *n)
 
         //viewer().set_context_node( n);
     }
+    */
 }
 
 void user_interface_t::node_added( nodes::node_t *n)

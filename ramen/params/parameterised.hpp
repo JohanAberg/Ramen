@@ -24,6 +24,8 @@
 
 namespace ramen
 {
+namespace params
+{
 
 /**
 \ingroup params
@@ -94,10 +96,10 @@ public:
     param_set_t& param_set()				{ return params_;}
 
     /// Returns a const reference to the param with identifier id.
-    const param_t& param( const std::string& identifier) const;
+    const param_t& param(const name_t& identifier) const;
 
     /// Returns a reference to the param with identifier id.
-    param_t& param( const std::string& identifier);
+    param_t& param( const name_t& identifier);
 
     /// Adds a param to this parameterised.
     template<class T>
@@ -114,9 +116,6 @@ public:
 
     /// Sets the current frame to f.
     void set_frame( float f);
-
-    /// Updates widgets associated with this parameterised's params.
-    void update_widgets();
 
 protected:
 
@@ -164,12 +163,6 @@ private:
     */
     virtual void do_set_frame( float t) {}
 
-    /*!
-        \brief Customization hook for parameterised_t::update_widgets.
-        For subclasses to implement.
-    */
-    virtual void do_update_widgets() {}
-
     std::string name_;
     parameterised_t *parent_;
     param_set_t params_;
@@ -179,6 +172,7 @@ private:
 /// Makes a copy of a parameterised
 RAMEN_API parameterised_t *new_clone( const parameterised_t& other);
 
+} // namespace
 } // namespace
 
 #endif

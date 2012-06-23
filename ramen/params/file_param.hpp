@@ -1,23 +1,19 @@
 // Copyright (c) 2010 Esteban Tovagliari
+// Licensed under the terms of the CDDL License.
+// See CDDL_LICENSE.txt for a copy of the license.
 
 #ifndef RAMEN_FILE_PARAM_HPP
 #define	RAMEN_FILE_PARAM_HPP
 
 #include<ramen/params/static_param.hpp>
 
-#include<QPointer>
-
-#include<ramen/ui/widgets/line_edit_fwd.hpp>
-
-class QPushButton;
-
 namespace ramen
+{
+namespace params
 {
 
 class RAMEN_API file_param_t : public static_param_t
 {
-    Q_OBJECT
-
 public:
 
     explicit file_param_t( const std::string& name);
@@ -59,27 +55,11 @@ private:
     virtual void do_read( const serialization::yaml_node_t& node);
     virtual void do_write( serialization::yaml_oarchive_t& out) const;
 
-    virtual void do_update_widgets();
-    virtual void do_enable_widgets( bool e);
-
-    void update_input_text( const boost::filesystem::path& p);
-    void update_input_text();
-
-    virtual QWidget *do_create_widgets() RAMEN_WARN_UNUSED_RESULT;
-
     bool is_input_;
-
-    QPointer<ui::line_edit_t> input_;
-    QPointer<QPushButton> button_;
-
     std::string ext_list_string_;
-
-private Q_SLOTS:
-
-    void select_pushed();
-    void text_changed();
 };
 
+} // namespace
 } // namespace
 
 #endif

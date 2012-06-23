@@ -18,12 +18,14 @@
 #include<ramen/params/param.hpp>
 #include<ramen/params/parameterised_fwd.hpp>
 
+#include<ramen/dependency/graph_fwd.hpp>
+
 #include<ramen/python/access_fwd.hpp>
 
 namespace ramen
 {
-
-class composite_param_t;
+namespace params
+{
 
 class param_set_command_t;
 
@@ -67,10 +69,14 @@ public:
         do_add_param( p.release());
     }
 
-    const param_t& find( const std::string& id) const;
-    param_t& find( const std::string& id);
+    const param_t& find( const name_t& id) const;
+    param_t& find( const name_t& id);
+
+    // dependency graph
+    void add_params_to_dependency_graph( dependency::graph_t& dg);
 
     boost::signals2::signal<void ( param_t*, param_t::change_reason)> param_changed;
+
     void notify_parent();
 
     void begin_edit();
@@ -104,11 +110,14 @@ private:
 
     void do_add_param( param_t *p);
 
+    void do_add_param_to_dependency_graph( param_t *p, dependency::graph_t& dg);
+
     parameterised_t *parent_;
     boost::ptr_vector<param_t> params_;
     std::auto_ptr<param_set_command_t> command_;
 };
 
+} // namespace
 } // namespace
 
 #endif

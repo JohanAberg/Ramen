@@ -1,4 +1,6 @@
 // Copyright (c) 2010 Esteban Tovagliari
+// Licensed under the terms of the CDDL License.
+// See CDDL_LICENSE.txt for a copy of the license.
 
 #include<ramen/params/curve_param.hpp>
 
@@ -11,6 +13,8 @@
 #include<ramen/serialization/yaml_oarchive.hpp>
 
 namespace ramen
+{
+namespace params
 {
 
 curve_param_t::curve_param_t( const std::string& name) : animated_param_t( name) { private_init();}
@@ -46,4 +50,5 @@ void curve_param_t::do_write( serialization::yaml_oarchive_t& out) const
     curve().write( out);
 }
 
+} // namespace
 } // namespace

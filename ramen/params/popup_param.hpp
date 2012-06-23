@@ -1,4 +1,6 @@
 // Copyright (c) 2010 Esteban Tovagliari
+// Licensed under the terms of the CDDL License.
+// See CDDL_LICENSE.txt for a copy of the license.
 
 #ifndef RAMEN_POPUP_PARAM_HPP
 #define	RAMEN_POPUP_PARAM_HPP
@@ -10,17 +12,13 @@
 
 #include<boost/assign/list_of.hpp>
 
-#include<QPointer>
-
-class QComboBox;
-
 namespace ramen
+{
+namespace params
 {
 
 class RAMEN_API popup_param_t : public static_param_t
 {
-    Q_OBJECT
-
 public:
 
     explicit popup_param_t( const std::string& name);
@@ -56,18 +54,9 @@ private:
     int find_index_for_string( const std::string& s) const;
 
     std::vector<std::string> menu_items_;
-
-    virtual QWidget *do_create_widgets() RAMEN_WARN_UNUSED_RESULT;
-    virtual void do_update_widgets();
-    virtual void do_enable_widgets( bool e);
-
-    QPointer<QComboBox> menu_;
-
-private Q_SLOTS:
-
-    void item_picked( int index);
 };
 
+} // namespace
 } // namespace
 
 #endif
