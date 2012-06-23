@@ -13,10 +13,10 @@
 #include<vector>
 
 #include<ramen/name.hpp>
+#include<ramen/poly_regular.hpp>
 
 #include<ramen/params/param_set_fwd.hpp>
 
-#include<ramen/params/poly_param_value.hpp>
 #include<ramen/anim/float_curve.hpp>
 
 namespace ramen
@@ -42,7 +42,7 @@ private:
     param_set_t& pset_;
     name_t id_;
 
-    ramen::poly_param_value_t previous_value_, new_value_;
+    poly_regular_t previous_value_, new_value_;
     std::vector<anim::float_curve_t> old_;
 };
 

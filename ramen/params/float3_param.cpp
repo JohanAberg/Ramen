@@ -42,7 +42,7 @@ void float3_param_t::private_init()
     set_default_value( Imath::V3f( 0, 0, 0));
 }
 
-poly_param_value_t float3_param_t::value_at_frame( float frame) const
+poly_regular_t float3_param_t::value_at_frame( float frame) const
 {
     Imath::V3f v( get_value<Imath::V3f>( *this));
 
@@ -55,14 +55,14 @@ poly_param_value_t float3_param_t::value_at_frame( float frame) const
     if( !eval_expression( 2, frame, v.z))
         eval_curve( 2, frame, v.z);
 
-    poly_param_indexable_value_t val( v);
-    return poly_cast<poly_param_value_t&>( val);
+    poly_indexable_regular_t val( v);
+    return poly_cast<poly_regular_t&>( val);
 }
 
 void float3_param_t::set_default_value( const Imath::V3f& x)
 {
-    poly_param_indexable_value_t v( x);
-    value() = poly_cast<poly_param_value_t&>( v);
+    poly_indexable_regular_t v( x);
+    value() = poly_cast<poly_regular_t&>( v);
 }
 
 void float3_param_t::set_value( const Imath::V3f& x, change_reason reason)
@@ -84,8 +84,8 @@ void float3_param_t::set_value_at_frame( const Imath::V3f& x, float frame, chang
     if( can_undo())
         param_set()->add_command( this);
 
-    poly_param_indexable_value_t v( x);
-    value() = poly_cast<poly_param_value_t&>( v);
+    poly_indexable_regular_t v( x);
+    value() = poly_cast<poly_regular_t&>( v);
 
     bool autokey = param_set()->autokey();
 
@@ -143,17 +143,17 @@ void float3_param_t::do_add_to_hash( hash::generator_t& hash_gen) const
     hash_gen << v.x << "," << v.y << "," << v.z;
 }
 
-boost::python::object float3_param_t::to_python( const poly_param_value_t& v) const
+boost::python::object float3_param_t::to_python( const poly_regular_t& v) const
 {
     return python::vec_to_list( v.cast<Imath::V3f>());
 }
 
-poly_param_value_t float3_param_t::from_python( const boost::python::object& obj) const
+poly_regular_t float3_param_t::from_python( const boost::python::object& obj) const
 {
     boost::python::list t = boost::python::extract<boost::python::list>( obj);
     Imath::V3f val = python::list_to_vec3<float>( t);
-    poly_param_indexable_value_t v( val);
-    return poly_cast<poly_param_value_t&>( v);
+    poly_indexable_regular_t v( val);
+    return poly_cast<poly_regular_t&>( v);
 }
 
 } // namespace

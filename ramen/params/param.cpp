@@ -267,17 +267,17 @@ void param_t::apply_function( const boost::function<void ( param_t*)>& f)
 void param_t::do_apply_function( const boost::function<void ( param_t*)>& f) {}
 
 // python interop
-boost::python::object param_t::to_python( const poly_param_value_t& v) const
+boost::python::object param_t::to_python( const poly_regular_t& v) const
 {
     PyErr_SetString( PyExc_TypeError, "Can't convert value from C++");
     boost::python::throw_error_already_set();
     return boost::python::object();
 }
 
-poly_param_value_t param_t::from_python( const boost::python::object& obj) const
+poly_regular_t param_t::from_python( const boost::python::object& obj) const
 {
     throw std::bad_cast();
-    return poly_param_value_t();
+    return poly_regular_t();
 }
 
 // serialization

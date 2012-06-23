@@ -28,8 +28,8 @@
 #include<ramen/assert.hpp>
 
 #include<ramen/name.hpp>
+#include<ramen/poly_indexable_regular.hpp>
 
-#include<ramen/params/poly_param_value.hpp>
 #include<ramen/params/parameterised_fwd.hpp>
 #include<ramen/params/param_set_fwd.hpp>
 #include<ramen/params/static_param_command_fwd.hpp>
@@ -206,10 +206,10 @@ protected:
     int flags() const			{ return flags_;}
     void set_flags( int flags)	{ flags_ = flags;}
 
-    const poly_param_value_t& value() const	{ return value_;}
-    poly_param_value_t& value()             { return value_;}
+    const poly_regular_t& value() const	{ return value_;}
+    poly_regular_t& value()             { return value_;}
 
-    virtual poly_param_value_t value_at_frame( float frame) const { return value();}
+    virtual poly_regular_t value_at_frame( float frame) const { return value();}
 
     // expressions
     void add_expression( const name_t& name);
@@ -246,8 +246,8 @@ private:
     // python interop
     friend class python::access;
 
-    virtual boost::python::object to_python( const poly_param_value_t& v) const;
-    virtual poly_param_value_t from_python( const boost::python::object& obj) const;
+    virtual boost::python::object to_python( const poly_regular_t& v) const;
+    virtual poly_regular_t from_python( const boost::python::object& obj) const;
 
     // paths
     virtual void do_convert_relative_paths( const boost::filesystem::path& old_base, const boost::filesystem::path& new_base);
@@ -274,7 +274,7 @@ private:
     std::string tooltip_;
 
     boost::uint32_t flags_;
-    poly_param_value_t value_;
+    poly_regular_t value_;
 
     std::vector<std::pair<name_t, expressions::expression_t> > expressions_;
 };
@@ -282,7 +282,7 @@ private:
 template<class S>
 S get_value( const param_t& p)
 {
-    const poly_param_value_t& any( p.value());
+    const poly_regular_t& any( p.value());
 
     #ifdef NDEBUG
         return any.cast<S>();
@@ -301,7 +301,7 @@ S get_value( const param_t& p)
 template<class S>
 S get_value_at_frame( const param_t& p, float frame)
 {
-    poly_param_value_t any( p.value_at_frame( frame));
+    poly_regular_t any( p.value_at_frame( frame));
 
     #ifdef NDEBUG
         return any.cast<S>();

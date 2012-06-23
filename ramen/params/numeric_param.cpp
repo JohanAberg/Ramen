@@ -304,13 +304,13 @@ void numeric_param_t::get_scale_and_offset( Imath::V2f& scale, Imath::V2f& offse
     }
 }
 
-poly_param_value_t numeric_param_t::relative_to_absolute( const poly_param_value_t& val) const
+poly_regular_t numeric_param_t::relative_to_absolute( const poly_regular_t& val) const
 {
     try
     {
         float v = val.cast<float>();
         v = relative_to_absolute( v);
-        return poly_param_value_t( v);
+        return poly_regular_t( v);
     }
     catch( bad_cast& e) {}
 
@@ -318,8 +318,8 @@ poly_param_value_t numeric_param_t::relative_to_absolute( const poly_param_value
     {
         Imath::V2f v = val.cast<Imath::V2f>();
         v = relative_to_absolute( v);
-        poly_param_indexable_value_t result( v);
-        return poly_cast<poly_param_value_t&>( result);
+        poly_indexable_regular_t result( v);
+        return poly_cast<poly_regular_t&>( result);
     }
     catch( bad_cast& e) {}
 
@@ -327,20 +327,20 @@ poly_param_value_t numeric_param_t::relative_to_absolute( const poly_param_value
     {
         Imath::Box2f v = val.cast<Imath::Box2f>();
         v = relative_to_absolute( v);
-        return poly_param_value_t( v);
+        return poly_regular_t( v);
     }
     catch( bad_cast& e) {}
 
     RAMEN_ASSERT( 0);
 }
 
-poly_param_value_t numeric_param_t::absolute_to_relative( const poly_param_value_t& val) const
+poly_regular_t numeric_param_t::absolute_to_relative( const poly_regular_t& val) const
 {
     try
     {
         float v = val.cast<float>();
         v = absolute_to_relative( v);
-        return poly_param_value_t( v);
+        return poly_regular_t( v);
     }
     catch( bad_cast& e) {}
 
@@ -348,8 +348,8 @@ poly_param_value_t numeric_param_t::absolute_to_relative( const poly_param_value
     {
         Imath::V2f v = val.cast<Imath::V2f>();
         v = absolute_to_relative( v);
-        poly_param_indexable_value_t result( v);
-        return poly_cast<poly_param_value_t&>( result);
+        poly_indexable_regular_t result( v);
+        return poly_cast<poly_regular_t&>( result);
     }
     catch( bad_cast& e) {}
 
@@ -357,7 +357,7 @@ poly_param_value_t numeric_param_t::absolute_to_relative( const poly_param_value
     {
         Imath::Box2f v = val.cast<Imath::Box2f>();
         v = absolute_to_relative( v);
-        return poly_param_value_t( v);
+        return poly_regular_t( v);
     }
     catch( bad_cast& e) {}
 

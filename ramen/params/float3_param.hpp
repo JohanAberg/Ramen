@@ -22,7 +22,7 @@ public:
 
     void set_default_value( const Imath::V3f& x);
 
-    virtual poly_param_value_t value_at_frame( float frame) const;
+    virtual poly_regular_t value_at_frame( float frame) const;
 
     void set_value( const Imath::V3f& x, change_reason reason = user_edited);
     void set_value_at_frame( const Imath::V3f& x, float frame, change_reason reason = user_edited);
@@ -43,8 +43,8 @@ private:
 
     virtual void do_add_to_hash( hash::generator_t& hash_gen) const;
 
-    virtual boost::python::object to_python( const poly_param_value_t& v) const;
-    virtual poly_param_value_t from_python( const boost::python::object& obj) const;
+    virtual boost::python::object to_python( const poly_regular_t& v) const;
+    virtual poly_regular_t from_python( const boost::python::object& obj) const;
 };
 
 } // namespace

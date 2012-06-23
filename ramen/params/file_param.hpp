@@ -44,8 +44,8 @@ private:
 
     virtual void do_add_to_hash( hash::generator_t& hash_gen) const;
 
-    virtual boost::python::object to_python( const poly_param_value_t& v) const;
-    virtual poly_param_value_t from_python( const boost::python::object& obj) const;
+    virtual boost::python::object to_python( const poly_regular_t& v) const;
+    virtual poly_regular_t from_python( const boost::python::object& obj) const;
 
     // paths
     virtual void do_convert_relative_paths( const boost::filesystem::path& old_base, const boost::filesystem::path& new_base);

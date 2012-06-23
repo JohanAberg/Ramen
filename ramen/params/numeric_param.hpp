@@ -71,8 +71,8 @@ private:
     // python interop
     friend class python::access;
 
-    poly_param_value_t relative_to_absolute( const poly_param_value_t& val) const;
-    poly_param_value_t absolute_to_relative( const poly_param_value_t& val) const;
+    poly_regular_t relative_to_absolute( const poly_regular_t& val) const;
+    poly_regular_t absolute_to_relative( const poly_regular_t& val) const;
 
     Imath::Box2i frame_area() const;
 
@@ -86,7 +86,7 @@ S get_absolute_value( const param_t& p)
     const numeric_param_t *q = dynamic_cast<const numeric_param_t*>( &p);
     RAMEN_ASSERT( q);
 
-    const poly_param_value_t& any( p.value());
+    const poly_regular_t& any( p.value());
 
     #ifdef NDEBUG
         S v = any.cast<S>();
@@ -110,7 +110,7 @@ S get_absolute_value_at_frame( const param_t& p, float frame)
     const numeric_param_t *q = dynamic_cast<const numeric_param_t*>( &p);
     RAMEN_ASSERT( q);
 
-    const poly_param_value_t& any( p.value_at_frame( frame));
+    const poly_regular_t& any( p.value_at_frame( frame));
 
     #ifdef NDEBUG
         S v = any.cast<S>();

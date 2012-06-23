@@ -27,11 +27,11 @@ class poly_regular_instance : public optimized_storage_type<T, poly_regular_inte
 
 public:
 
-    typedef typename optimized_storage_type<T, poly_regular_interface>::type base_t;
+    typedef typename optimized_storage_type<T, poly_regular_interface>::type base_type;
 
-    poly_regular_instance( const T& x) : base_t(x) {}
+    poly_regular_instance( const T& x) : base_type( x) {}
 
-    RAMEN_POLY_INLINE_COPY_AND_ASSIGN( poly_regular_instance, base_t)
+    RAMEN_POLY_INLINE_COPY_AND_ASSIGN( poly_regular_instance, base_type)
 
     bool equals( const poly_regular_interface& x) const
     {
@@ -43,20 +43,20 @@ class regular : public poly_base<poly_regular_interface, poly_regular_instance>
 {
 public:
 
-    typedef poly_base<poly_regular_interface, poly_regular_instance> base_t;
+    typedef poly_base<poly_regular_interface, poly_regular_instance> base_type;
 
-    regular() : base_t( empty_t()) {}
+    regular() : base_type( empty_t()) {}
 
     template <typename T>
-    explicit regular( const T& s) : base_t( s) {}
+    explicit regular( const T& s) : base_type( s) {}
 
-    RAMEN_POLY_INLINE_COPY_AND_ASSIGN( regular, base_t)
+    RAMEN_POLY_INLINE_COPY_AND_ASSIGN( regular, base_type)
 
     bool is_empty() const { return type_info() == typeid( ramen::empty_t);}
 };
 
 typedef poly<regular> poly_regular_t;
 
-} // base
+} // ramen
 
 #endif

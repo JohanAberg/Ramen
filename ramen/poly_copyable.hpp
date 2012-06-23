@@ -20,21 +20,21 @@ struct poly_copyable_instance : optimized_storage_type<T, poly_copyable_interfac
 {
     BOOST_CONCEPT_ASSERT(( boost::CopyConstructibleConcept<T>));
 
-    typedef typename optimized_storage_type<T, poly_copyable_interface>::type base_t;
+    typedef typename optimized_storage_type<T, poly_copyable_interface>::type base_type;
 
-    poly_copyable_instance( const T& x) : base_t(x) {}
+    poly_copyable_instance( const T& x) : base_type( x) {}
 
-    RAMEN_POLY_INLINE_COPY_AND_ASSIGN( poly_copyable_instance, base_t)
+    RAMEN_POLY_INLINE_COPY_AND_ASSIGN( poly_copyable_instance, base_type)
 };
 
 struct copyable : poly_base<poly_copyable_interface, poly_copyable_instance>
 {
-    typedef poly_base<poly_copyable_interface, poly_copyable_instance> base_t;
+    typedef poly_base<poly_copyable_interface, poly_copyable_instance> base_type;
 
     template <typename T>
-    explicit copyable( const T& s) : base_t(s)  {}
+    explicit copyable( const T& s) : base_type( s)  {}
 
-    RAMEN_POLY_INLINE_COPY_AND_ASSIGN( copyable, base_t)
+    RAMEN_POLY_INLINE_COPY_AND_ASSIGN( copyable, base_type)
 };
 
 typedef poly<copyable> poly_copyable_t;

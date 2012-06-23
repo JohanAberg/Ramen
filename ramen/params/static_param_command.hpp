@@ -8,10 +8,9 @@
 #include<string>
 
 #include<ramen/name.hpp>
+#include<ramen/poly_regular.hpp>
 
 #include<ramen/undo/command.hpp>
-
-#include<ramen/params/poly_param_value.hpp>
 
 #include<ramen/params/param_set_fwd.hpp>
 #include<ramen/nodes/node_fwd.hpp>
@@ -34,7 +33,7 @@ protected:
 
     param_set_t& pset_;
     name_t id_;
-    poly_param_value_t old_value_, new_value_;
+    poly_regular_t old_value_, new_value_;
 };
 
 } // namespace

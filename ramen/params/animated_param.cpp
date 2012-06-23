@@ -118,7 +118,7 @@ void animated_param_t::set_component_value_at_frame( int index, float comp_value
     if( can_undo())
         param_set()->add_command( this);
 
-    if( poly_param_indexable_value_t *val =  poly_cast<poly_param_indexable_value_t*>( &value()))
+    if( poly_indexable_regular_t *val =  poly_cast<poly_indexable_regular_t*>( &value()))
     {
         RAMEN_ASSERT( val && "non indexable param value found");
         val->set_component( index, comp_value);
@@ -176,7 +176,7 @@ void animated_param_t::set_key( int curve_index)
 
     if( curve( curve_index).empty())
     {
-        poly_param_indexable_value_t *val =  poly_cast<poly_param_indexable_value_t*>( &value());
+        poly_indexable_regular_t *val =  poly_cast<poly_indexable_regular_t*>( &value());
 
         if( val)
             curve( curve_index).insert( frame, val->get_component( curve_index));

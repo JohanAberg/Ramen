@@ -37,15 +37,15 @@ void aspect_ratio_param_t::set_value( float x, change_reason reason)
 
 void aspect_ratio_param_t::do_add_to_hash( hash::generator_t& hash_gen) const { hash_gen << get_value<float>( *this);}
 
-boost::python::object aspect_ratio_param_t::to_python( const poly_param_value_t& v) const
+boost::python::object aspect_ratio_param_t::to_python( const poly_regular_t& v) const
 {
     return boost::python::object( get_value<float>( *this));
 }
 
-poly_param_value_t aspect_ratio_param_t::from_python( const boost::python::object& obj) const
+poly_regular_t aspect_ratio_param_t::from_python( const boost::python::object& obj) const
 {
     float val = boost::python::extract<float>( obj);
-    return poly_param_value_t( val);
+    return poly_regular_t( val);
 }
 
 void aspect_ratio_param_t::do_read( const serialization::yaml_node_t& node)

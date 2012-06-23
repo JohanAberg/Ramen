@@ -38,14 +38,14 @@ void float_param_t::private_init()
     set_default_value( 0);
 }
 
-poly_param_value_t float_param_t::value_at_frame( float frame) const
+poly_regular_t float_param_t::value_at_frame( float frame) const
 {
     float val = get_value<float>( *this);
 
     if( !eval_expression( 0, frame, val))
         eval_curve( 0, frame, val);
 
-    return poly_param_value_t( val);
+    return poly_regular_t( val);
 }
 
 void float_param_t::set_default_value( float x) { value().assign( x);}
@@ -116,15 +116,15 @@ void float_param_t::do_add_to_hash( hash::generator_t& hash_gen) const
     hash_gen << get_value<float>( *this);
 }
 
-boost::python::object float_param_t::to_python( const poly_param_value_t& v) const
+boost::python::object float_param_t::to_python( const poly_regular_t& v) const
 {
     return boost::python::object( v.cast<float>());
 }
 
-poly_param_value_t float_param_t::from_python( const boost::python::object& obj) const
+poly_regular_t float_param_t::from_python( const boost::python::object& obj) const
 {
     float val = boost::python::extract<float>( obj);
-    return poly_param_value_t( val);
+    return poly_regular_t( val);
 }
 
 } // namespace
