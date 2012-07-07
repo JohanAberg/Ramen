@@ -8,6 +8,8 @@
 #include<boost/concept_check.hpp>
 #include<boost/swap.hpp>
 
+#include<base/empty.hpp>
+
 namespace ramen
 {
 
@@ -30,7 +32,7 @@ private:
         boost::any anything( x[0]);
     }
 
-    static void checkIndexOperator( const empty_t& x) {}
+    static void checkIndexOperator( const base::empty_t& x) {}
 
     T t;
 };

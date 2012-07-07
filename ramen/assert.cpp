@@ -19,4 +19,14 @@ void assertion_failed( char const *expr, char const *function, char const *file,
 	std::abort();
 }
 
-} // boost
+} // ramen
+
+namespace base
+{
+
+void assertion_failed( char const *expr, char const *function, char const *file, long line)
+{
+    ramen::assertion_failed( expr, function, file, line);
+}
+
+} // base

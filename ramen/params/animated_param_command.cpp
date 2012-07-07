@@ -8,7 +8,7 @@
 
 #include<boost/foreach.hpp>
 
-#include<adobe/empty.hpp>
+#include<base/empty.hpp>
 
 #include<ramen/params/animated_param.hpp>
 #include<ramen/nodes/node.hpp>
@@ -23,7 +23,7 @@ namespace ramen
 namespace params
 {
 
-animated_param_command_t::animated_param_command_t( param_set_t& pset, const name_t& id) : undo::command_t( "Param Changed"), pset_( pset)
+animated_param_command_t::animated_param_command_t( param_set_t& pset, const base::name_t& id) : undo::command_t( "Param Changed"), pset_( pset)
 {
     id_ = id;
     set_done( true);

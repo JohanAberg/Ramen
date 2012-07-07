@@ -18,7 +18,7 @@ class RAMEN_API inspector_param_t : public param_t
 {
 public:
 
-    explicit inspector_param_t( const name_t& id);
+    explicit inspector_param_t( const base::name_t& id);
     ~inspector_param_t();
 
     const parameterised_t *parameterised() const	{ return contents_;}

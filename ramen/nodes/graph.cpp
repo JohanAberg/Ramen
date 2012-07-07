@@ -17,7 +17,7 @@ namespace nodes
 
 graph_t::connection_type::connection_type() : src( 0), dst( 0) {}
 
-graph_t::connection_type::connection_type( node_t *s, const name_t& splug, node_t *d, const name_t& dplug) : src( s),
+graph_t::connection_type::connection_type( node_t *s, const base::name_t& splug, node_t *d, const base::name_t& dplug) : src( s),
                                                                                                         src_plug( splug),
                                                                                                         dst( d),
                                                                                                         dst_plug( dplug)

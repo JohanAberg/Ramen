@@ -31,7 +31,7 @@ public:
 
     int num_curves() const;
 
-    const name_t& curve_name( int indx = 0) const;
+    const base::name_t& curve_name( int indx = 0) const;
     const anim::float_curve_t& curve( int indx = 0) const;
     anim::float_curve_t& curve( int indx = 0);
 
@@ -62,7 +62,7 @@ protected:
     void operator=( const animated_param_t& other);
 
     bool all_curves_empty() const;
-    void add_curve( const name_t& name);
+    void add_curve( const base::name_t& name);
     void eval_curve( int index, float frame, float& v) const;
 
     void set_component_value( int index, float comp_value, change_reason reason = user_edited);
@@ -80,9 +80,9 @@ private:
 
     virtual std::auto_ptr<undo::command_t> do_create_command();
 
-    anim::float_curve_t *find_curve( const name_t& name);
+    anim::float_curve_t *find_curve( const base::name_t& name);
 
-    typedef boost::tuple<name_t, anim::float_curve_t> curve_entry_type;
+    typedef boost::tuple<base::name_t, anim::float_curve_t> curve_entry_type;
     std::vector<curve_entry_type> curves_;
 
     float step_;

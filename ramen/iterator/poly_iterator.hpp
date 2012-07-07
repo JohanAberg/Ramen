@@ -14,6 +14,7 @@
 #include<ramen/config.hpp>
 
 #include<boost/concept_check.hpp>
+#include<boost/iterator/iterator_facade.hpp>
 
 #include<ramen/poly.hpp>
 
@@ -26,7 +27,7 @@ template <  typename V,                 // T models Regular Type
             typename R = V&,            // R models Reference Type
             typename D = std::ptrdiff_t // D models Signed Integer
          >
-struct poly_iterator_interface : poly_copyable_interface
+struct poly_iterator_interface : public poly_copyable_interface
 {
     virtual R dereference() const = 0;
     virtual void increment() = 0;
@@ -40,7 +41,7 @@ template <  typename V,                 // T models Regular Type
 struct poly_iterator_instance
 {
     template <typename I>
-    class type : optimized_storage_type<I, poly_iterator_interface<V, R, D> >::type
+    class type : public optimized_storage_type<I, poly_iterator_interface<V, R, D> >::type
     {
         BOOST_CONCEPT_ASSERT(( boost::ForwardIteratorConcept<I>));
 
@@ -107,7 +108,7 @@ template <  typename V,                 // T models Regular Type
 struct any_bidirectional_iterator_instance
 {
     template <typename I>
-    class type : optimized_storage_type<I, any_bidirectional_iterator_interface<V, R, D> >::type
+    class type : public optimized_storage_type<I, any_bidirectional_iterator_interface<V, R, D> >::type
     {
 
         BOOST_CONCEPT_ASSERT(( boost::BidirectionalIteratorConcept<I>));
@@ -192,7 +193,7 @@ template <  typename V,                 // T models Regular Type
 struct any_random_access_iterator_instance
 {
     template <typename I>               // I models Random Access Iterator
-    class type : optimized_storage_type<I, any_random_access_iterator_interface<V, R, D> >::type
+    class type : public optimized_storage_type<I, any_random_access_iterator_interface<V, R, D> >::type
     {
         BOOST_CONCEPT_ASSERT(( boost::RandomAccessIteratorConcept<I>));
 
@@ -237,7 +238,6 @@ struct any_random_access_iterator_instance
     };
 };
 
-
 template <  typename V,                 // T models Regular Type
             typename R = V&,            // R models Reference Type
             typename D = std::ptrdiff_t // D models Signed Integer
@@ -275,7 +275,6 @@ struct random_access_iter : public poly_base<any_random_access_iterator_interfac
         return  x.interface_ref().equals(y.interface_ref());
     }
 };
-
 
 } // iterator
 } // ramen

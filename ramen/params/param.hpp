@@ -25,9 +25,10 @@
 
 #include<OpenEXR/ImathBox.h>
 
+#include<base/name.hpp>
+
 #include<ramen/assert.hpp>
 
-#include<ramen/name.hpp>
 #include<ramen/poly_indexable_regular.hpp>
 
 #include<ramen/params/parameterised_fwd.hpp>
@@ -104,16 +105,16 @@ public:
     param_t *clone() const { return do_clone();}
 
     /// Returns the param name.
-    const name_t& name() const { return name_;}
+    const base::name_t& name() const { return name_;}
 
     /// Sets the param name.
-    void set_name( const name_t& name) { name_ = name;}
+    void set_name( const base::name_t& name) { name_ = name;}
 
     /// Returns the param id.
-    const name_t& id() const { return id_;}
+    const base::name_t& id() const { return id_;}
 
     /// Sets the param id.
-    void set_id( const name_t& identifier);
+    void set_id( const base::name_t& identifier);
 
     /// Returns a const pointer to the param set this param belongs to.
     const param_set_t *param_set() const    { return param_set_;}
@@ -206,13 +207,13 @@ protected:
     int flags() const			{ return flags_;}
     void set_flags( int flags)	{ flags_ = flags;}
 
-    const poly_regular_t& value() const	{ return value_;}
-    poly_regular_t& value()             { return value_;}
+    const base::poly_regular_t& value() const	{ return value_;}
+    base::poly_regular_t& value()               { return value_;}
 
-    virtual poly_regular_t value_at_frame( float frame) const { return value();}
+    virtual base::poly_regular_t value_at_frame( float frame) const { return value();}
 
     // expressions
-    void add_expression( const name_t& name);
+    void add_expression( const base::name_t& name);
     bool eval_expression( int index, float frame, float& v) const;
 
 private:
@@ -235,7 +236,7 @@ private:
     virtual void do_evaluate( float frame);
 
     // expressions
-    expressions::expression_t *find_expression( const name_t& name);
+    expressions::expression_t *find_expression( const base::name_t& name);
 
     // undo
     virtual std::auto_ptr<undo::command_t> do_create_command();
@@ -246,8 +247,8 @@ private:
     // python interop
     friend class python::access;
 
-    virtual boost::python::object to_python( const poly_regular_t& v) const;
-    virtual poly_regular_t from_python( const boost::python::object& obj) const;
+    virtual boost::python::object to_python( const base::poly_regular_t& v) const;
+    virtual base::poly_regular_t from_python( const boost::python::object& obj) const;
 
     // paths
     virtual void do_convert_relative_paths( const boost::filesystem::path& old_base, const boost::filesystem::path& new_base);
@@ -269,20 +270,20 @@ private:
 
     param_set_t *param_set_;
 
-    name_t name_;
-    name_t id_;
+    base::name_t name_;
+    base::name_t id_;
     std::string tooltip_;
 
     boost::uint32_t flags_;
-    poly_regular_t value_;
+    base::poly_regular_t value_;
 
-    std::vector<std::pair<name_t, expressions::expression_t> > expressions_;
+    std::vector<std::pair<base::name_t, expressions::expression_t> > expressions_;
 };
 
 template<class S>
 S get_value( const param_t& p)
 {
-    const poly_regular_t& any( p.value());
+    const base::poly_regular_t& any( p.value());
 
     #ifdef NDEBUG
         return any.cast<S>();
@@ -291,7 +292,7 @@ S get_value( const param_t& p)
         {
             return any.cast<S>();
         }
-        catch( bad_cast& e)
+        catch( base::bad_cast& e)
         {
             RAMEN_ASSERT( 0 && "Bad cast exception in get_value");
         }
@@ -301,7 +302,7 @@ S get_value( const param_t& p)
 template<class S>
 S get_value_at_frame( const param_t& p, float frame)
 {
-    poly_regular_t any( p.value_at_frame( frame));
+    base::poly_regular_t any( p.value_at_frame( frame));
 
     #ifdef NDEBUG
         return any.cast<S>();
@@ -310,7 +311,7 @@ S get_value_at_frame( const param_t& p, float frame)
         {
             return any.cast<S>();
         }
-        catch( bad_cast& e)
+        catch( base::bad_cast& e)
         {
             RAMEN_ASSERT( 0 && "Bad cast exception in get_value");
         }

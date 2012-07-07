@@ -71,8 +71,8 @@ private:
     // python interop
     friend class python::access;
 
-    poly_regular_t relative_to_absolute( const poly_regular_t& val) const;
-    poly_regular_t absolute_to_relative( const poly_regular_t& val) const;
+    base::poly_regular_t relative_to_absolute( const base::poly_regular_t& val) const;
+    base::poly_regular_t absolute_to_relative( const base::poly_regular_t& val) const;
 
     Imath::Box2i frame_area() const;
 
@@ -86,7 +86,7 @@ S get_absolute_value( const param_t& p)
     const numeric_param_t *q = dynamic_cast<const numeric_param_t*>( &p);
     RAMEN_ASSERT( q);
 
-    const poly_regular_t& any( p.value());
+    const base::poly_regular_t& any( p.value());
 
     #ifdef NDEBUG
         S v = any.cast<S>();
@@ -97,7 +97,7 @@ S get_absolute_value( const param_t& p)
             S v = any.cast<S>();
             return q->relative_to_absolute( v);
         }
-        catch( bad_cast& e)
+        catch( base::bad_cast& e)
         {
             RAMEN_ASSERT( 0 && "Bad cast exception in get_value");
         }
@@ -110,7 +110,7 @@ S get_absolute_value_at_frame( const param_t& p, float frame)
     const numeric_param_t *q = dynamic_cast<const numeric_param_t*>( &p);
     RAMEN_ASSERT( q);
 
-    const poly_regular_t& any( p.value_at_frame( frame));
+    const base::poly_regular_t& any( p.value_at_frame( frame));
 
     #ifdef NDEBUG
         S v = any.cast<S>();
@@ -121,7 +121,7 @@ S get_absolute_value_at_frame( const param_t& p, float frame)
             S v = any.cast<S>();
             return q->relative_to_absolute( v);
         }
-        catch( bad_cast& e)
+        catch( base::bad_cast& e)
         {
             RAMEN_ASSERT( 0 && "Bad cast exception in get_value");
         }

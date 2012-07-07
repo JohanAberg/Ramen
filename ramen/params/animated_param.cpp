@@ -39,7 +39,7 @@ animated_param_t::animated_param_t( const animated_param_t& other) : param_t( ot
 
 int animated_param_t::num_curves() const { return curves_.size();}
 
-const name_t& animated_param_t::curve_name( int indx) const
+const base::name_t& animated_param_t::curve_name( int indx) const
 {
     RAMEN_ASSERT( indx >= 0 && indx < num_curves());
     return boost::get<0>( curves_[indx]);
@@ -57,7 +57,7 @@ anim::float_curve_t& animated_param_t::curve( int indx)
     return boost::get<1>( curves_[indx]);
 }
 
-void animated_param_t::add_curve(const name_t& name)
+void animated_param_t::add_curve(const base::name_t& name)
 {
     curves_.push_back( curve_entry_type( name, anim::float_curve_t()));
 }
@@ -118,7 +118,7 @@ void animated_param_t::set_component_value_at_frame( int index, float comp_value
     if( can_undo())
         param_set()->add_command( this);
 
-    if( poly_indexable_regular_t *val =  poly_cast<poly_indexable_regular_t*>( &value()))
+    if( poly_indexable_regular_t *val =  base::poly_cast<poly_indexable_regular_t*>( &value()))
     {
         RAMEN_ASSERT( val && "non indexable param value found");
         val->set_component( index, comp_value);
@@ -176,7 +176,7 @@ void animated_param_t::set_key( int curve_index)
 
     if( curve( curve_index).empty())
     {
-        poly_indexable_regular_t *val =  poly_cast<poly_indexable_regular_t*>( &value());
+        poly_indexable_regular_t *val =  base::poly_cast<poly_indexable_regular_t*>( &value());
 
         if( val)
             curve( curve_index).insert( frame, val->get_component( curve_index));
@@ -274,7 +274,7 @@ void animated_param_t::do_create_tracks( anim::track_t *parent)
     parent->add_child( t);
 }
 
-anim::float_curve_t *animated_param_t::find_curve(const name_t& name)
+anim::float_curve_t *animated_param_t::find_curve(const base::name_t& name)
 {
     for( int i = 0; i < num_curves(); ++i)
     {

@@ -21,7 +21,7 @@ namespace ramen
 namespace params
 {
 
-inspector_param_t::inspector_param_t( const name_t& id) : param_t()
+inspector_param_t::inspector_param_t( const base::name_t& id) : param_t()
 {
     set_static( true);
     set_id( id);

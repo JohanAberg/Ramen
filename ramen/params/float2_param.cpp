@@ -38,11 +38,11 @@ float2_param_t::float2_param_t( const float2_param_t& other) : proportional_para
 
 void float2_param_t::private_init()
 {
-    add_expression( name_t( "X"));
-    add_expression( name_t( "Y"));
+    add_expression( base::name_t( "X"));
+    add_expression( base::name_t( "Y"));
 
-    add_curve( name_t( "X"));
-    add_curve( name_t( "Y"));
+    add_curve( base::name_t( "X"));
+    add_curve( base::name_t( "Y"));
 
     set_default_value( Imath::V2f( 0, 0));
 }
@@ -50,10 +50,10 @@ void float2_param_t::private_init()
 void float2_param_t::set_default_value( const Imath::V2f& x)
 {
     poly_indexable_regular_t v( x);
-    value() = poly_cast<poly_regular_t&>( v);
+    value() = base::poly_cast<base::poly_regular_t&>( v);
 }
 
-poly_regular_t float2_param_t::value_at_frame( float frame) const
+base::poly_regular_t float2_param_t::value_at_frame( float frame) const
 {
     Imath::V2f v( get_value<Imath::V2f>( *this));
 
@@ -64,7 +64,7 @@ poly_regular_t float2_param_t::value_at_frame( float frame) const
         eval_curve( 1, frame, v.y);
 
     poly_indexable_regular_t val( v);
-    return poly_cast<poly_regular_t&>( val);
+    return base::poly_cast<base::poly_regular_t&>( val);
 }
 
 void float2_param_t::set_value( const Imath::V2f& x, change_reason reason)
@@ -86,7 +86,7 @@ void float2_param_t::set_value_at_frame( const Imath::V2f& x, float frame, chang
         param_set()->add_command( this);
 
     poly_indexable_regular_t v( x);
-    value() = poly_cast<poly_regular_t&>( v);
+    value() = base::poly_cast<base::poly_regular_t&>( v);
 
     bool autokey = param_set()->autokey();
 
@@ -144,17 +144,17 @@ void float2_param_t::do_add_to_hash( hash::generator_t& hash_gen) const
     hash_gen << v.x << "," << v.y;
 }
 
-boost::python::object float2_param_t::to_python( const poly_regular_t& v) const
+boost::python::object float2_param_t::to_python( const base::poly_regular_t& v) const
 {
     return python::vec_to_list( v.cast<Imath::V2f>());
 }
 
-poly_regular_t float2_param_t::from_python( const boost::python::object& obj) const
+base::poly_regular_t float2_param_t::from_python( const boost::python::object& obj) const
 {
     boost::python::list t = boost::python::extract<boost::python::list>( obj);
     Imath::V2f val = python::list_to_vec2<float>( t);
     poly_indexable_regular_t v( val);
-    return poly_cast<poly_regular_t&>( v);
+    return base::poly_cast<base::poly_regular_t&>( v);
 }
 
 } // namespace

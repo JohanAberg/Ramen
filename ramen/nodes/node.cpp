@@ -115,7 +115,7 @@ void node_t::set_ui_invisible( bool b)  { util::set_flag( flags_, ui_invisible_b
 
 // inputs
 
-void node_t::add_input_plug( const name_t& id, bool optional, const Imath::Color3c &color, const std::string &tooltip)
+void node_t::add_input_plug( const base::name_t& id, bool optional, const Imath::Color3c &color, const std::string &tooltip)
 {
     if( find_input( id) == -1)
         throw std::runtime_error( util::concat_strings( "Duplicated input plud id: ", id.c_str()));
@@ -123,7 +123,7 @@ void node_t::add_input_plug( const name_t& id, bool optional, const Imath::Color
     inputs_.push_back( new input_plug_t( id, optional, color, tooltip ));
 }
 
-int node_t::find_input( const name_t& id) const
+int node_t::find_input( const base::name_t& id) const
 {
     int index = 0;
     BOOST_FOREACH( const input_plug_t& i, input_plugs())
@@ -137,7 +137,7 @@ int node_t::find_input( const name_t& id) const
     return -1;
 }
 
-const input_plug_t& node_t::input_plug( const name_t& id) const
+const input_plug_t& node_t::input_plug( const base::name_t& id) const
 {
     int index = find_input( id);
 
@@ -147,7 +147,7 @@ const input_plug_t& node_t::input_plug( const name_t& id) const
     return inputs_[index];
 }
 
-input_plug_t& node_t::input_plug( const name_t& id)
+input_plug_t& node_t::input_plug( const base::name_t& id)
 {
     int index = find_input( id);
 
@@ -157,7 +157,7 @@ input_plug_t& node_t::input_plug( const name_t& id)
     return inputs_[index];
 }
 
-const node_t *node_t::input( const name_t& id) const
+const node_t *node_t::input( const base::name_t& id) const
 {
     int index = find_input( id);
 
@@ -167,7 +167,7 @@ const node_t *node_t::input( const name_t& id) const
     return inputs_[index].input_node();
 }
 
-node_t *node_t::input( const name_t& id)
+node_t *node_t::input( const base::name_t& id)
 {
     int index = find_input( id);
 
@@ -178,7 +178,7 @@ node_t *node_t::input( const name_t& id)
 }
 
 // outputs
-int node_t::find_output( const name_t& id) const
+int node_t::find_output( const base::name_t& id) const
 {
     int index = 0;
     BOOST_FOREACH( const output_plug_t& i, output_plugs())
@@ -192,7 +192,7 @@ int node_t::find_output( const name_t& id) const
     return -1;
 }
 
-const output_plug_t& node_t::output_plug( const name_t& id) const
+const output_plug_t& node_t::output_plug( const base::name_t& id) const
 {
     int index = find_output( id);
 
@@ -202,7 +202,7 @@ const output_plug_t& node_t::output_plug( const name_t& id) const
     return outputs_[index];
 }
 
-output_plug_t& node_t::output_plug( const name_t& id)
+output_plug_t& node_t::output_plug( const base::name_t& id)
 {
     int index = find_output( id);
 
@@ -212,7 +212,7 @@ output_plug_t& node_t::output_plug( const name_t& id)
     return outputs_[index];
 }
 
-void node_t::add_output_plug(const name_t& id, const Imath::Color3c& color, const std::string& tooltip )
+void node_t::add_output_plug(const base::name_t& id, const Imath::Color3c& color, const std::string& tooltip )
 {
     if( find_output( id) == -1)
         throw std::runtime_error( util::concat_strings( "Duplicated output plug id: ", id.c_str()));
@@ -237,14 +237,14 @@ void node_t::add_to_dependency_graph()
 
 void node_t::do_add_to_dependency_graph() {}
 
-bool node_t::accept_connection( node_t *src, const name_t& src_port, const name_t& dst_port) const
+bool node_t::accept_connection( node_t *src, const base::name_t& src_port, const base::name_t& dst_port) const
 {
     return do_accept_connection( src, src_port, dst_port);
 }
 
-bool node_t::do_accept_connection( node_t *src, const name_t& src_port, const name_t& dst_port) const { return true;}
+bool node_t::do_accept_connection( node_t *src, const base::name_t& src_port, const base::name_t& dst_port) const { return true;}
 
-void node_t::connected(node_t *src, const name_t& src_port, const name_t& dst_port)
+void node_t::connected(node_t *src, const base::name_t& src_port, const base::name_t& dst_port)
 {
     /*
     if( variable_num_inputs() && src != 0 && port == num_inputs()-1)
@@ -254,7 +254,7 @@ void node_t::connected(node_t *src, const name_t& src_port, const name_t& dst_po
     do_connected( src, src_port, dst_port);
 }
 
-void node_t::do_connected( node_t *src, const name_t& src_port, const name_t& dst_port) {}
+void node_t::do_connected( node_t *src, const base::name_t& src_port, const base::name_t& dst_port) {}
 
 void node_t::add_new_input_plug()
 {

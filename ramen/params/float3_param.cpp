@@ -32,17 +32,17 @@ float3_param_t::float3_param_t( const float3_param_t& other) : proportional_para
 
 void float3_param_t::private_init()
 {
-    add_expression( name_t( "X"));
-    add_expression( name_t( "Y"));
-    add_expression( name_t( "Z"));
+    add_expression( base::name_t( "X"));
+    add_expression( base::name_t( "Y"));
+    add_expression( base::name_t( "Z"));
 
-    add_curve( name_t( "X"));
-    add_curve( name_t( "Y"));
-    add_curve( name_t( "Z"));
+    add_curve( base::name_t( "X"));
+    add_curve( base::name_t( "Y"));
+    add_curve( base::name_t( "Z"));
     set_default_value( Imath::V3f( 0, 0, 0));
 }
 
-poly_regular_t float3_param_t::value_at_frame( float frame) const
+base::poly_regular_t float3_param_t::value_at_frame( float frame) const
 {
     Imath::V3f v( get_value<Imath::V3f>( *this));
 
@@ -56,13 +56,13 @@ poly_regular_t float3_param_t::value_at_frame( float frame) const
         eval_curve( 2, frame, v.z);
 
     poly_indexable_regular_t val( v);
-    return poly_cast<poly_regular_t&>( val);
+    return base::poly_cast<base::poly_regular_t&>( val);
 }
 
 void float3_param_t::set_default_value( const Imath::V3f& x)
 {
     poly_indexable_regular_t v( x);
-    value() = poly_cast<poly_regular_t&>( v);
+    value() = base::poly_cast<base::poly_regular_t&>( v);
 }
 
 void float3_param_t::set_value( const Imath::V3f& x, change_reason reason)
@@ -85,7 +85,7 @@ void float3_param_t::set_value_at_frame( const Imath::V3f& x, float frame, chang
         param_set()->add_command( this);
 
     poly_indexable_regular_t v( x);
-    value() = poly_cast<poly_regular_t&>( v);
+    value() = base::poly_cast<base::poly_regular_t&>( v);
 
     bool autokey = param_set()->autokey();
 
@@ -143,17 +143,17 @@ void float3_param_t::do_add_to_hash( hash::generator_t& hash_gen) const
     hash_gen << v.x << "," << v.y << "," << v.z;
 }
 
-boost::python::object float3_param_t::to_python( const poly_regular_t& v) const
+boost::python::object float3_param_t::to_python( const base::poly_regular_t& v) const
 {
     return python::vec_to_list( v.cast<Imath::V3f>());
 }
 
-poly_regular_t float3_param_t::from_python( const boost::python::object& obj) const
+base::poly_regular_t float3_param_t::from_python( const boost::python::object& obj) const
 {
     boost::python::list t = boost::python::extract<boost::python::list>( obj);
     Imath::V3f val = python::list_to_vec3<float>( t);
     poly_indexable_regular_t v( val);
-    return poly_cast<poly_regular_t&>( v);
+    return base::poly_cast<base::poly_regular_t&>( v);
 }
 
 } // namespace

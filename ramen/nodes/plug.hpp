@@ -13,13 +13,13 @@
 
 #include<OpenEXR/ImathColor.h>
 
+#include<base/name.hpp>
+
 #include<ramen/assert.hpp>
 
 #include<ramen/dependency/node.hpp>
 
 #include<ramen/nodes/node_fwd.hpp>
-
-#include<ramen/name.hpp>
 
 namespace ramen
 {
@@ -35,11 +35,11 @@ class plug_t
 protected:
 
     /// Constructor.
-    plug_t( const name_t& id, const Imath::Color3c& color, const std::string& tooltip)
+    plug_t( const base::name_t& id, const Imath::Color3c& color, const std::string& tooltip)
     {
         id_ =  id;
         color_ = color;
-        tooltip_ = name_t( tooltip.c_str());
+        tooltip_ = base::name_t( tooltip.c_str());
     }
 
     /// Copy constructor.
@@ -48,13 +48,13 @@ protected:
 public:
 
     /// Returns this plug id.
-    const name_t& id() const { return id_;}
+    const base::name_t& id() const { return id_;}
 
     /// Returns this plug color. Used in the UI.
     const Imath::Color3c& color() const	{ return color_;}
 
     /// Returns this plug tooltip. Used in the UI.
-    const name_t& tooltip() const	{ return tooltip_;}
+    const base::name_t& tooltip() const	{ return tooltip_;}
 
     /// Operator less, for assoc. containers (future).
     bool operator<( const plug_t& other) const
@@ -65,9 +65,9 @@ public:
 
 private:
 
-    name_t id_;
+    base::name_t id_;
     Imath::Color3c color_;
-    name_t tooltip_;
+    base::name_t tooltip_;
 };
 
 /*!
@@ -78,10 +78,10 @@ class input_plug_t : public plug_t, public dependency::node_t
 {
 public:
 
-    typedef std::pair<ramen::nodes::node_t*,name_t> connection_type;
+    typedef std::pair<ramen::nodes::node_t*,base::name_t> connection_type;
 
     /// Constructor.
-    input_plug_t( const name_t& id, bool optional,
+    input_plug_t( const base::name_t& id, bool optional,
                        const Imath::Color3c& color,
                        const std::string& tooltip) : plug_t( id, color, tooltip)
     {
@@ -109,10 +109,10 @@ public:
     ramen::nodes::node_t *input_node() { return input_.first;}
 
     /// Returns the output plug id of the input node this plug is connected to.
-    const name_t& input_node_out_plug() const { return input_.second;}
+    const base::name_t& input_node_out_plug() const { return input_.second;}
 
     /// Sets the node and plug this plug is connected to.
-    void set_input( ramen::nodes::node_t *n, const name_t& plug)
+    void set_input( ramen::nodes::node_t *n, const base::name_t& plug)
     {
         input_.first = n;
         input_.second = plug;
@@ -141,10 +141,10 @@ class output_plug_t : public plug_t, public dependency::output_node_t
 {
 public:
 
-    typedef boost::tuples::tuple<ramen::nodes::node_t*,name_t, int> connection_type;
+    typedef boost::tuples::tuple<ramen::nodes::node_t*,base::name_t, int> connection_type;
 
     /// Constructor.
-    output_plug_t( ramen::nodes::node_t *parent, const name_t& id,
+    output_plug_t( ramen::nodes::node_t *parent, const base::name_t& id,
                     const Imath::Color3c& color, const std::string& tooltip);
 
     virtual ~output_plug_t();
@@ -162,10 +162,10 @@ public:
     }
 
     /// Adds a connection to this plug.
-    void add_output( ramen::nodes::node_t *n, const name_t& plug);
+    void add_output( ramen::nodes::node_t *n, const base::name_t& plug);
 
     /// Removes a connection to this plug.
-    void remove_output( ramen::nodes::node_t *n, const name_t& plug);
+    void remove_output( ramen::nodes::node_t *n, const base::name_t& plug);
 
     typedef std::vector<connection_type>::const_iterator  const_iterator;
     typedef std::vector<connection_type>::iterator        iterator;

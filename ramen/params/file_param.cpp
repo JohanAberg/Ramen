@@ -76,17 +76,17 @@ void file_param_t::do_add_to_hash( hash::generator_t& hash_gen) const
         hash_gen << filesystem::hash_string( get_value<boost::filesystem::path>( *this));
 }
 
-boost::python::object file_param_t::to_python( const poly_regular_t& v) const
+boost::python::object file_param_t::to_python( const base::poly_regular_t& v) const
 {
     std::string str = filesystem::file_string( v.cast<boost::filesystem::path>());
     return boost::python::object( str);
 }
 
-poly_regular_t file_param_t::from_python( const boost::python::object& obj) const
+base::poly_regular_t file_param_t::from_python( const boost::python::object& obj) const
 {
     std::string str = boost::python::extract<std::string>( obj);
     boost::filesystem::path p( str);
-    return poly_regular_t( p);
+    return base::poly_regular_t( p);
 }
 
 void file_param_t::do_read( const serialization::yaml_node_t& node)

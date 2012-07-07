@@ -38,15 +38,15 @@ void color_param_t::private_init()
 {
     set_is_rgba( true);
 
-    add_expression( name_t( "R"));
-    add_expression( name_t( "G"));
-    add_expression( name_t( "B"));
-    add_expression( name_t( "A"));
+    add_expression( base::name_t( "R"));
+    add_expression( base::name_t( "G"));
+    add_expression( base::name_t( "B"));
+    add_expression( base::name_t( "A"));
 
-    add_curve( name_t( "R"));
-    add_curve( name_t( "G"));
-    add_curve( name_t( "B"));
-    add_curve( name_t( "A"));
+    add_curve( base::name_t( "R"));
+    add_curve( base::name_t( "G"));
+    add_curve( base::name_t( "B"));
+    add_curve( base::name_t( "A"));
 
     set_min( 0);
     curve( 3).set_range( 0, 1); // <- Alpha channel
@@ -58,10 +58,10 @@ void color_param_t::private_init()
 void color_param_t::set_default_value( const Imath::Color4f& x)
 {
     poly_indexable_regular_t v( x);
-    value() = poly_cast<poly_regular_t&>( v);
+    value() = base::poly_cast<base::poly_regular_t&>( v);
 }
 
-poly_regular_t color_param_t::value_at_frame(float frame) const
+base::poly_regular_t color_param_t::value_at_frame(float frame) const
 {
     Imath::Color4f v( get_value<Imath::Color4f>( *this));
 
@@ -85,7 +85,7 @@ poly_regular_t color_param_t::value_at_frame(float frame) const
         v.a = 1.0f;
 
     poly_indexable_regular_t val( v);
-    return poly_cast<poly_regular_t&>( val);
+    return base::poly_cast<base::poly_regular_t&>( val);
 }
 
 void color_param_t::set_value( const Imath::Color4f& x, change_reason reason)
@@ -104,7 +104,7 @@ void color_param_t::set_value_at_frame( const Imath::Color4f& x, float frame, ch
         param_set()->add_command( this);
 
     poly_indexable_regular_t v( x);
-    value() = poly_cast<poly_regular_t&>( v);
+    value() = base::poly_cast<base::poly_regular_t&>( v);
 
     bool autokey = param_set()->autokey();
 
@@ -159,17 +159,17 @@ void color_param_t::do_add_to_hash( hash::generator_t& hash_gen) const
         hash_gen << "," << c.a;
 }
 
-boost::python::object color_param_t::to_python( const poly_regular_t& v) const
+boost::python::object color_param_t::to_python( const base::poly_regular_t& v) const
 {
     return python::color_to_list( get_value<Imath::Color4f>( *this));
 }
 
-poly_regular_t color_param_t::from_python( const boost::python::object& obj) const
+base::poly_regular_t color_param_t::from_python( const boost::python::object& obj) const
 {
     boost::python::list t = boost::python::extract<boost::python::list>( obj);
     Imath::Color4f val = python::list_to_color4<float>( t);
     poly_indexable_regular_t v( val);
-    return poly_cast<poly_regular_t&>( v);
+    return base::poly_cast<base::poly_regular_t&>( v);
 }
 
 } // namespace

@@ -96,10 +96,10 @@ public:
     param_set_t& param_set()				{ return params_;}
 
     /// Returns a const reference to the param with identifier id.
-    const param_t& param(const name_t& identifier) const;
+    const param_t& param(const base::name_t& identifier) const;
 
     /// Returns a reference to the param with identifier id.
-    param_t& param( const name_t& identifier);
+    param_t& param( const base::name_t& identifier);
 
     /// Adds a param to this parameterised.
     template<class T>

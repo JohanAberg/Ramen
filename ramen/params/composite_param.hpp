@@ -35,8 +35,8 @@ public:
     template<class T>
     void add_param( std::auto_ptr<T> p) { do_add_param( p.release());}
 
-    const param_t *find(const name_t& id) const;
-    param_t *find( const name_t& id);
+    const param_t *find(const base::name_t& id) const;
+    param_t *find( const base::name_t& id);
 
     virtual void add_to_dependency_graph( dependency::graph_t& dg);
 

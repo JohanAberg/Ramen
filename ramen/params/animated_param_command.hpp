@@ -12,8 +12,8 @@
 #include<memory>
 #include<vector>
 
-#include<ramen/name.hpp>
-#include<ramen/poly_regular.hpp>
+#include<base/name.hpp>
+#include<base/poly_regular.hpp>
 
 #include<ramen/params/param_set_fwd.hpp>
 
@@ -30,7 +30,7 @@ class RAMEN_API animated_param_command_t : public undo::command_t
 {
 public:
 
-    animated_param_command_t( param_set_t& pset, const name_t& id);
+    animated_param_command_t( param_set_t& pset, const base::name_t& id);
 
     virtual void undo();
     virtual void redo();
@@ -40,9 +40,9 @@ private:
     void swap_curves();
 
     param_set_t& pset_;
-    name_t id_;
+    base::name_t id_;
 
-    poly_regular_t previous_value_, new_value_;
+    base::poly_regular_t previous_value_, new_value_;
     std::vector<anim::float_curve_t> old_;
 };
 

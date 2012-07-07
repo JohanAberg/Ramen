@@ -19,7 +19,7 @@ namespace
 
 struct match_output_connection
 {
-    match_output_connection( ramen::nodes::node_t *node, const name_t& id)
+    match_output_connection( ramen::nodes::node_t *node, const base::name_t& id)
     {
         node_ = node;
         id_ = id;
@@ -34,14 +34,14 @@ struct match_output_connection
     }
 
     ramen::nodes::node_t *node_;
-    name_t id_;
+    base::name_t id_;
 };
 
 } // unnamed
 
 input_plug_t *new_clone( const input_plug_t& other) { return new input_plug_t( other);}
 
-output_plug_t::output_plug_t( ramen::nodes::node_t *parent, const name_t& id,
+output_plug_t::output_plug_t( ramen::nodes::node_t *parent, const base::name_t& id,
                                         const Imath::Color3c& color,
                                         const std::string& tooltip) : plug_t( id, color, tooltip),
                                                                     dependency::output_node_t(),
@@ -57,7 +57,7 @@ output_plug_t::output_plug_t( const output_plug_t& other) : plug_t( other)
 
 output_plug_t::~output_plug_t() {}
 
-void output_plug_t::add_output( ramen::nodes::node_t *n, const name_t& plug)
+void output_plug_t::add_output( ramen::nodes::node_t *n, const base::name_t& plug)
 {
     RAMEN_ASSERT( std::find_if( connections_.begin(), connections_.end(), match_output_connection( n, plug)) == connections_.end());
 
@@ -67,7 +67,7 @@ void output_plug_t::add_output( ramen::nodes::node_t *n, const name_t& plug)
     connections_.push_back( boost::tuples::make_tuple( n, plug, port));
 }
 
-void output_plug_t::remove_output( ramen::nodes::node_t *n, const name_t& plug)
+void output_plug_t::remove_output( ramen::nodes::node_t *n, const base::name_t& plug)
 {
     iterator it( std::find_if( connections_.begin(), connections_.end(), match_output_connection( n, plug)));
 

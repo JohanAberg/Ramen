@@ -1,4 +1,13 @@
 ######################################################
+# Base
+
+SET( RAMEN_BASE_SOURCES ../base/base/empty.cpp
+                        ../base/base/name.cpp
+                        ../base/base/ref_counted.cpp
+                        ../base/base/typeinfo.cpp
+                        )
+
+######################################################
 # Ramen lib
 
 CONFIGURE_FILE( ${PROJECT_SOURCE_DIR}/ramen/version.hpp.in ${PROJECT_SOURCE_DIR}/ramen/version.hpp)
@@ -54,12 +63,7 @@ SET( RAMEN_MOC_CLASSES  ui/anim/anim_curves_view.hpp
 						ui/widgets/time_slider.hpp
 						)
 
-SET( RAMEN_SOURCES  empty.cpp
-					name.cpp
-					ref_counted.cpp
-					typeinfo.cpp
-
-					anim/any_curve.cpp
+SET( RAMEN_SOURCES  anim/any_curve.cpp
 					anim/clipboard.cpp
 					anim/curve_algorithm.cpp
 					anim/curve_to_half_lut.cpp
@@ -638,20 +642,16 @@ SET( RAMEN_PYTHON_SOURCES	python/access.cpp
 # tests
 IF( CMAKE_BUILD_TYPE MATCHES Debug)
 	SET( RAMEN_TEST_SOURCES	test/test.cpp
-							test/array.cpp
 							test/container.cpp
 							test/depgraph.cpp
-							test/dictionary.cpp
 							test/expressions.cpp
 							test/math.cpp
-							test/name.cpp
 							test/memory.cpp
 							test/filesystem.cpp
 							test/ImathExt.cpp
 							test/nodes.cpp
 							test/params.cpp
 							test/param_set.cpp
-							test/poly.cpp
 							test/python.cpp
 							test/string.cpp
 							test/test_node.cpp
@@ -692,7 +692,8 @@ QT4_WRAP_CPP( RAMEN_MOC_SOURCES	${RAMEN_MOC_CLASSES} OPTIONS ${MOC_EXTRA_ARGS})
 QT4_WRAP_UI( RAMEN_DESIGNER_SOURCES ${RAMEN_DESIGNER_FILES})
 QT4_ADD_RESOURCES( RAMEN_RESOURCES ${PROJECT_SOURCE_DIR}/resources/resources.qrc)
 
-SET( RAMEN_LIB_SOURCES	${RAMEN_SOURCES}
+SET( RAMEN_LIB_SOURCES	${RAMEN_BASE_SOURCES}
+                        ${RAMEN_SOURCES}
 						${RAMEN_MOC_SOURCES}
 
 						${RAMEN_DESIGNER_SOURCES}
@@ -713,9 +714,10 @@ ENDIF()
 # Ramen lib
 
 ADD_LIBRARY( ramen SHARED ${RAMEN_LIB_SOURCES})
-SET_TARGET_PROPERTIES( ramen PROPERTIES COMPILE_FLAGS -DRAMEN_MAKING_DSO)
-SET_TARGET_PROPERTIES( ramen PROPERTIES VERSION ${RAMEN_VERSION_MAJOR}.${RAMEN_VERSION_MINOR}.${RAMEN_VERSION_PATCH}
-										SOVERSION ${RAMEN_VERSION_MAJOR} )
+SET_TARGET_PROPERTIES( ramen PROPERTIES COMPILE_FLAGS "-DRAMEN_MAKING_DSO -DBASE_MAKING_DSO"
+                                        VERSION ${RAMEN_VERSION_MAJOR}.${RAMEN_VERSION_MINOR}.${RAMEN_VERSION_PATCH}
+										SOVERSION ${RAMEN_VERSION_MAJOR}
+                        )
 TARGET_LINK_LIBRARIES( ramen	${RAMEN_ALL_LIBS}
 								${EXTRA_PLATFORM_LIBS}
 								${RAMEN_TEST_LIBRARIES}

@@ -69,8 +69,8 @@ public:
         do_add_param( p.release());
     }
 
-    const param_t& find( const name_t& id) const;
-    param_t& find( const name_t& id);
+    const param_t& find( const base::name_t& id) const;
+    param_t& find( const base::name_t& id);
 
     // dependency graph
     void add_params_to_dependency_graph( dependency::graph_t& dg);

@@ -40,7 +40,7 @@ void param_t::init() { do_init();}
 
 void param_t::do_init() {}
 
-void param_t::set_id( const name_t& identifier)
+void param_t::set_id( const base::name_t& identifier)
 {
     RAMEN_ASSERT( util::is_string_valid_identifier( identifier.string()));
 
@@ -94,7 +94,7 @@ nodes::world_node_t *param_t::world()
 
 void param_t::add_to_dependency_graph( dependency::graph_t& dg)
 {
-    if( id() != name_t())
+    if( id() != base::name_t())
         dg.add_node( dynamic_cast<dependency::node_t*>( this));
 }
 
@@ -213,7 +213,7 @@ expressions::expression_t& param_t::expression( int indx)
     return expressions_[indx].second;
 }
 
-void param_t::add_expression(const name_t& name)
+void param_t::add_expression(const base::name_t& name)
 {
     expressions_.push_back( std::make_pair( name, expressions::expression_t()));
 }
@@ -224,7 +224,7 @@ bool param_t::eval_expression( int index, float frame, float& v) const
     return false;
 }
 
-expressions::expression_t *param_t::find_expression( const name_t& name)
+expressions::expression_t *param_t::find_expression( const base::name_t& name)
 {
     for( int i = 0; i < num_expressions(); ++i)
     {
@@ -267,17 +267,17 @@ void param_t::apply_function( const boost::function<void ( param_t*)>& f)
 void param_t::do_apply_function( const boost::function<void ( param_t*)>& f) {}
 
 // python interop
-boost::python::object param_t::to_python( const poly_regular_t& v) const
+boost::python::object param_t::to_python( const base::poly_regular_t& v) const
 {
     PyErr_SetString( PyExc_TypeError, "Can't convert value from C++");
     boost::python::throw_error_already_set();
     return boost::python::object();
 }
 
-poly_regular_t param_t::from_python( const boost::python::object& obj) const
+base::poly_regular_t param_t::from_python( const boost::python::object& obj) const
 {
     throw std::bad_cast();
-    return poly_regular_t();
+    return base::poly_regular_t();
 }
 
 // serialization

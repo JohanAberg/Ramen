@@ -33,16 +33,16 @@ public:
     struct connection_type
     {
         connection_type();
-        connection_type( node_t *s, const name_t& splug, node_t *d, const name_t& dplug);
+        connection_type( node_t *s, const base::name_t& splug, node_t *d, const base::name_t& dplug);
 
         bool operator==( const connection_type& other) const;
         bool operator!=( const connection_type& other) const { return !(*this == other);}
 
         node_t *src;
-        name_t src_plug;
+        base::name_t src_plug;
 
         node_t *dst;
-        name_t dst_plug;
+        base::name_t dst_plug;
 
         // for graph algorithms
         graph_color_t graph_color() const            { return graph_color_;}

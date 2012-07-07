@@ -11,7 +11,7 @@
 #include<boost/optional.hpp>
 #include<boost/intrusive_ptr.hpp>
 
-#include<ramen/ref_counted.hpp>
+#include<base/ref_counted.hpp>
 
 #include<ramen/filesystem/path.hpp>
 
@@ -29,7 +29,7 @@ public:
 
     typedef hash::generator_t::digest_type digest_type;
 
-    struct entry_t : public ref_counted_t {};
+    struct entry_t : public base::ref_counted_t {};
 
     typedef boost::intrusive_ptr<entry_t> entry_ptr_t;
 

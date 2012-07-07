@@ -5,10 +5,12 @@
 #ifndef RAMEN_STATIC_PARAM_COMMAND_HPP
 #define RAMEN_STATIC_PARAM_COMMAND_HPP
 
+#include<ramen/config.hpp>
+
 #include<string>
 
-#include<ramen/name.hpp>
-#include<ramen/poly_regular.hpp>
+#include<base/name.hpp>
+#include<base/poly_regular.hpp>
 
 #include<ramen/undo/command.hpp>
 
@@ -24,7 +26,7 @@ class RAMEN_API static_param_command_t : public undo::command_t
 {
 public:
 
-    static_param_command_t(param_set_t& pset, const ramen::name_t& id);
+    static_param_command_t( param_set_t& pset, const base::name_t& id);
 
     virtual void undo();
     virtual void redo();
@@ -32,8 +34,8 @@ public:
 protected:
 
     param_set_t& pset_;
-    name_t id_;
-    poly_regular_t old_value_, new_value_;
+    base::name_t id_;
+    base::poly_regular_t old_value_, new_value_;
 };
 
 } // namespace

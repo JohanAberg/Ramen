@@ -129,15 +129,15 @@ void param_set_t::do_add_param( param_t *p)
     params_.push_back( p);
 }
 
-const param_t& param_set_t::find( const name_t& id) const
+const param_t& param_set_t::find( const base::name_t& id) const
 {
     param_set_t& self = const_cast<param_set_t&>( *this);
     return self.find( id);
 }
 
-param_t& param_set_t::find( const name_t& id)
+param_t& param_set_t::find( const base::name_t& id)
 {
-    RAMEN_ASSERT( id != name_t());
+    RAMEN_ASSERT( id != base::name_t());
 
     BOOST_FOREACH( param_t& p, params())
     {

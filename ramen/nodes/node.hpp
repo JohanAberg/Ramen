@@ -67,30 +67,30 @@ public:
     boost::ptr_vector<input_plug_t>& input_plugs()             { return inputs_;}
 
     /// Returns the index of the input plug with the given id.
-    int find_input( const name_t& id) const;
+    int find_input( const base::name_t& id) const;
 
     /// Returns the input plug with the given id.
-    const input_plug_t& input_plug( const name_t& id) const;
+    const input_plug_t& input_plug( const base::name_t& id) const;
 
     /// Returns the input plug with the given id.
-    input_plug_t& input_plug( const name_t& id);
+    input_plug_t& input_plug( const base::name_t& id);
 
     /// Returns a const pointer to the node connected to the input plug with the given id.
-    const node_t *input( const name_t& id) const;
+    const node_t *input( const base::name_t& id) const;
 
     /// Returns a pointer to the node connected to the input plug with the given id.
-    node_t *input( const name_t& id);
+    node_t *input( const base::name_t& id);
 
     /// Returns a const pointer to the node connected to the input plug with the given id.
     template<class T>
-    const T *input_as( const name_t& id) const
+    const T *input_as( const base::name_t& id) const
     {
         return dynamic_cast<const T*>( input( id));
     }
 
     /// Returns a pointer to the node connected to the input plug with the given id.
     template<class T>
-    T *input_as( const name_t& id)
+    T *input_as( const base::name_t& id)
     {
         return dynamic_cast<T*>( input( id));
     }
@@ -102,13 +102,13 @@ public:
     boost::ptr_vector<output_plug_t>& output_plugs()             { return outputs_;}
 
     /// Returns the index of the output plug with the given id.
-    int find_output( const name_t& id) const;
+    int find_output( const base::name_t& id) const;
 
     /// Returns the output plug with the given id.
-    const output_plug_t& output_plug( const name_t& id) const;
+    const output_plug_t& output_plug( const base::name_t& id) const;
 
     /// Returns the output plug with the given id.
-    output_plug_t& output_plug( const name_t& id);
+    output_plug_t& output_plug( const base::name_t& id);
 
     /// Adds this node components ( plugs & params) to the dg.
     virtual void add_to_dependency_graph();
@@ -158,8 +158,8 @@ public:
     // connections
     virtual bool variable_num_inputs() const { return false;}
 
-    bool accept_connection( node_t *src, const name_t& src_port, const name_t& dst_port) const;
-    void connected( node_t *src, const name_t& src_port, const name_t& dst_port);
+    bool accept_connection( node_t *src, const base::name_t& src_port, const base::name_t& dst_port) const;
+    void connected( node_t *src, const base::name_t& src_port, const base::name_t& dst_port);
 
     // ignore
     bool ignored() const;
@@ -189,10 +189,10 @@ protected:
     node_t( const node_t& other);
     void operator=( const node_t& other);
 
-    void add_input_plug( const name_t& id, bool optional,
+    void add_input_plug( const base::name_t& id, bool optional,
                          const Imath::Color3c& color, const std::string& tooltip );
 
-    void add_output_plug( const name_t& id, const Imath::Color3c& color, const std::string& tooltip );
+    void add_output_plug( const base::name_t& id, const Imath::Color3c& color, const std::string& tooltip );
 
     bool is_valid_;
 
@@ -232,13 +232,13 @@ private:
         \brief Customization hook for node_t::accept_connection.
         For subclasses to implement.
     */
-    virtual bool do_accept_connection( node_t *src, const name_t& src_port, const name_t& dst_port) const;
+    virtual bool do_accept_connection( node_t *src, const base::name_t& src_port, const base::name_t& dst_port) const;
 
     /*!
         \brief Customization hook for node_t::connected.
         For subclasses to implement.
     */
-    virtual void do_connected( node_t *src, const name_t& src_port, const name_t& dst_port);
+    virtual void do_connected( node_t *src, const base::name_t& src_port, const base::name_t& dst_port);
 
     /*!
         \brief Customization hook for node_t::is_valid.

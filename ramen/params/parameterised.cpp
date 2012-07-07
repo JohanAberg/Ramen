@@ -144,12 +144,12 @@ bool parameterised_t::autokey() const
 
 bool parameterised_t::track_mouse() const { return true;}
 
-const param_t& parameterised_t::param( const name_t& identifier) const
+const param_t& parameterised_t::param( const base::name_t& identifier) const
 {
     return param_set().find( identifier);
 }
 
-param_t& parameterised_t::param( const name_t& identifier)
+param_t& parameterised_t::param( const base::name_t& identifier)
 {
     return param_set().find( identifier);
 }
