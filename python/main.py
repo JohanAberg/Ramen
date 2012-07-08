@@ -2,4 +2,10 @@
 # Licensed under the terms of the CDDL License.
 # See CDDL_LICENSE.txt for a copy of the license.
 
-from _ramen import *
+def main( args):
+    print "I'm python!!!"
+
+    for arg in args:
+        print arg
+
+    return 0

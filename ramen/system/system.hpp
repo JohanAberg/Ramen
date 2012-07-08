@@ -5,6 +5,8 @@
 #ifndef RAMEN_SYSTEM_HPP
 #define RAMEN_SYSTEM_HPP
 
+#include<ramen/config.hpp>
+
 #include<memory>
 
 #include<ramen/app/application_fwd.hpp>
@@ -20,9 +22,11 @@ namespace system
 \ingroup app
 \brief class that contains os & hardware related data and methods
 */
-class system_t : boost::noncopyable
+class RAMEN_API system_t : boost::noncopyable
 {
 public:
+
+    system_t();
 
     const std::string& system_name() const;
     const std::string& user_name() const;
@@ -52,10 +56,6 @@ public:
 	void release_file_lock( const boost::filesystem::path& p) const;
 
 private:
-
-    friend class ramen::application_t;
-
-    system_t();
 
 	std::auto_ptr<system_pvt> pimpl_;
 };

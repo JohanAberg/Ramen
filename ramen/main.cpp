@@ -10,23 +10,17 @@
 #include<iostream>
 #include<exception>
 
-#include<boost/version.hpp>
-#include<boost/static_assert.hpp>
-
-#include<boost/python.hpp>
-
 #include<glog/logging.h>
 
-#include<ramen/app/application.hpp>
+#include "client/linux/handler/exception_handler.h" // breakpad
 
+#include<ramen/app/application.hpp>
+#include<ramen/python/interpreter.hpp>
 #include<ramen/filesystem/path.hpp>
 
-// breakpad
-#include "client/linux/handler/exception_handler.h"
+namespace bfs = boost::filesystem;
 
-#ifndef NDEBUG
-#endif
-
+// crash handling
 bool ramen_crash_dump_callback( const char* dump_path,
                                   const char* minidump_id,
                                   void* context,
@@ -63,9 +57,8 @@ int main( int argc, char **argv)
 	
 	try
 	{
-        ramen::application_t r_app( argc, argv);
-		int result = r_app.run();
-		return result;
+        int result =ramen::python::interpreter_t::instance().run_main( argc, argv);
+        return result;
 	}
 	catch( boost::python::error_already_set)
 	{

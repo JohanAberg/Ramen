@@ -121,6 +121,8 @@ SET( RAMEN_SOURCES  anim/any_curve.cpp
 					params/string_param.cpp
 					params/tab_group_param.cpp
 
+                    python/export_ramen.cpp
+                    python/interpreter.cpp
 					python/pyside.cpp
 
 					serialization/yaml.cpp
@@ -184,7 +186,7 @@ SET( RAMEN_DESIGNER_FILES )
 # QT
 QT4_WRAP_CPP( RAMEN_MOC_SOURCES	${RAMEN_MOC_CLASSES} OPTIONS ${MOC_EXTRA_ARGS})
 QT4_WRAP_UI( RAMEN_DESIGNER_SOURCES ${RAMEN_DESIGNER_FILES})
-QT4_ADD_RESOURCES( RAMEN_RESOURCES ${PROJECT_SOURCE_DIR}/resources/resources.qrc)
+QT4_ADD_RESOURCES( RAMEN_RESOURCES )
 
 SET( RAMEN_LIB_SOURCES	${RAMEN_BASE_SOURCES}
                         ${RAMEN_SOURCES}

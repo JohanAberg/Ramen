@@ -27,8 +27,6 @@ SET( CMAKE_LIBRARY_PATH ${CMAKE_LIBRARY_PATH})
 ####################################################################
 # options
 
-#OPTION( WITH_NODES "Build nodes" ON)
-
 ####################################################################
 # compiler & linker settings
 
