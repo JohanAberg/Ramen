@@ -60,6 +60,7 @@ ADD_DEFINITIONS( -DRAMEN_ENABLE_ASSERT_HANDLER)
 # GL
 FIND_PACKAGE( OpenGL REQUIRED)
 FIND_PACKAGE( GLEW REQUIRED)
+ADD_DEFINITIONS( -DBASE_WITH_GL)
 
 # boost
 SET( Boost_ADDITIONAL_VERSIONS "1.49.0")
@@ -101,19 +102,7 @@ FIND_PACKAGE( PNG REQUIRED)
 FIND_PACKAGE( TIFF REQUIRED)
 FIND_PACKAGE( OpenImageIO REQUIRED)
 
-# OpenColorIO
 FIND_PACKAGE( OpenColorIO REQUIRED)
-
-#FIND_PACKAGE( OpenCV REQUIRED)
-# override OpenCV_LIBS as we don't want to link everything
-#SET( OpenCV_LIBS	opencv_core
-#					opencv_imgproc
-#					opencv_features2d
-#					opencv_calib3d
-#					opencv_flann
-#					opencv_video)
-#MESSAGE( "OpenCV found, Libs = ${OpenCV_LIBS}")
-
 FIND_PACKAGE( CIMG REQUIRED)
 
 # more libs

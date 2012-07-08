@@ -4,8 +4,6 @@
 
 #include<ramen/manipulators/manipulator.hpp>
 
-#include<ramen/GL/Imath_gl.hpp>
-
 #include<ramen/ui/palette.hpp>
 
 namespace ramen

@@ -7,7 +7,7 @@
 
 #include<boost/noncopyable.hpp>
 
-#include<ramen/GL/gl.hpp>
+#include<base/GL/gl.hpp>
 
 namespace ramen
 {

@@ -28,7 +28,7 @@ const generator_t::digest_type& generator_t::digest() const
 {
     if( !digest_)
     {
-        md5_t md5;
+        base::hash::md5_t md5;
         md5.update( reinterpret_cast<void*>( const_cast<char*>( ss_.str().c_str())), ss_.str().size());
         digest_ = md5.final();
     }

@@ -49,6 +49,9 @@ public:
 
     bool is_latest_version( const std::string& id) const;
 
+    // Mostly for testing.
+    void unregister_all();
+
 private:
 
     friend class ramen::nodes::composite_node_t;

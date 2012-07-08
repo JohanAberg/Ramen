@@ -5,6 +5,16 @@ SET( RAMEN_BASE_SOURCES ../base/base/empty.cpp
                         ../base/base/name.cpp
                         ../base/base/ref_counted.cpp
                         ../base/base/typeinfo.cpp
+
+                        ../base/base/GL/gl.cpp
+                        ../base/base/GL/glu.cpp
+
+                        ../base/base/hash/md5.cpp
+
+                        ../base/base/string/edit_distance.cpp
+
+                        ../base/base/ui/nice_numbers.cpp
+                        ../base/base/ui/viewport2.cpp
                         )
 
 ######################################################
@@ -98,16 +108,12 @@ SET( RAMEN_SOURCES  anim/any_curve.cpp
 					ggems/poly_clip.cpp
 					ggems/poly_scan.cpp
 
-					GL/gl.cpp
-					GL/glu.cpp
-					GL/Imath_gl.cpp
 					GL/lut3d.cpp
 					GL/program.cpp
 
 					half/halfExpLogTable.cpp
 
 					hash/generator.cpp
-					hash/md5.cpp
 
 					image/buffer.cpp
 					image/color_bars.cpp
@@ -188,13 +194,11 @@ SET( RAMEN_SOURCES  anim/any_curve.cpp
 					ui/events_util.cpp
 					ui/graph_layout.cpp
 					ui/main_window.cpp
-					ui/nice_numbers.cpp
 					ui/node_menu.cpp
 					ui/palette.cpp
 					ui/time_controls.cpp
 					ui/tool.cpp
 					ui/user_interface.cpp
-					ui/viewport.cpp
 
 					ui/anim/anim_curves_view.cpp
 					ui/anim/anim_editor.cpp
@@ -256,7 +260,6 @@ SET( RAMEN_SOURCES  anim/any_curve.cpp
 					undo/stack.cpp
 
 					util/calculator.cpp
-					util/edit_distance.cpp
 					util/error_log.cpp
 					util/string.cpp
 

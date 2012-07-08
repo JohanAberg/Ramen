@@ -12,9 +12,9 @@
 #include<boost/noncopyable.hpp>
 #include<boost/shared_ptr.hpp>
 
-#include<ramen/anim/any_curve.hpp>
+#include<base/string/edit_distance.hpp>
 
-#include<ramen/util/edit_distance.hpp>
+#include<ramen/anim/any_curve.hpp>
 
 namespace ramen
 {
@@ -58,7 +58,7 @@ private:
 	bool copy_curves_mode_;
 	bool copying_;
 	
-    util::edit_distance_t distance_fun_;
+    base::string::edit_distance_t distance_fun_;
 };
 
 } // namespace

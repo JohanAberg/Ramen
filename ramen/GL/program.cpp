@@ -21,19 +21,19 @@ program_t::program_t( GLenum shader_type) : shader_type_( shader_type)
 
 program_t::~program_t()
 {
-	gl_delete_program( program_);
-	gl_delete_shader( shader_);
+	base::gl_delete_program( program_);
+	base::gl_delete_shader( shader_);
 }
 
 void program_t::compile( const char *src0, const char *src1)
 {
 	if( !program_)
 	{
-		shader_ = gl_create_shader( shader_type_);
-		program_ = gl_create_program();
+		shader_ = base::gl_create_shader( shader_type_);
+		program_ = base::gl_create_program();
 	}
 	else
-		gl_detach_shader( program_, shader_);
+		base::gl_detach_shader( program_, shader_);
 
     const GLchar *shader_src[2];
     shader_src[0] = (GLchar *) src0;
@@ -50,36 +50,36 @@ void program_t::compile( const char *src0, const char *src1)
 	#endif
 	*/
 
-	gl_shader_source( shader_, src1 ? 2 : 1, shader_src, 0);
-    gl_compile_shader( shader_);
+	base::gl_shader_source( shader_, src1 ? 2 : 1, shader_src, 0);
+    base::gl_compile_shader( shader_);
 
     GLint result;
     glGetShaderiv( shader_, GL_COMPILE_STATUS, &result);
-	check_gl_errors();
+	base::check_gl_errors();
 
     if( result == GL_FALSE)
     {
         char buffer[1025];
         GLsizei size;
         glGetShaderInfoLog( shader_, 1024, &size, buffer);
-		check_gl_errors();
+		base::check_gl_errors();
 
         buffer[ size] = 0;
         std::cout << buffer << "\n";
     }
 
-    gl_attach_shader( program_, shader_);
-    gl_link_program( program_);
+    base::gl_attach_shader( program_, shader_);
+    base::gl_link_program( program_);
 
     glGetProgramiv( program_, GL_LINK_STATUS, &result);
-	check_gl_errors();
+	base::check_gl_errors();
 
     if( result == GL_FALSE)
     {
         char buffer[1025];
         GLsizei size;
         glGetProgramInfoLog( program_, 1024, &size, buffer);
-		check_gl_errors();
+		base::check_gl_errors();
         buffer[ size] = 0;
         std::cout << buffer << "\n";
     }
@@ -88,30 +88,30 @@ void program_t::compile( const char *src0, const char *src1)
 void program_t::bind()
 {
 	RAMEN_ASSERT( program_);
-	gl_use_program( program_);
+	base::gl_use_program( program_);
 }
 
-void program_t::unbind() { gl_use_program( 0);}
+void program_t::unbind() { base::gl_use_program( 0);}
 
 void program_t::uniform_1i( const char *param, int v)
 {
 	RAMEN_ASSERT( program_);
-    gl_uniform1i( glGetUniformLocation( program_, param), v);
-	check_gl_errors();
+    base::gl_uniform1i( base::gl_get_uniform_location( program_, param), v);
+	base::check_gl_errors();
 }
 
 void program_t::uniform_1f( const char *param, float v)
 {
 	RAMEN_ASSERT( program_);
-    gl_uniform1f( gl_get_uniform_location( program_, param), v);
-	check_gl_errors();
+    base::gl_uniform1f( base::gl_get_uniform_location( program_, param), v);
+	base::check_gl_errors();
 }
 
 void program_t::uniform_4f( const char *param, float *v)
 {
 	RAMEN_ASSERT( program_);
-    gl_uniform4f( gl_get_uniform_location( program_, param), v[0], v[1], v[2], v[3]);
-	check_gl_errors();
+    base::gl_uniform4f( base::gl_get_uniform_location( program_, param), v[0], v[1], v[2], v[3]);
+	base::check_gl_errors();
 }
 
 } // namespace

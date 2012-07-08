@@ -11,7 +11,7 @@
 
 #include<boost/noncopyable.hpp>
 
-#include<ramen/ui/viewport.hpp>
+#include<base/ui/viewport2.hpp>
 
 #include<ramen/ui/anim/edit_keys_visitors.hpp>
 
@@ -39,8 +39,8 @@ public:
 
     QPainter *painter() const { return painter_;}
 
-    const ui::viewport_t& viewport() const	{ return viewport_;}
-    ui::viewport_t& viewport()              { return viewport_;}
+    const base::ui::viewport2_t& viewport() const	{ return viewport_;}
+    base::ui::viewport2_t& viewport()              { return viewport_;}
 	
 	bool snap_frames() const	{ return snap_;}
 	bool show_tangents() const	{ return show_tangents_;}
@@ -110,7 +110,7 @@ private:
 	QAction *snap_frames_, *show_tans_;
 	
     bool first_resize_;
-    ui::viewport_t viewport_;
+    base::ui::viewport2_t viewport_;
 
     int push_x_, push_y_;
     int last_x_, last_y_;

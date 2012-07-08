@@ -5,7 +5,7 @@
 
 #include<OpenEXR/ImathBox.h>
 
-#include<ramen/GL/gl.hpp>
+#include<base/GL/gl.hpp>
 
 #include<ramen/ui/events.hpp>
 

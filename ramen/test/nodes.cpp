@@ -49,12 +49,19 @@ void test_nodes()
     // check that node2 has been renamed.
     BOOST_CHECK( node->name() != node2->name());
 
+    // test find_node
+    BOOST_CHECK( app().document().find_node( node->name()) == node);
+    BOOST_CHECK( app().document().find_node( node2->name()) == node2);
+    BOOST_CHECK( app().document().find_node( "null node") == 0);
+
     // delete all nodes.
     app().create_new_document();
 
     // check that
     BOOST_CHECK( node_added_calls == 2);
     BOOST_CHECK( node_added_calls == node_released_calls);
+
+    nodes::factory_t::instance().unregister_all();
 }
 
-static bool registered2 = RAMEN_REGISTER_TEST_CASE( test_nodes);
+static bool registered1 = RAMEN_REGISTER_TEST_CASE( test_nodes);

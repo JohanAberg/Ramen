@@ -9,7 +9,7 @@
 
 #include<boost/optional.hpp>
 
-#include<ramen/hash/md5.hpp>
+#include<base/hash/md5.hpp>
 
 #include<ramen/assert.hpp>
 
@@ -22,7 +22,7 @@ class generator_t
 {
 public:
 
-    typedef md5_t::digest_t digest_type;
+    typedef base::hash::md5_t::digest_t digest_type;
 
     generator_t();
 

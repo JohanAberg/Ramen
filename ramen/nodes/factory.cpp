@@ -40,11 +40,7 @@ factory_t& factory_t::instance()
 
 factory_t::~factory_t()
 {
-    for( int i = 0; i < metaclasses_.size(); ++i)
-    {
-        if( !metaclasses_[i].first_time_ && metaclasses_[i].cleanup)
-            metaclasses_[i].cleanup();
-    }
+    unregister_all();
 }
 
 bool factory_t::register_node( const class_metadata_t& m)
@@ -176,6 +172,18 @@ bool factory_t::is_latest_version( const std::string& id) const
 {
     const_iterator it( newest_node_infos_.find( id));
     return it != latest_versions_end();
+}
+
+void factory_t::unregister_all()
+{
+    for( int i = 0; i < metaclasses_.size(); ++i)
+    {
+        if( !metaclasses_[i].first_time_ && metaclasses_[i].cleanup)
+            metaclasses_[i].cleanup();
+    }
+
+    metaclasses_.clear();
+    newest_node_infos_.clear();
 }
 
 } // namespace

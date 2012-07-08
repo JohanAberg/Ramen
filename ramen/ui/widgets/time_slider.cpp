@@ -16,9 +16,9 @@
 #include<QMouseEvent>
 #include<QPaintEvent>
 
-#include<ramen/ui/widgets/double_spinbox.hpp>
+#include<base/ui/nice_numbers.hpp>
 
-#include<ramen/ui/nice_numbers.hpp>
+#include<ramen/ui/widgets/double_spinbox.hpp>
 
 namespace ramen
 {
@@ -118,9 +118,9 @@ void time_scale_t::paintEvent ( QPaintEvent *event)
 
     const int spacing = 50;
     int nticks = std::floor( (double) width() / spacing);
-    nice_numbers_t numbers( min_value_, max_value_, nticks);
+    base::ui::nice_numbers_t numbers( min_value_, max_value_, nticks);
 
-    for( nice_numbers_t::iterator it( numbers.begin()); it < numbers.end(); ++it)
+    for( base::ui::nice_numbers_t::iterator it( numbers.begin()); it < numbers.end(); ++it)
     {
         float x = *it;
         float sx = ( x - min_value_) / ( max_value_ - min_value_) * width();

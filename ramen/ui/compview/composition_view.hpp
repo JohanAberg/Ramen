@@ -14,11 +14,12 @@
 #include<QWidget>
 #include<QFont>
 
+#include<base/ui/viewport2.hpp>
+
 #include<ramen/bezier/curve.hpp>
 
 #include<ramen/nodes/node_fwd.hpp>
 
-#include<ramen/ui/viewport.hpp>
 #include<ramen/ui/compview/composition_view_layout.hpp>
 #include<ramen/ui/compview/composition_view_toolbar.hpp>
 #include<ramen/ui/compview/pick_result.hpp>
@@ -44,8 +45,8 @@ public:
     Imath::V2f screen_to_world( const Imath::V2i& p) const;
     Imath::V2i world_to_screen( const Imath::V2f& p) const;
 
-    const viewport_t& viewport() const;
-    viewport_t& viewport();
+    const base::ui::viewport2_t& viewport() const;
+    base::ui::viewport2_t& viewport();
 
     void place_node( nodes::node_t *n) const;
     void place_node_near_node( nodes::node_t *n, nodes::node_t *other) const;
@@ -98,7 +99,7 @@ private:
     composition_view_toolbar_t *toolbar_;
 
     bool first_resize_;
-    viewport_t viewport_;
+    base::ui::viewport2_t viewport_;
     QFont font_;
 
     int push_x_, push_y_;
