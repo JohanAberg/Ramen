@@ -15,7 +15,7 @@
 
 #include<OpenEXR/ImathFun.h>
 
-#include<ramen/algorithm/for_each_position.hpp>
+#include<base/algorithm/for_each_position.hpp>
 
 #include<ramen/anim/util.hpp>
 
@@ -237,7 +237,7 @@ void float_curve_t::recalc_tangents_and_coefficients( iterator it)
 
 void float_curve_t::recalc_tangents_and_coefficients()
 {
-    for_each_position( keys(), boost::bind( &float_curve_t::recalc_tangents_and_coefficients, this, _1));
+    base::for_each_position( keys(), boost::bind( &float_curve_t::recalc_tangents_and_coefficients, this, _1));
 }
 
 Imath::Box2f float_curve_t::bounds() const

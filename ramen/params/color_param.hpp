@@ -45,9 +45,6 @@ private:
 
     virtual void do_add_to_hash( hash::generator_t& hash_gen) const;
 
-    virtual boost::python::object to_python( const base::poly_regular_t& v) const;
-    virtual base::poly_regular_t from_python( const boost::python::object& obj) const;
-
     bool is_rgba_;
 };
 

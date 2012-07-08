@@ -7,9 +7,12 @@
 
 namespace ramen
 {
+namespace manipulators
+{
 
 class manipulator_t;
 
+} // namespace
 } // namespace
 
 #endif

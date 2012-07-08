@@ -17,7 +17,7 @@
 
 #include<QWidget>
 
-#include<ramen/params/composite_parameterised.hpp>
+#include<ramen/params/parameterised.hpp>
 
 #include<ramen/nodes/graph_color.hpp>
 #include<ramen/nodes/plug.hpp>
@@ -33,7 +33,7 @@ namespace nodes
 \ingroup nodes
 \brief A node in Ramen's processing graph.
 */
-class RAMEN_API node_t : public composite_parameterised_t
+class RAMEN_API node_t : public params::parameterised_t
 {
 public:
 

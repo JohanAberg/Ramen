@@ -16,8 +16,6 @@
 
 #include<ramen/app/application.hpp>
 
-#include<ramen/ui/user_interface.hpp>
-
 #include<ramen/params/param_set.hpp>
 
 #include<ramen/serialization/yaml_oarchive.hpp>
@@ -192,7 +190,6 @@ void animated_param_t::set_key( int curve_index)
         curve( curve_index).insert( frame);
 
     param_set()->end_edit( true);
-    app().ui()->update_anim_editors();
 }
 
 void animated_param_t::delete_key( int curve_index, float time)
@@ -206,7 +203,6 @@ void animated_param_t::delete_key( int curve_index, float time)
     curve( curve_index).recalc_tangents_and_coefficients();
 
     param_set()->end_edit( true);
-    app().ui()->update_anim_editors();
 }
 
 void animated_param_t::delete_all_keys( int curve_index)
@@ -219,7 +215,6 @@ void animated_param_t::delete_all_keys( int curve_index)
     curve( curve_index).clear();
 
     param_set()->end_edit( true);
-    app().ui()->update_anim_editors();
 }
 
 void animated_param_t::paste( int curve_index)
@@ -236,7 +231,6 @@ void animated_param_t::paste( int curve_index)
     param_set()->end_edit( true);
 
     evaluate( frame);
-    app().ui()->update_anim_editors();
 }
 
 bool animated_param_t::all_curves_empty() const

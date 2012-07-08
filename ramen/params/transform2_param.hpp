@@ -12,8 +12,6 @@
 #include<ramen/nodes/node_fwd.hpp>
 #include<ramen/nodes/image/track/tracker_node_fwd.hpp>
 
-#include<ramen/image/typedefs.hpp>
-
 namespace ramen
 {
 namespace params

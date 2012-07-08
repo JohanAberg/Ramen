@@ -6,11 +6,11 @@
 
 #include<OpenEXR/ImathFun.h>
 
+#include<base/math/constants.hpp>
+
 #include<ramen/app/application.hpp>
 
 #include<ramen/assert.hpp>
-
-#include<ramen/math/constants.hpp>
 
 #include<ramen/params/float2_param.hpp>
 #include<ramen/params/float_param.hpp>
@@ -97,7 +97,7 @@ transform2_param_t::matrix_type transform2_param_t::matrix_at_frame( float frame
     transform2_param_t::matrix_type m = matrix_type().setTranslation( -c) *
                                         matrix_type().setScale( Imath::V2d( aspect, 1.0)) *
                                         matrix_type().setScale( s) *
-                                        matrix_type().setRotation( angle * math::constants<double>::deg2rad()) *
+                                        matrix_type().setRotation( angle * base::math::constants<double>::deg2rad()) *
                                         matrix_type().setTranslation( t) *
                                         matrix_type().setScale( Imath::V2d( 1.0 / aspect, 1.0)) *
                                         matrix_type().setTranslation( c);
@@ -121,7 +121,7 @@ transform2_param_t::matrix_type transform2_param_t::xform_blur_matrix_at_frame( 
     transform2_param_t::matrix_type m = transform2_param_t::matrix_type().setScale( Imath::V2d( aspect, 1.0)) *
                                         transform2_param_t::matrix_type().setTranslation( -c) *
                                         transform2_param_t::matrix_type().setScale( s) *
-                                        transform2_param_t::matrix_type().setRotation( angle * math::constants<double>::deg2rad()) *
+                                        transform2_param_t::matrix_type().setRotation( angle * base::math::constants<double>::deg2rad()) *
                                         transform2_param_t::matrix_type().setTranslation( c + d) *
                                         transform2_param_t::matrix_type().setScale( Imath::V2d( 1.0 / aspect, 1.0));
 

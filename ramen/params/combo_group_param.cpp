@@ -9,11 +9,6 @@
 #include<boost/foreach.hpp>
 #include<boost/range/algorithm/for_each.hpp>
 
-#include<QStackedWidget>
-#include<QComboBox>
-#include<QVBoxLayout>
-#include<QLabel>
-
 #include<ramen/app/application.hpp>
 
 #include<ramen/nodes/node.hpp>
@@ -21,9 +16,6 @@
 #include<ramen/params/static_param_command.hpp>
 
 #include<ramen/serialization/yaml_oarchive.hpp>
-
-#include<ramen/ui/user_interface.hpp>
-#include<ramen/ui/inspector/inspector.hpp>
 
 namespace ramen
 {

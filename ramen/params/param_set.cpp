@@ -31,9 +31,6 @@
 
 #include<ramen/undo/stack.hpp>
 
-#include<ramen/ui/user_interface.hpp>
-#include<ramen/ui/anim/anim_editor.hpp>
-
 #include<ramen/serialization/yaml_oarchive.hpp>
 #include<ramen/serialization/yaml_node.hpp>
 
@@ -182,9 +179,6 @@ void param_set_t::end_edit( bool notify)
 
     if( notify)
         notify_parent();
-
-    app().ui()->update();
-    app().ui()->update_anim_editors();
 }
 
 bool param_set_t::editing() const { return command_.get();}

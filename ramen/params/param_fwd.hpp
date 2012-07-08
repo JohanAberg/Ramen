@@ -29,10 +29,6 @@ class color_param_t;
 class combo_group_param_t;
 
 } // params
-
-using params::param_t;
-using params::composite_param_t;
-
 } // ramen
 
 #endif

@@ -20,20 +20,10 @@ preferences_t::preferences_t()
     load();
 }
 
-int preferences_t::max_image_width() const	{ return 16 * 1024;} // 16K
-int preferences_t::max_image_height() const	{ return 16 * 1024;} // 16K
-
 void preferences_t::set_defaults()
 {
-    max_image_memory_ = 30; // % of ram
-
-    default_format_ = image::format_t();
-    frame_rate_ = 25; // PAL by default.
-	
+    max_image_memory_ = 30; // % of ram	
 	tmp_dir_ = app().system().tmp_path();
-	flipbook_ = "internal";
-	
-	pick_distance_ = 5;
 }
 
 void preferences_t::load()
@@ -62,9 +52,6 @@ void preferences_t::load()
             throw std::runtime_error( "Corrupted preferences file");
 
         get_value( doc, "max_image_memory", max_image_memory_);
-		get_value( doc, "default_format", default_format_);
-        get_value( doc, "frame_rate", frame_rate_);
-		get_value( doc, "default_flipbook", flipbook_);
     }
     catch( ...)
     {
@@ -92,10 +79,6 @@ void preferences_t::save()
     out << YAML::BeginMap;
         out << YAML::Key << "version" << YAML::Value << 1
             << YAML::Key << "max_image_memory" << YAML::Value << max_image_memory_
-
-			<< YAML::Key << "default_format" << YAML::Value << default_format_
-            << YAML::Key << "frame_rate" << YAML::Value << frame_rate_
-			<< YAML::Key << "default_flipbook" << YAML::Value << YAML::DoubleQuoted << flipbook_
             ;
 
     out << YAML::EndMap;
@@ -104,15 +87,6 @@ void preferences_t::save()
     ofs.close();
 }
 
-void preferences_t::set_default_format( const image::format_t& format)
-{
-    default_format_ = format;
-}
-
 const boost::filesystem::path& preferences_t::tmp_dir() const { return tmp_dir_;}
-
-const std::string& preferences_t::default_flipbook() const { return flipbook_;}
-
-void preferences_t::set_default_flipbook( const std::string& f) { flipbook_ = f;}
 
 } // namespace

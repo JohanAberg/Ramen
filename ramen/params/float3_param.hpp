@@ -42,9 +42,6 @@ private:
     virtual param_t *do_clone() const { return new float3_param_t( *this);}
 
     virtual void do_add_to_hash( hash::generator_t& hash_gen) const;
-
-    virtual boost::python::object to_python( const base::poly_regular_t& v) const;
-    virtual base::poly_regular_t from_python( const boost::python::object& obj) const;
 };
 
 } // namespace

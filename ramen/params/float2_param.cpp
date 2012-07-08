@@ -10,20 +10,10 @@
 
 #include<OpenEXR/ImathFun.h>
 
-#include<QLabel>
-
 #include<ramen/app/application.hpp>
 #include<ramen/app/document.hpp>
 
 #include<ramen/nodes/node.hpp>
-
-#include<ramen/python/util.hpp>
-
-#include<ramen/ui/user_interface.hpp>
-#include<ramen/ui/anim/anim_editor.hpp>
-
-#include<ramen/ui/widgets/param_spinbox.hpp>
-#include<ramen/ui/inspector/inspector.hpp>
 
 namespace ramen
 {
@@ -142,19 +132,6 @@ void float2_param_t::do_add_to_hash( hash::generator_t& hash_gen) const
 {
     Imath::V2f v( get_value<Imath::V2f>( *this));
     hash_gen << v.x << "," << v.y;
-}
-
-boost::python::object float2_param_t::to_python( const base::poly_regular_t& v) const
-{
-    return python::vec_to_list( v.cast<Imath::V2f>());
-}
-
-base::poly_regular_t float2_param_t::from_python( const boost::python::object& obj) const
-{
-    boost::python::list t = boost::python::extract<boost::python::list>( obj);
-    Imath::V2f val = python::list_to_vec2<float>( t);
-    poly_indexable_regular_t v( val);
-    return base::poly_cast<base::poly_regular_t&>( v);
 }
 
 } // namespace

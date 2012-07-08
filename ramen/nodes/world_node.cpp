@@ -21,6 +21,22 @@ world_node_t::~world_node_t()
     boost::range::for_each( graph().nodes(), boost::bind( &world_node_t::emit_node_release_signal, this, _1));
 }
 
+const node_t *world_node_t::find_node( const std::string& name) const
+{
+    world_node_t& self = const_cast<world_node_t&>( *this);
+    return self.find_node( name);
+}
+
+node_t *world_node_t::find_node( const std::string& name)
+{
+    boost::char_separator<char> sep("/");
+    name_tokenizer_type tok( name, sep);
+
+    name_tokenizer_type::iterator tok_it( tok.begin());
+    name_tokenizer_type::iterator tok_end( tok.end());
+    return do_find_node( tok_it, tok_end);
+}
+
 void world_node_t::emit_node_release_signal( node_t& n)
 {
     if( composite_node_t *cn = dynamic_cast<composite_node_t*>( &n))

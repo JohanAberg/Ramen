@@ -21,6 +21,8 @@
 
 namespace ramen
 {
+namespace manipulators
+{
 
 /*!
 \ingroup manips
@@ -78,9 +80,6 @@ public:
 	
 	static float default_control_point_size();
 	static float default_line_width();
-	
-	static const Imath::Color3c& default_color();
-	static const Imath::Color3c& selected_color();
 
 private:
 
@@ -155,6 +154,7 @@ public: // These are for the python bindings, do not use.
 	void __do_mouse_release_event( const ui::mouse_release_event_t& event)	{ manipulator_t::do_mouse_release_event( event);}
 };
 
+} // namespace
 } // namespace
 
 #endif

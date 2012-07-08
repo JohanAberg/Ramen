@@ -8,10 +8,6 @@
 #include<boost/foreach.hpp>
 #include<boost/range/algorithm/for_each.hpp>
 
-#include<QTabWidget>
-
-#include<ramen/ui/inspector/inspector.hpp>
-
 namespace ramen
 {
 namespace params

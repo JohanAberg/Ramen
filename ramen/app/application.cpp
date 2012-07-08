@@ -38,8 +38,6 @@
 #include<ramen/undo/stack.hpp>
 
 #include<ramen/ui/user_interface.hpp>
-#include<ramen/ui/main_window.hpp>
-#include<ramen/ui/dialogs/splash_screen.hpp>
 
 // Tests
 #ifndef NDEBUG
@@ -89,13 +87,6 @@ application_t::application_t( int argc, char **argv)
     task_scheduler_.initialize( max_threads_);
     Imf::setGlobalThreadCount( max_threads_);
 
-    if( !run_command_line())
-    {
-        splash_.reset( new ui::splash_screen_t());
-        splash_->show();
-        splash_->show_message( RAMEN_NAME_VERSION_STR);
-    }
-
     // init memory manager
     if( img_cache_size_ == 0)
     {
@@ -107,24 +98,25 @@ application_t::application_t( int argc, char **argv)
     mem_manager_.reset( new memory::manager_t( img_cache_size_));
 
     if( !run_command_line())
-        splash_->show_message( "Initializing builtin nodes");
+        //splash_->show_message( "Initializing builtin nodes");
     nodes::factory_t::instance();
 
     if( !run_command_line())
-        splash_->show_message( "Loading plugins...");
+        //splash_->show_message( "Loading plugins...");
     plugin_manager_t::instance();
 
     if( !run_command_line())
-        splash_->show_message( "Initializing OpenColorIO");
+        //splash_->show_message( "Initializing OpenColorIO");
     ocio_manager_.reset( new ocio::manager_t());
 
     if( !run_command_line())
     {
-        splash_->show_message( "Initializing user interface");
+        //splash_->show_message( "Initializing user interface");
         ui_.reset( new ui::user_interface_t());
         ui_->init();
-        print_app_info();
     }
+
+    print_app_info();
 }
 
 application_t::~application_t()
@@ -165,7 +157,7 @@ int application_t::run()
     if( !run_command_line())
     {
         ui()->show();
-        splash_->finish( ui()->main_window());
+        //splash_->finish( ui()->main_window());
         splash_.reset();
         return ui()->run();
     }
@@ -254,7 +246,8 @@ void application_t::print_app_info()
 
     std::cout << "Using " << max_threads_ << " threads\n";
     std::cout << "Ram Size = " << system().ram_size() / 1024 / 1024 << " Mb\n";
-    std::cout << "Image Cache Memory = " << mem_manager_->image_allocator().max_size() / 1024 / 1024 << " Mb\n";
+    //std::cout << "Image Cache Memory = " << mem_manager_->image_allocator().max_size() / 1024 / 1024 << " Mb\n";
+    std::cout << std::endl;
 }
 
 const document_t& application_t::document() const
@@ -307,13 +300,12 @@ void application_t::open_document( const boost::filesystem::path& p)
 void application_t::delete_document()
 {
     document_.reset( 0);
-    memory_manager().clear_caches();
 }
 
 // messages
 void application_t::fatal_error( const std::string& message, bool no_gui) const
 {
-    if( !run_command_line() && ui() && !ui()->rendering() && !no_gui)
+    if( !run_command_line() && ui() && !no_gui)
         ui()->fatal_error( message);
     else
     {
@@ -325,7 +317,7 @@ void application_t::fatal_error( const std::string& message, bool no_gui) const
 
 void application_t::error( const std::string& message, bool no_gui) const
 {
-    if( !run_command_line() && ui() && !ui()->rendering() && !no_gui)
+    if( !run_command_line() && ui() && !no_gui)
         ui()->error( message);
     else
     {
@@ -336,7 +328,7 @@ void application_t::error( const std::string& message, bool no_gui) const
 
 void application_t::inform( const std::string& message, bool no_gui) const
 {
-    if( !run_command_line() && ui() && !ui()->rendering() && !no_gui)
+    if( !run_command_line() && ui() && !no_gui)
         ui()->inform( message);
     else
     {
@@ -347,7 +339,7 @@ void application_t::inform( const std::string& message, bool no_gui) const
 
 bool application_t::question( const std::string& what, bool default_answer) const
 {
-    if( !run_command_line() && ui() && !ui()->rendering())
+    if( !run_command_line() && ui())
         return ui()->question( what, default_answer);
     else
     {

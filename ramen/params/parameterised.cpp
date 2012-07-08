@@ -21,7 +21,7 @@ namespace ramen
 namespace params
 {
 
-parameterised_t::parameterised_t() : dont_persist_params_( false)
+parameterised_t::parameterised_t() : manipulators::manipulable_t(), dont_persist_params_( false)
 {
     params_.set_parent( this);
     parent_ = 0;

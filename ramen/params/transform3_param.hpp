@@ -11,8 +11,6 @@
 
 #include<ramen/nodes/node_fwd.hpp>
 
-#include<ramen/image/typedefs.hpp>
-
 namespace ramen
 {
 namespace params

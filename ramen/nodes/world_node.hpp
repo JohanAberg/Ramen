@@ -9,8 +9,6 @@
 
 #include<ramen/dependency/graph.hpp>
 
-#include<ramen/image/format.hpp>
-
 #include<ramen/ocio/context.hpp>
 
 namespace ramen
@@ -29,6 +27,12 @@ public:
     world_node_t();
     virtual ~world_node_t();
 
+    /// Finds the children node with the given name.
+    const node_t *find_node( const std::string& name) const;
+
+    /// Finds the children node with the given name.
+    node_t *find_node( const std::string& name);
+
     /// Returns a const reference to the dependency graph.
     const dependency::graph_t& dependency_graph() const { return dep_graph_;}
 
@@ -42,10 +46,6 @@ public:
     const ocio::context_t& ocio_context() const { return ocio_context_;}
     ocio::context_t& ocio_context()             { return ocio_context_;}
 
-    // image formats.
-    image::format_t default_image_format() const             { return default_img_format_;}
-    void set_default_image_format( const image::format_t& f) { default_img_format_ = f;}
-
 protected:
 
     world_node_t( const world_node_t& other);
@@ -58,7 +58,6 @@ private:
     dependency::graph_t dep_graph_;
 
     ocio::context_t ocio_context_;
-    image::format_t default_img_format_;
 };
 
 } // namespace

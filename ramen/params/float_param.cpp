@@ -8,20 +8,12 @@
 
 #include<boost/bind.hpp>
 
-#include<QLabel>
-
 #include<ramen/app/application.hpp>
 
 #include<ramen/params/parameterised.hpp>
 
-#include<ramen/ui/user_interface.hpp>
-#include<ramen/ui/anim/anim_editor.hpp>
-
 #include<ramen/serialization/yaml_node.hpp>
 #include<ramen/serialization/yaml_oarchive.hpp>
-
-#include<ramen/ui/inspector/inspector.hpp>
-#include<ramen/ui/widgets/param_spinbox.hpp>
 
 namespace ramen
 {

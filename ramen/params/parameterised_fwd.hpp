@@ -11,13 +11,8 @@ namespace params
 {
 
 class parameterised_t;
-class composite_parameterised_t;
 
 } // params
-
-using params::parameterised_t;
-using params::composite_parameterised_t;
-
 } // ramen
 
 #endif

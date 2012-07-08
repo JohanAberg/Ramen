@@ -141,32 +141,47 @@ const node_t *composite_node_t::find_node( const std::string& name) const
 
 node_t *composite_node_t::find_node( const std::string& name)
 {
+    if( name.empty())
+        return 0;
+
+    if( name[0] == '/')
+    {
+        if( world_node_t *w = world())
+            return world()->find_node( name);
+    }
+
+    boost::char_separator<char> sep("/");
+    name_tokenizer_type tok( name, sep);
+
+    name_tokenizer_type::iterator tok_it( tok.begin());
+    name_tokenizer_type::iterator tok_end( tok.end());
+    return do_find_node( tok_it, tok_end);
+}
+
+node_t *composite_node_t::do_find_node( name_tokenizer_type::iterator tok_it, name_tokenizer_type::iterator tok_end)
+{
+    RAMEN_ASSERT( tok_it != tok_end);
+
     BOOST_FOREACH( node_t& n, graph().nodes())
     {
-        if( n.name() == name)
-            return &n;
-
-        if( composite_node_t *cn = dynamic_cast<composite_node_t*>( &n))
+        if( n.name() == *tok_it)
         {
-            node_t *nn = cn->find_node( name);
+            ++tok_it;
 
-            if( nn)
-                return nn;
+            if( tok_it == tok_end)
+                return &n;
+
+            if( composite_node_t *cn = dynamic_cast<composite_node_t*>( &n))
+            {
+                node_t *nn = cn->do_find_node( tok_it, tok_end);
+
+                if( nn)
+                    return nn;
+            }
         }
     }
 
     return 0;
-}
-
-void composite_node_t::all_children_node_names( std::set<std::string>& names) const
-{
-    BOOST_FOREACH( const node_t& n, graph().nodes())
-    {
-        names.insert( n.name());
-
-        if( const composite_node_t *cn = dynamic_cast<const composite_node_t*>( &n))
-            cn->all_children_node_names( names);
-    }
 }
 
 void composite_node_t::set_layout( std::auto_ptr<ui::graph_layout_t> layout) { layout_ = layout;}

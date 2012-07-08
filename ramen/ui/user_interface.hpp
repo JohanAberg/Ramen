@@ -13,7 +13,6 @@
 
 #include<memory>
 
-#include<boost/noncopyable.hpp>
 #include<boost/signals.hpp>
 #include<boost/thread/future.hpp>
 
@@ -26,10 +25,6 @@
 #include<ramen/filesystem/path.hpp>
 #include<boost/filesystem/fstream.hpp>
 
-#include<ramen/ui/main_window_fwd.hpp>
-#include<ramen/ui/inspector/inspector_fwd.hpp>
-#include<ramen/ui/anim/anim_editor_fwd.hpp>
-
 namespace ramen
 {
 namespace ui
@@ -39,7 +34,7 @@ namespace ui
 \ingroup ui
 \brief user interface class.
 */
-class RAMEN_API user_interface_t : public QObject, boost::noncopyable
+class RAMEN_API user_interface_t : public QObject
 {
     Q_OBJECT
 
@@ -57,95 +52,17 @@ public:
 
     void quit();
 
-    // components
-    const main_window_t *main_window() const    { return window_;}
-    main_window_t *main_window()                { return window_;}
-
-    const inspector_t& inspector() const    { return *inspector_;}
-    inspector_t& inspector()                { return *inspector_;}
-
-    const anim_editor_t& anim_editor() const { return *anim_editor_;}
-    anim_editor_t& anim_editor()             { return *anim_editor_;}
-
-    // document handling
-    void create_new_document();
-    void open_document( const boost::filesystem::path& p);
-    bool save_document();
-
-    // nodes
-    void node_added( nodes::node_t *n);
-    void node_released( nodes::node_t *n);
-
-    void begin_interaction();
-    void end_interaction();
-    bool interacting() const { return interacting_;}
-
-    nodes::node_t *active_node() const { return active_;}
-    void set_active_node( nodes::node_t *n);
-
-    nodes::node_t *context_node() const { return context_;}
-    void set_context_node( nodes::node_t *n);
-
-    void update();
-
-    // time
-    int start_frame() const;
-    int end_frame() const;
-    float frame() const;
-
-    // anim
-    void update_anim_editors();
-
     // error reporting
     void fatal_error( const std::string& msg) const;
     void error( const std::string& msg) const;
     void inform( const std::string& msg) const;
     bool question( const std::string& what, bool default_answer = true) const;
 
-    // sequence file selector
-    bool image_sequence_file_selector( boost::filesystem::path& p, bool& sequence, bool& relative) const;
-    bool image_sequence_file_selector( const std::string& title, const std::string& types, boost::filesystem::path& p,
-                                        bool& sequence, bool& relative) const;
+protected:
 
-    // event filtering
-    void start_long_process();
-    void process_events();
-    void end_long_process();
-    bool process_cancelled() const;
-
-    virtual bool eventFilter( QObject *watched, QEvent *event);
-
-    bool rendering() const { return rendering_;}
-
-    const QString& image_types_string() const { return image_types_str_;}
-
-    QFont get_fixed_width_code_font();
-
-public Q_SLOTS:
-
-    void set_start_frame( int t);
-    void set_end_frame( int t);
-    void set_frame( int t);
-
-private:
-
-    void init_ui_style();
-    void restore_window_state();
-
-    main_window_t *window_;
-    inspector_t *inspector_;
-    anim_editor_t *anim_editor_;
-
-    nodes::node_t *active_, *context_;
-
-    bool rendering_;
-    bool interacting_;
-
-    QString image_types_str_;
-
-    // long calculations
-    bool event_filter_installed_;
-    bool cancelled_;
+    // non-copyable
+    user_interface_t( const user_interface_t& other);
+    user_interface_t& operator=( const user_interface_t& other);
 };
 
 } // namespace

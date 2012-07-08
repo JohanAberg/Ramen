@@ -20,8 +20,6 @@
 
 #include<ramen/anim/track.hpp>
 
-#include<ramen/python/util.hpp>
-
 namespace ramen
 {
 namespace params
@@ -157,19 +155,6 @@ void color_param_t::do_add_to_hash( hash::generator_t& hash_gen) const
 
     if( is_rgba())
         hash_gen << "," << c.a;
-}
-
-boost::python::object color_param_t::to_python( const base::poly_regular_t& v) const
-{
-    return python::color_to_list( get_value<Imath::Color4f>( *this));
-}
-
-base::poly_regular_t color_param_t::from_python( const boost::python::object& obj) const
-{
-    boost::python::list t = boost::python::extract<boost::python::list>( obj);
-    Imath::Color4f val = python::list_to_color4<float>( t);
-    poly_indexable_regular_t v( val);
-    return base::poly_cast<base::poly_regular_t&>( v);
 }
 
 } // namespace

@@ -16,8 +16,6 @@
 #include<ramen/app/application.hpp>
 #include<ramen/app/document.hpp>
 
-#include<ramen/ui/anim/anim_editor.hpp>
-
 namespace ramen
 {
 namespace params

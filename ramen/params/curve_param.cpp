@@ -8,8 +8,6 @@
 
 #include<ramen/anim/track.hpp>
 
-#include<ramen/ui/anim/anim_editor.hpp>
-
 #include<ramen/serialization/yaml_oarchive.hpp>
 
 namespace ramen

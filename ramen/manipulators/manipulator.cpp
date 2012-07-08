@@ -4,9 +4,9 @@
 
 #include<ramen/manipulators/manipulator.hpp>
 
-#include<ramen/ui/palette.hpp>
-
 namespace ramen
+{
+namespace manipulators
 {
 
 manipulator_t::manipulator_t()
@@ -90,14 +90,5 @@ void manipulator_t::do_mouse_release_event( const ui::mouse_release_event_t& eve
 float manipulator_t::default_control_point_size()	{ return 5.0f;}
 float manipulator_t::default_line_width() 			{ return 1.5f;}
 
-const Imath::Color3c& manipulator_t::default_color()
-{
-    return ui::palette_t::instance().color( "manipulator");
-}
-
-const Imath::Color3c& manipulator_t::selected_color()
-{
-    return ui::palette_t::instance().color( "active_manipulator");
-}
-
+} // namespace
 } // namespace

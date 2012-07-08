@@ -10,6 +10,8 @@
 #include<memory>
 #include<set>
 
+#include<boost/tokenizer.hpp>
+
 #include<ramen/nodes/graph.hpp>
 #include<ramen/nodes/visitor.hpp>
 
@@ -86,8 +88,6 @@ public:
     /// Finds the children node with the given name.
     node_t *find_node( const std::string& name);
 
-    void all_children_node_names( std::set<std::string>& names) const;
-
     /// Returns a const reference to this node graph layout.
     const ui::graph_layout_t& layout() const { return *layout_;}
 
@@ -99,12 +99,16 @@ public:
 
 protected:
 
+    typedef boost::tokenizer<boost::char_separator<char> > name_tokenizer_type;
+
     composite_node_t( const composite_node_t& other);
     void operator=( const composite_node_t&);
 
     // node factory
     std::auto_ptr<node_t> do_create_node_by_id( const std::string& id, bool ui = false) const;
     std::auto_ptr<node_t> do_create_node_by_id_with_version( const std::string& id, const std::pair<int, int>& version) const;
+
+    node_t *do_find_node( name_tokenizer_type::iterator tok_it, name_tokenizer_type::iterator tok_end);
 
 private:
 

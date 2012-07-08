@@ -17,6 +17,8 @@
 
 namespace ramen
 {
+namespace manipulators
+{
 
 /*!
 \ingroup manips
@@ -156,6 +158,7 @@ private:
     iterator active_;
 };
 
+} // namespace
 } // namespace
 
 #endif

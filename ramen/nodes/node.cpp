@@ -23,9 +23,9 @@ namespace ramen
 namespace nodes
 {
 
-node_t::node_t() : composite_parameterised_t(), flags_( 0) {}
+node_t::node_t() : params::parameterised_t(), flags_( 0) {}
 
-node_t::node_t( const node_t& other) : composite_parameterised_t( other), outputs_( other.outputs_)
+node_t::node_t( const node_t& other) : params::parameterised_t( other), outputs_( other.outputs_)
 {
     boost::range::for_each( outputs_, boost::bind( &output_plug_t::set_parent_node, _1, this));
     flags_ = other.flags_;
@@ -317,17 +317,17 @@ const char *node_t::help_string() const
 
 void node_t::convert_relative_paths( const boost::filesystem::path& old_base, const boost::filesystem::path& new_base)
 {
-    boost::range::for_each( param_set(), boost::bind( &param_t::convert_relative_paths, _1, old_base, new_base));
+    boost::range::for_each( param_set(), boost::bind( &params::param_t::convert_relative_paths, _1, old_base, new_base));
 }
 
 void node_t::make_paths_absolute()
 {
-    boost::range::for_each( param_set(), boost::bind( &param_t::make_paths_absolute, _1));
+    boost::range::for_each( param_set(), boost::bind( &params::param_t::make_paths_absolute, _1));
 }
 
 void node_t::make_paths_relative()
 {
-    boost::range::for_each( param_set(), boost::bind( &param_t::make_paths_relative, _1));
+    boost::range::for_each( param_set(), boost::bind( &params::param_t::make_paths_relative, _1));
 }
 
 // serialization
@@ -401,7 +401,7 @@ void node_t::write_node_info( serialization::yaml_oarchive_t& out) const
 
 node_t *new_clone( const node_t& other)
 {
-    return dynamic_cast<node_t*>( new_clone( dynamic_cast<const parameterised_t&>( other)));
+    return dynamic_cast<node_t*>( new_clone( dynamic_cast<const params::parameterised_t&>( other)));
 }
 
 } // namespace

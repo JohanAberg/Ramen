@@ -17,8 +17,6 @@
 
 #include<ramen/params/parameterised.hpp>
 
-#include<ramen/python/util.hpp>
-
 namespace ramen
 {
 namespace params
@@ -141,19 +139,6 @@ void float3_param_t::do_add_to_hash( hash::generator_t& hash_gen) const
 {
     Imath::V3f v( get_value<Imath::V3f>( *this));
     hash_gen << v.x << "," << v.y << "," << v.z;
-}
-
-boost::python::object float3_param_t::to_python( const base::poly_regular_t& v) const
-{
-    return python::vec_to_list( v.cast<Imath::V3f>());
-}
-
-base::poly_regular_t float3_param_t::from_python( const boost::python::object& obj) const
-{
-    boost::python::list t = boost::python::extract<boost::python::list>( obj);
-    Imath::V3f val = python::list_to_vec3<float>( t);
-    poly_indexable_regular_t v( val);
-    return base::poly_cast<base::poly_regular_t&>( v);
 }
 
 } // namespace

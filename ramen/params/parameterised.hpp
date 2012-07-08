@@ -7,6 +7,8 @@
 
 #include<ramen/python/python.hpp>
 
+#include<ramen/params/parameterised_fwd.hpp>
+
 #include<ramen/manipulators/manipulable.hpp>
 
 #include<utility>
@@ -31,7 +33,7 @@ namespace params
 \ingroup params
 \brief Base class for objects that contains params.
 */
-class RAMEN_API parameterised_t : public manipulable_t
+class RAMEN_API parameterised_t : public manipulators::manipulable_t
 {
 public:
 

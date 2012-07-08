@@ -13,6 +13,8 @@
 
 namespace ramen
 {
+namespace manipulators
+{
 
 manipulable_t::manipulable_t() {}
 
@@ -119,4 +121,5 @@ void manipulable_t::do_mouse_release_event( const ui::mouse_release_event_t& eve
     active_ = end();
 }
 
+} // namespace
 } // namespace

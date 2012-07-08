@@ -6,15 +6,13 @@
 
 #include<OpenEXR/ImathFun.h>
 
-#include<ramen/assert.hpp>
+#include<base/math/constants.hpp>
 
-#include<ramen/math/constants.hpp>
+#include<ramen/assert.hpp>
 
 #include<ramen/params/float_param.hpp>
 #include<ramen/params/float2_param.hpp>
 #include<ramen/params/float3_param.hpp>
-
-#include<ramen/ui/anim/anim_editor.hpp>
 
 namespace ramen
 {
@@ -183,7 +181,7 @@ transform3_param_t::matrix_type transform3_param_t::matrix_at_frame( float frame
     Imath::V3f c = get_center_at_frame( frame) / subsample;
     Imath::V3f t = get_value_at_frame<Imath::V3f>( translate_param(), frame) / subsample;
     Imath::V3f s = get_value_at_frame<Imath::V3f>( scale_param(), frame);
-    Imath::V3f r = get_value_at_frame<Imath::V3f>( rotate_param(), frame) * math::constants<float>::deg2rad();
+    Imath::V3f r = get_value_at_frame<Imath::V3f>( rotate_param(), frame) * base::math::constants<float>::deg2rad();
 
     transform3_param_t::matrix_type m = matrix_type().setTranslation( -c) *
                                         matrix_type().setScale( Imath::V3f( aspect, 1.0f, 1.0f)) *
