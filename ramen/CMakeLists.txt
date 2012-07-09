@@ -461,28 +461,31 @@ SET( RAMEN_SOURCES  ref_counted.cpp
 					system/system.cpp
 					)
 
-SET( RAMEN_MOC_NODES_CLASSES	nodes/image/input/image_channels_param.hpp
-								nodes/image/input/image_seq_param.hpp
+IF( WITH_NODES)
+    SET( RAMEN_MOC_CLASSES	${RAMEN_MOC_CLASSES}
+                            nodes/image/input/image_channels_param.hpp
+                            nodes/image/input/image_seq_param.hpp
 
-								nodes/image/key/keyer3d/toolbar.hpp
+                            nodes/image/key/keyer3d/toolbar.hpp
 
-								nodes/image/roto/roto_shape_param.hpp
-								nodes/image/roto/shape_transform_param.hpp
-								nodes/image/roto/toolbar.hpp
+                            nodes/image/roto/roto_shape_param.hpp
+                            nodes/image/roto/shape_transform_param.hpp
+                            nodes/image/roto/toolbar.hpp
 
-								nodes/image/track/tracker_toolbar.hpp
+                            nodes/image/track/tracker_toolbar.hpp
 
-								params/se_expr_param.hpp
-								params/tracker_areas_param.hpp
-								params/transform2_param.hpp
-								params/transform3_param.hpp
+                        	params/se_expr_param.hpp
+                        	params/tracker_areas_param.hpp
+                        	params/transform2_param.hpp
+                        	params/transform3_param.hpp
 
-								ui/dialogs/apply_corner_track_dialog.hpp
-								ui/dialogs/apply_point_track_dialog.hpp
-								ui/dialogs/apply_track_dialog.hpp
-								)
+                        	ui/dialogs/apply_corner_track_dialog.hpp
+                        	ui/dialogs/apply_point_track_dialog.hpp
+                        	ui/dialogs/apply_track_dialog.hpp
+                        	)
 
-SET( RAMEN_NODE_SOURCES	imageio/import_multichannel_exr.cpp
+    SET( RAMEN_SOURCES	${RAMEN_SOURCES}
+                        imageio/import_multichannel_exr.cpp
 
 						manipulators/circle_manipulator.cpp
 						manipulators/point2_manipulator.cpp
@@ -644,6 +647,7 @@ SET( RAMEN_NODE_SOURCES	imageio/import_multichannel_exr.cpp
 						ui/dialogs/apply_point_track_dialog.cpp
 						ui/dialogs/apply_track_dialog.cpp
 						)
+ENDIF()
 
 # python
 SET( RAMEN_MOC_PY_CLASSES	ui/python/console.hpp
@@ -736,15 +740,6 @@ SET( RAMEN_LIB_SOURCES	${RAMEN_SOURCES}
 						${RAMEN_TEST_SOURCES}
 						${RAMEN_RESOURCES}
 						)
-
-# Optionals
-IF( WITH_NODES)
-	QT4_WRAP_CPP( RAMEN_MOC_NODE_SOURCES ${RAMEN_MOC_NODE_CLASSES} OPTIONS ${MOC_EXTRA_ARGS})
-	SET( RAMEN_LIB_SOURCES	${RAMEN_LIB_SOURCES}
-							${RAMEN_NODE_SOURCES}
-							${RAMEN_MOC_NODE_SOURCES}
-							)
-ENDIF()
 
 # Ramen lib
 

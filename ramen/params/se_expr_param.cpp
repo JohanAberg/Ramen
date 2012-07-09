@@ -15,7 +15,8 @@
 #include<ramen/ui/user_interface.hpp>
 #include<ramen/ui/inspector/inspector.hpp>
 #include<ramen/ui/widgets/text_edit.hpp>
-#include<ramen/ui/expression_editor.hpp>
+
+//#include<ramen/ui/expression_editor.hpp>
 
 namespace ramen
 {
@@ -139,8 +140,6 @@ void se_expr_param_t::text_changed()
 
 void se_expr_param_t::show_context_menu( const QPoint& p)
 {
-    //QMenu *menu = multi_input_->createStandardContextMenu();
-    //menu->addSeparator();
     QMenu *menu = new QMenu();
     menu->addAction( "Expression editor...", this, SLOT( show_expression_editor()));
     menu->exec( multi_input_->mapToGlobal( p));
@@ -149,6 +148,7 @@ void se_expr_param_t::show_context_menu( const QPoint& p)
 
 void se_expr_param_t::show_expression_editor()
 {
+    /*
     saved_expression_ = get_value<std::string>( *this);
 
     std::auto_ptr<expressions::se_expression_t> expr( create_expr_fun_());
@@ -158,6 +158,7 @@ void se_expr_param_t::show_expression_editor()
                                                   boost::bind( &se_expr_param_t::expr_editor_cancel, this));
 
     ui::expression_editor_t::instance().show( *(expr.get()), cback);
+    */
 }
 
 void se_expr_param_t::expr_editor_accept( const std::string& new_expr)
