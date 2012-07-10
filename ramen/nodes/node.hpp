@@ -15,8 +15,6 @@
 #include<set>
 #include<utility>
 
-#include<QWidget>
-
 #include<ramen/params/parameterised.hpp>
 
 #include<ramen/nodes/graph_color.hpp>
@@ -170,8 +168,6 @@ public:
 
     // user interface
     virtual const char *help_string() const;
-
-    virtual std::auto_ptr<QWidget> create_toolbar() { return std::auto_ptr<QWidget>();}
 
     // paths
     virtual void convert_relative_paths( const boost::filesystem::path& old_base,

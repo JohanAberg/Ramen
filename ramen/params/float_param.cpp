@@ -8,8 +8,6 @@
 
 #include<boost/bind.hpp>
 
-#include<ramen/app/application.hpp>
-
 #include<ramen/params/parameterised.hpp>
 
 #include<ramen/serialization/yaml_node.hpp>

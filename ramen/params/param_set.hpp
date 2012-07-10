@@ -20,8 +20,6 @@
 
 #include<ramen/dependency/graph_fwd.hpp>
 
-#include<ramen/python/access_fwd.hpp>
-
 namespace ramen
 {
 namespace params
@@ -105,8 +103,6 @@ public:
     void read_param( const serialization::yaml_node_t& node);
 
 private:
-
-    friend class python::access;
 
     void do_add_param( param_t *p);
 

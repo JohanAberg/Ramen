@@ -10,17 +10,8 @@
 
 #include<ramen/filesystem/path.hpp>
 
-#include<ramen/python/export_ramen.hpp>
-#include<ramen/python/pyside.hpp>
-
 namespace bpy = boost::python;
 namespace bfs = boost::filesystem;
-
-// main python module
-BOOST_PYTHON_MODULE( _ramen)
-{
-    export_ramen();
-}
 
 namespace ramen
 {
@@ -35,7 +26,6 @@ interpreter_t& interpreter_t::instance()
 
 interpreter_t::interpreter_t()
 {
-    PyImport_AppendInittab(( char *) "_ramen", &init_ramen);
     Py_Initialize();
 
     bpy::object main_module( bpy::handle<>( bpy::borrowed( PyImport_AddModule( "__main__"))));
@@ -43,7 +33,10 @@ interpreter_t::interpreter_t()
 
 	setup_python_paths( main_namespace_);
 
-	init_pyside();
+	// init python logging
+	exec( "import logging", main_namespace(), main_namespace());
+    exec( "logging.basicConfig( format='%(levelname)s:%(message)s', level=logging.DEBUG)");
+	log_debug( "Logging inited (from C++)");
 
     // default import our module.
     bpy::object module(( bpy::handle<>( PyImport_ImportModule( "ramen"))));
@@ -110,6 +103,14 @@ void interpreter_t::setup_python_paths( boost::python::object name_space)
 void interpreter_t::add_path_to_sys_cmd( std::stringstream& cmd, const boost::filesystem::path& p) const
 {
 	cmd << "sys.path.append( '" << filesystem::file_string( p) << "')\n";
+}
+
+void interpreter_t::log_debug( const std::string& message)
+{
+    std::string cmd( "logging.debug( '");
+    cmd.append( message);
+    cmd.append("')");
+    exec( cmd, main_namespace(), main_namespace());
 }
 
 } // namespace

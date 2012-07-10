@@ -19,15 +19,11 @@
 
 #include<OpenEXR/ImfThreading.h>
 
-#include<QApplication>
-
-#include<glog/logging.h>
-
 #include<ramen/version.hpp>
 
-#include<ramen/app/preferences.hpp>
 #include<ramen/app/document.hpp>
 #include<ramen/app/plugin_manager.hpp>
+#include<ramen/app/preferences.hpp>
 
 #include<ramen/memory/manager.hpp>
 
@@ -39,22 +35,17 @@
 
 #include<ramen/ui/user_interface.hpp>
 
-// Tests
-#ifndef NDEBUG
-    int run_ramen_unit_tests( int argc, char **argv);
-#endif
-
 namespace ramen
 {
 
 application_t *g_app = 0;
 
-application_t::application_t( int argc, char **argv)
+application_t::application_t()
 {
     RAMEN_ASSERT( g_app == 0 );
     g_app = this;
 
-    argc_ = 0;
+    /*
     argv_ = 0;
     max_threads_ = 0;
     img_cache_size_ = 0;
@@ -64,12 +55,6 @@ application_t::application_t( int argc, char **argv)
 
     google::InitGoogleLogging( argv_[0]);
     //google::SetLogDestination( google::INFO, "filename.log");
-
-    // Create QApplication
-    QApplication *q_app = new QApplication( argc_, argv_);
-    boost::filesystem::path bundle_path( system().app_bundle_path());
-    bundle_path /= "lib/Qt_plugins";
-    qApp->setLibraryPaths( QStringList( QString( ramen::filesystem::file_cstring( bundle_path))));
 
     parse_command_line();
 
@@ -117,16 +102,13 @@ application_t::application_t( int argc, char **argv)
     }
 
     print_app_info();
+    */
 }
 
 application_t::~application_t()
 {
-    delete_command_line_args();
-
     //	TODO: implement this.
     //delete_tmp_files();
-
-    google::ShutdownGoogleLogging();
 }
 
 void application_t::create_dirs()
@@ -139,21 +121,59 @@ void application_t::create_dirs()
     boost::filesystem::create_directories( base / "ui");
 
     // tmp
-    boost::filesystem::create_directories( preferences().tmp_dir());
+    //boost::filesystem::create_directories( preferences().tmp_dir());
 }
 
-bool application_t::run_command_line() const { return true;}
+void application_t::init_threads( int num)
+{
+    if( num == 0)
+        max_threads_ = boost::thread::hardware_concurrency();
+    else
+        max_threads_ = num;
 
+    task_scheduler_.initialize( max_threads_);
+    Imf::setGlobalThreadCount( max_threads_);
+}
+
+void application_t::init_ocio()
+{
+    ocio_manager_.reset( new ocio::manager_t());
+}
+
+void application_t::set_ui( boost::python::object ui)
+{
+    RAMEN_ASSERT( !ui_.get());
+    ui_.reset( new ui::user_interface_t( ui));
+}
+
+const preferences_t& application_t::preferences() const
+{
+    RAMEN_ASSERT( preferences_.get());
+    return *preferences_;
+}
+
+preferences_t &application_t::preferences()
+{
+    RAMEN_ASSERT( preferences_.get());
+    return *preferences_;
+}
+
+void application_t::set_preferences( boost::python::object prefs)
+{
+    RAMEN_ASSERT( !preferences_.get());
+    preferences_.reset( new preferences_t( prefs));
+}
+
+/*
 int application_t::run()
 {
     #ifndef NDEBUG
-        run_ramen_unit_tests( argc_, argv_);
+        run_ramen_unit_tests( 0, 0);
     #endif
 
     // We have nothing interesting to run yet.
     std::exit( 0);
 
-    /*
     if( !run_command_line())
     {
         ui()->show();
@@ -161,52 +181,10 @@ int application_t::run()
         splash_.reset();
         return ui()->run();
     }
-    */
 
     return 0;
 }
-
-// command line
-void application_t::copy_command_line_args( int argc, char **argv)
-{
-    RAMEN_ASSERT( argc >= 1);
-
-    argc_ = argc;
-    argv_ = reinterpret_cast<char**>( malloc( argc * sizeof( char*)));
-
-    for( int i = 0; i < argc ; ++i)
-        argv_[i] = strdup( argv[i]);
-}
-
-void application_t::delete_command_line_args()
-{
-    if( argv_)
-    {
-        for( int i = 0; i < argc_ ; ++i)
-            free( reinterpret_cast<void*>( argv_[i]));
-
-        free( reinterpret_cast<void*>( argv_));
-    }
-}
-
-void application_t::parse_command_line()
-{
-    args_desc_.add_options()( "help", "prints help message")
-                            ( "runtests", "run tests")
-                            ( "log-level-all", "test log level")
-                            ;
-
-    /*
-    boost::program_options::store( boost::program_options::parse_command_line( argc_, argv_, args_desc_), args_map_);
-    boost::program_options::notify( args_map_);
-
-    if( args_map_.count( "help"))
-    {
-        std::cout << args_desc_ << std::endl;
-        std::exit( 0);
-    }
-    */
-}
+*/
 
 void application_t::print_app_info()
 {
@@ -305,41 +283,38 @@ void application_t::delete_document()
 // messages
 void application_t::fatal_error( const std::string& message, bool no_gui) const
 {
-    if( !run_command_line() && ui() && !no_gui)
+    if( ui() && !no_gui)
         ui()->fatal_error( message);
     else
     {
         std::cerr << "Fatal error: " << message << "\n";
-        DLOG( FATAL) << message;
         abort();
     }
 }
 
 void application_t::error( const std::string& message, bool no_gui) const
 {
-    if( !run_command_line() && ui() && !no_gui)
+    if( ui() && !no_gui)
         ui()->error( message);
     else
     {
         std::cerr << "Error: " << message << "\n";
-        DLOG( ERROR) << message;
     }
 }
 
 void application_t::inform( const std::string& message, bool no_gui) const
 {
-    if( !run_command_line() && ui() && !no_gui)
+    if( ui() && !no_gui)
         ui()->inform( message);
     else
     {
         std::cerr << "Info: " << message << "\n";
-        DLOG( INFO) << message;
     }
 }
 
 bool application_t::question( const std::string& what, bool default_answer) const
 {
-    if( !run_command_line() && ui())
+    if( ui())
         return ui()->question( what, default_answer);
     else
     {
@@ -350,6 +325,11 @@ bool application_t::question( const std::string& what, bool default_answer) cons
     }
 
     return default_answer;
+}
+
+void application_t::run_unit_tests( int argc, char **argv)
+{
+    // TODO: implement this...
 }
 
 application_t& app()

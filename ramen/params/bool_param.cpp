@@ -4,8 +4,6 @@
 
 #include<ramen/params/bool_param.hpp>
 
-#include<ramen/app/application.hpp>
-
 #include<ramen/nodes/node.hpp>
 
 namespace ramen

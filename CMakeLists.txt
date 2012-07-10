@@ -1,7 +1,7 @@
 PROJECT( ramen)
 
-SET( RAMEN_VERSION_MAJOR "0")
-SET( RAMEN_VERSION_MINOR "9")
+SET( RAMEN_VERSION_MAJOR "2")
+SET( RAMEN_VERSION_MINOR "0")
 SET( RAMEN_VERSION_PATCH "0")
 SET( RAMEN_VERSION ${RAMEN_VERSION_MAJOR}.${RAMEN_VERSION_MINOR}.${RAMEN_VERSION_PATCH})
 
@@ -97,8 +97,6 @@ SET( QT_MT_REQUIRED false)
 SET( QT_MIN_VERSION "4.0.0")
 FIND_PACKAGE( Qt4 REQUIRED)
 ADD_DEFINITIONS( -DQT_NO_KEYWORDS)
-SET( NEEDED_QT_INCLUDES ${QT_INCLUDE_DIR} ${QT_QTCORE_INCLUDE_DIR} ${QT_QTGUI_INCLUDE_DIR} ${QT_QTOPENGL_INCLUDE_DIR})
-SET( NEEDED_QT_LIBS	${QT_QTCORE_LIBRARIES} ${QT_QTGUI_LIBRARIES} ${QT_QTOPENGL_LIBRARIES})
 SET( MOC_EXTRA_ARGS -DBOOST_TT_HAS_OPERATOR_HPP_INCLUDED)
 
 # imageio libraries
@@ -124,14 +122,14 @@ FIND_PACKAGE( SHIBOKEN REQUIRED)
 FIND_PACKAGE( PYSIDE REQUIRED)
 
 # testing, debugging, ...
-FIND_PACKAGE( GLOG REQUIRED)
 FIND_PACKAGE( BREAKPAD REQUIRED)
 
 INCLUDE_DIRECTORIES(    ${PROJECT_SOURCE_DIR}
 						${PROJECT_SOURCE_DIR}/base/
 						${PROJECT_SOURCE_DIR}/ramen/
 
-						${NEEDED_QT_INCLUDES}
+                        ${QT_INCLUDE_DIR}
+                        ${QT_QTCORE_INCLUDE_DIR}
 
 						${Boost_INCLUDE_DIR}
 						${TBB_INCLUDE_DIRS}
@@ -160,16 +158,13 @@ INCLUDE_DIRECTORIES(    ${PROJECT_SOURCE_DIR}
 
 						${SEEXPR_INCLUDE_DIRS}
 
-						${PYSIDE_INCLUDE_DIRS}
-						${SHIBOKEN_INCLUDE_DIRS}
 						${PYTHON_INCLUDE_DIRS}
 
 						${ZLIB_INCLUDE_DIRS}
-						${GLOG_INCLUDE_DIRS}
 						${BREAKPAD_INCLUDE_DIRS}
 						)
 
-SET( RAMEN_ALL_LIBS	${NEEDED_QT_LIBS}
+SET( RAMEN_ALL_LIBS	${QT_QTCORE_LIBRARIES}
 
 					${OPENCOLORIO_LIBRARIES}
 
@@ -192,20 +187,36 @@ SET( RAMEN_ALL_LIBS	${NEEDED_QT_LIBS}
 
 					${SEEXPR_LIBRARIES}
 
-					${PYSIDE_LIBRARIES}
-					${SHIBOKEN_LIBRARIES}
 					${PYTHON_LIBRARIES}
 
 					${ZLIB_LIBRARIES}
-					${GLOG_LIBRARIES}
 					)
 
 ADD_SUBDIRECTORY( ramen)
+ADD_SUBDIRECTORY( ramen_ui)
+
+######################################################
+# Ramen bin
+######################################################
+
+ADD_EXECUTABLE( ramen.bin   ramen/main.cpp
+                            ramen/assert.cpp
+                            )
+
+TARGET_LINK_LIBRARIES( ramen.bin	ramen
+									${RAMEN_ALL_LIBS}
+									${EXTRA_PLATFORM_LIBS}
+									${BREAKPAD_CLIENT_LIBRARY}
+									${RAMEN_TEST_LIBRARIES}
+									)
+
+SET_TARGET_PROPERTIES( ramen.bin PROPERTIES
+                       RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/ramen-${RAMEN_VERSION}/bin
+                        )
+
 
 ##########################################################
-###
 ### Docs
-###
 ##########################################################
 
 # Docs

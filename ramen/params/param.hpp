@@ -49,8 +49,6 @@
 #include<ramen/serialization/yaml_iarchive.hpp>
 #include<ramen/serialization/yaml_oarchive.hpp>
 
-#include<ramen/python/access_fwd.hpp>
-
 namespace ramen
 {
 namespace params
@@ -243,9 +241,6 @@ private:
 
     // hash
     virtual void do_add_to_hash( hash::generator_t& hash_gen) const;
-
-    // python interop
-    friend class python::access;
 
     virtual boost::python::object to_python( const base::poly_regular_t& v) const;
     virtual base::poly_regular_t from_python( const boost::python::object& obj) const;

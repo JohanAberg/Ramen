@@ -4,8 +4,6 @@
 
 #include<ramen/params/popup_param.hpp>
 
-#include<ramen/app/application.hpp>
-
 #include<ramen/params/param_set.hpp>
 
 #include<ramen/serialization/yaml_oarchive.hpp>

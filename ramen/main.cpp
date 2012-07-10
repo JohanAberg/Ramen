@@ -10,8 +10,6 @@
 #include<iostream>
 #include<exception>
 
-#include<glog/logging.h>
-
 #include "client/linux/handler/exception_handler.h" // breakpad
 
 #include<ramen/app/application.hpp>
@@ -57,7 +55,7 @@ int main( int argc, char **argv)
 	
 	try
 	{
-        int result =ramen::python::interpreter_t::instance().run_main( argc, argv);
+        int result = ramen::python::interpreter_t::instance().run_main( argc, argv);
         return result;
 	}
 	catch( boost::python::error_already_set)
@@ -68,11 +66,9 @@ int main( int argc, char **argv)
 	catch( std::exception& e)
 	{
 		std::cerr << "Exception: " << e.what() << "\n";
-        DLOG( ERROR) << "Exception: " << e.what() << "\n";
     }
 	catch( ...)
 	{
 		std::cerr << "Unknown exception" << std::endl;
-        DLOG( ERROR) << "Unknown exception" << std::endl;
     }
 }

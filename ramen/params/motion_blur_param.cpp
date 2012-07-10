@@ -4,8 +4,6 @@
 
 #include<ramen/params/motion_blur_param.hpp>
 
-#include<ramen/app/application.hpp>
-
 #include<ramen/params/param_set.hpp>
 
 namespace ramen

@@ -16,14 +16,13 @@
 
 #include<boost/noncopyable.hpp>
 #include<boost/cstdint.hpp>
-#include<boost/optional.hpp>
-#include<boost/program_options.hpp>
+#include<boost/python.hpp>
 
 #include<tbb/task_scheduler_init.h>
 
 #include<ramen/system/system.hpp>
 
-#include<ramen/app/preferences.hpp>
+#include<ramen/app/preferences_fwd.hpp>
 #include<ramen/app/document_fwd.hpp>
 
 #include<ramen/memory/manager_fwd.hpp>
@@ -44,12 +43,8 @@ class RAMEN_API application_t : boost::noncopyable
 {
 public:
 
-    application_t( int argc, char **argv);
+    application_t();
     ~application_t();
-
-    bool run_command_line() const;
-
-    int run();
 
     int max_threads() const { return max_threads_;}
 
@@ -61,8 +56,8 @@ public:
 
     const system::system_t& system() { return system_;}
 
-    const preferences_t& preferences() const    { return *preferences_;}
-    preferences_t& preferences()                { return *preferences_;}
+    const preferences_t& preferences() const;
+    preferences_t& preferences();
 
     const memory::manager_t& memory_manager() const { return *mem_manager_;}
     memory::manager_t& memory_manager()             { return *mem_manager_;}
@@ -82,33 +77,28 @@ public:
     void create_new_document();
     void open_document( const boost::filesystem::path& p);
 
-    bool quitting() const       { return quitting_;}
-    void set_quitting( bool b)  { quitting_ = b;}
-
 private:
+
+    friend struct py_application_access;
 
     void create_dirs();
 
-    // command line
-    void copy_command_line_args( int argc, char **argv);
-    void delete_command_line_args();
-
-    void parse_command_line();
-
-    void print_app_info();
-
-    // opencolorio
+    // init
+    void init_threads( int num);
     void init_ocio();
-    bool init_ocio_config_from_file( const boost::filesystem::path& p);
+
+    void set_ui( boost::python::object ui);
+
+    void set_preferences( boost::python::object prefs);
+
+    // report
+    void print_app_info();
 
     // document handling
     void delete_document();
 
-    // command line
-    int argc_;
-    char **argv_;
-    boost::program_options::options_description args_desc_;
-    boost::program_options::variables_map args_map_;
+    // tests
+    void run_unit_tests( int argc, char **argv);
 
     // threads
     boost::uint64_t img_cache_size_;
@@ -116,13 +106,13 @@ private:
 
     tbb::task_scheduler_init task_scheduler_;
     system::system_t system_;
-    std::auto_ptr<preferences_t> preferences_;
     std::auto_ptr<memory::manager_t> mem_manager_;
     std::auto_ptr<ocio::manager_t> ocio_manager_;
     std::auto_ptr<document_t> document_;
-    std::auto_ptr<ui::user_interface_t> ui_;
 
-    bool quitting_;
+    // created from python
+    std::auto_ptr<preferences_t> preferences_;
+    std::auto_ptr<ui::user_interface_t> ui_;
 };
 
 RAMEN_API application_t& app();

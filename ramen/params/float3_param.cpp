@@ -12,9 +12,6 @@
 
 #include<ramen/nodes/node.hpp>
 
-#include<ramen/app/application.hpp>
-#include<ramen/app/document.hpp>
-
 #include<ramen/params/parameterised.hpp>
 
 namespace ramen

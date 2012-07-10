@@ -2,28 +2,18 @@
 // Licensed under the terms of the CDDL License.
 // See CDDL_LICENSE.txt for a copy of the license.
 
-#ifndef RAMEN_UI_HPP
-#define RAMEN_UI_HPP
+#ifndef RAMEN_UI_USER_INTERFACE_HPP
+#define RAMEN_UI_USER_INTERFACE_HPP
 
 #include<ramen/config.hpp>
 
-#include<ramen/ui/user_interface_fwd.hpp>
-
 #include<ramen/python/python.hpp>
 
-#include<memory>
+#include<ramen/ui/user_interface_fwd.hpp>
 
-#include<boost/signals.hpp>
-#include<boost/thread/future.hpp>
+#include<boost/python.hpp>
 
-#include<QObject>
-#include<QString>
-#include<QFont>
-
-#include<ramen/nodes/node_fwd.hpp>
-
-#include<ramen/filesystem/path.hpp>
-#include<boost/filesystem/fstream.hpp>
+#include<ramen/app/application_fwd.hpp>
 
 namespace ramen
 {
@@ -34,35 +24,23 @@ namespace ui
 \ingroup ui
 \brief user interface class.
 */
-class RAMEN_API user_interface_t : public QObject
+struct RAMEN_API user_interface_t
 {
-    Q_OBJECT
-
 public:
-
-    user_interface_t();
-    ~user_interface_t();
-
-    void init();
-
-    void show();
-
-    int run();
-    int run( const boost::filesystem::path& p);
-
-    void quit();
 
     // error reporting
     void fatal_error( const std::string& msg) const;
     void error( const std::string& msg) const;
     void inform( const std::string& msg) const;
-    bool question( const std::string& what, bool default_answer = true) const;
+    bool question( const std::string& what, bool default_answer) const;
 
-protected:
+private:
 
-    // non-copyable
-    user_interface_t( const user_interface_t& other);
-    user_interface_t& operator=( const user_interface_t& other);
+    friend class ramen::application_t;
+
+    explicit user_interface_t( boost::python::object obj);
+
+    boost::python::object impl_;
 };
 
 } // namespace

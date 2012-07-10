@@ -4,8 +4,6 @@
 
 #include<ramen/params/tracker_areas_param.hpp>
 
-#include<ramen/app/application.hpp>
-
 #include<ramen/assert.hpp>
 
 #include<ramen/params/param_set.hpp>

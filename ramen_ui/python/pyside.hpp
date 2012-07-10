@@ -2,10 +2,10 @@
 // Licensed under the terms of the CDDL License.
 // See CDDL_LICENSE.txt for a copy of the license.
 
-#ifndef RAMEN_PYTHON_PYSIDE_HPP
-#define RAMEN_PYTHON_PYSIDE_HPP
+#ifndef RAMENUI_PYTHON_PYSIDE_HPP
+#define RAMENUI_PYTHON_PYSIDE_HPP
 
-#include<ramen/config.hpp>
+#include<ramen_ui/config.hpp>
 
 #include<ramen/python/python.hpp>
 
@@ -15,12 +15,12 @@
 
 class QWidget;
 
-namespace ramen
+namespace ramen_ui
 {
 namespace python
 {
 
-void init_pyside();
+void RAMEN_UI_API init_pyside();
 
 template<class T>
 T *pyside_to_cpp( PyObject *o) { return Shiboken::Converter<T*>::toCpp( o);}

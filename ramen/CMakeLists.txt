@@ -30,9 +30,6 @@ CONFIGURE_FILE( ${PROJECT_SOURCE_DIR}/ramen/version.hpp.in ${PROJECT_SOURCE_DIR}
 
 INCLUDE_DIRECTORIES( ${CMAKE_CURRENT_BINARY_DIR})
 
-SET( RAMEN_MOC_CLASSES  ui/user_interface.hpp
-						)
-
 SET( RAMEN_SOURCES  anim/any_curve.cpp
 					anim/clipboard.cpp
 					anim/curve_algorithm.cpp
@@ -121,9 +118,7 @@ SET( RAMEN_SOURCES  anim/any_curve.cpp
 					params/string_param.cpp
 					params/tab_group_param.cpp
 
-                    python/export_ramen.cpp
                     python/interpreter.cpp
-					python/pyside.cpp
 
 					serialization/yaml.cpp
 					serialization/yaml_iarchive.cpp
@@ -180,61 +175,43 @@ IF( CMAKE_SYSTEM_NAME MATCHES "Linux")
 		SET( RAMEN_PLATFORM_SOURCES system/system_pvt_linux.cpp)
 ENDIF()
 
-# ui files
-SET( RAMEN_DESIGNER_FILES )
-
-# QT
-QT4_WRAP_CPP( RAMEN_MOC_SOURCES	${RAMEN_MOC_CLASSES} OPTIONS ${MOC_EXTRA_ARGS})
-QT4_WRAP_UI( RAMEN_DESIGNER_SOURCES ${RAMEN_DESIGNER_FILES})
-QT4_ADD_RESOURCES( RAMEN_RESOURCES )
-
 SET( RAMEN_LIB_SOURCES	${RAMEN_BASE_SOURCES}
                         ${RAMEN_SOURCES}
-						${RAMEN_MOC_SOURCES}
 
-						${RAMEN_DESIGNER_SOURCES}
 						${RAMEN_PLATFORM_SOURCES}
 						${RAMEN_TEST_SOURCES}
-						${RAMEN_RESOURCES}
 						)
 
-# Optionals
-IF( WITH_NODES)
-	QT4_WRAP_CPP( RAMEN_MOC_NODE_SOURCES ${RAMEN_MOC_NODE_CLASSES} OPTIONS ${MOC_EXTRA_ARGS})
-	SET( RAMEN_LIB_SOURCES	${RAMEN_LIB_SOURCES}
-							${RAMEN_NODE_SOURCES}
-							${RAMEN_MOC_NODE_SOURCES}
-							)
-ENDIF()
-
+######################################################
 # Ramen lib
 
 ADD_LIBRARY( ramen SHARED ${RAMEN_LIB_SOURCES})
-SET_TARGET_PROPERTIES( ramen PROPERTIES COMPILE_FLAGS "-DRAMEN_MAKING_DSO -DBASE_MAKING_DSO"
-                                        VERSION ${RAMEN_VERSION_MAJOR}.${RAMEN_VERSION_MINOR}.${RAMEN_VERSION_PATCH}
-										SOVERSION ${RAMEN_VERSION_MAJOR}
+SET_TARGET_PROPERTIES( ramen PROPERTIES
+                        COMPILE_FLAGS "-DBASE_MAKING_DSO"
+                        VERSION ${RAMEN_VERSION_MAJOR}.${RAMEN_VERSION_MINOR}.${RAMEN_VERSION_PATCH}
+                        SOVERSION ${RAMEN_VERSION_MAJOR}
+                        LIBRARY_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/ramen-${RAMEN_VERSION}/lib
                         )
 TARGET_LINK_LIBRARIES( ramen	${RAMEN_ALL_LIBS}
 								${EXTRA_PLATFORM_LIBS}
 								${RAMEN_TEST_LIBRARIES}
 								)
 
-SET( LIBRARY_OUTPUT_PATH ${PROJECT_BINARY_DIR}/ramen-${RAMEN_VERSION}/lib/)
-
 ######################################################
-# Ramen app
+# Ramen py module
 
-SET( RAMEN_APP_SOURCES  main.cpp
-						assert.cpp
-						)
+SET( RAMEN_PY_MODULE_SRCS   python/export_application.cpp
+                            python/export_ramen.cpp
+                            python/export_system.cpp
+                            )
 
-ADD_EXECUTABLE( ramen.bin ${RAMEN_APP_SOURCES})
+ADD_LIBRARY( _ramen SHARED ${RAMEN_PY_MODULE_SRCS})
 
-TARGET_LINK_LIBRARIES( ramen.bin	ramen
-									${RAMEN_ALL_LIBS}
-									${EXTRA_PLATFORM_LIBS}
-									${BREAKPAD_CLIENT_LIBRARY}
-									${RAMEN_TEST_LIBRARIES}
-									)
-
-SET( EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR}/ramen-${RAMEN_VERSION}/bin/)
+SET_TARGET_PROPERTIES( _ramen PROPERTIES
+                       PREFIX ""
+                       LIBRARY_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/ramen-${RAMEN_VERSION}/python/app/ramen
+                    )
+TARGET_LINK_LIBRARIES( _ramen	ramen
+                                ${RAMEN_ALL_LIBS}
+								${EXTRA_PLATFORM_LIBS}
+								)

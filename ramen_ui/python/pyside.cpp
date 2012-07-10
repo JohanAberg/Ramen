@@ -2,7 +2,7 @@
 // Licensed under the terms of the CDDL License.
 // See CDDL_LICENSE.txt for a copy of the license.
 
-#include<ramen/python/pyside.hpp>
+#include<ramen_ui/python/pyside.hpp>
 
 #include<shiboken/sbkmodule.h>
 #include<PySide/QtGui/pyside_qtgui_python.h>
@@ -15,7 +15,7 @@ PyTypeObject **SbkPySide_QtCoreTypes;
 PyTypeObject **SbkPySide_QtGuiTypes;
 PyTypeObject **SbkPySide_QtOpenGLTypes;
 
-namespace ramen
+namespace ramen_ui
 {
 namespace python
 {
@@ -45,4 +45,4 @@ void init_pyside()
 }
 
 } // python
-} // ramen
+} // ramenui

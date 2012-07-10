@@ -40,6 +40,9 @@ public:
 
 	boost::python::object exec_file( const boost::filesystem::path& p);
 
+    // logging
+    void log_debug( const std::string& message);
+
 private:
 
     interpreter_t();

@@ -68,9 +68,6 @@ protected:
 
 private:
 
-    // python interop
-    friend class python::access;
-
     base::poly_regular_t relative_to_absolute( const base::poly_regular_t& val) const;
     base::poly_regular_t absolute_to_relative( const base::poly_regular_t& val) const;
 

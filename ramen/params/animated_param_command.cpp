@@ -13,9 +13,6 @@
 #include<ramen/params/animated_param.hpp>
 #include<ramen/nodes/node.hpp>
 
-#include<ramen/app/application.hpp>
-#include<ramen/app/document.hpp>
-
 namespace ramen
 {
 namespace params

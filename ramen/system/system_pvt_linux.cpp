@@ -109,7 +109,7 @@ const boost::filesystem::path& system_pvt::home_path() const { return home_path_
 const boost::filesystem::path& system_pvt::app_user_path() const
 {
 	if( app_user_path_.empty())
-	    app_user_path_ =  home_path() / "ramen1.0";
+	    app_user_path_ =  home_path() / "ramen2.0";
 	
 	return app_user_path_;
 }
@@ -159,8 +159,8 @@ const boost::filesystem::path& system_pvt::preferences_path() const
 	{
 		preferences_path_ = app_user_path() / "prefs";
 
-	    if( !boost::filesystem::exists( preferences_path_))
-			boost::filesystem::create_directory( preferences_path_);
+	    //if( !boost::filesystem::exists( preferences_path_))
+		//	boost::filesystem::create_directory( preferences_path_);
 	}
 
     return preferences_path_;
@@ -169,7 +169,7 @@ const boost::filesystem::path& system_pvt::preferences_path() const
 const boost::filesystem::path& system_pvt::tmp_path() const
 {
     if( tmp_path_.empty())
-		tmp_path_ = "/tmp/ramen";
+		tmp_path_ = "/tmp/ramen2";
 	
 	return tmp_path_;
 }
@@ -177,7 +177,7 @@ const boost::filesystem::path& system_pvt::tmp_path() const
 const boost::filesystem::path& system_pvt::persistent_tmp_path() const
 {
     if( persistent_tmp_path_.empty())
-		persistent_tmp_path_ = "/var/tmp/ramen";
+		persistent_tmp_path_ = "/var/tmp/ramen2";
 
 	return persistent_tmp_path_;
 }

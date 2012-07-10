@@ -14,8 +14,6 @@
 #include<ramen/anim/track.hpp>
 #include<ramen/anim/clipboard.hpp>
 
-#include<ramen/app/application.hpp>
-
 #include<ramen/params/param_set.hpp>
 
 #include<ramen/serialization/yaml_oarchive.hpp>

@@ -4,8 +4,6 @@
 
 #include<ramen/params/separator_param.hpp>
 
-#include<ramen/app/application.hpp>
-
 namespace ramen
 {
 namespace params

@@ -9,8 +9,6 @@
 #include<boost/foreach.hpp>
 #include<boost/range/algorithm/for_each.hpp>
 
-#include<ramen/app/application.hpp>
-
 #include<ramen/nodes/node.hpp>
 
 #include<ramen/params/static_param_command.hpp>
