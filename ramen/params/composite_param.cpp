@@ -37,8 +37,6 @@ void composite_param_t::do_init()
 
 void composite_param_t::do_set_param_set( param_set_t *parent)
 {
-    param_t::set_param_set( parent);
-
     BOOST_FOREACH( param_t& p, params())
         p.set_param_set( parent);
 }
