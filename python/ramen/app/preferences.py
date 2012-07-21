@@ -7,7 +7,7 @@ import yaml
 
 class preferences( object):
     def __init__( self, path):
-        logging.debug( 'Creating preferences: path = %s', path)
+        logging.debug( 'Creating preferences: path = %s\n', path)
         self._path = path
 
     def load( self):

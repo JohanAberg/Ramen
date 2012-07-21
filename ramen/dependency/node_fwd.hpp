@@ -2,18 +2,19 @@
 // Licensed under the terms of the CDDL License.
 // See CDDL_LICENSE.txt for a copy of the license.
 
-#ifndef RAMEN_DEPENDENCY_GRAPH_FWD_HPP
-#define RAMEN_DEPENDENCY_GRAPH_FWD_HPP
+#ifndef RAMEN_DEPENDENCY_NODE_FWD_HPP
+#define RAMEN_DEPENDENCY_NODE_FWD_HPP
 
 namespace ramen
 {
 namespace dependency
 {
 
-class sub_graph_t;
-class graph_t;
+class RAMEN_API node_t;
 
-} // dependency
-} // ramen
+class RAMEN_API output_node_t;
+
+} // namespace
+} // namespace
 
 #endif

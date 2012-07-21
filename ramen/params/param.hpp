@@ -36,8 +36,6 @@
 #include<ramen/params/static_param_command_fwd.hpp>
 #include<ramen/params/animated_param_command_fwd.hpp>
 
-#include<ramen/dependency/graph_fwd.hpp>
-
 #include<ramen/anim/track_fwd.hpp>
 
 #include<ramen/expressions/expression.hpp>
@@ -134,9 +132,6 @@ public:
 
     /// Returns the world node this param belongs to.
     nodes::world_node_t *world();
-
-    /// Add this param to the dependency graph
-    virtual void add_to_dependency_graph( dependency::graph_t& dg);
 
     // flags
     bool enabled() const;

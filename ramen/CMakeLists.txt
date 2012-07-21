@@ -51,6 +51,7 @@ SET( RAMEN_SOURCES  anim/any_curve.cpp
 					dependency/graph.cpp
 					dependency/node.cpp
 					dependency/exceptions.cpp
+					dependency/sub_graph.cpp
 
 					filesystem/path.cpp
 					filesystem/path_sequence.cpp
@@ -140,26 +141,11 @@ SET( RAMEN_SOURCES  anim/any_curve.cpp
 					)
 
 # tests
-IF( CMAKE_BUILD_TYPE MATCHES Debug)
-	SET( RAMEN_TEST_SOURCES	test/test.cpp
-							test/container.cpp
-							test/depgraph.cpp
-							test/expressions.cpp
-							test/math.cpp
-							test/memory.cpp
-							test/filesystem.cpp
-							test/ImathExt.cpp
-							test/nodes.cpp
-							test/params.cpp
-							test/param_set.cpp
-							test/python.cpp
-							test/string.cpp
-							test/test_node.cpp
-							test/undo.cpp
-							)
-
-	SET( RAMEN_TEST_LIBRARIES)
-ENDIF()
+SET( RAMEN_TEST_SOURCES	test/test.cpp
+						test/nodes.cpp
+						test/string.cpp
+						test/test_node.cpp
+						)
 
 # platform sources
 IF( APPLE)

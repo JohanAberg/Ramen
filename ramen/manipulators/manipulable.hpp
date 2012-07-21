@@ -9,9 +9,10 @@
 
 #include<memory>
 
-#include<boost/noncopyable.hpp>
 #include<boost/ptr_container/ptr_vector.hpp>
 #include<boost/signals2/signal.hpp>
+
+#include<ramen/dependency/sub_graph.hpp>
 
 #include<ramen/manipulators/manipulator.hpp>
 
@@ -24,7 +25,7 @@ namespace manipulators
 \ingroup manips
 \brief Base class for objects that can have manipulators, react to events and draw an on-screen overlay using GL.
 */
-class RAMEN_API manipulable_t : boost::noncopyable
+class RAMEN_API manipulable_t : dependency::sub_graph_t
 {
 public:
 

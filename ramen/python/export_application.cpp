@@ -6,10 +6,15 @@
 
 #include<ramen/python/python.hpp>
 
+#include<vector>
+
 #include<boost/python.hpp>
 
+#include<ramen/assert.hpp>
 #include<ramen/app/application.hpp>
 #include<ramen/version.hpp>
+
+#include<iostream>
 
 namespace bpy = boost::python;
 using namespace ramen;
@@ -44,11 +49,6 @@ struct py_application_access
         a->set_preferences( prefs);
     }
 
-    static void run_unit_tests( application_t *a, bpy::list args)
-    {
-        a->run_unit_tests( 0, 0);
-    }
-
     // version, names, ...
 
     static int version_major( application_t *a) { return RAMEN_VERSION_MAJOR;}
@@ -58,6 +58,14 @@ struct py_application_access
     static const char *full_version_name( application_t *a)
     {
         return RAMEN_NAME_FULL_VERSION_STR;
+    }
+
+    static int run_unit_tests( application_t *a, bpy::list args)
+    {
+        // TODO: pass the rest of the arguments here.
+        std::string path = bpy::extract<std::string>( args[0]);
+        char *s = const_cast<char *>( path.c_str());
+        return a->run_unit_tests( 1, &s);
     }
 };
 

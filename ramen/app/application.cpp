@@ -35,6 +35,9 @@
 
 #include<ramen/ui/user_interface.hpp>
 
+// tests
+int run_ramen_unit_tests( int argc, char **argv);
+
 namespace ramen
 {
 
@@ -327,9 +330,9 @@ bool application_t::question( const std::string& what, bool default_answer) cons
     return default_answer;
 }
 
-void application_t::run_unit_tests( int argc, char **argv)
+int application_t::run_unit_tests( int argc, char **argv)
 {
-    // TODO: implement this...
+    return run_ramen_unit_tests( argc, argv);
 }
 
 application_t& app()

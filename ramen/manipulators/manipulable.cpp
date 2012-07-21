@@ -16,9 +16,9 @@ namespace ramen
 namespace manipulators
 {
 
-manipulable_t::manipulable_t() {}
+manipulable_t::manipulable_t() : dependency::sub_graph_t() {}
 
-manipulable_t::manipulable_t( const manipulable_t& other) {}
+manipulable_t::manipulable_t( const manipulable_t& other) : dependency::sub_graph_t() {}
 
 manipulable_t::~manipulable_t() {}
 

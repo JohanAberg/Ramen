@@ -76,7 +76,7 @@ public:
         for( boost::ptr_vector<undo::command_t>::iterator it( more_commands_.begin()); it != more_commands_.end(); ++it)
             it->undo();
 
-        pset->notify_parent();
+        //pset->notify_parent();
         undo::command_t::undo();
     }
 
@@ -90,7 +90,7 @@ public:
         for( boost::ptr_vector<undo::command_t>::iterator it( more_commands_.begin()); it != more_commands_.end(); ++it)
             it->redo();
 
-        pset->notify_parent();
+        //pset->notify_parent();
         undo::command_t::redo();
     }
 
@@ -153,18 +153,6 @@ param_t& param_set_t::find( const base::name_t& id)
     throw std::runtime_error( std::string( "Param not found: ").append( id));
 }
 
-void param_set_t::add_params_to_dependency_graph( dependency::graph_t& dg)
-{
-    BOOST_FOREACH( param_t& p, params())
-        p.add_to_dependency_graph( dg);
-}
-
-void param_set_t::notify_parent()
-{
-    if( parent())
-        parent()->param_edit_finished();
-}
-
 void param_set_t::begin_edit()
 {
     command_.reset( new param_set_command_t( "Params Changed"));
@@ -177,8 +165,8 @@ void param_set_t::end_edit( bool notify)
     else
         command_.reset();
 
-    if( notify)
-        notify_parent();
+    //if( notify)
+    //    notify_parent();
 }
 
 bool param_set_t::editing() const { return command_.get();}

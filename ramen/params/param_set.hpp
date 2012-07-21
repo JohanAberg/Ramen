@@ -70,12 +70,7 @@ public:
     const param_t& find( const base::name_t& id) const;
     param_t& find( const base::name_t& id);
 
-    // dependency graph
-    void add_params_to_dependency_graph( dependency::graph_t& dg);
-
     boost::signals2::signal<void ( param_t*, param_t::change_reason)> param_changed;
-
-    void notify_parent();
 
     void begin_edit();
     void end_edit( bool notify = true);
@@ -105,8 +100,6 @@ public:
 private:
 
     void do_add_param( param_t *p);
-
-    void do_add_param_to_dependency_graph( param_t *p, dependency::graph_t& dg);
 
     parameterised_t *parent_;
     boost::ptr_vector<param_t> params_;

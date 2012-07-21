@@ -38,8 +38,6 @@ public:
     const param_t *find(const base::name_t& id) const;
     param_t *find( const base::name_t& id);
 
-    virtual void add_to_dependency_graph( dependency::graph_t& dg);
-
 protected:
 
     composite_param_t( const composite_param_t& other);

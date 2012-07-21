@@ -7,6 +7,8 @@
 
 #include<ramen/config.hpp>
 
+#include<ramen/dependency/node_fwd.hpp>
+
 #include<utility>
 #include<vector>
 

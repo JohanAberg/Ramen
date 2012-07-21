@@ -4,6 +4,7 @@
 
 import sys
 import logging
+import unittest
 
 from ramen import base_application
 
@@ -38,9 +39,9 @@ class application( base_application):
         result = 0
 
         if self._run_tests:
-            logging.debug( 'Running unit tests')
-            self.run_all_tests()
-            sys.exit( 0)
+            logging.debug( 'Running unit tests\n')
+            result = self.run_all_tests()
+            sys.exit( result)
 
         self.print_app_info()
 
@@ -73,4 +74,24 @@ class application( base_application):
 
     # tests
     def run_all_tests( self):
-        self.run_unit_tests( self._args)
+        logging.debug( 'C++ tests:')
+        logging.debug( '----------\n')
+        result = self.run_unit_tests( self._args)
+
+        logging.debug( 'Python tests:')
+        logging.debug( '-------------\n')
+        sys.argv = [ self._args[0]]
+        suite = unittest.TestLoader().loadTestsFromTestCase( TestApplicationFunctions)
+        unittest.TextTestRunner( verbosity=2).run( suite)
+
+        return result
+
+#################################################
+# Testing
+
+class TestApplicationFunctions( unittest.TestCase):
+    def setUp( self):
+        pass
+
+    def test_placeholder( self):
+        self.assertEqual( 7, 7)

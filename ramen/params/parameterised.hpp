@@ -107,9 +107,6 @@ public:
     template<class T>
     void add_param( std::auto_ptr<T> p) { param_set().add_param( p);}
 
-    /// Called after editing of params finished.
-    virtual void param_edit_finished() = 0;
-
     /// Calls a function f for each param.
     virtual void for_each_param( const boost::function<void ( param_t*)>& f);
 

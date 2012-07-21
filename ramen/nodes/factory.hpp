@@ -49,7 +49,7 @@ public:
 
     bool is_latest_version( const std::string& id) const;
 
-    // Mostly for testing.
+    // For testing.
     void unregister_all();
 
 private:

@@ -98,7 +98,7 @@ private:
     void delete_document();
 
     // tests
-    void run_unit_tests( int argc, char **argv);
+    int run_unit_tests( int argc, char **argv);
 
     // threads
     boost::uint64_t img_cache_size_;

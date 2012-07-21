@@ -107,9 +107,6 @@ void node_t::set_autolayout( bool b)    { util::set_flag( flags_, autolayout_bit
 bool node_t::cacheable() const          { return flags_ & cacheable_bit;}
 void node_t::set_cacheable( bool b)     { util::set_flag( flags_, cacheable_bit, b );}
 
-bool node_t::notify_dirty() const       { return util::test_flag( flags_, notify_dirty_bit);}
-void node_t::set_notify_dirty( bool b)  { util::set_flag( flags_, notify_dirty_bit, b );}
-
 bool node_t::ui_invisible() const       { return flags_ & ui_invisible_bit;}
 void node_t::set_ui_invisible( bool b)  { util::set_flag( flags_, ui_invisible_bit, b );}
 
@@ -220,23 +217,6 @@ void node_t::add_output_plug(const base::name_t& id, const Imath::Color3c& color
     outputs_.push_back( new output_plug_t( this, id, color, tooltip ));
 }
 
-void node_t::add_to_dependency_graph()
-{
-    world_node_t *w = world();
-    RAMEN_ASSERT( w);
-
-    BOOST_FOREACH( input_plug_t& in, input_plugs())
-        w->dependency_graph().add_node( dynamic_cast<dependency::node_t*>( &in));
-
-    BOOST_FOREACH( output_plug_t& out, output_plugs())
-        w->dependency_graph().add_node( dynamic_cast<dependency::node_t*>( &out));
-
-    param_set().add_params_to_dependency_graph( w->dependency_graph());
-    do_add_to_dependency_graph();
-}
-
-void node_t::do_add_to_dependency_graph() {}
-
 bool node_t::accept_connection( node_t *src, const base::name_t& src_port, const base::name_t& dst_port) const
 {
     return do_accept_connection( src, src_port, dst_port);
@@ -263,14 +243,6 @@ void node_t::add_new_input_plug()
     add_input_plug( input_plug_info_t( ui::palette_t::instance().color("back plug")), true);
     reconnect_node();
     */
-}
-
-// params
-void node_t::param_edit_finished() { notify();}
-
-void node_t::notify()
-{
-    // use the dependency graph here.
 }
 
 bool node_t::is_valid() const

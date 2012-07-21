@@ -108,9 +108,6 @@ public:
     /// Returns the output plug with the given id.
     output_plug_t& output_plug( const base::name_t& id);
 
-    /// Adds this node components ( plugs & params) to the dg.
-    virtual void add_to_dependency_graph();
-
     // graph
     graph_color_t graph_color() const            { return graph_color_;}
     void set_graph_color( graph_color_t c) const { graph_color_ = c;}
@@ -137,21 +134,13 @@ public:
     bool cacheable() const;
     void set_cacheable( bool b);
 
-    bool notify_dirty() const;
-    void set_notify_dirty( bool b);
-
     bool ui_invisible() const;
     void set_ui_invisible( bool b);
 
     virtual void add_new_input_plug();
 
-    // params
-    virtual void param_edit_finished();
-
     // signals
     boost::signals2::signal<void ( node_t*)> changed;
-
-    void notify();
 
     // connections
     virtual bool variable_num_inputs() const { return false;}
@@ -201,9 +190,7 @@ private:
         plugin_error_bit		= 1 << 2,
         cacheable_bit			= 1 << 3,
         autolayout_bit			= 1 << 4,
-        notify_dirty_bit		= 1 << 5,
-        ui_invisible_bit		= 1 << 6,
-        interacting_bit			= 1 << 7
+        ui_invisible_bit		= 1 << 5
     };
 
     /*!
@@ -217,12 +204,6 @@ private:
         For subclasses to implement.
     */
     virtual void do_create_plugs();
-
-    /*!
-        \brief Customization hook for node_t::add_to_dependency_graph.
-        For subclasses to implement.
-    */
-    virtual void do_add_to_dependency_graph();
 
     /*!
         \brief Customization hook for node_t::accept_connection.

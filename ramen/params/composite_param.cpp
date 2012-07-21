@@ -60,12 +60,6 @@ void composite_param_t::do_add_param( param_t *p)
     params().push_back( p);
 }
 
-void composite_param_t::add_to_dependency_graph( dependency::graph_t& dg)
-{
-    BOOST_FOREACH( param_t& p, params())
-        p.add_to_dependency_graph( dg);
-}
-
 const param_t *composite_param_t::find( const base::name_t& id) const
 {
     composite_param_t& self = const_cast<composite_param_t&>( *this);

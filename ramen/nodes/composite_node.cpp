@@ -39,12 +39,6 @@ void composite_node_t::cloned()
     boost::range::for_each( graph().nodes(), boost::bind( &node_t::cloned, _1));
 }
 
-void composite_node_t::add_to_dependency_graph()
-{
-    node_t::add_to_dependency_graph();
-    boost::range::for_each( graph().nodes(), boost::bind( &node_t::add_to_dependency_graph, _1));
-}
-
 void composite_node_t::accept( visitor_t& v) { v.visit( this);}
 
 node_t *composite_node_t::create_node_by_id( const std::string& id, bool ui)
@@ -117,7 +111,6 @@ void composite_node_t::add_node( std::auto_ptr<node_t> n)
     // save a pointer to the node.
     node_t *nn = n.get();
     g_.add_node( n);
-    nn->add_to_dependency_graph();
     w->node_added( nn);
 }
 

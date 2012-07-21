@@ -42,9 +42,6 @@ public:
     /// Called for the new node, after being copied.
     virtual void cloned();
 
-    /// Adds this node to the dependency graph.
-    virtual void add_to_dependency_graph();
-
     /// Dispatch function for visitor pattern.
     virtual void accept( visitor_t& v);
 

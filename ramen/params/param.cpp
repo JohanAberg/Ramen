@@ -92,12 +92,6 @@ nodes::world_node_t *param_t::world()
         return 0;
 }
 
-void param_t::add_to_dependency_graph( dependency::graph_t& dg)
-{
-    if( id() != base::name_t())
-        dg.add_node( dynamic_cast<dependency::node_t*>( this));
-}
-
 bool param_t::enabled() const { return util::test_flag( flags_, enabled_bit);}
 
 void param_t::set_enabled( bool e)
