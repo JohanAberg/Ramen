@@ -107,19 +107,9 @@ protected:
 
     node_t *do_find_node( name_tokenizer_type::iterator tok_it, name_tokenizer_type::iterator tok_end);
 
+    void for_each_sub_graph( const boost::function<void( sub_graph_t*)> *f);
+
 private:
-
-    /*!
-        \brief Customization hook for node_t::read.
-        Implement in subclasses to read extra data from node.
-    */
-    virtual void do_read( const serialization::yaml_node_t& in, const std::pair<int,int>& version);
-
-    /*!
-        \brief Customization hook for node_t::write.
-        Implement in subclasses to write extra data to out.
-    */
-    virtual void do_write( serialization::yaml_oarchive_t& out) const;
 
     std::auto_ptr<node_t> create_unknown_node( const std::string& id, const std::pair<int, int>& version) const;
 

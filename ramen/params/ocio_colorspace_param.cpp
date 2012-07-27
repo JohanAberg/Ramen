@@ -50,40 +50,6 @@ base::poly_regular_t ocio_colorspace_param_t::from_python( const boost::python::
     return base::poly_regular_t( str);
 }
 
-void ocio_colorspace_param_t::do_read( const serialization::yaml_node_t& node)
-{
-    serialization::yaml_node_t n = node.get_node( "value");
-    std::string val;
-    n >> val;
-
-    OCIO::ConstConfigRcPtr config = app().ocio_manager().config();
-    int index = -1;
-
-    int num_color_spaces = config->getNumColorSpaces();
-
-    for(int i = 0; i < num_color_spaces; i++)
-    {
-        std::string csname = config->getColorSpaceNameByIndex( i);
-
-        if( csname == val)
-            index = i;
-    }
-
-    if( index != -1)
-        value().assign( val);
-    else
-    {
-        node.error_stream() << "Node " << parameterised()->name() << ": colorspace " << val << " not found in OCIO config.\n";
-        node.error_stream() << "Replacing by default value.\n";
-        value().assign( default_colorspace());
-    }
-}
-
-void ocio_colorspace_param_t::do_write( serialization::yaml_oarchive_t& out) const
-{
-    out << YAML::Key << "value" << YAML::Value << get_value<std::string>( *this);
-}
-
 std::string ocio_colorspace_param_t::default_colorspace() const
 {
     OCIO::ConstConfigRcPtr config = app().ocio_manager().config();

@@ -4,18 +4,25 @@
 
 import logging
 
-import PySide.QtCore
-import PySide.QtGui
+import PySide.QtCore as QtCore
+import PySide.QtGui as QtGui
 
 from ramen.ui.main_window import main_window
 
 class user_interface( object):
-    def __init__( self):
+    def __init__( self, app):
+        self._app = app
         logging.debug( 'Created user interface')
 
     def run( self, args):
-        app = PySide.QtGui.QApplication( args)
+        app = QtGui.QApplication( args)
 
-        self._main_window = main_window()
+        self._main_window = main_window( self)
         self._main_window.show()
         return app.exec_()
+
+    def quit( self):
+        logging.debug( 'Application exiting')
+        self._app.quit()
+        QtGui.qApp.quit()
+        logging.debug( 'Application finished')

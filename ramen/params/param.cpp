@@ -252,13 +252,13 @@ void param_t::make_paths_relative()     { do_make_paths_relative();}
 void param_t::do_make_paths_relative()  {}
 
 // util
-void param_t::apply_function( const boost::function<void ( param_t*)>& f)
+void param_t::apply_function( const boost::function<void ( param_t*)> *f)
 {
-    f( this);
+    (*f)( this);
     do_apply_function( f);
 }
 
-void param_t::do_apply_function( const boost::function<void ( param_t*)>& f) {}
+void param_t::do_apply_function( const boost::function<void ( param_t*)> *f) {}
 
 // python interop
 boost::python::object param_t::to_python( const base::poly_regular_t& v) const
@@ -272,30 +272,6 @@ base::poly_regular_t param_t::from_python( const boost::python::object& obj) con
 {
     throw std::bad_cast();
     return base::poly_regular_t();
-}
-
-// serialization
-void param_t::read(const serialization::yaml_node_t& in) { do_read( in);}
-
-void param_t::do_read(const serialization::yaml_node_t& in)
-{
-    RAMEN_ASSERT( 0 && "We should never get here");
-}
-
-void param_t::write( serialization::yaml_oarchive_t& out) const
-{
-    if( !value().is_empty() && persist())
-    {
-        out.begin_map();
-            out << YAML::Key << "id" << YAML::Value << id();
-            do_write( out);
-        out.end_map();
-    }
-}
-
-void param_t::do_write( serialization::yaml_oarchive_t& out) const
-{
-    RAMEN_ASSERT( 0 && "We should never get here");
 }
 
 param_t *new_clone( const param_t& other) { return other.clone();}

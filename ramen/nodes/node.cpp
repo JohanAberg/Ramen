@@ -22,14 +22,46 @@ namespace ramen
 {
 namespace nodes
 {
+namespace
+{
+
+struct add_depends_all_out
+{
+    add_depends_all_out( nodes::node_t *n) : n_( n)
+    {
+        BOOST_ASSERT( n);
+    }
+
+    void operator()( dependency::node_t& src)
+    {
+        BOOST_FOREACH( output_plug_t& oplug, n_->output_plugs())
+        {
+            n_->add_dependency( &src, &oplug);
+        }
+    }
+
+    void operator()( dependency::node_t *src) { (*this)( *src);}
+
+    nodes::node_t *n_;
+};
+
+} // unnamed
 
 node_t::node_t() : params::parameterised_t(), flags_( 0) {}
 
-node_t::node_t( const node_t& other) : params::parameterised_t( other), outputs_( other.outputs_)
+node_t::node_t( const node_t& other) : params::parameterised_t( other),
+                                        inputs_( other.inputs_),
+                                        outputs_( other.outputs_)
 {
     boost::range::for_each( outputs_, boost::bind( &output_plug_t::set_parent_node, _1, this));
     flags_ = other.flags_;
     loc_ = other.loc_;
+
+    BOOST_FOREACH( input_plug_t& plug, input_plugs())
+        add_dependency_node( &plug);
+
+    BOOST_FOREACH( output_plug_t& plug, output_plugs())
+        add_dependency_node( &plug);
 }
 
 node_t::~node_t() {}
@@ -38,6 +70,7 @@ void node_t::init()
 {
     create_plugs();
     create_params();
+    add_dependencies();
     create_manipulators();
     do_init();
 }
@@ -46,9 +79,7 @@ void node_t::do_init() {}
 
 void node_t::cloned()
 {
-    //for( int i = 0; i < num_inputs(); ++i)
-    //    connected( 0, i);
-
+    add_dependencies();
     create_manipulators();
 }
 
@@ -117,7 +148,9 @@ void node_t::add_input_plug( const base::name_t& id, bool optional, const Imath:
     if( find_input( id) == -1)
         throw std::runtime_error( util::concat_strings( "Duplicated input plud id: ", id.c_str()));
 
-    inputs_.push_back( new input_plug_t( id, optional, color, tooltip ));
+    std::auto_ptr<input_plug_t> plug( new input_plug_t( id, optional, color, tooltip ));
+    add_dependency_node( plug.get());
+    inputs_.push_back( plug);
 }
 
 int node_t::find_input( const base::name_t& id) const
@@ -214,7 +247,9 @@ void node_t::add_output_plug(const base::name_t& id, const Imath::Color3c& color
     if( find_output( id) == -1)
         throw std::runtime_error( util::concat_strings( "Duplicated output plug id: ", id.c_str()));
 
-    outputs_.push_back( new output_plug_t( this, id, color, tooltip ));
+    std::auto_ptr<output_plug_t> plug( new output_plug_t( this, id, color, tooltip ));
+    add_dependency_node( plug.get());
+    outputs_.push_back( plug);
 }
 
 bool node_t::accept_connection( node_t *src, const base::name_t& src_port, const base::name_t& dst_port) const
@@ -302,73 +337,38 @@ void node_t::make_paths_relative()
     boost::range::for_each( param_set(), boost::bind( &params::param_t::make_paths_relative, _1));
 }
 
-// serialization
-void node_t::read(const serialization::yaml_node_t& in, const std::pair<int,int>& version)
+void node_t::add_dependencies()
 {
-    std::string n;
-    in.get_value( "name", n);
+    do_add_dependencies();
+}
 
-    RAMEN_ASSERT( util::is_string_valid_identifier( n));
-
-    if( !util::is_string_valid_identifier( n))
-        throw std::runtime_error( "Bad name in node_t");
-
-    set_name( n);
-
-    if( !in.get_optional_value( "comp_pos", loc_))
-        set_autolayout( true);
-
-    // create needed extra inputs if needed.
-    if( variable_num_inputs())
+void node_t::do_add_dependencies()
+{
+    // by default, add all posible dependencies
+    BOOST_FOREACH( input_plug_t& iplug, input_plugs())
     {
-        int num_ins = num_inputs();
-        in.get_optional_value( "num_inputs", num_ins);
-
-        while( num_ins != num_inputs())
-            add_new_input_plug();
+        BOOST_FOREACH( output_plug_t& oplug, output_plugs())
+            add_dependency( &iplug, &oplug);
     }
 
-    bool flag = false;
-    if( in.get_optional_value( "ignored", flag))
-        set_ignored( flag);
-
-    serialization::yaml_node_t prms( in.get_node( "params"));
-    param_set().read( prms);
-
-    do_read( in, version);
+    add_depends_all_out fun( this);
+    for_each_param( fun);
 }
 
-void node_t::do_read( const serialization::yaml_node_t& in, const std::pair<int,int>& version) {}
-
-void node_t::write( serialization::yaml_oarchive_t& out) const
+void node_t::do_propagate_dirty_flags()
 {
-    RAMEN_ASSERT( class_metadata() && "Trying to serialize an abstract node");
-    out.begin_map();
-        write_node_info( out);
-        param_set().write( out);
-        do_write( out);
-    out.end_map();
-}
-
-void node_t::do_write( serialization::yaml_oarchive_t& out) const {}
-
-void node_t::write_node_info( serialization::yaml_oarchive_t& out) const
-{
-    out << YAML::Key << "class" << YAML::Value;
-    out.flow();
-        out.begin_seq();
-        out << class_metadata()->id
-            << class_metadata()->major_version << class_metadata()->minor_version;
-        out.end_seq();
-
-    out << YAML::Key << "name"  << YAML::DoubleQuoted << YAML::Value << name();
-    out << YAML::Key << "comp_pos" << YAML::Value << location();
-
-    if( ignored())
-        out << YAML::Key << "ignored" << YAML::Value << true;
-
-    if( variable_num_inputs())
-        out << YAML::Key << "num_inputs" << YAML::Value << num_inputs();
+    BOOST_FOREACH( output_plug_t& plug, output_plugs())
+    {
+        if( plug.dirty())
+        {
+            BOOST_FOREACH( output_plug_t::connection_type& c, plug.connections())
+            {
+                node_t *dst = boost::get<0>( c);
+                dst->input_plug( boost::get<1>( c)).set_dirty();
+                dst->propagate_dirty_flags();
+            }
+        }
+    }
 }
 
 node_t *new_clone( const node_t& other)

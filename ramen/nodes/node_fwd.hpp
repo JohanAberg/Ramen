@@ -15,11 +15,6 @@ class composite_node_t;
 class world_node_t;
 
 } // nodes
-
-using nodes::node_t;
-using nodes::composite_node_t;
-using nodes::world_node_t;
-
 } // ramen
 
 #endif

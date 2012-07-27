@@ -44,9 +44,6 @@
 
 #include<ramen/hash/generator.hpp>
 
-#include<ramen/serialization/yaml_iarchive.hpp>
-#include<ramen/serialization/yaml_oarchive.hpp>
-
 namespace ramen
 {
 namespace params
@@ -185,12 +182,8 @@ public:
     void make_paths_absolute();
     void make_paths_relative();
 
-    // serialization
-    void read( const serialization::yaml_node_t& in);
-    void write( serialization::yaml_oarchive_t& out) const;
-
     // util
-    void apply_function( const boost::function<void ( param_t*)>& f);
+    void apply_function( const boost::function<void ( param_t*)> *f);
 
 protected:
 
@@ -245,12 +238,8 @@ private:
     virtual void do_make_paths_absolute();
     virtual void do_make_paths_relative();
 
-    // serialization
-    virtual void do_read( const serialization::yaml_node_t& in);
-    virtual void do_write( serialization::yaml_oarchive_t& out) const;
-
     // util
-    virtual void do_apply_function( const boost::function<void ( param_t*)>& f);
+    virtual void do_apply_function( const boost::function<void ( param_t*)> *f);
 
     template<class S> friend S get_value( const param_t& p);
     template<class S> friend S get_value_at_frame( const param_t& p, float frame);

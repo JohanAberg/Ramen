@@ -131,27 +131,9 @@ void composite_param_t::do_make_paths_relative()
 }
 
 // util
-void composite_param_t::do_apply_function( const boost::function<void ( param_t*)>& f)
+void composite_param_t::do_apply_function( const boost::function<void ( param_t*)> *f)
 {
     boost::range::for_each( params(), boost::bind( &param_t::apply_function, _1, f));
-}
-
-void composite_param_t::do_read( serialization::yaml_iarchive_t& node)
-{
-    RAMEN_ASSERT( param_set());
-
-    serialization::yaml_node_t nodes = node.get_node( "children");
-
-    for( int i = 0; i < nodes.size(); ++i)
-        param_set()->read_param( nodes[i]);
-}
-
-void composite_param_t::do_write( serialization::yaml_oarchive_t& out) const
-{
-    out << YAML::Key << "children" << YAML::Value;
-        out.begin_seq();
-            boost::range::for_each( params(), boost::bind( &param_t::write, _1, boost::ref( out)));
-        out.end_seq();
 }
 
 } // namespace

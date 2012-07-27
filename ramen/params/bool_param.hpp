@@ -35,9 +35,6 @@ private:
 
     virtual boost::python::object to_python( const base::poly_regular_t& v) const;
     virtual base::poly_regular_t from_python( const boost::python::object& obj) const;
-
-    virtual void do_read( const serialization::yaml_node_t& node);
-    virtual void do_write( serialization::yaml_oarchive_t& out) const;
 };
 
 } // namespace

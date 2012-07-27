@@ -66,36 +66,5 @@ base::poly_regular_t combo_group_param_t::from_python( const boost::python::obje
     return base::poly_regular_t( i);
 }
 
-// serialization
-void combo_group_param_t::do_read( const serialization::yaml_node_t& node)
-{
-    /*
-    serialization::yaml_node_t n = node.get_node( "value");
-    std::string val;
-    n >> val;
-
-    for( int i = 0; i < params().size(); ++i)
-    {
-        if( params()[i].name() == val)
-        {
-            value().assign( i);
-            return;
-        }
-    }
-
-    node.error_stream() << "Unknown string in combo group param\n";
-    */
-}
-
-void combo_group_param_t::do_write( serialization::yaml_oarchive_t& out) const
-{
-    /*
-    int v = get_value<int>( *this);
-    out << YAML::Key << "value" << YAML::Value;
-    out << params()[v].name();
-    out.check_errors();
-    */
-}
-
 } // namespace
 } // namespace

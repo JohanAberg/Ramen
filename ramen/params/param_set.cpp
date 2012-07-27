@@ -31,9 +31,6 @@
 
 #include<ramen/undo/stack.hpp>
 
-#include<ramen/serialization/yaml_oarchive.hpp>
-#include<ramen/serialization/yaml_node.hpp>
-
 #include<iostream>
 
 namespace ramen
@@ -215,45 +212,7 @@ void param_set_t::add_to_hash( hash::generator_t& hash_gen) const
 
 void param_set_t::for_each_param( const boost::function<void ( param_t*)>& f)
 {
-    boost::range::for_each( params_, boost::bind( &param_t::apply_function, _1, f));
-}
-
-// serialization
-
-void param_set_t::read( const serialization::yaml_node_t& node)
-{
-    for( int i = 0; i < node.size(); ++i)
-        read_param( node[i]);
-}
-
-void param_set_t::read_param( const serialization::yaml_node_t& node)
-{
-    /*
-    std::string id;
-    node.get_value( "id", id);
-
-    try
-    {
-        param_t& p( find( id));
-        p.read( node);
-    }
-    catch( YAML::Exception& e)
-    {
-        node.error_stream() << "Yaml exception: " << e.what() << " in node " << parent()->name() << "\n";
-    }
-    catch( std::runtime_error& e)
-    {
-        node.error_stream() << "Unknown param " << id << " in node " << parent()->name() << "\n";
-    }
-    */
-}
-
-void param_set_t::write( serialization::yaml_oarchive_t& out) const
-{
-    out << YAML::Key << "params" << YAML::Value;
-        out.begin_seq();
-            BOOST_FOREACH( const param_t& p, params()) { p.write( out);}
-        out.end_seq();
+    boost::range::for_each( params_, boost::bind( &param_t::apply_function, _1, &f));
 }
 
 } // namespace

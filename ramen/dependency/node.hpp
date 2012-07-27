@@ -12,7 +12,6 @@
 #include<utility>
 #include<vector>
 
-#include<boost/noncopyable.hpp>
 #include<boost/signals2/signal.hpp>
 
 #include<ramen/dependency/graph_fwd.hpp>
@@ -27,7 +26,7 @@ namespace dependency
 \brief A node in Ramen's dependency graph.
 */
 
-class RAMEN_API node_t : boost::noncopyable
+class RAMEN_API node_t
 {
 public:
 
@@ -37,20 +36,31 @@ public:
     /// Returns true if this node is dirty.
     bool dirty() const;
 
+    /// Sets this node dirty flag.
+    void set_dirty();
+
 protected:
 
     node_t( const node_t& other);
-    void operator=( const node_t& other);
 
-    /// Sets this node dirty flag.
-    void set_dirty( bool d);
+    /// Clears this node dirty flag.
+    void clear_dirty();
+
+    /// Notify observers that this node has changed.
+    void notify();
 
 private:
 
-    /// Notify observers that this node changed.
-    virtual void notify();
+    friend class ramen::dependency::graph_t;
+    friend class ramen::dependency::sub_graph_t;
 
-    friend class graph_t;
+    void operator=( const node_t& other);
+
+    /*!
+        \brief Customization hook for node_t::notify.
+        For subclasses to implement.
+    */
+    virtual void do_notify();
 
     bool dirty_;
 };
@@ -76,8 +86,7 @@ protected:
 
 private:
 
-    /// Notify observers that this node changed. Emits the changed signal.
-    virtual void notify();
+    virtual void do_notify();
 };
 
 } // namespace

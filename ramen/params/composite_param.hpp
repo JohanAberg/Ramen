@@ -67,11 +67,7 @@ private:
     virtual void do_make_paths_relative();
 
     // util
-    virtual void do_apply_function( const boost::function<void ( param_t*)>& f);
-
-    // serialization
-    virtual void do_read( serialization::yaml_iarchive_t& node);
-    virtual void do_write( serialization::yaml_oarchive_t& out) const;
+    virtual void do_apply_function( const boost::function<void ( param_t*)> *f);
 
     boost::ptr_vector<param_t> params_;
     bool create_track_;

@@ -79,20 +79,6 @@ public:
     /// Returns a pointer to the node connected to the input plug with the given id.
     node_t *input( const base::name_t& id);
 
-    /// Returns a const pointer to the node connected to the input plug with the given id.
-    template<class T>
-    const T *input_as( const base::name_t& id) const
-    {
-        return dynamic_cast<const T*>( input( id));
-    }
-
-    /// Returns a pointer to the node connected to the input plug with the given id.
-    template<class T>
-    T *input_as( const base::name_t& id)
-    {
-        return dynamic_cast<T*>( input( id));
-    }
-
     /// Returns the number of input plugs.
     std::size_t num_outputs() const { return outputs_.size();}
 
@@ -114,6 +100,9 @@ public:
 
     /// visitor.
     virtual void accept( visitor_t& v);
+
+    // dependency graph
+    void add_dependencies();
 
     // ui
     const Imath::V2f& location() const		{ return loc_;}
@@ -164,10 +153,6 @@ public:
 
     virtual void make_paths_absolute();
     virtual void make_paths_relative();
-
-    // serialization
-    void read( const serialization::yaml_node_t& in, const std::pair<int,int>& version);
-    void write( serialization::yaml_oarchive_t& out) const;
 
 protected:
 
@@ -224,19 +209,13 @@ private:
     virtual bool do_is_valid() const;
 
     /*!
-        \brief Customization hook for node_t::read.
-        Implement in subclasses to read extra data from node.
+        \brief Customization hook for node_t::add_dependencies.
+        By default, it adds all possible dependencies.
+        For subclasses to implement.
     */
-    virtual void do_read(const serialization::yaml_node_t& in, const std::pair<int,int>& version);
+    virtual void do_add_dependencies();
 
-    /*!
-        \brief Customization hook for node_t::write.
-        Implement in subclasses to write extra data to out.
-    */
-    virtual void do_write( serialization::yaml_oarchive_t& out) const;
-
-    // serialization utils
-    void write_node_info( serialization::yaml_oarchive_t& out) const;
+    virtual void do_propagate_dirty_flags();
 
     // data
 

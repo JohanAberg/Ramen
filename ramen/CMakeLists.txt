@@ -48,6 +48,7 @@ SET( RAMEN_SOURCES  anim/any_curve.cpp
 
 					expressions/expression.cpp
 
+                    dependency/dependency.cpp
 					dependency/graph.cpp
 					dependency/node.cpp
 					dependency/exceptions.cpp

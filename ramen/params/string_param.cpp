@@ -73,18 +73,5 @@ base::poly_regular_t string_param_t::from_python( const boost::python::object& o
     return base::poly_regular_t( str);
 }
 
-void string_param_t::do_read( const serialization::yaml_node_t& node)
-{
-    std::string val;
-    node.get_value<std::string>( "value", val);
-    set_value( val);
-}
-
-void string_param_t::do_write( serialization::yaml_oarchive_t& out) const
-{
-    out << YAML::Key << "value"
-        << YAML::Value << get_value<std::string>( *this);
-}
-
 } // namespace
 } // namespace

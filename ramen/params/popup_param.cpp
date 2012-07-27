@@ -54,30 +54,6 @@ base::poly_regular_t popup_param_t::from_python( const boost::python::object& ob
     return base::poly_regular_t( index);
 }
 
-void popup_param_t::do_read( const serialization::yaml_node_t& node)
-{
-    serialization::yaml_node_t n = node.get_node( "value");
-    std::string val;
-    n >> val;
-
-    int index = find_index_for_string( val);
-
-    if( index != -1)
-        value().assign( index);
-    else
-    {
-        node.error_stream() << "error: item " << val << " not found on param\n";
-        value().assign( 0);
-    }
-}
-
-void popup_param_t::do_write( serialization::yaml_oarchive_t& out) const
-{
-    int v = get_value<int>( *this);
-    out << YAML::Key << "value" << YAML::Value;
-    out << YAML::DoubleQuoted << menu_items()[v];
-}
-
 int popup_param_t::find_index_for_string( const std::string& s) const
 {
     for( int i = 0; i < menu_items().size(); ++i)

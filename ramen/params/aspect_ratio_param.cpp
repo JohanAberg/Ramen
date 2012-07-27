@@ -46,19 +46,6 @@ base::poly_regular_t aspect_ratio_param_t::from_python( const boost::python::obj
     return base::poly_regular_t( val);
 }
 
-void aspect_ratio_param_t::do_read( const serialization::yaml_node_t& node)
-{
-    float val = 1.0f;
-    node.get_value<float>( "value", val);
-    set_value( val, silent_edit);
-}
-
-void aspect_ratio_param_t::do_write( serialization::yaml_oarchive_t& out) const
-{
-    out << YAML::Key << "value"
-        << YAML::Value << get_value<float>( *this);
-}
-
 void aspect_ratio_param_t::init_presets()
 {
     static bool inited = false;

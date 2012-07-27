@@ -179,14 +179,12 @@ node_t *composite_node_t::do_find_node( name_tokenizer_type::iterator tok_it, na
 
 void composite_node_t::set_layout( std::auto_ptr<ui::graph_layout_t> layout) { layout_ = layout;}
 
-void composite_node_t::do_read(const serialization::yaml_node_t& in, const std::pair<int,int>& version)
+void composite_node_t::for_each_sub_graph( const boost::function<void( sub_graph_t*)> *f)
 {
-    // TODO: implement this.
-}
+    sub_graph_t::for_each_sub_graph( f);
 
-void composite_node_t::do_write( serialization::yaml_oarchive_t& out) const
-{
-    // TODO: implement this.
+    BOOST_FOREACH( nodes::node_t& n, graph().nodes())
+        n.for_each_sub_graph( f);
 }
 
 } // namespace

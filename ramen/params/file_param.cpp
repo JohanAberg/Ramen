@@ -8,6 +8,8 @@
 
 #include<ramen/params/param_set.hpp>
 
+#include<ramen/filesystem/path.hpp>
+
 namespace ramen
 {
 namespace params
@@ -84,20 +86,6 @@ base::poly_regular_t file_param_t::from_python( const boost::python::object& obj
     std::string str = boost::python::extract<std::string>( obj);
     boost::filesystem::path p( str);
     return base::poly_regular_t( p);
-}
-
-void file_param_t::do_read( const serialization::yaml_node_t& node)
-{
-    std::string val;
-    node.get_value<std::string>( "value", val);
-    set_value( boost::filesystem::path( val), silent_edit);
-}
-
-void file_param_t::do_write( serialization::yaml_oarchive_t& out) const
-{
-    out << YAML::Key << "value"
-            << YAML::Value << YAML::DoubleQuoted
-            << filesystem::file_string( get_value<boost::filesystem::path>( *this));
 }
 
 void file_param_t::do_convert_relative_paths( const boost::filesystem::path& old_base, const boost::filesystem::path& new_base)

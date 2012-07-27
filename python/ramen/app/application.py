@@ -34,7 +34,6 @@ class application( base_application):
         self.init_threads( 0)
         self.init_ocio()
 
-
     def run( self):
         result = 0
 
@@ -45,11 +44,8 @@ class application( base_application):
 
         self.print_app_info()
 
-        self._ui = user_interface()
-        result = self._ui.run( self._args)
-
-        self.quit()
-        return result
+        self._ui = user_interface( self)
+        return self._ui.run( self._args)
 
     def quit( self):
         pass

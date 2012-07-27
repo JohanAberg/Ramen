@@ -105,7 +105,12 @@ public:
 
     /// Adds a param to this parameterised.
     template<class T>
-    void add_param( std::auto_ptr<T> p) { param_set().add_param( p);}
+    void add_param( std::auto_ptr<T> p)
+    {
+        param_t *param = p.get();
+        param_set().add_param( p);
+        add_dependency_node( param);
+    }
 
     /// Calls a function f for each param.
     virtual void for_each_param( const boost::function<void ( param_t*)>& f);
@@ -148,19 +153,19 @@ private:
         \brief Customization hook for parameterised_t::create_params.
         For subclasses to implement.
     */
-    virtual void do_create_params() {}
+    virtual void do_create_params();
 
     /*!
         \brief Customization hook for parameterised_t::create_tracks.
         For subclasses to implement.
     */
-    virtual void do_create_tracks( anim::track_t *parent) {}
+    virtual void do_create_tracks( anim::track_t *parent);
 
     /*!
         \brief Customization hook for parameterised_t::set_frame.
         For subclasses to implement.
     */
-    virtual void do_set_frame( float t) {}
+    virtual void do_set_frame( float t);
 
     std::string name_;
     parameterised_t *parent_;

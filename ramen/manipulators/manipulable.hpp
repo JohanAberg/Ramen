@@ -25,7 +25,7 @@ namespace manipulators
 \ingroup manips
 \brief Base class for objects that can have manipulators, react to events and draw an on-screen overlay using GL.
 */
-class RAMEN_API manipulable_t : dependency::sub_graph_t
+class RAMEN_API manipulable_t : public dependency::sub_graph_t
 {
 public:
 

@@ -33,6 +33,8 @@ parameterised_t::parameterised_t( const parameterised_t& other) : params_( other
     dont_persist_params_ = other.dont_persist_params_;
     params_.set_parent( this);
     parent_ = 0;
+
+    param_set().for_each_param( boost::bind( &dependency::sub_graph_t::add_dependency_node, this, _1));
 }
 
 parameterised_t::~parameterised_t() { deleted( this);}
@@ -55,6 +57,8 @@ void parameterised_t::create_params()
     do_create_params();
     boost::range::for_each( param_set(), boost::bind( &param_t::init, _1));
 }
+
+void parameterised_t::do_create_params() {}
 
 void parameterised_t::set_parent( parameterised_t *parent)
 {
@@ -173,11 +177,15 @@ void parameterised_t::create_tracks( anim::track_t *root)
     root->add_child( top);
 }
 
+void parameterised_t::do_create_tracks( anim::track_t *parent) {}
+
 void parameterised_t::set_frame( float f)
 {
     boost::range::for_each( param_set(), boost::bind( &param_t::set_frame, _1, f));
     do_set_frame( f);
 }
+
+void parameterised_t::do_set_frame( float t) {}
 
 void parameterised_t::evaluate_params( float frame)
 {

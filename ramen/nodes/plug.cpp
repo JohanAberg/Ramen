@@ -64,7 +64,7 @@ void output_plug_t::add_output( ramen::nodes::node_t *n, const base::name_t& plu
     int port = n->find_input( plug);
     RAMEN_ASSERT( port >= 0);
 
-    connections_.push_back( boost::tuples::make_tuple( n, plug, port));
+    connections_.push_back( boost::tuples::make_tuple( n, plug));
 }
 
 void output_plug_t::remove_output( ramen::nodes::node_t *n, const base::name_t& plug)

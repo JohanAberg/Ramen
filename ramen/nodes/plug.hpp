@@ -81,9 +81,10 @@ public:
     typedef std::pair<ramen::nodes::node_t*,base::name_t> connection_type;
 
     /// Constructor.
-    input_plug_t( const base::name_t& id, bool optional,
-                       const Imath::Color3c& color,
-                       const std::string& tooltip) : plug_t( id, color, tooltip)
+    input_plug_t( const base::name_t& id,
+                    bool optional,
+                    const Imath::Color3c& color,
+                    const std::string& tooltip) : plug_t( id, color, tooltip)
     {
         input_.first = 0;
         optional_ = optional;
@@ -141,7 +142,7 @@ class output_plug_t : public plug_t, public dependency::output_node_t
 {
 public:
 
-    typedef boost::tuples::tuple<ramen::nodes::node_t*,base::name_t, int> connection_type;
+    typedef boost::tuples::tuple<ramen::nodes::node_t*,base::name_t> connection_type;
 
     /// Constructor.
     output_plug_t( ramen::nodes::node_t *parent, const base::name_t& id,

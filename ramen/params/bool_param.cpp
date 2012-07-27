@@ -46,18 +46,5 @@ base::poly_regular_t bool_param_t::from_python( const boost::python::object& obj
     return base::poly_regular_t( b);
 }
 
-void bool_param_t::do_read( const serialization::yaml_node_t& node)
-{
-    bool val;
-    node.get_value<bool>( "value", val);
-    set_value( val, silent_edit);
-}
-
-void bool_param_t::do_write( serialization::yaml_oarchive_t& out) const
-{
-    out << YAML::Key << "value"
-        << YAML::Value << get_value<bool>( *this);
-}
-
 } // namespace
 } // namespace

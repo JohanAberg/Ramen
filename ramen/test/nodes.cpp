@@ -16,8 +16,8 @@ using namespace ramen;
 int node_added_calls = 0;
 int node_released_calls = 0;
 
-void node_added( node_t*)       { node_added_calls++;}
-void node_released( node_t*)    { node_released_calls++;}
+void node_added( nodes::node_t*)       { node_added_calls++;}
+void node_released( nodes::node_t*)    { node_released_calls++;}
 
 void test_nodes()
 {

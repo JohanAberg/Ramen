@@ -91,12 +91,6 @@ public:
     // util
     void for_each_param( const boost::function<void ( param_t*)>& f);
 
-    // serialization
-    void read( const serialization::yaml_node_t& node);
-    void write( serialization::yaml_oarchive_t& out) const;
-
-    void read_param( const serialization::yaml_node_t& node);
-
 private:
 
     void do_add_param( param_t *p);

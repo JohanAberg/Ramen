@@ -48,12 +48,16 @@ public:
 
 protected:
 
+    // non-copyable
     world_node_t( const world_node_t& other);
     void operator=( const world_node_t&);
 
 private:
 
     void emit_node_release_signal( node_t& n);
+
+    // dependency graph
+    virtual void do_propagate_dirty_flags();
 
     dependency::graph_t dep_graph_;
 

@@ -12,10 +12,13 @@
 #include<vector>
 #include<map>
 
-#include<boost/graph/adjacency_list.hpp>
+#include<boost/noncopyable.hpp>
+#include<boost/function.hpp>
 
 #include<ramen/dependency/node.hpp>
 #include<ramen/dependency/exceptions.hpp>
+
+#include<ramen/nodes/node_fwd.hpp>
 
 namespace ramen
 {
@@ -26,15 +29,26 @@ namespace dependency
 \ingroup depgraph
 \brief Ramen's dependency graph.
 */
-class RAMEN_API graph_t
+class RAMEN_API graph_t : boost::noncopyable
 {
 public:
 
-	graph_t();
+	explicit graph_t( nodes::world_node_t *w);
+
+    /// Clears all nodes dirty flag.
+    void clear_all_dirty();
+
+    /// Calls notify for all dirty nodes on the dep. graph.
+    void notify_all_dirty();
 
 private:
 
-    std::vector<sub_graph_t*> sub_graphs_;
+    void for_each_sub_graph( const boost::function<void( sub_graph_t*)>& f);
+
+    static void clear_sub_graph_dirty( sub_graph_t *g);
+    static void notify_sub_graph( sub_graph_t *g);
+
+    nodes::world_node_t *world_;
 };
 
 } // dependency
