@@ -17,6 +17,11 @@ class graph_modifier_t : boost::noncopyable
 public:
 
     graph_modifier_t();
+    ~graph_modifier_t();
+
+private:
+
+
 };
 
 } // namespace

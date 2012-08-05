@@ -22,12 +22,9 @@ class generator_t
 {
 public:
 
-    typedef base::hash::md5_t::digest_t digest_type;
+    typedef base::hash::md5_t::digest_type digest_type;
 
     generator_t();
-
-    bool empty() const		{ return empty_;}
-    void set_empty( bool b) { empty_ = b;}
 
     void reset();
 
@@ -46,7 +43,6 @@ private:
 
     std::stringstream ss_;
     mutable boost::optional<digest_type> digest_;
-    bool empty_;
 };
 
 template<class T>
@@ -54,8 +50,6 @@ generator_t& operator<<( generator_t& hash_gen, const T& x)
 {
     RAMEN_ASSERT( !hash_gen.finalized());
     hash_gen.sstream() << x;
-
-    hash_gen.set_empty( false);
     return hash_gen;
 }
 

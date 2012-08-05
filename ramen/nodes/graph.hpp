@@ -14,6 +14,7 @@
 
 #include<boost/bind.hpp>
 #include<boost/ptr_container/ptr_vector.hpp>
+#include<boost/optional.hpp>
 
 #include<ramen/nodes/node.hpp>
 
@@ -43,12 +44,6 @@ public:
 
         node_t *dst;
         base::name_t dst_plug;
-
-        // for graph algorithms
-        graph_color_t graph_color() const            { return graph_color_;}
-        void set_graph_color( graph_color_t c) const { graph_color_ = c;}
-
-        mutable graph_color_t graph_color_;
     };
 
     typedef boost::ptr_vector<node_t> node_container_type;
@@ -71,19 +66,6 @@ public:
     typedef std::vector<connection_type>       connection_range_type;
     typedef const std::vector<connection_type>	const_connection_range_type;
 
-protected:
-
-    graph_t();
-    graph_t( const graph_t& other);
-
-    void add_node( std::auto_ptr<node_t> n);
-    std::auto_ptr<node_t> release_node( node_t *n);
-
-    void add_connection( const connection_type& e);
-    void remove_connection( const connection_type& e);
-
-public:
-
     // iterators & ranges
     node_iterator nodes_begin() { return nodes_.begin();}
     node_iterator nodes_end()   { return nodes_.end();}
@@ -104,6 +86,17 @@ public:
     connection_range_type& connections()                { return connections_;}
 
 private:
+
+    graph_t();
+    graph_t( const graph_t& other);
+
+    void add_node( std::auto_ptr<node_t> n);
+    std::auto_ptr<node_t> release_node( node_t *n);
+
+    void add_connection( const connection_type& c);
+    void remove_connection( const connection_type& c);
+
+    boost::optional<connection_type> find_connection( node_t *dst, const base::name_t& dst_plug) const;
 
     friend class composite_node_t;
 

@@ -6,11 +6,11 @@ SET( RAMEN_BASE_SOURCES ../base/base/empty.cpp
                         ../base/base/ref_counted.cpp
                         ../base/base/typeinfo.cpp
 
-                        ../base/base/cuda/cuda.cpp
-                        ../base/base/cuda/cudart.cpp
-                        ../base/base/cuda/driver_exceptions.cpp
-                        ../base/base/cuda/exceptions.cpp
-                        ../base/base/cuda/runtime_exceptions.cpp
+                        #../base/base/cuda/cuda.cpp
+                        #../base/base/cuda/cudart.cpp
+                        #../base/base/cuda/driver_exceptions.cpp
+                        #../base/base/cuda/exceptions.cpp
+                        #../base/base/cuda/runtime_exceptions.cpp
 
                         ../base/base/GL/gl.cpp
                         ../base/base/GL/glu.cpp

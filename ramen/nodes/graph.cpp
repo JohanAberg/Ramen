@@ -6,9 +6,12 @@
 
 #include<ramen/nodes/graph.hpp>
 
-#include<ramen/assert.hpp>
+#include<boost/foreach.hpp>
+#include<boost/range/algorithm/find.hpp>
 
-#include<ramen/container/ptr_vector_util.hpp>
+#include<base/container/ptr_vector_util.hpp>
+
+#include<ramen/assert.hpp>
 
 namespace ramen
 {
@@ -41,36 +44,68 @@ graph_t::graph_t( const graph_t& other)
     RAMEN_ASSERT( false);
 }
 
-void graph_t::add_node( std::auto_ptr<node_t> n) { nodes_.push_back( n);}
+void graph_t::add_node( std::auto_ptr<node_t> n)
+{
+    nodes_.push_back( n);
+}
 
 std::auto_ptr<node_t> graph_t::release_node( node_t *n)
 {
-    return container::release_ptr( n, nodes_);
+    RAMEN_ASSERT( base::container::contains_ptr( n, nodes_));
+
+    return base::container::release_ptr( n, nodes_);
 }
 
-void graph_t::add_connection( const connection_type& e)
+void graph_t::add_connection( const connection_type& c)
 {
-    // TODO: implement this.
-    /*
-    node_t *src = e.dst->input_plugs()[e.port].input_node();
+    RAMEN_ASSERT( c.src);
+    RAMEN_ASSERT( c.dst);
+    RAMEN_ASSERT( base::container::contains_ptr( c.src, nodes_));
+    RAMEN_ASSERT( base::container::contains_ptr( c.dst, nodes_));
+    RAMEN_ASSERT( c.dst->find_input( c.dst_plug) != -1);
+    RAMEN_ASSERT( c.src->find_output( c.src_plug) != -1);
 
-    if( src)
-        remove_connection( connection_type( src, e.dst, e.port));
+    boost::optional<connection_type> old_c = find_connection( c.dst, c.dst_plug);
 
-    e.dst->input_plugs()[e.port].set_input( e.src);
-    e.src->output_plug().add_output( e.dst, e.port);
-    connections_.push_back( e);
-    */
+    if( old_c)
+        remove_connection( old_c.get());
+
+    c.dst->input_plug( c.dst_plug).set_input( c.src, c.src_plug);
+    c.src->output_plug( c.src_plug).add_output( c.dst, c.dst_plug);
 }
 
-void graph_t::remove_connection( const connection_type& e)
+void graph_t::remove_connection( const connection_type& c)
 {
-    // TODO: implement this.
-    /*
-    e.src->output_plug().remove_output( e.dst, e.port);
-    e.dst->input_plugs()[e.port].clear_input();
-    connections_.erase( std::find( connections_.begin(), connections_.end(), e));
-    */
+    RAMEN_ASSERT( c.src);
+    RAMEN_ASSERT( c.dst);
+    RAMEN_ASSERT( base::container::contains_ptr( c.src, nodes_));
+    RAMEN_ASSERT( base::container::contains_ptr( c.dst, nodes_));
+    RAMEN_ASSERT( c.dst->find_input( c.dst_plug) != -1);
+    RAMEN_ASSERT( c.src->find_output( c.src_plug) != -1);
+
+    connection_iterator it = boost::range::find( connections(), c);
+
+    if( it != connections().end())
+    {
+        c.dst->input_plug( c.dst_plug).clear_input();
+        c.src->output_plug( c.src_plug).remove_output( c.dst, c.dst_plug);
+        connections().erase( it);
+    }
+}
+
+boost::optional<graph_t::connection_type> graph_t::find_connection( node_t *dst, const base::name_t& dst_plug) const
+{
+    RAMEN_ASSERT( dst);
+    RAMEN_ASSERT( base::container::contains_ptr( dst, nodes_));
+    RAMEN_ASSERT( dst->find_input( dst_plug) != -1);
+
+    BOOST_FOREACH( const connection_type& c, connections())
+    {
+        if( c.dst == dst && c.dst_plug == dst_plug)
+            return c;
+    }
+
+    boost::optional<connection_type>();
 }
 
 } // namespace

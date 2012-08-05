@@ -120,7 +120,11 @@ public:
     }
 
     /// Clear this plug connection.
-    void clear_input() { input_.first = 0;}
+    void clear_input()
+    {
+        input_.first = 0;
+        input_.second = base::name_t();
+    }
 
 protected:
 

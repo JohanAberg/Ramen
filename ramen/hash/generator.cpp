@@ -13,13 +13,12 @@ namespace ramen
 namespace hash
 {
 
-generator_t::generator_t() { set_empty( true);}
+generator_t::generator_t() {}
 
 void generator_t::reset()
 {
     digest_.reset();
     ss_.str( std::string());
-    set_empty( true);
 }
 
 std::string generator_t::str() const { return ss_.str();}

@@ -17,7 +17,6 @@
 
 #include<ramen/params/parameterised.hpp>
 
-#include<ramen/nodes/graph_color.hpp>
 #include<ramen/nodes/plug.hpp>
 #include<ramen/nodes/factory.hpp>
 #include<ramen/nodes/visitor.hpp>
@@ -93,10 +92,6 @@ public:
 
     /// Returns the output plug with the given id.
     output_plug_t& output_plug( const base::name_t& id);
-
-    // graph
-    graph_color_t graph_color() const            { return graph_color_;}
-    void set_graph_color( graph_color_t c) const { graph_color_ = c;}
 
     /// visitor.
     virtual void accept( visitor_t& v);
@@ -221,8 +216,6 @@ private:
 
     boost::ptr_vector<input_plug_t> inputs_;
     boost::ptr_vector<output_plug_t> outputs_;
-
-    mutable graph_color_t graph_color_;
 
     boost::uint32_t flags_;
     Imath::V2f loc_;

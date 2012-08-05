@@ -4,6 +4,9 @@
 
 #include<ramen/nodes/graph_modifier.hpp>
 
+#include<ramen/app/application.hpp>
+#include<ramen/app/document.hpp>
+
 namespace ramen
 {
 namespace nodes
@@ -12,6 +15,8 @@ namespace nodes
 graph_modifier_t::graph_modifier_t()
 {
 }
+
+graph_modifier_t::~graph_modifier_t() {}
 
 } // namespace
 } // namespace

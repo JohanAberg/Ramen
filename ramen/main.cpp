@@ -10,30 +10,11 @@
 #include<iostream>
 #include<exception>
 
-#include "client/linux/handler/exception_handler.h" // breakpad
-
 #include<ramen/app/application.hpp>
 #include<ramen/python/interpreter.hpp>
 #include<ramen/filesystem/path.hpp>
 
 namespace bfs = boost::filesystem;
-
-// crash handling
-bool ramen_crash_dump_callback( const char* dump_path,
-                                  const char* minidump_id,
-                                  void* context,
-                                  bool succeeded)
-{
-    /*
-    char command_string[1024];
-
-    snprintf( command_string, sizeof( command_string ),
-              "./CrashReporter ExampleClient 0.01 Linux-64 %s/%s.dmp", dump_path, minidump_id );
-
-    int unused = system( command_string );
-    */
-    return succeeded;
-}
 
 void ramen_terminate( void)
 {
@@ -48,8 +29,6 @@ void ramen_unexpected( void)
 
 int main( int argc, char **argv)
 {
-    google_breakpad::ExceptionHandler eh( "/tmp", NULL, ramen_crash_dump_callback, NULL, true );
-
 	std::set_terminate( &ramen_terminate);
 	std::set_unexpected( &ramen_unexpected);
 	
