@@ -102,6 +102,8 @@ void export_application()
         .def( "version_patch", &py_application_access::version_patch)
 
         .def( "full_version_name", &py_application_access::full_version_name)
+
+        .def( "debug_build", &application_t::debug_build)
         ;
 
     bpy::def( "r_app", py_app, bpy::return_value_policy<bpy::reference_existing_object>());

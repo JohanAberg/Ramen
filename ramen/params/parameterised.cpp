@@ -192,7 +192,11 @@ void parameterised_t::evaluate_params( float frame)
     boost::range::for_each( param_set(), boost::bind( &param_t::evaluate, _1, frame));
 }
 
-parameterised_t *new_clone( const parameterised_t& other) { return other.clone();}
+parameterised_t *new_clone( const parameterised_t& other)
+{
+    parameterised_t *p = other.clone();
+    return p;
+}
 
 } // namespace
 } // namespace

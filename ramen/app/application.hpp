@@ -77,6 +77,9 @@ public:
     void create_new_document();
     void open_document( const boost::filesystem::path& p);
 
+    // misc
+    bool debug_build() const;
+
 private:
 
     friend struct py_application_access;

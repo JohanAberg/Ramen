@@ -177,16 +177,22 @@ node_t *composite_node_t::do_find_node( name_tokenizer_type::iterator tok_it, na
     return 0;
 }
 
-/*
-void composite_node_t::connect( node_t *src, const base::name_t& src_port, const base::name_t& dst_port)
+void composite_node_t::connect( node_t *src, const base::name_t& src_plug,
+                                node_t *dst, const base::name_t& dst_plug)
 {
     RAMEN_ASSERT( src->parent_node() );
     RAMEN_ASSERT( dst->parent_node() );
     RAMEN_ASSERT( src->parent_node() == dst->parent_node() );
 
-    return dst->accept_connection( src, src_port, dst_port );
+    if( dst->accept_connection( src, src_plug, dst_plug))
+        graph().add_connection( graph_t::connection_type( src, src_plug, dst, dst_plug));
 }
-*/
+
+void composite_node_t::disconnect( node_t *src, const base::name_t& src_plug,
+                                     node_t *dst, const base::name_t& dst_plug)
+{
+    graph().remove_connection( graph_t::connection_type( src, src_plug, dst, dst_plug));
+}
 
 void composite_node_t::set_layout( std::auto_ptr<ui::graph_layout_t> layout) { layout_ = layout;}
 

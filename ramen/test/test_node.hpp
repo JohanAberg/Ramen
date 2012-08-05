@@ -28,12 +28,23 @@ protected:
 
 private:
 
+    virtual void do_init();
+
     virtual node_t *do_clone() const;
+
     virtual void do_create_plugs();
     virtual void do_create_params();
     virtual void do_create_manipulators();
 
     friend node_t *create_test_node();
+
+public:
+
+    // call counters
+    int init_calls;
+    int create_plugs_calls;
+    int create_params_calls;
+    int create_manips_calls;
 };
 
 } // nodes

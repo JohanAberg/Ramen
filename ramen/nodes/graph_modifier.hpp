@@ -7,6 +7,10 @@
 
 #include<boost/noncopyable.hpp>
 
+#include<memory>
+
+#include<ramen/nodes/graph.hpp>
+
 namespace ramen
 {
 namespace nodes
@@ -16,12 +20,13 @@ class graph_modifier_t : boost::noncopyable
 {
 public:
 
-    graph_modifier_t();
+    explicit graph_modifier_t( bool undoable = true);
     ~graph_modifier_t();
 
 private:
 
-
+    struct command_impl;
+    std::auto_ptr<command_impl> command_;
 };
 
 } // namespace

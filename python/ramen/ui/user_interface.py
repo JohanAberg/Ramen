@@ -17,7 +17,7 @@ class user_interface( object):
     def run( self, args):
         app = QtGui.QApplication( args)
 
-        self._main_window = main_window( self)
+        self._main_window = main_window( self._app, self)
         self._main_window.show()
         return app.exec_()
 

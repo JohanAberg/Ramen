@@ -145,7 +145,7 @@ void node_t::set_ui_invisible( bool b)  { util::set_flag( flags_, ui_invisible_b
 
 void node_t::add_input_plug( const base::name_t& id, bool optional, const Imath::Color3c &color, const std::string &tooltip)
 {
-    if( find_input( id) == -1)
+    if( find_input( id) != -1)
         throw std::runtime_error( util::concat_strings( "Duplicated input plud id: ", id.c_str()));
 
     std::auto_ptr<input_plug_t> plug( new input_plug_t( id, optional, color, tooltip ));
@@ -244,7 +244,7 @@ output_plug_t& node_t::output_plug( const base::name_t& id)
 
 void node_t::add_output_plug(const base::name_t& id, const Imath::Color3c& color, const std::string& tooltip )
 {
-    if( find_output( id) == -1)
+    if( find_output( id) != -1)
         throw std::runtime_error( util::concat_strings( "Duplicated output plug id: ", id.c_str()));
 
     std::auto_ptr<output_plug_t> plug( new output_plug_t( this, id, color, tooltip ));
@@ -373,7 +373,9 @@ void node_t::do_propagate_dirty_flags()
 
 node_t *new_clone( const node_t& other)
 {
-    return dynamic_cast<node_t*>( new_clone( dynamic_cast<const params::parameterised_t&>( other)));
+    node_t *n = dynamic_cast<node_t*>( new_clone( dynamic_cast<const params::parameterised_t&>( other)));
+    n->cloned();
+    return n;
 }
 
 } // namespace

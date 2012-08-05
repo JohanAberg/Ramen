@@ -12,15 +12,45 @@ namespace nodes
 test_node_t::test_node_t()
 {
     set_name( "test");
+    init_calls = 0;
+    create_plugs_calls = 0;
+    create_params_calls = 0;
+    create_manips_calls = 0;
 }
 
-test_node_t::test_node_t( const test_node_t& other) : node_t( other) {}
+test_node_t::test_node_t( const test_node_t& other) : node_t( other)
+{
+    init_calls = 0;
+    create_plugs_calls = 0;
+    create_params_calls = 0;
+    create_manips_calls = 0;
+}
+
+void test_node_t::do_init()
+{
+    ++init_calls;
+}
 
 node_t *test_node_t::do_clone() const { return new test_node_t( *this);}
 
-void test_node_t::do_create_plugs() {}
-void test_node_t::do_create_params() {}
-void test_node_t::do_create_manipulators() {}
+void test_node_t::do_create_plugs()
+{
+    add_input_plug( base::name_t( "front"), false, Imath::Color3c( 255, 0, 0), "tooltip");
+    add_input_plug( base::name_t( "back"), false, Imath::Color3c( 255, 0, 0), "tooltip");
+
+    add_output_plug( base::name_t( "result"), Imath::Color3c( 0, 0, 255), "result");
+    ++create_plugs_calls;
+}
+
+void test_node_t::do_create_params()
+{
+    ++create_params_calls;
+}
+
+void test_node_t::do_create_manipulators()
+{
+    ++create_manips_calls;
+}
 
 // factory
 node_t *create_test_node() { return new test_node_t();}

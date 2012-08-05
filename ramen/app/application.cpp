@@ -330,6 +330,15 @@ bool application_t::question( const std::string& what, bool default_answer) cons
     return default_answer;
 }
 
+bool application_t::debug_build() const
+{
+    #ifndef NDEBUG
+        return true;
+    #endif
+
+    return false;
+}
+
 int application_t::run_unit_tests( int argc, char **argv)
 {
     return run_ramen_unit_tests( argc, argv);
