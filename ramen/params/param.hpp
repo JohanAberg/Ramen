@@ -274,6 +274,7 @@ S get_value( const param_t& p)
         catch( base::bad_cast& e)
         {
             RAMEN_ASSERT( 0 && "Bad cast exception in get_value");
+            return S();
         }
     #endif
 }
@@ -293,6 +294,7 @@ S get_value_at_frame( const param_t& p, float frame)
         catch( base::bad_cast& e)
         {
             RAMEN_ASSERT( 0 && "Bad cast exception in get_value");
+            return S();
         }
     #endif
 }
