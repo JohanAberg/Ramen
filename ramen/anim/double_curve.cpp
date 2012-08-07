@@ -19,9 +19,6 @@
 
 #include<ramen/anim/util.hpp>
 
-#include<ramen/serialization/yaml_node.hpp>
-#include<ramen/serialization/yaml_oarchive.hpp>
-
 namespace ramen
 {
 namespace anim

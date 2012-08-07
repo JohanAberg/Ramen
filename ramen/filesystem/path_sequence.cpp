@@ -341,57 +341,5 @@ void path_sequence_t::make_paths_relative( const boost::filesystem::path& from_d
 	}
 }
 
-void operator>>( const YAML::Node& in, path_sequence_t& seq)
-{
-	switch( in.size())
-	{
-	case 0:
-		seq = path_sequence_t();
-	break;
-		
-	case 1:
-	{
-		std::string p;
-		in[0] >> p;
-		seq = path_sequence_t( boost::filesystem::path( p), false);
-	}
-	break;
-		
-	case 3:
-	{
-		std::string format;
-		int start, end;
-		
-		in[0] >> format;
-		in[1] >> start;
-		in[2] >> end;
-		seq = path_sequence_t( format, start, end);
-	}
-	break;
-	
-	default:
-		RAMEN_ASSERT( 0);
-	};
-}
-
-YAML::Emitter& operator<<( YAML::Emitter& out, const path_sequence_t& seq)
-{
-    out << YAML::Flow << YAML::BeginSeq;
-
-	if( seq.valid())
-	{
-		out << YAML::DoubleQuoted << seq.format_string();
-		
-		if( seq.is_sequence())
-		{
-			out << seq.start();
-			out << seq.end();
-		}
-	}
-	
-	out << YAML::EndSeq;
-    return out;
-}
-
 } // namespace
 } // namespace

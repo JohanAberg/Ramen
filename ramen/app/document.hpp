@@ -13,6 +13,8 @@
 
 #include<memory>
 
+#include<boost/filesystem/path.hpp>
+
 #include<ramen/undo/stack_fwd.hpp>
 
 namespace ramen

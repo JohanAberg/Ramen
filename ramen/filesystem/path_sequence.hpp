@@ -10,8 +10,6 @@
 
 #include<ramen/filesystem/path.hpp>
 
-#include<ramen/serialization/yaml.hpp>
-
 namespace ramen
 {
 namespace filesystem
@@ -50,10 +48,6 @@ public:
 	void convert_relative_paths( const boost::filesystem::path& old_base, const boost::filesystem::path& new_base);
 	void make_paths_absolute( const boost::filesystem::path& from_dir);
 	void make_paths_relative( const boost::filesystem::path& from_dir);
-
-	// serialization
-	friend void operator>>( const YAML::Node& in, path_sequence_t& seq);
-	friend YAML::Emitter& operator<<( YAML::Emitter& out, const path_sequence_t& seq);
 
 private:
 

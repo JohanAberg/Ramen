@@ -97,11 +97,6 @@ SET( RAMEN_SOURCES  anim/any_curve.cpp
 
                     python/interpreter.cpp
 
-					serialization/yaml.cpp
-					serialization/yaml_iarchive.cpp
-					serialization/yaml_node.cpp
-					serialization/yaml_oarchive.cpp
-
 					ui/events.cpp
 					ui/graph_layout.cpp
 					ui/user_interface.cpp

@@ -12,8 +12,6 @@
 
 #include<ramen/anim/track.hpp>
 
-#include<ramen/serialization/yaml_oarchive.hpp>
-
 #include<ramen/util/string.hpp>
 
 namespace ramen

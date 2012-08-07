@@ -6,9 +6,6 @@
 
 #include<OpenEXR/ImathFun.h>
 
-#include<ramen/serialization/yaml_node.hpp>
-#include<ramen/serialization/yaml_oarchive.hpp>
-
 namespace ramen
 {
 namespace anim
