@@ -14,6 +14,7 @@
 #include<string>
 
 #include<boost/signals2/signal.hpp>
+#include<boost/ptr_container/ptr_vector.hpp>
 
 #include<ramen/params/param.hpp>
 #include<ramen/params/parameterised_fwd.hpp>
@@ -85,8 +86,6 @@ public:
     void add_command( param_t *p);
 
     bool autokey() const;
-
-    void add_to_hash( hash::generator_t& hash_gen) const;
 
     // util
     void for_each_param( const boost::function<void ( param_t*)>& f);

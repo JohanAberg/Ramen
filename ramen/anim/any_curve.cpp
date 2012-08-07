@@ -4,7 +4,7 @@
 
 #include<ramen/anim/any_curve.hpp>
 
-#include<ramen/anim/float_curve.hpp>
+#include<ramen/anim/double_curve.hpp>
 #include<ramen/anim/shape_curve.hpp>
 
 namespace ramen
@@ -18,7 +18,7 @@ struct copy_visitor : public boost::static_visitor<>
 {
     copy_visitor( any_curve_t& dst) : dst_( dst) {}
 
-	void operator()( const float_curve_t *c)	{ dst_ = *c;}
+	void operator()( const double_curve_t *c)	{ dst_ = *c;}
 	void operator()( const shape_curve2f_t *c)	{ dst_ = *c;}
 
 private:
@@ -30,9 +30,9 @@ struct copy_to_visitor : public boost::static_visitor<>
 {
     copy_to_visitor( any_curve_ptr_t& dst) : dst_( dst) {}
 	
-	void operator()( const float_curve_t& c)
+	void operator()( const double_curve_t& c)
 	{
-		float_curve_t *curve = boost::get<float_curve_t*>( dst_);
+		double_curve_t *curve = boost::get<double_curve_t*>( dst_);
 		*curve = c;
 	}
 

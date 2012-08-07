@@ -183,6 +183,7 @@ void param_set_t::add_command( param_t *p)
 {
     if( editing())
     {
+        /*
         if( !command_->has_command_for_param( p))
         {
             std::auto_ptr<undo::command_t> c( p->create_command());
@@ -190,6 +191,7 @@ void param_set_t::add_command( param_t *p)
             if( c.get())
                 command_->add_command( p, c);
         }
+        */
    }
 }
 
@@ -199,15 +201,6 @@ bool param_set_t::autokey() const
         return parent()->autokey();
     else
         return false;
-}
-
-void param_set_t::add_to_hash( hash::generator_t& hash_gen) const
-{
-    BOOST_FOREACH( const param_t& p, params())
-    {
-        if( p.include_in_hash())
-            p.add_to_hash( hash_gen);
-    }
 }
 
 void param_set_t::for_each_param( const boost::function<void ( param_t*)>& f)

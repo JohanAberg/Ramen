@@ -13,7 +13,7 @@ namespace anim
 {
 
 class float_key_t;
-class float_curve_t;
+class double_curve_t;
 
 template<class T>
 class shape_key_t;

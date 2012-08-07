@@ -34,9 +34,9 @@ SET( RAMEN_SOURCES  anim/any_curve.cpp
 					anim/clipboard.cpp
 					anim/curve_algorithm.cpp
 					anim/curve_to_half_lut.cpp
+					anim/double_curve.cpp
+					anim/double_key.cpp
 					anim/expression_curve.cpp
-					anim/float_curve.cpp
-					anim/float_key.cpp
 					anim/keyframe.cpp
 					anim/track.cpp
 					anim/util.cpp
@@ -90,35 +90,10 @@ SET( RAMEN_SOURCES  anim/any_curve.cpp
 					ocio/gl_display_manager.cpp
 					ocio/gl_lut3d.cpp
 
-					params/animated_param.cpp
-					params/animated_param_command.cpp
-					params/aspect_ratio_param.cpp
-					params/bool_param.cpp
-					params/button_param.cpp
-					params/color_param.cpp
-					params/combo_group_param.cpp
 					params/composite_param.cpp
-					params/curve_param.cpp
-					params/expression_commands.cpp
-					params/file_param.cpp
-					params/float_param.cpp
-					params/float2_param.cpp
-					params/float3_param.cpp
-					params/group_param.cpp
-					params/motion_blur_info.cpp
-					params/motion_blur_param.cpp
-					params/numeric_param.cpp
-					params/ocio_colorspace_param.cpp
 					params/param.cpp
 					params/param_set.cpp
 					params/parameterised.cpp
-					params/popup_param.cpp
-					params/proportional_param.cpp
-					params/separator_param.cpp
-					params/static_param.cpp
-					params/static_param_command.cpp
-					params/string_param.cpp
-					params/tab_group_param.cpp
 
                     python/interpreter.cpp
 

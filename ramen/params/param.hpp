@@ -8,9 +8,7 @@
 #include<ramen/config.hpp>
 
 #include<ramen/params/param_fwd.hpp>
-
 #include<ramen/python/python.hpp>
-
 #include<ramen/dependency/node.hpp>
 
 #include<memory>
@@ -19,7 +17,6 @@
 #include<vector>
 #include<utility>
 
-#include<boost/filesystem/fstream.hpp>
 #include<boost/python/object.hpp>
 #include<boost/python/extract.hpp>
 
@@ -28,21 +25,10 @@
 #include<base/name.hpp>
 
 #include<ramen/assert.hpp>
-
+#include<ramen/nodes/node_fwd.hpp>
 #include<ramen/poly_indexable_regular.hpp>
-
 #include<ramen/params/parameterised_fwd.hpp>
 #include<ramen/params/param_set_fwd.hpp>
-#include<ramen/params/static_param_command_fwd.hpp>
-#include<ramen/params/animated_param_command_fwd.hpp>
-
-#include<ramen/anim/track_fwd.hpp>
-
-#include<ramen/expressions/expression.hpp>
-
-#include<ramen/undo/command.hpp>
-
-#include<ramen/hash/generator.hpp>
 
 namespace ramen
 {
@@ -162,26 +148,6 @@ public:
     // notifications
     void emit_param_changed( change_reason reason);
 
-    // animation
-    void create_tracks( anim::track_t *parent);
-    void set_frame( float frame);
-    void evaluate( float frame);
-
-    int num_expressions() const;
-    const expressions::expression_t& expression( int indx = 0) const;
-    expressions::expression_t& expression( int indx = 0);
-
-    // hash
-    void add_to_hash( hash::generator_t& hash_gen) const;
-
-    // undo
-    std::auto_ptr<undo::command_t> create_command();
-
-    // paths
-    void convert_relative_paths( const boost::filesystem::path& old_base, const boost::filesystem::path& new_base);
-    void make_paths_absolute();
-    void make_paths_relative();
-
     // util
     void apply_function( const boost::function<void ( param_t*)> *f);
 
@@ -196,19 +162,9 @@ protected:
     const base::poly_regular_t& value() const	{ return value_;}
     base::poly_regular_t& value()               { return value_;}
 
-    virtual base::poly_regular_t value_at_frame( float frame) const { return value();}
-
-    // expressions
-    void add_expression( const base::name_t& name);
-    bool eval_expression( int index, float frame, float& v) const;
-
 private:
 
     friend class param_set_t;
-    friend class static_param_command_t;
-    friend class static_param_reset_command_t;
-    friend class animated_param_command_t;
-    friend class animated_param_reset_command_t;
 
     virtual param_t *do_clone() const = 0;
 
@@ -216,36 +172,12 @@ private:
 
     virtual void do_set_param_set( param_set_t *parent);
 
-    // time and anim
-    virtual void do_create_tracks( anim::track_t *parent);
-    virtual void do_set_frame( float frame);
-    virtual void do_evaluate( float frame);
-
-    // expressions
-    expressions::expression_t *find_expression( const base::name_t& name);
-
-    // undo
-    virtual std::auto_ptr<undo::command_t> do_create_command();
-
-    // hash
-    virtual void do_add_to_hash( hash::generator_t& hash_gen) const;
-
+    // python
     virtual boost::python::object to_python( const base::poly_regular_t& v) const;
     virtual base::poly_regular_t from_python( const boost::python::object& obj) const;
 
-    // paths
-    virtual void do_convert_relative_paths( const boost::filesystem::path& old_base, const boost::filesystem::path& new_base);
-    virtual void do_make_paths_absolute();
-    virtual void do_make_paths_relative();
-
     // util
     virtual void do_apply_function( const boost::function<void ( param_t*)> *f);
-
-    template<class S> friend S get_value( const param_t& p);
-    template<class S> friend S get_value_at_frame( const param_t& p, float frame);
-
-    template<class S> friend S get_absolute_value( const param_t& p);
-    template<class S> friend S get_absolute_value_at_frame( const param_t& p, float frame);
 
     param_set_t *param_set_;
 
@@ -255,49 +187,7 @@ private:
 
     boost::uint32_t flags_;
     base::poly_regular_t value_;
-
-    std::vector<std::pair<base::name_t, expressions::expression_t> > expressions_;
 };
-
-template<class S>
-S get_value( const param_t& p)
-{
-    const base::poly_regular_t& any( p.value());
-
-    #ifdef NDEBUG
-        return any.cast<S>();
-    #else
-        try
-        {
-            return any.cast<S>();
-        }
-        catch( base::bad_cast& e)
-        {
-            RAMEN_ASSERT( 0 && "Bad cast exception in get_value");
-            return S();
-        }
-    #endif
-}
-
-template<class S>
-S get_value_at_frame( const param_t& p, float frame)
-{
-    base::poly_regular_t any( p.value_at_frame( frame));
-
-    #ifdef NDEBUG
-        return any.cast<S>();
-    #else
-        try
-        {
-            return any.cast<S>();
-        }
-        catch( base::bad_cast& e)
-        {
-            RAMEN_ASSERT( 0 && "Bad cast exception in get_value");
-            return S();
-        }
-    #endif
-}
 
 RAMEN_API param_t *new_clone( const param_t& other);
 

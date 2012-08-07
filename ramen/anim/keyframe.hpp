@@ -18,7 +18,7 @@ class keyframe_t
 {
 public:
 
-    typedef float time_type;
+    typedef double time_type;
 
     enum auto_tangent_method
     {

@@ -8,16 +8,13 @@
 #include<vector>
 #include<algorithm>
 
-#include<adobe/copy_on_write.hpp>
+#include<base/copy_on_write.hpp>
 
 #include<OpenEXR/ImathVec.h>
 
 #include<ramen/assert.hpp>
 
 #include<ramen/anim/keyframe.hpp>
-
-#include<ramen/serialization/yaml_node.hpp>
-#include<ramen/serialization/yaml_oarchive.hpp>
 
 namespace ramen
 {
@@ -92,39 +89,12 @@ public:
 	{
 		value().insert( end(), num, T());
 	}
-	
-	// serialization
-	void read( const serialization::yaml_node_t& node)
-	{
-		node.get_value( "time", time_);
-		serialization::yaml_node_t points( node.get_node( "points"));
-		value().reserve( points.size());
 		
-		for( int i = 0; i < points.size(); ++i)
-		{
-			point_type pt;
-			points[i] >> pt;
-			value().push_back( pt);
-		}
-	}
-
-	void write( serialization::yaml_oarchive_t& out) const
-	{
-		out.begin_map();
-			out << YAML::Key << "time" << YAML::Value << time();
-			out << YAML::Key << "points" << YAML::Value;
-				out.begin_seq();
-					for( int i = 0; i < size(); ++i)
-						out << value()[i];
-				out.end_seq();
-		out.end_map();
-	}
-	
 private:
 
     // keyframes should be cheap to copy. Undo is currently based on it.
     // so we use adobe::copy_on_write for complex keyframes.
-    adobe::copy_on_write<std::vector<T> > value_;
+    base::copy_on_write<std::vector<T> > value_;
 };
 
 typedef shape_key_t<Imath::V2f> shape_key2f_t;

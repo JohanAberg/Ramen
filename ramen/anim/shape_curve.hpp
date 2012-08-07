@@ -8,14 +8,11 @@
 #include<OpenEXR/ImathBox.h>
 #include<OpenEXR/ImathFun.h>
 
-#include<adobe/algorithm/copy.hpp>
+#include<boost/range/algorithm/copy.hpp>
 
 #include<ramen/anim/shape_key.hpp>
 
 #include<ramen/anim/curve.hpp>
-
-#include<ramen/serialization/yaml_node.hpp>
-#include<ramen/serialization/yaml_oarchive.hpp>
 
 namespace ramen
 {
@@ -140,36 +137,11 @@ public:
 	{
 		adobe::for_each( this->keys(), boost::bind( &key_type::insert_points, _1, before, num));
 	}
-	
-	// serialization
-	void read( const serialization::yaml_node_t& node)
-	{
-		// read extrapolation, ..., ... here.
 
-		serialization::yaml_node_t keys_node( node.get_node( "keys"));
-		
-		for( int i = 0; i < keys_node.size(); ++i)
-		{
-			key_type k;
-			k.read( keys_node[i]);
-			this->keys().insert( k);
-		}
-	}
-
-	void write( serialization::yaml_oarchive_t& out) const
-	{
-		out.begin_map();
-			out << YAML::Key << "keys" << YAML::Value;
-			out.begin_seq();
-				adobe::for_each( this->keys(), boost::bind( &key_type::write, _1, boost::ref( out)));
-			out.end_seq();
-		out.end_map();
-	}
-	
 private:
 
 	template<class OutIter>
-	void copy_keyframe( const key_type& k, OutIter out) const { adobe::copy( k.value(), out);}	
+	void copy_keyframe( const key_type& k, OutIter out) const { boost::range::copy( k.value(), out);}
 };
 
 typedef shape_curve_t<Imath::V2f> shape_curve2f_t;

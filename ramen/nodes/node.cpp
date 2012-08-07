@@ -322,21 +322,6 @@ const char *node_t::help_string() const
     return class_metadata()->help;
 }
 
-void node_t::convert_relative_paths( const boost::filesystem::path& old_base, const boost::filesystem::path& new_base)
-{
-    boost::range::for_each( param_set(), boost::bind( &params::param_t::convert_relative_paths, _1, old_base, new_base));
-}
-
-void node_t::make_paths_absolute()
-{
-    boost::range::for_each( param_set(), boost::bind( &params::param_t::make_paths_absolute, _1));
-}
-
-void node_t::make_paths_relative()
-{
-    boost::range::for_each( param_set(), boost::bind( &params::param_t::make_paths_relative, _1));
-}
-
 void node_t::add_dependencies()
 {
     do_add_dependencies();

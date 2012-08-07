@@ -163,35 +163,6 @@ void parameterised_t::for_each_param( const boost::function<void ( param_t*)>& f
     param_set().for_each_param( f);
 }
 
-// anim & time
-void parameterised_t::create_tracks( anim::track_t *root)
-{
-    std::auto_ptr<anim::track_t> top( new anim::track_t( name()));
-
-    BOOST_FOREACH( param_t& p, param_set())
-    {
-        p.create_tracks( top.get());
-    }
-
-    do_create_tracks( top.get());
-    root->add_child( top);
-}
-
-void parameterised_t::do_create_tracks( anim::track_t *parent) {}
-
-void parameterised_t::set_frame( float f)
-{
-    boost::range::for_each( param_set(), boost::bind( &param_t::set_frame, _1, f));
-    do_set_frame( f);
-}
-
-void parameterised_t::do_set_frame( float t) {}
-
-void parameterised_t::evaluate_params( float frame)
-{
-    boost::range::for_each( param_set(), boost::bind( &param_t::evaluate, _1, frame));
-}
-
 parameterised_t *new_clone( const parameterised_t& other)
 {
     parameterised_t *p = other.clone();

@@ -22,12 +22,12 @@ namespace detail
 int round( double x);
 
 template<class K>
-void move_selected_keys_time_left( curve_t<K>& c, float offset, bool do_round = false)
+void move_selected_keys_time_left( curve_t<K>& c, double offset, bool do_round = false)
 {
 	typedef typename curve_t<K>::iterator iterator;
 	iterator it( c.begin()), prev( c.begin());
 	
-	float new_time;
+	double new_time;
 
 	if( it->selected())
 	{
@@ -56,12 +56,12 @@ void move_selected_keys_time_left( curve_t<K>& c, float offset, bool do_round = 
 }
 	
 template<class K>
-void move_selected_keys_time_right( curve_t<K>& c, float offset, bool do_round = false)
+void move_selected_keys_time_right( curve_t<K>& c, double offset, bool do_round = false)
 {
 	typedef typename curve_t<K>::reverse_iterator reverse_iterator;
 	
 	reverse_iterator it( c.rbegin()), prev( c.rbegin());
-	float new_time;
+	double new_time;
 
 	if( it->selected())
 	{
@@ -170,16 +170,16 @@ void do_reverse_keyframes( curve_t<K>& c)
 } // detail
 
 template<class K>
-void move_selected_keyframes_time( curve_t<K>& c, float d, bool do_round = false)
+void move_selected_keyframes_time( curve_t<K>& c, double d, bool do_round = false)
 {
-	if( d < 0.0f)
+	if( d < 0.0)
 		detail::move_selected_keys_time_left( c, -d, do_round);
 	else
 		detail::move_selected_keys_time_right( c, d, do_round);
 }
 
 template<class K>
-void move_selected_keyframes_value( curve_t<K>& c, float d)
+void move_selected_keyframes_value( curve_t<K>& c, double d)
 {
 	RAMEN_ASSERT( 0 && "Can't move non float curves keyframes in Y");
 }
@@ -196,14 +196,14 @@ void reverse_keyframes( curve_t<K>& c, bool selected_only)
 		detail::do_reverse_keyframes( c);
 }
 
-void move_selected_keyframes_value( float_curve_t& c, float d);
-void negate_keyframes( float_curve_t& c, bool selected_only);
-void sample_keyframes( float_curve_t& c, bool selected_only);
-void smooth_keyframes( float_curve_t& c, float stddev, bool selected_only);
-void highpass_keyframes( float_curve_t& c, float stddev, bool selected_only);
+void move_selected_keyframes_value( double_curve_t& c, float d);
+void negate_keyframes( double_curve_t& c, bool selected_only);
+void sample_keyframes( double_curve_t& c, bool selected_only);
+void smooth_keyframes( double_curve_t& c, double stddev, bool selected_only);
+void highpass_keyframes( double_curve_t& c, double stddev, bool selected_only);
 
 // for some reason, gcc does not pick this overload...
-void reverse_float_keyframes( float_curve_t& c, bool selected_only);
+void reverse_double_keyframes( double_curve_t& c, bool selected_only);
 
 } // namespace
 } // namespace

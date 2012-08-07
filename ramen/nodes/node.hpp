@@ -142,13 +142,6 @@ public:
     // user interface
     virtual const char *help_string() const;
 
-    // paths
-    virtual void convert_relative_paths( const boost::filesystem::path& old_base,
-                                            const boost::filesystem::path& new_base);
-
-    virtual void make_paths_absolute();
-    virtual void make_paths_relative();
-
 protected:
 
     node_t( const node_t& other);

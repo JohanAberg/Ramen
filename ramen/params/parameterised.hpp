@@ -115,19 +115,10 @@ public:
     /// Calls a function f for each param.
     virtual void for_each_param( const boost::function<void ( param_t*)>& f);
 
-    /// Creates anim tracks for this parameterised and adds them to root.
-    void create_tracks( anim::track_t *root);
-
-    /// Sets the current frame to f.
-    void set_frame( float f);
-
 protected:
 
     parameterised_t( const parameterised_t& other);
     void operator=( const parameterised_t& other);
-
-    /// Evaluate all params at frame frame.
-    void evaluate_params( float frame);
 
 private:
 
@@ -154,18 +145,6 @@ private:
         For subclasses to implement.
     */
     virtual void do_create_params();
-
-    /*!
-        \brief Customization hook for parameterised_t::create_tracks.
-        For subclasses to implement.
-    */
-    virtual void do_create_tracks( anim::track_t *parent);
-
-    /*!
-        \brief Customization hook for parameterised_t::set_frame.
-        For subclasses to implement.
-    */
-    virtual void do_set_frame( float t);
 
     std::string name_;
     parameterised_t *parent_;

@@ -12,31 +12,31 @@
 
 #include<ramen/assert.hpp>
 
-#include<ramen/anim/float_key.hpp>
+#include<ramen/anim/double_key.hpp>
 
 namespace ramen
 {
 namespace anim
 {
 
-class float_curve_t : public curve_t<float_key_t>
+class double_curve_t : public curve_t<double_key_t>
 {
 public:
 
-	typedef curve_t<float_key_t>	superclass;
-    typedef float_key_t				key_type;
+	typedef curve_t<double_key_t>	superclass;
+    typedef double_key_t            key_type;
     typedef key_type::time_type		time_type;
     typedef key_type::value_type	value_type;
 
-    float_curve_t();
+    double_curve_t();
 
-    void copy( const float_curve_t& other, time_type offset = 0.0f);
-    void copy( const float_curve_t& other, time_type offset, time_type start, time_type end);
+    void copy( const double_curve_t& other, time_type offset = 0.0f);
+    void copy( const double_curve_t& other, time_type offset, time_type start, time_type end);
 
-    void swap( float_curve_t& other);
+    void swap( double_curve_t& other);
 
-    float_key_t::auto_tangent_method default_auto_tangents() const		{ return default_auto_tan_;}
-    void set_default_auto_tangents( float_key_t::auto_tangent_method m) { default_auto_tan_ = m;}
+    double_key_t::auto_tangent_method default_auto_tangents() const		{ return default_auto_tan_;}
+    void set_default_auto_tangents( double_key_t::auto_tangent_method m) { default_auto_tan_ = m;}
 
     value_type get_min() const	{ return min_;}
     void set_min( value_type x) { min_ = x;}
@@ -68,7 +68,7 @@ public:
 	}
 	
     iterator insert( time_type time, value_type value, bool recalc = true);
-    iterator insert( const float_key_t& k, bool recalc = true);
+    iterator insert( const double_key_t& k, bool recalc = true);
     iterator insert( time_type time, bool recalc = true);
 
     // tangents and coefficients
@@ -87,14 +87,11 @@ public:
 
     std::string str() const;
 
-	void read( const serialization::yaml_node_t& in);
-	void write( serialization::yaml_oarchive_t& out) const;
-
 private:
 
     value_type do_evaluate( time_type time) const;
 	
-    float_key_t::auto_tangent_method default_auto_tan_;
+    double_key_t::auto_tangent_method default_auto_tan_;
     value_type min_, max_;
 	
 	mutable value_type offset_, scale_;

@@ -10,8 +10,6 @@
 
 #include<ramen/dependency/graph.hpp>
 
-#include<ramen/serialization/yaml_oarchive.hpp>
-
 #include<ramen/util/string.hpp>
 #include<ramen/util/flags.hpp>
 
@@ -30,10 +28,9 @@ param_t::param_t( const std::string& name) : param_set_( 0), name_( name)
     flags_ = persist_bit | can_undo_bit | enabled_bit | include_in_hash_bit;
 }
 
-param_t::param_t( const param_t& other) : param_set_(0), id_( other.id_), name_( other.name_),
-                                            value_( other.value_), flags_( other.flags_), expressions_( other.expressions_)
+param_t::param_t( const param_t& other) : param_set_( 0), id_( other.id_), name_( other.name_),
+                                            value_( other.value_), flags_( other.flags_)
 {
-    //RAMEN_ASSERT( 0 && "warning: implement expressions copy!");
 }
 
 void param_t::init() { do_init();}
@@ -165,91 +162,6 @@ void param_t::emit_param_changed( change_reason reason)
             p->param_changed( this, reason);
     }
 }
-
-void param_t::add_to_hash( hash::generator_t& hash_gen) const
-{
-    do_add_to_hash( hash_gen);
-}
-
-void param_t::do_add_to_hash( hash::generator_t& hash_gen) const {}
-
-void param_t::create_tracks( anim::track_t *parent)
-{
-    if( !is_static())
-        do_create_tracks( parent);
-}
-
-void param_t::do_create_tracks( anim::track_t *parent) {}
-
-void param_t::set_frame( float frame)
-{
-    evaluate( frame);
-    do_set_frame( frame);
-    emit_param_changed( time_changed);
-}
-
-void param_t::do_set_frame( float frame) {}
-
-void param_t::evaluate( float frame)	{ do_evaluate( frame);}
-void param_t::do_evaluate( float frame)	{}
-
-int param_t::num_expressions() const { return expressions_.size();}
-
-const expressions::expression_t& param_t::expression( int indx) const
-{
-    RAMEN_ASSERT( indx >= 0 && indx < num_expressions());
-    return expressions_[indx].second;
-}
-
-expressions::expression_t& param_t::expression( int indx)
-{
-    RAMEN_ASSERT( indx >= 0 && indx < num_expressions());
-    return expressions_[indx].second;
-}
-
-void param_t::add_expression(const base::name_t& name)
-{
-    expressions_.push_back( std::make_pair( name, expressions::expression_t()));
-}
-
-bool param_t::eval_expression( int index, float frame, float& v) const
-{
-    RAMEN_ASSERT( index < num_expressions());
-    return false;
-}
-
-expressions::expression_t *param_t::find_expression( const base::name_t& name)
-{
-    for( int i = 0; i < num_expressions(); ++i)
-    {
-        if( expressions_[i].first == name)
-            return &( expressions_[i].second);
-    }
-
-    return 0;
-}
-
-// undo
-std::auto_ptr<undo::command_t> param_t::create_command() { return do_create_command();}
-
-std::auto_ptr<undo::command_t> param_t::do_create_command()
-{
-    return std::auto_ptr<undo::command_t>();
-}
-
-// paths
-void param_t::convert_relative_paths( const boost::filesystem::path& old_base, const boost::filesystem::path& new_base)
-{
-    do_convert_relative_paths( old_base, new_base);
-}
-
-void param_t::do_convert_relative_paths( const boost::filesystem::path& old_base, const boost::filesystem::path& new_base) {}
-
-void param_t::make_paths_absolute()     { do_make_paths_absolute();}
-void param_t::do_make_paths_absolute()  {}
-
-void param_t::make_paths_relative()     { do_make_paths_relative();}
-void param_t::do_make_paths_relative()  {}
 
 // util
 void param_t::apply_function( const boost::function<void ( param_t*)> *f)

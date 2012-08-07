@@ -14,8 +14,8 @@ namespace ramen
 namespace anim
 {
 
-typedef boost::variant<float_curve_t, shape_curve2f_t> any_curve_t;
-typedef boost::variant<float_curve_t*, shape_curve2f_t*> any_curve_ptr_t;
+typedef boost::variant<double_curve_t, shape_curve2f_t> any_curve_t;
+typedef boost::variant<double_curve_t*, shape_curve2f_t*> any_curve_ptr_t;
 
 void copy( const any_curve_ptr_t& src, any_curve_t& dst);
 void copy( const any_curve_t& src, any_curve_ptr_t& dst);

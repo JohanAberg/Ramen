@@ -13,8 +13,6 @@
 
 #include<ramen/params/param_set.hpp>
 
-#include<ramen/anim/track.hpp>
-
 namespace ramen
 {
 namespace params
@@ -83,51 +81,6 @@ param_t *composite_param_t::find( const base::name_t& id)
     }
 
     return 0;
-}
-
-void composite_param_t::do_set_frame( float frame)
-{
-    boost::range::for_each( params(), boost::bind( &param_t::set_frame, _1, frame));
-}
-
-void composite_param_t::do_create_tracks( anim::track_t *parent)
-{
-    if( create_track_)
-    {
-        std::auto_ptr<anim::track_t> t( new anim::track_t( name()));
-        boost::range::for_each( params(), boost::bind( &param_t::create_tracks, _1, t.get()));
-
-        if( t->num_children() != 0)
-            parent->add_child( t);
-    }
-    else
-        boost::range::for_each( params(), boost::bind( &param_t::create_tracks, _1, parent));
-}
-
-void composite_param_t::do_evaluate( float frame)
-{
-    boost::range::for_each( params(), boost::bind( &param_t::evaluate, _1, frame));
-}
-
-void composite_param_t::do_add_to_hash( hash::generator_t& hash_gen) const
-{
-    BOOST_FOREACH( const param_t& p, params())
-        p.add_to_hash( hash_gen);
-}
-
-void composite_param_t::do_convert_relative_paths( const boost::filesystem::path& old_base, const boost::filesystem::path& new_base)
-{
-    boost::range::for_each( params_, boost::bind( &param_t::convert_relative_paths, _1, old_base, new_base));
-}
-
-void composite_param_t::do_make_paths_absolute()
-{
-    boost::range::for_each( params_, boost::bind( &param_t::make_paths_absolute, _1));
-}
-
-void composite_param_t::do_make_paths_relative()
-{
-    boost::range::for_each( params(), boost::bind( &param_t::make_paths_relative, _1));
 }
 
 // util

@@ -7,7 +7,7 @@
 #include<algorithm>
 #include<limits>
 
-#include<ramen/anim/float_curve.hpp>
+#include<ramen/anim/double_curve.hpp>
 #include<ramen/anim/shape_curve.hpp>
 
 namespace ramen
@@ -40,7 +40,7 @@ void do_copy_keys( const Curve& src, Curve& dst)
 	}
 }
 
-void do_copy_keys( const anim::float_curve_t& src, anim::float_curve_t& dst)
+void do_copy_keys( const anim::double_curve_t& src, anim::double_curve_t& dst)
 {
 	RAMEN_ASSERT( dst.empty());
 	dst.set_extrapolation( src.extrapolation());
@@ -72,11 +72,11 @@ void paste_keys( const Curve& src, Curve& dst, float offset)
 	}
 }
 
-void paste_keys( const anim::float_curve_t& src, anim::float_curve_t& dst, float offset)
+void paste_keys( const anim::double_curve_t& src, anim::double_curve_t& dst, float offset)
 {
 	for( int i = 0; i < src.size(); ++i)
 	{
-		anim::float_key_t key( src[i]);
+		anim::double_key_t key( src[i]);
 		key.set_time( key.time() + offset);
 		float val = key.value();
 		//val = src.relative_to_absolute( val);
@@ -143,9 +143,9 @@ struct can_paste_visitor : public boost::static_visitor<>
 		result = false;
 	}
 
-	void operator()( const float_curve_t *c) const
+	void operator()( const double_curve_t *c) const
 	{ 
-		const float_curve_t *scurve = boost::get<const float_curve_t>( &src_);
+		const double_curve_t *scurve = boost::get<const double_curve_t>( &src_);
 		result = scurve;
 	}
 
@@ -188,9 +188,9 @@ struct paste_keys_visitor : public boost::static_visitor<>
 		paste_keys( boost::get<const Curve>( src_), *dst, offset_);
 	}
 	
-	void operator()( anim::float_curve_t *dst)
+	void operator()( anim::double_curve_t *dst)
 	{
-		paste_keys( boost::get<const anim::float_curve_t>( src_), *dst, offset_);
+		paste_keys( boost::get<const anim::double_curve_t>( src_), *dst, offset_);
 		dst->recalc_tangents_and_coefficients();
 	}
 	
@@ -311,25 +311,25 @@ bool clipboard_t::can_paste()
 	if( empty() || !contents_[0].second)
 		return false;
 
-	return boost::get<const float_curve_t>( contents_[0].second.get());
+	return boost::get<const double_curve_t>( contents_[0].second.get());
 }
 
-void clipboard_t::copy( const float_curve_t& c)
+void clipboard_t::copy( const double_curve_t& c)
 {
 	RAMEN_ASSERT( copying_);
 	
-	boost::shared_ptr<any_curve_t> p( new any_curve_t( float_curve_t()));
+	boost::shared_ptr<any_curve_t> p( new any_curve_t( double_curve_t()));
 	contents_.push_back( named_curve_type( "curve", p));
-	do_copy_curve( c, *boost::get<float_curve_t>( contents_[0].second.get()));
+	do_copy_curve( c, *boost::get<double_curve_t>( contents_[0].second.get()));
 	copy_curves_mode_ = true;
 }
 
-void clipboard_t::paste( float_curve_t& dst)
+void clipboard_t::paste( double_curve_t& dst)
 {
 	RAMEN_ASSERT( !copying_);	
 	RAMEN_ASSERT( !empty());
 
-	paste_keys( *boost::get<float_curve_t>( contents_[0].second.get()), dst, 0);
+	paste_keys( *boost::get<double_curve_t>( contents_[0].second.get()), dst, 0);
 	dst.recalc_tangents_and_coefficients();
 }
 

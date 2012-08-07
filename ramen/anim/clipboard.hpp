@@ -44,8 +44,8 @@ public:
 	
 	// param spinboxes
 	bool can_paste();
-	void copy( const float_curve_t& c);
-	void paste( float_curve_t& dst);
+	void copy( const double_curve_t& c);
+	void paste( double_curve_t& dst);
 
 private:
 
