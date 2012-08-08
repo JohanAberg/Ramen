@@ -16,44 +16,63 @@ class application( base_application):
         super( application, self).__init__()
         logging.debug( 'Created application')
 
-        self._args = args
+        self.__args = args
+        self.__ui = None
+        self.__run_tests = False
 
-        self._ui = None
-        self._run_tests = False
-
-        #self.create_dirs()
+        self._create_dirs()
 
         # preferences
-        self._prefs = preferences( self.system().preferences_path())
-        self.set_preferences( self._prefs)
+        self.__prefs = preferences( self.system().preferences_path())
+        self._set_preferences( self.__prefs)
 
         # command line
-        self.parse_command_line( args)
+        self.__parse_command_line( args)
 
         # init
-        self.init_threads( 0)
-        self.init_ocio()
+        logging.debug( 'Initializing threading')
+        self._init_threads( 0)
+
+        logging.debug( 'Initializing OCIO')
+        self._init_ocio()
+
+    def preferences( self):
+        return self.__prefs
 
     def run( self):
         result = 0
 
-        if self._run_tests:
+        if self.__run_tests:
             logging.debug( 'Running unit tests\n')
             result = self.run_all_tests()
             sys.exit( result)
 
-        self.print_app_info()
+        self._print_app_info()
 
-        self._ui = user_interface( self)
-        return self._ui.run( self._args)
+        self.__ui = user_interface( self)
+        return self.__ui.run( self.__args)
 
     def quit( self):
         pass
 
+    # tests
+    def run_all_tests( self):
+        logging.debug( 'C++ tests:')
+        logging.debug( '----------\n')
+        result = self._run_unit_tests( self.__args)
+
+        logging.debug( 'Python tests:')
+        logging.debug( '-------------\n')
+        sys.argv = [ self.__args[0]]
+        suite = unittest.TestLoader().loadTestsFromTestCase( TestApplicationFunctions)
+        unittest.TextTestRunner( verbosity=2).run( suite)
+
+        return result
+
     # command line
-    def parse_command_line( self, args):
+    def __parse_command_line( self, args):
         if '--help' in args:
-            self.usage()
+            self.__usage()
             sys.exit( 0)
 
         if '--version' in args:
@@ -61,26 +80,12 @@ class application( base_application):
             sys.exit( 0)
 
         if '--run-unit-tests' in args:
-            self._run_tests = True
+            self.__run_tests = True
 
         # todo: do something interesting here
 
-    def usage( self):
+    def __usage( self):
         print "Usage: (TODO)"
-
-    # tests
-    def run_all_tests( self):
-        logging.debug( 'C++ tests:')
-        logging.debug( '----------\n')
-        result = self.run_unit_tests( self._args)
-
-        logging.debug( 'Python tests:')
-        logging.debug( '-------------\n')
-        sys.argv = [ self._args[0]]
-        suite = unittest.TestLoader().loadTestsFromTestCase( TestApplicationFunctions)
-        unittest.TextTestRunner( verbosity=2).run( suite)
-
-        return result
 
 #################################################
 # Testing

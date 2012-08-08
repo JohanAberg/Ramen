@@ -3,15 +3,15 @@
 # See CDDL_LICENSE.txt for a copy of the license.
 
 import logging
-from ramen.app.application import application
 
-from ramen_ui import init_pyside
+from ramen import init_pyside_interop
+from ramen.app.application import application
 
 def main( args):
     logging.debug( 'Starting Ramen')
 
     logging.debug( 'Initializing PySide C++ interop')
-    init_pyside()
+    init_pyside_interop()
 
     rapp = application( args)
     result = rapp.run()
