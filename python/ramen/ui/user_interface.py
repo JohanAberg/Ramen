@@ -14,15 +14,20 @@ class user_interface( object):
         self.__app = app
         logging.debug( 'Created user interface')
 
-    def run( self, args):
-        app = QtGui.QApplication( args)
+        if not QtGui.qApp:
+            app = QtGui.QApplication( args)
 
         self.__init_ui_style()
         self.__main_window = main_window( self.__app, self)
         self.__restore_window_state()
+
+    def resources_path( self):
+        return self.__app.system().resources_path()
+
+    def run( self, args):
         self.create_new_document()
         self.__main_window.show()
-        return app.exec_()
+        return QtGui.qApp.exec_()
 
     def quit( self):
         logging.debug( 'Application exiting')
@@ -30,6 +35,9 @@ class user_interface( object):
         self.__app.quit()
         QtGui.qApp.quit()
         logging.debug( 'Application finished')
+
+    def window( self):
+        return self.__main_window
 
     def update_ui( self):
         self.__main_window.update_ui()

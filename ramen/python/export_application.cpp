@@ -84,18 +84,14 @@ namespace
 void export_application()
 {
     bpy::class_<application_t, boost::noncopyable>( "base_application")
-        .def( "create_dirs", &py_application_access::create_dirs)
-
-        .def( "init_threads", &py_application_access::init_threads)
-        .def( "init_ocio", &py_application_access::init_ocio)
+        .def( "_create_dirs", &py_application_access::create_dirs)
+        .def( "_init_threads", &py_application_access::init_threads)
+        .def( "_init_ocio", &py_application_access::init_ocio)
+        .def( "_print_app_info", &py_application_access::print_app_info)
+        .def( "_set_preferences", &py_application_access::set_preferences)
+        .def( "_run_unit_tests", &py_application_access::run_unit_tests)
 
         .def( "system", &application_t::system, bpy::return_value_policy<bpy::reference_existing_object>())
-
-        .def( "print_app_info", &py_application_access::print_app_info)
-
-        .def( "set_preferences", &py_application_access::set_preferences)
-
-        .def( "run_unit_tests", &py_application_access::run_unit_tests)
 
         .def( "version_major", &py_application_access::version_major)
         .def( "version_minor", &py_application_access::version_minor)

@@ -1,15 +1,15 @@
 
 import math
 
-class nice_numbers( Object):
+class nice_numbers( object):
     def __init__( self, imin, imax, num_ticks):
-        _range = self._nice_num( imax - imin, False)
-        self._d = self._nice_num( self._range / ( num_ticks - 1), True)
-        graphmax = math.ceil( imax / self._d) * self._d
-        self._x = math.floor( imin / self._d) * self._d
-        self._xmax = graphmax + 0.5 * self._d
+        __range = self.__nice_num( imax - imin, False)
+        self.__d = self.__nice_num( __range / ( num_ticks - 1), True)
+        graphmax = math.ceil( imax / self.__d) * self.__d
+        self.__x = math.floor( imin / self.__d) * self.__d
+        self.__xmax = graphmax + 0.5 * self.__d
 
-    def _nice_num( x, round):
+    def __nice_num( self, x, round):
         expv = math.floor( math.log10( x))
         f = x / math.pow( 10.0, expv); # between 1 and 10
         nf = 0.0
@@ -43,9 +43,9 @@ class nice_numbers( Object):
         return self
 
     def next( self):
-        if self._x > self._xmax:
+        if self.__x > self.__xmax:
             raise StopIteration
         else:
-            val = self._x
-            self._x += self._d
+            val = self.__x
+            self.__x += self.__d
             return val

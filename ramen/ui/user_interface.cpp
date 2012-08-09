@@ -14,6 +14,7 @@ namespace ui
 user_interface_t::user_interface_t( boost::python::object obj)
 {
     RAMEN_ASSERT( !obj.is_none());
+
     impl_ = obj;
 }
 

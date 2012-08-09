@@ -47,6 +47,11 @@ const boost::filesystem::path& system_t::persistent_tmp_path() const
 	return pimpl_->persistent_tmp_path();
 }
 
+const boost::filesystem::path& system_t::resources_path() const
+{
+    return pimpl_->resources_path();
+}
+
 // cpu
 cpu_family_type system_t::cpu_type() const	{ return pimpl_->cpu_type();}
 

@@ -35,7 +35,8 @@ public:
     const boost::filesystem::path& preferences_path() const;
     const boost::filesystem::path& tmp_path() const;
     const boost::filesystem::path& persistent_tmp_path() const;
-	
+    const boost::filesystem::path& resources_path() const;
+
 	// cpu
     cpu_family_type cpu_type() const;
     int simd_type() const;

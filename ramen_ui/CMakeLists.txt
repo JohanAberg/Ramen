@@ -16,8 +16,9 @@ SET( RAMEN_UI_LIBS  ${QT_QTGUI_LIBRARIES}
 					)
 
 
-SET( RAMEN_UI_LIB_SOURCES   python/pyside.cpp
-                        )
+SET( RAMEN_UI_LIB_SOURCES   splash_screen.hpp
+                            splash_screen.cpp
+                            )
 
 ######################################################
 # Ramen ui lib
@@ -28,22 +29,22 @@ SET_TARGET_PROPERTIES( ramen_ui PROPERTIES
                         SOVERSION ${RAMEN_VERSION_MAJOR}
                         LIBRARY_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/ramen-${RAMEN_VERSION}/lib
                         )
-TARGET_LINK_LIBRARIES( ramen_ui	${RAMEN_UI_LIBS})
+TARGET_LINK_LIBRARIES( ramen_ui	ramen ${RAMEN_UI_LIBS})
 
 ######################################################
 # Ramen ui py module
 
-SET( RAMEN_UI_PY_MODULE_SRCS   python/export_ramen_ui.cpp
-                            )
+SET( RAMEN_UI_PY_MODULE_SRCS    python/export_ramen_ui.cpp
+                                python/export_splash_screen.cpp
+                                )
 
 ADD_LIBRARY( _ramen_ui SHARED ${RAMEN_UI_PY_MODULE_SRCS})
 
 SET_TARGET_PROPERTIES( _ramen_ui PROPERTIES
                        PREFIX ""
-                       LIBRARY_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/ramen-${RAMEN_VERSION}/python/app/ramen_ui
+                       LIBRARY_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/ramen-${RAMEN_VERSION}/python/app/ramen
                     )
 TARGET_LINK_LIBRARIES( _ramen_ui	ramen_ui
                                     ramen
-                                    ${RAMEN_ALL_LIBS}
-                                    ${EXTRA_PLATFORM_LIBS}
+                                    ${RAMEN_UI_LIBS}
                                     )

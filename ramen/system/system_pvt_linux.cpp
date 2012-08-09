@@ -182,6 +182,17 @@ const boost::filesystem::path& system_pvt::persistent_tmp_path() const
 	return persistent_tmp_path_;
 }
 
+const boost::filesystem::path& system_pvt::resources_path() const
+{
+    if( resource_path_.empty())
+    {
+	    boost::filesystem::path p( app_bundle_path());
+	    resource_path_ = p / "resources";
+    }
+
+    return resource_path_;
+}
+
 cpu_family_type system_pvt::cpu_type() const { return cpu_type_;}
 
 int system_pvt::simd_type() const { return simd_type_;}

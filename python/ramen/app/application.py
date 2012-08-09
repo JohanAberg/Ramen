@@ -6,7 +6,12 @@ import sys
 import logging
 import unittest
 
+import shiboken
+import PySide.QtCore as QtCore
+import PySide.QtGui as QtGui
+
 from ramen import base_application
+from ramen import splash_screen
 
 from ramen.app.preferences import preferences
 from ramen.ui.user_interface import user_interface
@@ -19,6 +24,7 @@ class application( base_application):
         self.__args = args
         self.__ui = None
         self.__run_tests = False
+        self.__splash = None
 
         self._create_dirs()
 
@@ -29,11 +35,21 @@ class application( base_application):
         # command line
         self.__parse_command_line( args)
 
+
+        logging.debug( 'Creating Splash screen')
+        app = QtGui.QApplication( self.__args)
+        self.__splash = splash_screen()
+        self.__splash.show()
+
         # init
         logging.debug( 'Initializing threading')
+        if self.__splash:
+            self.__splash.show_message( "Initializing threading")
         self._init_threads( 0)
 
         logging.debug( 'Initializing OCIO')
+        if self.__splash:
+            self.__splash.show_message( "Initializing OCIO")
         self._init_ocio()
 
     def preferences( self):
@@ -50,6 +66,11 @@ class application( base_application):
         self._print_app_info()
 
         self.__ui = user_interface( self)
+
+        if self.__splash:
+            self.__splash.finish( shiboken.getCppPointer( self.__ui.window())[0])
+            del self.__splash
+
         return self.__ui.run( self.__args)
 
     def quit( self):

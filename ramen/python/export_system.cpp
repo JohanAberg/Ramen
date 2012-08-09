@@ -53,6 +53,11 @@ std::string persistent_tmp_path( const system_t *s)
     return filesystem::file_string( s->persistent_tmp_path());
 }
 
+std::string resources_path( const system_t *s)
+{
+    return filesystem::file_string( s->resources_path());
+}
+
 std::string cpu_type( const system_t *s)
 {
     switch( s->cpu_type())
@@ -98,6 +103,7 @@ void export_system()
         .def( "preferences_path", preferences_path)
         .def( "tmp_path", tmp_path)
         .def( "persistent_tmp_path", persistent_tmp_path)
+        .def( "resources_path", resources_path)
 
         .def( "cpu_type", cpu_type)
         .def( "simd_type", simd_type)
