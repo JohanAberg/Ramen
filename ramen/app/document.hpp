@@ -24,7 +24,7 @@ namespace ramen
 \ingroup app
 \brief Document class.
 */
-class document_t : public nodes::world_node_t
+class RAMEN_API document_t : public nodes::world_node_t
 {
 public:
 

@@ -20,7 +20,7 @@ namespace nodes
 \ingroup nodes
 \brief A top level node that contains other nodes.
 */
-class world_node_t : public composite_node_t
+class RAMEN_API world_node_t : public composite_node_t
 {
 public:
 
