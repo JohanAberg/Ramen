@@ -37,9 +37,9 @@ class application( base_application):
 
 
         logging.debug( 'Creating Splash screen')
-        app = QtGui.QApplication( self.__args)
-        self.__splash = splash_screen()
-        self.__splash.show()
+        #app = QtGui.QApplication( self.__args)
+        #self.__splash = splash_screen()
+        #self.__splash.show()
 
         # init
         logging.debug( 'Initializing threading')
@@ -51,6 +51,9 @@ class application( base_application):
         if self.__splash:
             self.__splash.show_message( "Initializing OCIO")
         self._init_ocio()
+
+    def arguments( self):
+        return self.__args
 
     def preferences( self):
         return self.__prefs

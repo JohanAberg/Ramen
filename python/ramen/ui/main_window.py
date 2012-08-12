@@ -3,27 +3,31 @@
 # See CDDL_LICENSE.txt for a copy of the license.
 
 import logging
+import weakref
 
 import PySide.QtCore as QtCore
 import PySide.QtGui as QtGui
 
 from ramen.ui.anim_editor_widget import anim_editor_widget
 from ramen.ui.world_view_widget import world_view_widget
+from ramen.ui.viewer_container_widget import viewer_container_widget
+from ramen.ui.viewer_widget import viewer_widget
 from ramen.ui.inspector_widget import inspector_widget
 from ramen.ui.time_slider_widget import time_slider_widget
 from ramen.ui.time_controls_widget import time_controls_widget
+from ramen.ui.python_console_widget import python_console_widget
+from ramen.ui.script_editor_widget import script_editor_widget
 
 class main_window( QtGui.QMainWindow):
     def __init__( self, app, ui, parent = None):
         super( main_window, self).__init__( parent)
         logging.debug( 'Created main window')
 
-        self.__app = app
-        self.__ui = ui
-        self.setWindowTitle( self.__app.full_version_name())
+        self.__app = weakref.ref( app)
+        self.__ui = weakref.ref( ui)
+        self.setWindowTitle( self.__app().full_version_name())
 
         self.__menu_bar = self.menuBar()
-
         self.__create_actions()
         self.__create_menus()
 
@@ -61,23 +65,43 @@ class main_window( QtGui.QMainWindow):
         self.__add_dock_widget( QtCore.Qt.BottomDockWidgetArea, self.__anim_editor_dock)
 
         # main viewer
-        self.setCentralWidget( QtGui.QWidget() )
+        self.__viewer_container = viewer_widget()
+        self.setCentralWidget( self.__viewer_container)
+
+        # script editor
+        self.__script_editor_dock = QtGui.QDockWidget( "Script Editor", self)
+        self.__script_editor_dock.setObjectName( "script_editor_dock")
+        self.__script_editor_widget = script_editor_widget()
+        self.__script_editor_dock.setWidget( self.__script_editor_widget)
+        self.__add_dock_widget( QtCore.Qt.LeftDockWidgetArea, self.__script_editor_dock)
+
+        # python console
+        self.__py_console_dock = QtGui.QDockWidget( "Python Console", self)
+        self.__py_console_dock.setObjectName( "py_console_dock")
+        self.__py_console_widget = python_console_widget()
+        self.__py_console_dock.setWidget( self.__py_console_widget)
+        self.__add_dock_widget( QtCore.Qt.BottomDockWidgetArea, self.__py_console_dock)
 
         # time toolbar
         self.__toolbar = self.__create_time_toolbar()
         self.addToolBar( QtCore.Qt.BottomToolBarArea, self.__toolbar)
 
         # create the status bar
-        self.statusBar().showMessage( self.__app.full_version_name())
+        self.statusBar().showMessage( self.__app().full_version_name())
 
         screen_size = QtGui.qApp.desktop().availableGeometry();
         self.move( screen_size.left(), screen_size.top());
         self.resize( screen_size.width(), screen_size.height() - 40);
 
     def update_ui( self):
-        window_title = self.__app.full_version_name() + ' - Untitled'
+        window_title = self.__app().full_version_name()
 
-        if False: # document is dirty
+        if self.__app().document().has_file():
+            window_title += ' - ' + self.__app().document().file()
+        else:
+            window_title += ' - Untitled'
+
+        if self.__app().document().dirty():
             window_title += '*'
 
         self.setWindowTitle( window_title)
@@ -98,7 +122,7 @@ class main_window( QtGui.QMainWindow):
 
         toolbar.addWidget( time_slider)
         toolbar.addSeparator()
-        toolbar.addWidget( time_controls_widget( self.__ui.resources_path()))
+        toolbar.addWidget( time_controls_widget( self.__ui().resources_path()))
 
         toolbar.addSeparator()
         flipbook_ = QtGui.QPushButton()
@@ -142,7 +166,7 @@ class main_window( QtGui.QMainWindow):
         self.__actions['delete'] = self.__create_action( 'Delete')
         self.__actions['prefs']  = self.__create_action( 'Preferences...')
 
-        if self.__app.debug_build():
+        if self.__app().debug_build():
             self.__actions['run_tests'] = self.__create_action( 'Run tests', None, 'run_tests()')
 
     def __create_menus( self):
@@ -166,7 +190,7 @@ class main_window( QtGui.QMainWindow):
 
         self.__help_menu = self.__menu_bar.addMenu( 'Help')
 
-        if self.__app.debug_build():
+        if self.__app().debug_build():
             self.__debug_menu = self.__menu_bar.addMenu( 'Debug')
             self.__debug_menu.addAction( self.__actions['run_tests'])
 
@@ -204,7 +228,7 @@ class main_window( QtGui.QMainWindow):
         pass
 
     def quit_app( self):
-        self.__ui.quit()
+        self.__ui().quit()
 
     def run_tests( self):
-        self.__app.run_all_tests()
+        self.__app().run_all_tests()

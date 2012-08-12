@@ -26,14 +26,11 @@
 #include<ramen/app/preferences.hpp>
 
 #include<ramen/memory/manager.hpp>
-
 #include<ramen/nodes/factory.hpp>
-
 #include<ramen/ocio/manager.hpp>
-
 #include<ramen/undo/stack.hpp>
 
-#include<ramen/ui/user_interface.hpp>
+#include<ramen_ui/user_interface.hpp>
 
 // tests
 int run_ramen_unit_tests( int argc, char **argv);
@@ -47,65 +44,7 @@ application_t::application_t()
 {
     RAMEN_ASSERT( g_app == 0 );
     g_app = this;
-
-    /*
-    argv_ = 0;
-    max_threads_ = 0;
-    img_cache_size_ = 0;
-    quitting_ = false;
-
-    copy_command_line_args( argc, argv);
-
-    google::InitGoogleLogging( argv_[0]);
-    //google::SetLogDestination( google::INFO, "filename.log");
-
-    parse_command_line();
-
-    if( !system().simd_type() & system::simd_sse2)
-        fatal_error( "No SSE2 instruction set, exiting", true);
-
-    // init prefs
-    preferences_.reset( new preferences_t());
-
-    create_dirs();
-
-    if( max_threads_ == 0)
-        max_threads_ = boost::thread::hardware_concurrency();
-
-    task_scheduler_.initialize( max_threads_);
-    Imf::setGlobalThreadCount( max_threads_);
-
-    // init memory manager
-    if( img_cache_size_ == 0)
-    {
-        boost::uint64_t percent  = preferences().max_image_memory();
-        boost::uint64_t ram_size = system().ram_size();
-        img_cache_size_ = ram_size / (boost::uint64_t) 100 * percent;
-    }
-
-    mem_manager_.reset( new memory::manager_t( img_cache_size_));
-
-    if( !run_command_line())
-        //splash_->show_message( "Initializing builtin nodes");
-    nodes::factory_t::instance();
-
-    if( !run_command_line())
-        //splash_->show_message( "Loading plugins...");
-    plugin_manager_t::instance();
-
-    if( !run_command_line())
-        //splash_->show_message( "Initializing OpenColorIO");
-    ocio_manager_.reset( new ocio::manager_t());
-
-    if( !run_command_line())
-    {
-        //splash_->show_message( "Initializing user interface");
-        ui_.reset( new ui::user_interface_t());
-        ui_->init();
-    }
-
-    print_app_info();
-    */
+    ui_ = 0;
 }
 
 application_t::~application_t()
@@ -143,10 +82,12 @@ void application_t::init_ocio()
     ocio_manager_.reset( new ocio::manager_t());
 }
 
-void application_t::set_ui( boost::python::object ui)
+void application_t::set_ui(ramen_ui::user_interface_t *ui)
 {
-    RAMEN_ASSERT( !ui_.get());
-    ui_.reset( new ui::user_interface_t( ui));
+    RAMEN_ASSERT( !ui_);
+    RAMEN_ASSERT( ui);
+
+    ui_ = ui;
 }
 
 const preferences_t& application_t::preferences() const
@@ -166,28 +107,6 @@ void application_t::set_preferences( boost::python::object prefs)
     RAMEN_ASSERT( !preferences_.get());
     preferences_.reset( new preferences_t( prefs));
 }
-
-/*
-int application_t::run()
-{
-    #ifndef NDEBUG
-        run_ramen_unit_tests( 0, 0);
-    #endif
-
-    // We have nothing interesting to run yet.
-    std::exit( 0);
-
-    if( !run_command_line())
-    {
-        ui()->show();
-        //splash_->finish( ui()->main_window());
-        splash_.reset();
-        return ui()->run();
-    }
-
-    return 0;
-}
-*/
 
 void application_t::print_app_info()
 {

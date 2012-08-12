@@ -18,6 +18,8 @@ SET( RAMEN_UI_LIBS  ${QT_QTGUI_LIBRARIES}
 
 SET( RAMEN_UI_LIB_SOURCES   splash_screen.hpp
                             splash_screen.cpp
+                            user_interface.hpp
+                            user_interface.cpp
                             )
 
 ######################################################
@@ -36,6 +38,7 @@ TARGET_LINK_LIBRARIES( ramen_ui	ramen ${RAMEN_UI_LIBS})
 
 SET( RAMEN_UI_PY_MODULE_SRCS    python/export_ramen_ui.cpp
                                 python/export_splash_screen.cpp
+                                python/export_user_interface.cpp
                                 )
 
 ADD_LIBRARY( _ramen_ui SHARED ${RAMEN_UI_PY_MODULE_SRCS})

@@ -18,7 +18,7 @@ namespace nodes
 
 /**
 \ingroup nodes
-\brief A top level node that contains other nodes.
+\brief A top level node that contains all other nodes.
 */
 class RAMEN_API world_node_t : public composite_node_t
 {

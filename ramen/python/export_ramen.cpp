@@ -8,12 +8,30 @@
 
 // prototypes
 void export_application();
+void export_composite_node();
+void export_document();
+void export_node();
+void export_manipulable();
+void export_param();
+void export_parameterised();
 void export_system();
+void export_world_node();
 
 void export_ramen()
 {
-    export_application();
     export_system();
+
+    export_manipulable();
+
+    export_param();
+    export_parameterised();
+
+    export_node();
+    export_composite_node();
+    export_world_node();
+
+    export_document();
+    export_application();
 }
 
 // main python module

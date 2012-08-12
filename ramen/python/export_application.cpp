@@ -11,8 +11,13 @@
 #include<boost/python.hpp>
 
 #include<ramen/assert.hpp>
-#include<ramen/app/application.hpp>
 #include<ramen/version.hpp>
+
+#include<ramen/app/application.hpp>
+#include<ramen/app/document.hpp>
+#include<ramen/python/interpreter.hpp>
+
+#include<ramen_ui/user_interface.hpp>
 
 #include<iostream>
 
@@ -49,6 +54,11 @@ struct py_application_access
         a->set_preferences( prefs);
     }
 
+    static void set_ui( application_t *a, ramen_ui::user_interface_t *ui)
+    {
+        a->set_ui( ui);
+    }
+
     // version, names, ...
 
     static int version_major( application_t *a) { return RAMEN_VERSION_MAJOR;}
@@ -69,15 +79,30 @@ struct py_application_access
     }
 };
 
-application_t *py_app()
-{
-    return &app();
-}
-
 } // ramen
 
 namespace
 {
+
+bpy::object app_main_namespace( application_t *a)
+{
+    return python::interpreter_t::instance().main_namespace();
+}
+
+document_t& app_get_document( application_t *a)
+{
+    return a->document();
+}
+
+void app_open_document( application_t *a, const std::string& file)
+{
+    a->open_document( boost::filesystem::path( file));
+}
+
+application_t *py_app()
+{
+    return &app();
+}
 
 } // unnamed
 
@@ -89,9 +114,12 @@ void export_application()
         .def( "_init_ocio", &py_application_access::init_ocio)
         .def( "_print_app_info", &py_application_access::print_app_info)
         .def( "_set_preferences", &py_application_access::set_preferences)
+        .def( "_set_ui", &py_application_access::set_ui)
         .def( "_run_unit_tests", &py_application_access::run_unit_tests)
 
         .def( "system", &application_t::system, bpy::return_value_policy<bpy::reference_existing_object>())
+
+        .def( "main_namespace", app_main_namespace)
 
         .def( "version_major", &py_application_access::version_major)
         .def( "version_minor", &py_application_access::version_minor)
@@ -100,6 +128,10 @@ void export_application()
         .def( "full_version_name", &py_application_access::full_version_name)
 
         .def( "debug_build", &application_t::debug_build)
+
+        .def( "create_new_document", &application_t::create_new_document)
+        .def( "open_document", app_open_document)
+        .def( "document", app_get_document, bpy::return_value_policy<bpy::reference_existing_object>())
         ;
 
     bpy::def( "r_app", py_app, bpy::return_value_policy<bpy::reference_existing_object>());

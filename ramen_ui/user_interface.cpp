@@ -2,17 +2,11 @@
 // Licensed under the terms of the CDDL License.
 // See CDDL_LICENSE.txt for a copy of the license.
 
-#ifndef RAMEN_UI_USER_INTERFACE_FWD_HPP
-#define RAMEN_UI_USER_INTERFACE_FWD_HPP
+#include<ramen_ui/user_interface.hpp>
 
-namespace ramen
-{
-namespace ui
+namespace ramen_ui
 {
 
-struct user_interface_t;
+user_interface_t::user_interface_t() {}
 
 } // namespace
-} // namespace
-
-#endif

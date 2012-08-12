@@ -93,7 +93,6 @@ SET( RAMEN_SOURCES  anim/any_curve.cpp
 
 					ui/events.cpp
 					ui/graph_layout.cpp
-					ui/user_interface.cpp
 
 					undo/command.cpp
 					undo/stack.cpp
@@ -152,8 +151,15 @@ TARGET_LINK_LIBRARIES( ramen	${RAMEN_ALL_LIBS}
 # Ramen py module
 
 SET( RAMEN_PY_MODULE_SRCS   python/export_application.cpp
+                            python/export_composite_node.cpp
+                            python/export_document.cpp
+                            python/export_manipulable.cpp
+                            python/export_node.cpp
+                            python/export_param.cpp
+                            python/export_parameterised.cpp
                             python/export_ramen.cpp
                             python/export_system.cpp
+                            python/export_world_node.cpp
                             )
 
 ADD_LIBRARY( _ramen SHARED ${RAMEN_PY_MODULE_SRCS})

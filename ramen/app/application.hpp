@@ -30,7 +30,7 @@
 
 #include<ramen/filesystem/path.hpp>
 
-#include<ramen/ui/user_interface_fwd.hpp>
+#include<ramen_ui/user_interface_fwd.hpp>
 
 namespace ramen
 {
@@ -62,13 +62,9 @@ public:
     const memory::manager_t& memory_manager() const { return *mem_manager_;}
     memory::manager_t& memory_manager()             { return *mem_manager_;}
 
-    // opencolorio
+    // OCIO
     const ocio::manager_t& ocio_manager() const { return *ocio_manager_;}
     ocio::manager_t& ocio_manager()             { return *ocio_manager_;}
-
-    // user interface
-    const ui::user_interface_t *ui() const  { return ui_.get();}
-    ui::user_interface_t *ui()              { return ui_.get();}
 
     // document handling
     const document_t& document() const;
@@ -90,7 +86,9 @@ private:
     void init_threads( int num);
     void init_ocio();
 
-    void set_ui( boost::python::object ui);
+    const ramen_ui::user_interface_t *ui() const    { return ui_;}
+    ramen_ui::user_interface_t *ui()                { return ui_;}
+    void set_ui( ramen_ui::user_interface_t *ui);
 
     void set_preferences( boost::python::object prefs);
 
@@ -115,7 +113,7 @@ private:
 
     // created from python
     std::auto_ptr<preferences_t> preferences_;
-    std::auto_ptr<ui::user_interface_t> ui_;
+    ramen_ui::user_interface_t *ui_;
 };
 
 RAMEN_API application_t& app();

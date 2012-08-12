@@ -8,9 +8,11 @@
 namespace bpy = boost::python;
 
 void export_splash_screen();
+void export_user_interface();
 
 // ui python module
 BOOST_PYTHON_MODULE( _ramen_ui)
 {
     export_splash_screen();
+    export_user_interface();
 }
