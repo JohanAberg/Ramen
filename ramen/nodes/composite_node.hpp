@@ -26,7 +26,7 @@ namespace nodes
 \ingroup nodes
 \brief Abstract base class for nodes that contain other nodes.
 */
-class composite_node_t : public node_t
+class RAMEN_API composite_node_t : public node_t
 {
 public:
 
@@ -57,10 +57,10 @@ public:
     typedef graph_t::const_node_range_type  const_node_range_type;
 
     /// Returns a const range to the child nodes.
-    const_node_range_type nodes() const { return g_.nodes();}
+    const_node_range_type& nodes() const { return g_.nodes();}
 
     /// Returns a range to the child nodes.
-    node_range_type nodes() { return g_.nodes();}
+    node_range_type& nodes() { return g_.nodes();}
 
     /// Creates a new node as a child of this node.
     node_t *create_node_by_id( const std::string& id, bool ui = false);
