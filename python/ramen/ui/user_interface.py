@@ -8,7 +8,7 @@ import weakref
 import PySide.QtCore as QtCore
 import PySide.QtGui as QtGui
 
-from ramen import base_user_interface
+from ramen.ui import base_user_interface
 from ramen.ui.main_window import main_window
 
 class user_interface( base_user_interface):

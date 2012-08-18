@@ -11,9 +11,9 @@ import PySide.QtCore as QtCore
 import PySide.QtGui as QtGui
 
 from ramen import base_application
-from ramen import splash_screen
-
 from ramen.app.preferences import preferences
+
+from ramen.ui import splash_screen
 from ramen.ui.user_interface import user_interface
 
 class application( base_application):
@@ -37,9 +37,9 @@ class application( base_application):
 
 
         logging.debug( 'Creating Splash screen')
-        #app = QtGui.QApplication( self.__args)
-        #self.__splash = splash_screen()
-        #self.__splash.show()
+        app = QtGui.QApplication( self.__args)
+        self.__splash = splash_screen()
+        self.__splash.show()
 
         # init
         logging.debug( 'Initializing threading')
